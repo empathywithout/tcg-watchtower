@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer — TCG Watchtower</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-purple: #a855f7;
+            --accent-amber: #fbbf24;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87); color: var(--text-light); line-height: 1.6; min-height: 100vh; }
+        .bg-grid { position: fixed; inset: 0; background-image: linear-gradient(to right, rgba(59,130,246,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(59,130,246,0.1) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.2; animation: grid-flow 20s linear infinite; pointer-events: none; z-index: 0; }
+        @keyframes grid-flow { 0% { transform: translateY(0); } 100% { transform: translateY(60px); } }
+        .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.2; pointer-events: none; z-index: 0; }
+        .orb-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: var(--primary-blue); animation: float 8s ease-in-out infinite; }
+        .orb-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: var(--primary-purple); animation: float 10s ease-in-out infinite 2s; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .container { max-width: 860px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        nav { padding: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); padding: 8px; border-radius: 8px; box-shadow: 0 0 20px rgba(59,130,246,0.5); }
+        .logo-text { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168,85,247,0.5); }
+        .page-header { padding: 64px 0 48px; text-align: center; }
+        .page-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(168,85,247,0.2)); border: 1px solid rgba(59,130,246,0.3); border-radius: 999px; font-size: 0.8rem; font-family: 'Space Mono', monospace; color: #93c5fd; margin-bottom: 20px; letter-spacing: 0.05em; }
+        .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; }
+        .page-meta { color: var(--text-muted); font-size: 0.9rem; font-family: 'Space Mono', monospace; }
+        .content { padding-bottom: 100px; }
+        .legal-card { background: linear-gradient(135deg, rgba(30,41,59,0.7), rgba(15,23,42,0.7)); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 40px; margin-bottom: 16px; transition: border-color 0.3s; }
+        .legal-card:hover { border-color: rgba(59,130,246,0.3); }
+        .section-number { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--primary-blue); letter-spacing: 0.1em; margin-bottom: 8px; }
+        .section-heading { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; color: white; }
+        .legal-card p { color: rgba(226,232,240,0.85); margin-bottom: 12px; }
+        .legal-card p:last-child { margin-bottom: 0; }
+        .legal-card ul { color: rgba(226,232,240,0.85); padding-left: 20px; margin-bottom: 12px; }
+        .legal-card ul li { margin-bottom: 8px; }
+        .warning-box { background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(251,191,36,0.05)); border: 1px solid rgba(251,191,36,0.35); border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 14px; align-items: flex-start; }
+        .warning-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+        .warning-box p { color: rgba(226,232,240,0.92); margin: 0; font-size: 0.97rem; }
+        a.inline-link { color: #93c5fd; text-decoration: none; }
+        a.inline-link:hover { text-decoration: underline; }
+        footer { background: rgba(15,23,42,0.8); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); padding: 32px 0; text-align: center; position: relative; z-index: 1; }
+        .footer-links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 16px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--text-light); }
+        .footer-copy { color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span class="logo-text">TCG WATCHTOWER</span>
+        </a>
+        <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-tag">⚖️ LEGAL</div>
+            <h1 class="page-title">Disclaimer</h1>
+            <p class="page-meta">Last updated: March 2026</p>
+        </div>
+
+        <div class="content">
+            <div class="warning-box" style="margin-bottom: 24px;">
+                <div class="warning-icon">⚠️</div>
+                <p>Please read this disclaimer carefully before using TCG Watchtower. By accessing our Discord server or website, you acknowledge and accept the terms outlined below.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">01 — NO AFFILIATION</div>
+                <h2 class="section-heading">Independent Service</h2>
+                <p>TCG Watchtower is an <strong>independent, fan-run service</strong>. We are not affiliated with, sponsored by, endorsed by, or officially connected to any of the following:</p>
+                <ul>
+                    <li>The Pokémon Company, Nintendo, or Game Freak</li>
+                    <li>Bandai Namco or Toei Animation (One Piece)</li>
+                    <li>Target, Walmart, Amazon, Best Buy, GameStop, Pokémon Center, or any other retailer we monitor</li>
+                    <li>Discord Inc.</li>
+                </ul>
+                <p>All trademarks, product names, and company names mentioned are the property of their respective owners and are used for descriptive and identification purposes only.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">02 — NO PURCHASE GUARANTEE</div>
+                <h2 class="section-heading">Alert Limitations</h2>
+                <p>TCG Watchtower provides restock alerts as an informational service. We make no guarantee that:</p>
+                <ul>
+                    <li>Every restock event will be detected or reported</li>
+                    <li>Products will still be available by the time you act on an alert</li>
+                    <li>Prices displayed in alerts reflect the final checkout price</li>
+                    <li>Our service will be available or uninterrupted at all times</li>
+                </ul>
+                <p>TCG inventory moves extremely fast. We are not responsible for missed restocks, failed purchases, or any financial decisions made based on our alerts.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">03 — NO FINANCIAL ADVICE</div>
+                <h2 class="section-heading">TCG Investing & Resale</h2>
+                <p>Nothing on TCG Watchtower should be construed as financial, investment, or resale advice. Any discussion of card values, market trends, or product prices within our community reflects the opinions of individual members and not TCG Watchtower as an organisation.</p>
+                <p>Trading card values can fluctuate significantly. Always conduct your own research before making purchasing decisions, especially at scale.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">04 — EXTERNAL LINKS</div>
+                <h2 class="section-heading">Third-Party Websites</h2>
+                <p>Our alerts and communications contain links to third-party retailer websites. These links are provided for your convenience. TCG Watchtower has no control over the content, pricing, availability, or policies of external websites.</p>
+                <p>We are not responsible for any transactions you make on third-party sites. Please review each retailer's own terms and privacy policy before purchasing.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">05 — COMMUNITY CONTENT</div>
+                <h2 class="section-heading">Member-Generated Content</h2>
+                <p>TCG Watchtower hosts a community Discord server where members share information, tips, and experiences. Content posted by community members does not represent the views or positions of TCG Watchtower.</p>
+                <p>We moderate our community to the best of our ability, but we cannot verify the accuracy of every member statement. Always exercise your own judgement when acting on community-sourced information.</p>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">06 — LIMITATION OF LIABILITY</div>
+                <h2 class="section-heading">Our Liability</h2>
+                <p>To the maximum extent permitted by applicable law, TCG Watchtower and its operators shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from:</p>
+                <ul>
+                    <li>Your use of, or inability to use, our services</li>
+                    <li>Purchasing decisions made based on our alerts or community content</li>
+                    <li>Service interruptions, errors, or inaccuracies</li>
+                    <li>Any actions taken by third-party retailers</li>
+                </ul>
+            </div>
+
+            <div class="legal-card">
+                <div class="section-number">07 — CHANGES</div>
+                <h2 class="section-heading">Updates to This Disclaimer</h2>
+                <p>We may update this disclaimer at any time. Continued use of TCG Watchtower services after changes are posted constitutes acceptance of the revised disclaimer.</p>
+                <p>Questions? Reach out via <a href="https://discord.gg/cZxJV9YRyb" class="inline-link">our Discord server</a> or visit our <a href="contact.html" class="inline-link">Contact page</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">← Back to Home</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms-of-service.html">Terms of Service</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <p class="footer-copy">© 2026 TCG Watchtower. All rights reserved. Not affiliated with Pokémon, One Piece, or any retailers.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — TCG Watchtower</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-purple: #a855f7;
+            --accent-amber: #fbbf24;
+            --accent-green: #4ade80;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87); color: var(--text-light); line-height: 1.6; min-height: 100vh; }
+        .bg-grid { position: fixed; inset: 0; background-image: linear-gradient(to right, rgba(59,130,246,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(59,130,246,0.1) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.2; animation: grid-flow 20s linear infinite; pointer-events: none; z-index: 0; }
+        @keyframes grid-flow { 0% { transform: translateY(0); } 100% { transform: translateY(60px); } }
+        .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.2; pointer-events: none; z-index: 0; }
+        .orb-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: var(--primary-blue); animation: float 8s ease-in-out infinite; }
+        .orb-2 { bottom: 10%; right: 10%; width: 350px; height: 350px; background: var(--primary-purple); animation: float 10s ease-in-out infinite 2s; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .container { max-width: 860px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        nav { padding: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); padding: 8px; border-radius: 8px; box-shadow: 0 0 20px rgba(59,130,246,0.5); }
+        .logo-text { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168,85,247,0.5); }
+
+        /* Page Header */
+        .page-header { padding: 64px 0 48px; text-align: center; }
+        .page-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(168,85,247,0.2)); border: 1px solid rgba(59,130,246,0.3); border-radius: 999px; font-size: 0.8rem; font-family: 'Space Mono', monospace; color: #93c5fd; margin-bottom: 20px; letter-spacing: 0.05em; }
+        .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; }
+        .page-subtitle { color: rgba(226,232,240,0.75); font-size: 1.1rem; max-width: 500px; margin: 0 auto; }
+
+        /* Content */
+        .content { padding-bottom: 100px; }
+
+        /* Discord CTA Card */
+        .discord-card { background: linear-gradient(135deg, rgba(88,28,135,0.4), rgba(30,41,59,0.6)); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.3); border-radius: 20px; padding: 48px 40px; text-align: center; margin-bottom: 24px; position: relative; overflow: hidden; }
+        .discord-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(168,85,247,0.15), transparent 70%); pointer-events: none; }
+        .discord-icon { width: 72px; height: 72px; background: linear-gradient(135deg, #5865f2, #7983f5); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(88,101,242,0.5); }
+        .discord-card h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; margin-bottom: 12px; color: white; }
+        .discord-card p { color: rgba(226,232,240,0.8); margin-bottom: 28px; font-size: 1.05rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+        .discord-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #5865f2, #7983f5); color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 24px rgba(88,101,242,0.45); margin-bottom: 16px; }
+        .discord-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(88,101,242,0.6); }
+        .discord-link-text { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Contact options grid */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .contact-option { background: linear-gradient(135deg, rgba(30,41,59,0.7), rgba(15,23,42,0.7)); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+        .contact-option:hover { border-color: rgba(59,130,246,0.35); transform: translateY(-2px); }
+        .contact-option-icon { font-size: 2rem; margin-bottom: 12px; }
+        .contact-option h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: white; }
+        .contact-option p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* FAQ nudge */
+        .faq-nudge { background: linear-gradient(135deg, rgba(30,41,59,0.7), rgba(15,23,42,0.7)); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .faq-nudge-text h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+        .faq-nudge-text p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+        .btn-outline { display: inline-flex; align-items: center; gap: 8px; border: 2px solid rgba(255,255,255,0.2); color: white; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; white-space: nowrap; }
+        .btn-outline:hover { border-color: rgba(59,130,246,0.6); background: rgba(59,130,246,0.1); }
+
+        footer { background: rgba(15,23,42,0.8); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); padding: 32px 0; text-align: center; position: relative; z-index: 1; }
+        .footer-links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 16px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--text-light); }
+        .footer-copy { color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span class="logo-text">TCG WATCHTOWER</span>
+        </a>
+        <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-tag">💬 GET IN TOUCH</div>
+            <h1 class="page-title">Contact Us</h1>
+            <p class="page-subtitle">The fastest way to reach us is always through our Discord community.</p>
+        </div>
+
+        <div class="content">
+
+            <!-- Main Discord CTA -->
+            <div class="discord-card">
+                <div class="discord-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="white">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                    </svg>
+                </div>
+                <h2>Join Our Discord Server</h2>
+                <p>Get instant support, ask questions, suggest features, or just hang out with 1,800+ fellow collectors. Our team and community are active daily.</p>
+                <div>
+                    <a href="https://discord.gg/cZxJV9YRyb" class="discord-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                        Open Discord Server
+                    </a>
+                </div>
+                <div class="discord-link-text">discord.gg/cZxJV9YRyb</div>
+            </div>
+
+            <!-- What you can contact us about -->
+            <div class="contact-grid">
+                <div class="contact-option">
+                    <div class="contact-option-icon">🔔</div>
+                    <h3>Alert Issues</h3>
+                    <p>Missing alerts, slow notifications, or incorrect stock info? Let us know in #support.</p>
+                </div>
+                <div class="contact-option">
+                    <div class="contact-option-icon">🏪</div>
+                    <h3>Store Requests</h3>
+                    <p>Want us to monitor a new retailer? Drop your suggestion in #store-requests.</p>
+                </div>
+                <div class="contact-option">
+                    <div class="contact-option-icon">💡</div>
+                    <h3>Feature Ideas</h3>
+                    <p>Have an idea to improve TCG Watchtower? Share it in #suggestions.</p>
+                </div>
+                <div class="contact-option">
+                    <div class="contact-option-icon">🛡️</div>
+                    <h3>Report an Issue</h3>
+                    <p>Spotted abuse or a community rule violation? Message a moderator directly.</p>
+                </div>
+                <div class="contact-option">
+                    <div class="contact-option-icon">⚖️</div>
+                    <h3>Legal & Privacy</h3>
+                    <p>For privacy requests or legal enquiries, DM an admin or post in #contact.</p>
+                </div>
+                <div class="contact-option">
+                    <div class="contact-option-icon">🤝</div>
+                    <h3>Partnerships</h3>
+                    <p>Interested in collaborating? Reach out to our team directly on Discord.</p>
+                </div>
+            </div>
+
+            <!-- FAQ nudge -->
+            <div class="faq-nudge">
+                <div class="faq-nudge-text">
+                    <h3>Looking for quick answers?</h3>
+                    <p>Many common questions are already covered in our FAQ — check there first!</p>
+                </div>
+                <a href="index.html#faq" class="btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    View FAQ
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">← Back to Home</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms-of-service.html">Terms of Service</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <p class="footer-copy">© 2026 TCG Watchtower. All rights reserved. Not affiliated with Pokémon, One Piece, or any retailers.</p>
+    </footer>
+</body>
+</html>
