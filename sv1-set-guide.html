@@ -653,12 +653,12 @@ function renderChaseCards() {
 
 /* ===== PRODUCTS ===== */
 const PRODUCTS = [
-  { type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: 'Scarlet & Violet Booster Box (36 Packs)', img: 'https://images-na.ssl-images-amazon.com/images/I/91R1U1R9Q5L._AC_SL1500_.jpg', q: 'Pokemon Scarlet Violet Base Set Booster Box' },
-  { type: 'Elite Trainer Box', filterKey: 'etb', badgeClass: 'badge-etb', name: 'Scarlet & Violet Elite Trainer Box', img: 'https://images-na.ssl-images-amazon.com/images/I/81lhvczpGpL._AC_SL1200_.jpg', q: 'Pokemon Scarlet Violet Elite Trainer Box' },
-  { type: 'Booster Bundle', filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Scarlet & Violet 6-Pack Booster Bundle', img: 'https://images-na.ssl-images-amazon.com/images/I/71aQ1YkU6cL._AC_SL1500_.jpg', q: 'Pokemon Scarlet Violet Booster Bundle' },
-  { type: 'Booster Box Case', filterKey: 'case', badgeClass: 'badge-case', name: 'Scarlet & Violet Booster Box Case (6 Boxes)', img: 'https://images-na.ssl-images-amazon.com/images/I/71R5J0gOmaL._AC_SL1200_.jpg', q: 'Pokemon Scarlet Violet Booster Box Case' },
-  { type: 'Special Collection', filterKey: 'collection', badgeClass: 'badge-collection', name: 'Koraidon ex & Miraidon ex Special Collection', img: 'https://images-na.ssl-images-amazon.com/images/I/81bRxbGDxyL._AC_SL1200_.jpg', q: 'Pokemon Koraidon Miraidon ex Special Collection' },
-  { type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Scarlet & Violet Build & Battle Box', img: 'https://images-na.ssl-images-amazon.com/images/I/71XZGJSi5dL._AC_SL1200_.jpg', q: 'Pokemon Scarlet Violet Build Battle Box' },
+  { type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: 'Scarlet & Violet Booster Box (36 Packs)', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508286.jpg', q: 'Pokemon Scarlet Violet Base Set Booster Box' },
+  { type: 'Elite Trainer Box', filterKey: 'etb', badgeClass: 'badge-etb', name: 'Scarlet & Violet Elite Trainer Box', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508287.jpg', q: 'Pokemon Scarlet Violet Elite Trainer Box' },
+  { type: 'Booster Bundle', filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Scarlet & Violet 6-Pack Booster Bundle', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508290.jpg', q: 'Pokemon Scarlet Violet Booster Bundle' },
+  { type: 'Booster Box Case', filterKey: 'case', badgeClass: 'badge-case', name: 'Scarlet & Violet Booster Box Case (6 Boxes)', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508293.jpg', q: 'Pokemon Scarlet Violet Booster Box Case' },
+  { type: 'Special Collection', filterKey: 'collection', badgeClass: 'badge-collection', name: 'Koraidon ex & Miraidon ex Special Collection', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508291.jpg', q: 'Pokemon Koraidon Miraidon ex Special Collection' },
+  { type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Scarlet & Violet Build & Battle Box', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508289.jpg', q: 'Pokemon Scarlet Violet Build Battle Box' },
 ];
 
 function renderProducts() {
@@ -667,7 +667,7 @@ function renderProducts() {
     <div class="product-card" data-type="${p.filterKey}">
       <div class="product-img-wrap">
         <img src="${p.img}" alt="${p.name}" loading="lazy"
-             onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;color:var(--text-muted);font-size:0.85rem\'>${p.type}</div>'">
+             onerror="this.style.display='none';this.parentElement.innerHTML+='<div style=\'padding:40px 20px;text-align:center\'><div style=\'font-size:2.5rem;margin-bottom:8px\'>📦</div><div style=\'font-size:0.8rem;color:var(--text-muted)\'>${p.type}</div></div>'">
       </div>
       <div class="product-info">
         <span class="rarity-badge ${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">${p.type}</span>
