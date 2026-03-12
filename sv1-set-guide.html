@@ -445,9 +445,9 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/198.webp" alt="Charizard ex SIR" loading="lazy">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/234.webp" alt="Miriam SIR" loading="lazy">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/255.webp" alt="Charizard ex Hyper Rare" loading="lazy">
+          <img src="https://assets.tcgdex.net/en/sv/sv1/198/high.webp" alt="Charizard ex SIR" loading="lazy">
+          <img src="https://assets.tcgdex.net/en/sv/sv1/234/high.webp" alt="Miriam SIR" loading="lazy">
+          <img src="https://assets.tcgdex.net/en/sv/sv1/255/high.webp" alt="Charizard ex Hyper Rare" loading="lazy">
         </div>
       </div>
     </div>
@@ -634,8 +634,8 @@ const CHASE_CARDS = [
 function renderChaseCards() {
   const grid = document.getElementById('chase-grid');
   grid.innerHTML = CHASE_CARDS.map(c => `
-    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}')">
-      <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv1/${c.id}.webp" alt="${c.name}" loading="lazy"
+    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','https://assets.tcgdex.net/en/sv/sv1/${c.id}/high.webp')">
+      <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv1/${c.id}/high.webp" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -653,12 +653,12 @@ function renderChaseCards() {
 
 /* ===== PRODUCTS ===== */
 const PRODUCTS = [
-  { type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: 'Scarlet & Violet Booster Box (36 Packs)', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508286.jpg', q: 'Pokemon Scarlet Violet Base Set Booster Box' },
-  { type: 'Elite Trainer Box', filterKey: 'etb', badgeClass: 'badge-etb', name: 'Scarlet & Violet Elite Trainer Box', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508287.jpg', q: 'Pokemon Scarlet Violet Elite Trainer Box' },
-  { type: 'Booster Bundle', filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Scarlet & Violet 6-Pack Booster Bundle', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508290.jpg', q: 'Pokemon Scarlet Violet Booster Bundle' },
-  { type: 'Booster Box Case', filterKey: 'case', badgeClass: 'badge-case', name: 'Scarlet & Violet Booster Box Case (6 Boxes)', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508293.jpg', q: 'Pokemon Scarlet Violet Booster Box Case' },
-  { type: 'Special Collection', filterKey: 'collection', badgeClass: 'badge-collection', name: 'Koraidon ex & Miraidon ex Special Collection', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508291.jpg', q: 'Pokemon Koraidon Miraidon ex Special Collection' },
-  { type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Scarlet & Violet Build & Battle Box', img: 'https://product-images.tcgplayer.com/fit-in/437x437/508289.jpg', q: 'Pokemon Scarlet Violet Build Battle Box' },
+  { type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: 'Scarlet & Violet Booster Box (36 Packs)', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_BooBox.png', q: 'Pokemon Scarlet Violet Base Set Booster Box' },
+  { type: 'Elite Trainer Box', filterKey: 'etb', badgeClass: 'badge-etb', name: 'Scarlet & Violet Elite Trainer Box', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_ETB_Koraidon.png', q: 'Pokemon Scarlet Violet Elite Trainer Box' },
+  { type: 'Booster Bundle', filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Scarlet & Violet 6-Pack Booster Bundle', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_BooBun.png', q: 'Pokemon Scarlet Violet Booster Bundle' },
+  { type: 'Booster Box Case', filterKey: 'case', badgeClass: 'badge-case', name: 'Scarlet & Violet Booster Box Case (6 Boxes)', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_BooBox.png', q: 'Pokemon Scarlet Violet Booster Box Case' },
+  { type: 'Special Collection', filterKey: 'collection', badgeClass: 'badge-collection', name: 'Koraidon ex & Miraidon ex Special Collection', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_KoraidonMiraidonSpecCol.png', q: 'Pokemon Koraidon Miraidon ex Special Collection' },
+  { type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Scarlet & Violet Build & Battle Box', img: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/cards/web/SV1/SV1_EN_BnB.png', q: 'Pokemon Scarlet Violet Build Battle Box' },
 ];
 
 function renderProducts() {
@@ -723,10 +723,13 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
+    const imgUrl = card.image
+      ? `${card.image}/high.webp`
+      : `https://assets.tcgdex.net/en/sv/sv1/${card.localId}/high.webp`;
     const el = document.createElement('div');
     el.className = 'card-item';
     el.innerHTML = `
-      <img src="https://assets.tcgdex.net/en/sv/sv1/${card.localId}.webp" alt="${card.name}" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name}" loading="lazy"
            onerror="this.style.background='#1e293b'">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
@@ -734,7 +737,7 @@ function renderCards(reset) {
       </div>`;
     el.addEventListener('click', () => {
       const sq = `${card.name} ${card.localId} Scarlet Violet`;
-      openModal(card.localId, card.name, card.rarity || '', sq);
+      openModal(card.localId, card.name, card.rarity || '', sq, imgUrl);
     });
     grid.appendChild(el);
   });
@@ -760,26 +763,24 @@ document.getElementById('rarity-filter').addEventListener('change', applyFilters
 document.getElementById('load-more-btn').addEventListener('click', () => renderCards(false));
 
 /* ===== MODAL ===== */
-function openModal(localId, name, rarity, searchQuery) {
+function openModal(localId, name, rarity, searchQuery, imgUrl) {
+  if (!imgUrl) imgUrl = `https://assets.tcgdex.net/en/sv/sv1/${localId}/high.webp`;
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
-    <img class="modal-img" src="https://assets.tcgdex.net/en/sv/sv1/${localId}.webp" alt="${name}" loading="lazy">
+    <img class="modal-img" src="${imgUrl}" alt="${name}" loading="lazy">
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / Scarlet & Violet Base Set (SV1)</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>🔍 Find on Amazon</span>
-          <span>→</span>
+          <span>🔍 Find on Amazon</span><span>→</span>
         </a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>🔍 Find on eBay</span>
-          <span>→</span>
+          <span>🔍 Find on eBay</span><span>→</span>
         </a>
         <a class="modal-buy-link pl-tcgp" href="${tcgplayerLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>🔍 Find on TCGplayer</span>
-          <span>→</span>
+          <span>🔍 Find on TCGplayer</span><span>→</span>
         </a>
       </div>
     </div>`;
