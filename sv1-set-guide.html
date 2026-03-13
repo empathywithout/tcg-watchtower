@@ -441,12 +441,8 @@ footer {
         </p>
         <div class="set-stats">
           <div class="stat-card">
-            <div class="stat-value">198</div>
-            <div class="stat-label">Base Cards</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">264</div>
-            <div class="stat-label">Total w/ Secrets</div>
+            <div class="stat-value" id="stat-total-count">…</div>
+            <div class="stat-label">Total Cards</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">Mar 2023</div>
@@ -487,7 +483,7 @@ footer {
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">📋 Full <span class="gradient-text">Card List</span></h2>
-      <p class="section-sub">All 264 cards — search and filter by rarity. Click any card to find it.</p>
+      <p class="section-sub" id="card-list-sub">Loading cards — search and filter by rarity. Click any card to find it.</p>
     </div>
     <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
@@ -609,7 +605,7 @@ const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: '__R2_PUBLIC_URL__'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
@@ -797,19 +793,11 @@ async function loadCards() {
     allCards = data.cards || [];
     if (allCards.length === 0) throw new Error('No cards returned');
 
-    // Update the card count stat in the hero section with correct numbers from API
-    const official = data.cardCount?.official || allCards.length;
     const total = data.cardCount?.total || allCards.length;
-    const countEl = document.querySelector('.stat-value');
-    if (countEl && countEl.closest('.stat-card')) {
-      // Find the "Cards" stat specifically
-      document.querySelectorAll('.stat-card').forEach(card => {
-        if (card.querySelector('.stat-label')?.textContent?.toLowerCase().includes('card')) {
-          card.querySelector('.stat-value').textContent = `${official}+${total - official}`;
-          card.querySelector('.stat-label').textContent = `Cards (${total} Total)`;
-        }
-      });
-    }
+    const el = document.getElementById('stat-total-count');
+    if (el) el.textContent = total;
+    const subEl = document.getElementById('card-list-sub');
+    if (subEl) subEl.textContent = `All ${total} cards — search and filter by rarity. Click any card to find it.`;
 
     // Rarity order per official SV rarity chart
     const RARITY_ORDER = [
