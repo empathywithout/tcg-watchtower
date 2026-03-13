@@ -97,5 +97,7 @@ jobs:
           git add ${{ github.event.inputs.set_id }}-set-guide.html
           git diff --staged --quiet && echo "No changes to commit" && exit 0
           git commit -m "Auto-generate ${{ github.event.inputs.set_id }}-set-guide.html"
+          git stash
           git pull --rebase origin main
+          git stash pop || true
           git push
