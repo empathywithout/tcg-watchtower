@@ -8,6 +8,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 // ── Inputs ────────────────────────────────────────────────────────────────────
 const SET_ID            = process.env.SET_ID;            // e.g. sv02
+const SET_SLUG          = process.env.SET_SLUG || `${process.env.SET_ID}-set-guide`;
 const SET_FULL_NAME     = process.env.SET_FULL_NAME;     // e.g. Paldea Evolved (SV2)
 const SET_SERIES        = process.env.SET_SERIES;        // e.g. Scarlet & Violet
 const SET_SUBTITLE      = process.env.SET_SUBTITLE;      // e.g. Paldea Evolved
