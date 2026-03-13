@@ -2,7 +2,7 @@
 // Fetches accurate TCGplayer market prices via TCGCSV (free, no auth, daily updated)
 // TCGCSV mirrors TCGplayer's API: https://tcgcsv.com/docs
 //
-// URL: GET /api/tcgplayer-prices?groupId=23533
+// URL: GET /api/tcgplayer-prices?groupId=22873
 // Returns: { prices: { "001": 0.50, "199": 59.99, ... }, tcgpUrl: {...} }
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
@@ -59,14 +59,16 @@ export default async function handler(req, res) {
     const products = productsData.results || [];
     const pricesList = pricesData.results || [];
 
-    // Build price lookup by productId, preferring "Normal" or "Holofoil" subtype
-    // (avoids Reverse Holofoil prices which are different)
+    // Filter products to only those belonging to this exact group
+    // (TCGCSV can return products from supplemental/promo groups that share card numbers)
+    const groupIdNum = parseInt(groupId, 10);
+    const filteredProducts = products.filter(p => p.groupId === groupIdNum);
+
+    // Build price lookup by productId, preferring "Normal" subtype over "Holofoil", skipping Reverse
     const priceByProductId = {};
     for (const p of pricesList) {
       const existing = priceByProductId[p.productId];
       const subType = (p.subTypeName || '').toLowerCase();
-      // Priority: Normal > Holofoil > anything else
-      // Skip Reverse Holofoil and Reverse Foil
       if (subType.includes('reverse')) continue;
       if (!existing) {
         priceByProductId[p.productId] = p;
@@ -79,25 +81,28 @@ export default async function handler(req, res) {
     }
 
     // Build card number → price map
-    // extendedData contains {name: "Number", value: "199/198"} — we extract just the localId part
+    // extendedData contains {name: "Number", value: "199/198"} — extract just the card number part
+    // When multiple products share a card number (shouldn't happen after groupId filter, but just in case),
+    // prefer the one with the lowest productId (earliest/original listing)
     const prices = {};
     const tcgpUrls = {};
+    const seenProductIds = {}; // cardNumber → productId already used
 
-    for (const product of products) {
-      // Skip sealed products (no Number in extendedData)
+    for (const product of filteredProducts) {
       const extData = product.extendedData || [];
       const numberEntry = extData.find(e => e.name === 'Number');
       if (!numberEntry) continue;
 
-      // Card number is like "199/198" or "086/198" — extract the first part as localId
       const cardNumber = numberEntry.value.split('/')[0].trim();
-      // Also strip leading zeros to match TCGdex localId format (e.g. "086" → "86" ... wait, TCGdex uses "086")
-      // Keep as-is since TCGdex localIds preserve leading zeros
+
+      // If we already have a price for this card number, keep the one with the lower productId
+      if (seenProductIds[cardNumber] && product.productId > seenProductIds[cardNumber]) continue;
 
       const priceObj = priceByProductId[product.productId];
       if (priceObj && priceObj.marketPrice != null) {
         prices[cardNumber] = priceObj.marketPrice;
-        tcgpUrls[cardNumber] = product.url;
+        tcgpUrls[cardNumber] = `https://www.tcgplayer.com/product/${product.productId}`;
+        seenProductIds[cardNumber] = product.productId;
       }
     }
 
