@@ -482,14 +482,6 @@ footer {
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
       <select class="filter-select" id="rarity-filter">
         <option value="">All Rarities</option>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Double Rare">Double Rare</option>
-        <option value="Ultra Rare">Ultra Rare</option>
-        <option value="Illustration Rare">Illustration Rare</option>
-        <option value="Special Illustration Rare">Special Illustration Rare</option>
-        <option value="Hyper Rare">Hyper Rare</option>
       </select>
     </div>
     <p class="card-count" id="card-count">Loading cards…</p>
@@ -606,7 +598,7 @@ const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: '__R2_PUBLIC_URL__'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
@@ -645,10 +637,37 @@ const CHASE_CARDS = [
   { id: '193', name: 'Koraidon ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Koraidon ex 193 Scarlet Violet SIR' },
 ];
 
-function renderChaseCards() {
+function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
-  grid.innerHTML = CHASE_CARDS.map(c => {
-    const img = cardImg('sv01', c.id);
+
+  // If cards passed in, auto-detect chase cards by rarity (SIR, HR, UR)
+  // Otherwise fall back to the hardcoded list
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
+  let chaseList;
+
+  if (cards && cards.length) {
+    chaseList = cards
+      .filter(c => CHASE_RARITIES.includes(c.rarity))
+      .map(c => ({
+        id: c.localId,
+        name: c.name,
+        rarity: c.rarity,
+        rarityClass: c.rarity === 'Hyper Rare' ? 'rarity-hr' :
+                     c.rarity === 'Special Illustration Rare' ? 'rarity-sir' :
+                     c.rarity === 'Ultra Rare' ? 'rarity-ur' : 'rarity-ir',
+        label: c.rarity === 'Hyper Rare' ? 'HR' :
+               c.rarity === 'Special Illustration Rare' ? 'SIR' :
+               c.rarity === 'Ultra Rare' ? 'UR' : 'IR',
+        searchName: `${c.name} ${c.localId} Scarlet Violet`,
+        img: c.image || cardImg('sv01', c.localId),
+      }));
+  } else {
+    // Fallback to hardcoded until cards load
+    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('sv01', c.id) }));
+  }
+
+  grid.innerHTML = chaseList.map(c => {
+    const img = c.img;
     return `
     <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
       <img class="chase-card-img" src="${img}" alt="${c.name}" loading="lazy"
@@ -751,6 +770,34 @@ async function loadCards() {
     const data = await res.json();
     allCards = data.cards || [];
     if (allCards.length === 0) throw new Error('No cards returned');
+
+    // Update the card count stat in the hero section with correct numbers from API
+    const official = data.cardCount?.official || allCards.length;
+    const total = data.cardCount?.total || allCards.length;
+    const countEl = document.querySelector('.stat-value');
+    if (countEl && countEl.closest('.stat-card')) {
+      // Find the "Cards" stat specifically
+      document.querySelectorAll('.stat-card').forEach(card => {
+        if (card.querySelector('.stat-label')?.textContent?.toLowerCase().includes('card')) {
+          card.querySelector('.stat-value').textContent = `${official}+${total - official}`;
+          card.querySelector('.stat-label').textContent = `Cards (${total} Total)`;
+        }
+      });
+    }
+
+    // Populate rarity dropdown from actual data — only show rarities that exist
+    const rarities = [...new Set(allCards.map(c => c.rarity).filter(Boolean))].sort();
+    const sel = document.getElementById('rarity-filter');
+    rarities.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r;
+      sel.appendChild(opt);
+    });
+
+    // Auto-detect and render chase cards from rarity
+    renderChaseCards(allCards);
+
     filteredCards = allCards;
     renderCards(true);
   } catch(e) {
