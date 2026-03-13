@@ -147,11 +147,16 @@ nav {
   align-items:center; 
   gap:12px; 
   text-decoration:none; 
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
 }
 .logo:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 .logo-icon {
   background: transparent;
@@ -163,14 +168,17 @@ nav {
   justify-content: center;
 }
 .logo-icon img {
-  height: 60px;
+  height: 55px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  filter: brightness(1.05);
 }
 @media (max-width: 768px) {
+  .logo {
+    padding: 6px 10px;
+  }
   .logo-icon img {
-    height: 50px;
+    height: 45px;
   }
 }
 .logo-text {
