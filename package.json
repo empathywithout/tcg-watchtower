@@ -1,19 +1,14 @@
 {
   "name": "tcg-watchtower-automation",
   "version": "1.0.0",
+  "type": "module",
   "description": "Automated TCG restock alert distribution system",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js"
   },
-  "keywords": [
-    "discord",
-    "twitter",
-    "reddit",
-    "automation",
-    "tcg"
-  ],
+  "keywords": ["discord", "twitter", "reddit", "automation", "tcg"],
   "author": "",
   "license": "MIT",
   "dependencies": {
