@@ -1024,6 +1024,14 @@ function cardImg(setId, localId) {
   return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
 }
 
+// Build set logo URL — uses R2 if configured, falls back to TCGdex
+function setLogoUrl(setId) {
+  if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
+    return `${CONFIG.r2}/logos/${setId}.png`;
+  }
+  return `https://assets.tcgdex.net/en/sv/${setId}/logo.png`;
+}
+
 // Wire up hero stack images
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
   img.src = cardImg(img.dataset.set, img.dataset.id);
@@ -1479,19 +1487,23 @@ loadCards();
       groupedSets[series].forEach(set => {
         const isDisabled = !set.live;
         const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
-        const link = isDisabled ? '#' : '/' + set.slug;
-        const onClick = isDisabled ? 'onclick="return false;"' : '';
+        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
         
-        // Use TCGdex logo if setId exists, otherwise fallback to emoji
-        const imageHtml = set.setId 
-          ? `<img src="https://assets.tcgdex.net/en/sv/${set.setId}/logo.png" alt="${set.name}" style="width: 80%; max-width: 120px; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-             <div style="font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); display: none;">🎴</div>`
-          : `<div style="font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">🎴</div>`;
+        // Get logo URL (R2 or TCGdex fallback)
+        const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
         
         html += `
-          <a href="${link}" class="${cardClass}" ${onClick}>
+          <a href="${link}" class="${cardClass}">
             <div class="set-card-image">
-              ${imageHtml}
+              ${logoUrl ? `
+                <img src="${logoUrl}" 
+                     alt="${set.name}" 
+                     style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="font-size: 3rem; display: none;">🎴</div>
+              ` : `
+                <div style="font-size: 3rem;">🎴</div>
+              `}
             </div>
             <div class="set-card-content">
               <div class="set-card-name">${set.name}</div>
