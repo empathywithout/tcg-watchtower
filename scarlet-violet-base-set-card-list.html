@@ -1315,18 +1315,18 @@ const priceCache = {};  // localId → { price, url } | null (null = confirmed n
 let _pricesFetchPromise = null;
 
 function loadTCGPlayerPrices() {
-  // Return existing promise if already in-flight or resolved, so multiple callers share one fetch
   if (_pricesFetchPromise) return _pricesFetchPromise;
   _pricesFetchPromise = (async () => {
     try {
+      console.log('[TCGp] fetching prices for groupId', TCGP_GROUP_ID);
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
+      console.log('[TCGp] received', Object.keys(prices).length, 'prices. Sample:', Object.entries(prices).slice(0,3));
 
-      // Index by both zero-padded ("001") and unpadded ("1") to match any localId format
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
@@ -1336,8 +1336,15 @@ function loadTCGPlayerPrices() {
         priceCache[withoutZeros] = entry;
       });
 
-      // Update price labels on all rendered card elements
-      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+      const cardEls = document.querySelectorAll('.card-item[data-local-id]');
+      console.log('[TCGp] card elements in DOM:', cardEls.length);
+      if (cardEls.length > 0) {
+        const firstId = cardEls[0].dataset.localId;
+        console.log('[TCGp] first card localId:', firstId, '→ cache:', priceCache[firstId]);
+      }
+
+      let updated = 0;
+      cardEls.forEach(el => {
         const id     = el.dataset.localId;
         const cached = priceCache[id];
         const priceEl = el.querySelector('.card-item-price');
@@ -1345,24 +1352,24 @@ function loadTCGPlayerPrices() {
         if (cached?.price) {
           priceEl.textContent = `$${cached.price.toFixed(2)}`;
           priceEl.classList.remove('loading');
+          updated++;
         } else {
           priceEl.textContent = '';
           priceEl.classList.remove('loading');
         }
       });
+      console.log('[TCGp] updated', updated, 'price labels');
 
-      // Re-render chase section with real prices
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
 
-      // Only re-render via applyFilters if price sort is active (targeted DOM updates above handle the rest)
       if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
         applyFilters();
       }
 
     } catch(e) {
-      console.warn('TCGplayer prices unavailable:', e.message);
-      _pricesFetchPromise = null; // allow retry on next call
+      console.error('[TCGp] prices failed:', e.message);
+      _pricesFetchPromise = null;
     }
   })();
   return _pricesFetchPromise;
