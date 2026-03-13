@@ -1355,8 +1355,10 @@ function loadTCGPlayerPrices() {
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
 
-      // Re-apply filters/sort now that prices are available
-      applyFilters();
+      // Only re-render via applyFilters if price sort is active (targeted DOM updates above handle the rest)
+      if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
+        applyFilters();
+      }
 
     } catch(e) {
       console.warn('TCGplayer prices unavailable:', e.message);
