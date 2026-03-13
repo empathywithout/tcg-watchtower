@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       set_id:
-        description: 'TCG Set ID (e.g. sv1, sv2, sv3)'
+        description: 'TCGdex Set ID (sv01=SV Base, sv02=Paldea Evolved, sv03=Obsidian Flames...)'
         required: true
-        default: 'sv1'
+        default: 'sv01'
 
 jobs:
   sync-images:
@@ -22,14 +22,14 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @aws-sdk/client-s3 node-fetch
+        run: npm install @aws-sdk/client-s3
 
       - name: Download and upload card images
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
-          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
         run: node scripts/sync-images.js
