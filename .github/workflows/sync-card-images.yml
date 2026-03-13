@@ -20,19 +20,27 @@ on:
         required: false
         default: 'Scarlet & Violet'
       set_subtitle:
-        description: 'Set subtitle e.g. Base Set, Paldea Evolved'
+        description: 'Short title shown in hero heading e.g. Base Set, Paldea Evolved'
         required: false
         default: 'Base Set'
       set_short_name:
-        description: 'Short name for alerts e.g. SV1, SV2'
+        description: 'Short code e.g. SV1, SV2'
         required: false
         default: 'SV1'
+      set_search_name:
+        description: 'Name appended to card search queries e.g. "Scarlet Violet", "Paldea Evolved" (leave blank to use set_subtitle)'
+        required: false
+        default: ''
+      set_tcgp_slug:
+        description: 'TCGplayer URL slug e.g. scarlet-violet-base-set (leave blank to auto-derive)'
+        required: false
+        default: ''
       set_release_date:
-        description: 'Release date e.g. Mar 2023 (leave blank to auto-detect)'
+        description: 'Release date e.g. Mar 2023 (leave blank to auto-detect from TCGdex)'
         required: false
         default: ''
       set_description:
-        description: '2-3 sentence set description for the page'
+        description: '2-3 sentence set description for the page (leave blank to auto-generate)'
         required: false
         default: ''
       hero_card_1:
@@ -47,6 +55,14 @@ on:
         description: 'Hero card 3 localId'
         required: false
         default: '003'
+      product_meta_json:
+        description: 'JSON object of sealed products keyed by Amazon ASIN (leave blank if none)'
+        required: false
+        default: '{}'
+      chase_cards_json:
+        description: 'JSON array of fallback chase cards shown before page loads (leave blank to auto-detect from rarity)'
+        required: false
+        default: '[]'
 
 jobs:
   sync-and-generate:
@@ -84,11 +100,16 @@ jobs:
           SET_SERIES: ${{ github.event.inputs.set_series }}
           SET_SUBTITLE: ${{ github.event.inputs.set_subtitle }}
           SET_SHORT_NAME: ${{ github.event.inputs.set_short_name }}
+          SET_SEARCH_NAME: ${{ github.event.inputs.set_search_name }}
+          SET_TCGP_SLUG: ${{ github.event.inputs.set_tcgp_slug }}
           SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
           SET_DESCRIPTION: ${{ github.event.inputs.set_description }}
           HERO_CARD_1: ${{ github.event.inputs.hero_card_1 }}
           HERO_CARD_2: ${{ github.event.inputs.hero_card_2 }}
           HERO_CARD_3: ${{ github.event.inputs.hero_card_3 }}
+          PRODUCT_META_JSON: ${{ github.event.inputs.product_meta_json }}
+          CHASE_CARDS_JSON: ${{ github.event.inputs.chase_cards_json }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
