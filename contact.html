@@ -13,6 +13,12 @@
     <link rel="canonical" href="https://tcgwatchtower.com/contact">
     <meta property="og:url" content="https://tcgwatchtower.com/contact">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
     <title>Contact Us — TCG Watchtower</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +42,20 @@
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .container { max-width: 860px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
         nav { padding: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
-        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+        }
+        .logo:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
         .logo-icon { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); padding: 8px; border-radius: 8px; box-shadow: 0 0 20px rgba(59,130,246,0.5); }
         .logo-text { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .btn-primary { background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
@@ -91,7 +110,7 @@
     <nav>
         <a href="index.html" class="logo">
             <div class="logo-icon">
-                <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" style="height: 60px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));">
+                <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" style="height: 55px; width: auto; object-fit: contain; filter: brightness(1.05);">
             </div>
         </a>
         <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
