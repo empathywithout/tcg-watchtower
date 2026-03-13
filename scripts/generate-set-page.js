@@ -90,3 +90,21 @@ if (process.env.CF_R2_ENDPOINT) {
 }
 
 console.log(`\n🎉 Done! Add ${outFile} to your repo and it will auto-deploy on Vercel.`);
+
+// ── Update sitemap.xml ────────────────────────────────────────────────────────
+import { readFileSync as readFS, writeFileSync as writeFS, existsSync } from 'fs';
+
+const SITE_URL = 'https://tcgwatchtower.com';
+const sitemapPath = 'sitemap.xml';
+const newUrl = `${SITE_URL}/${SET_ID}-set-guide`;
+
+let sitemap = existsSync(sitemapPath) ? readFS(sitemapPath, 'utf8') : '';
+
+if (sitemap.includes(newUrl)) {
+  console.log(`\n📍 Sitemap already contains ${newUrl}`);
+} else {
+  const newEntry = `  <url>\n    <loc>${newUrl}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+  sitemap = sitemap.replace('</urlset>', `${newEntry}\n</urlset>`);
+  writeFS(sitemapPath, sitemap);
+  console.log(`\n📍 Added ${newUrl} to sitemap.xml`);
+}
