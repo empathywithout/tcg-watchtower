@@ -845,20 +845,31 @@ async function loadCards() {
       }
     } catch(e) {}
 
-    // Fall back to TCGdex directly
+    // Fall back to TCGdex directly — fetch cards with rarity in parallel batches
     if (!data) {
-      const res = await fetch('https://api.tcgdex.net/v2/en/sets/sv01');
-      if (!res.ok) throw new Error('TCGdex failed');
-      const setData = await res.json();
-      data = {
-        cards: (setData.cards || []).map(c => ({
-          localId: c.localId,
-          name: c.name,
-          image: `https://assets.tcgdex.net/en/sv/sv01/${c.localId}/high.webp`,
-          rarity: c.rarity || ''
-        })),
-        cardCount: { total: setData.cardCount }
-      };
+      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/sv01');
+      if (!setRes.ok) throw new Error('TCGdex failed');
+      const setData = await setRes.json();
+      const basicCards = setData.cards || [];
+      const BATCH = 10;
+      const fullCards = [];
+      for (let i = 0; i < basicCards.length; i += BATCH) {
+        const batch = basicCards.slice(i, i + BATCH);
+        const results = await Promise.allSettled(
+          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/sv01-${c.localId}`).then(r => r.json()))
+        );
+        results.forEach((result, idx) => {
+          const basic = batch[idx];
+          const detail = result.status === 'fulfilled' ? result.value : {};
+          fullCards.push({
+            localId: basic.localId,
+            name: basic.name,
+            image: `https://assets.tcgdex.net/en/sv/sv01/${basic.localId}/high.webp`,
+            rarity: detail.rarity || ''
+          });
+        });
+      }
+      data = { cards: fullCards, cardCount: { total: setData.cardCount } };
     }
 
     allCards = data.cards || data || [];
