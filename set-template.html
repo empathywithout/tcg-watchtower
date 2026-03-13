@@ -1454,9 +1454,12 @@ loadCards();
     if (currentFilter === 'live') {
       filteredSets = allSets.filter(set => set.live);
     } else if (currentFilter !== 'all') {
-      filteredSets = allSets.filter(set => 
-        set.series.toLowerCase().replace(/\s+/g, '-') === currentFilter
-      );
+      // Normalize both the filter and series name for comparison
+      const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
+      filteredSets = allSets.filter(set => {
+        const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return normalizedSeries === normalizedFilter;
+      });
     }
     
     // Group by series
@@ -1479,10 +1482,16 @@ loadCards();
         const link = isDisabled ? '#' : '/' + set.slug;
         const onClick = isDisabled ? 'onclick="return false;"' : '';
         
+        // Use TCGdex logo if setId exists, otherwise fallback to emoji
+        const imageHtml = set.setId 
+          ? `<img src="https://assets.tcgdex.net/en/sv/${set.setId}/logo.png" alt="${set.name}" style="width: 80%; max-width: 120px; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+             <div style="font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); display: none;">🎴</div>`
+          : `<div style="font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">🎴</div>`;
+        
         html += `
           <a href="${link}" class="${cardClass}" ${onClick}>
             <div class="set-card-image">
-              <div style="font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">🎴</div>
+              ${imageHtml}
             </div>
             <div class="set-card-content">
               <div class="set-card-name">${set.name}</div>
