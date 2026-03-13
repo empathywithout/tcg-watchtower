@@ -142,7 +142,17 @@ nav {
   position: relative;
   z-index: 10;
 }
-.logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.logo { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  text-decoration:none; 
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.logo:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
 .logo-icon {
   background: transparent;
   padding: 0;
@@ -153,9 +163,15 @@ nav {
   justify-content: center;
 }
 .logo-icon img {
-  height: 50px;
+  height: 60px;
   width: auto;
   object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+@media (max-width: 768px) {
+  .logo-icon img {
+    height: 50px;
+  }
 }
 .logo-text {
   font-family: 'Space Mono', monospace;
