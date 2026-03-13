@@ -1,14 +1,12 @@
 // scripts/sync-images.js
-// Run via GitHub Actions — downloads all card images for a set and uploads to Cloudflare R2
-// Uses native fetch (Node 18+) — no node-fetch needed
+// Downloads card images + full card metadata for a set, uploads everything to Cloudflare R2
+// After this runs: images at /cards/{setId}/{localId}.webp
+//                  metadata at /data/{setId}.json
 
 import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 const SET_ID = process.env.SET_ID;
-if (!SET_ID) {
-  console.error("❌ SET_ID environment variable is required");
-  process.exit(1);
-}
+if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
 const s3 = new S3Client({
   region: "auto",
@@ -18,24 +16,16 @@ const s3 = new S3Client({
     secretAccessKey: process.env.CF_R2_SECRET_KEY,
   },
 });
-
 const BUCKET = process.env.CF_R2_BUCKET;
 
 async function existsInR2(key) {
-  try {
-    await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }));
-    return true;
-  } catch {
-    return false;
-  }
+  try { await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key })); return true; }
+  catch { return false; }
 }
 
-async function uploadToR2(key, buffer) {
+async function uploadToR2(key, body, contentType) {
   await s3.send(new PutObjectCommand({
-    Bucket: BUCKET,
-    Key: key,
-    Body: buffer,
-    ContentType: "image/webp",
+    Bucket: BUCKET, Key: key, Body: body, ContentType: contentType,
     CacheControl: "public, max-age=31536000, immutable",
   }));
 }
@@ -44,111 +34,112 @@ async function downloadImage(url) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "TCGWatchtower/1.0" },
-      signal: controller.signal,
-    });
+    const res = await fetch(url, { headers: { "User-Agent": "TCGWatchtower/1.0" }, signal: controller.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const arrayBuffer = await res.arrayBuffer();
-    return Buffer.from(arrayBuffer);
-  } finally {
-    clearTimeout(timeout);
+    return Buffer.from(await res.arrayBuffer());
+  } finally { clearTimeout(timeout); }
+}
+
+async function fetchWithRetry(url, attempts = 3) {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const res = await fetch(url, { headers: { "Accept": "application/json" } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      if (i === attempts) throw err;
+      await new Promise(r => setTimeout(r, 1000 * i));
+    }
   }
 }
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function main() {
-  console.log(`\n🚀 Starting image sync for set: ${SET_ID}\n`);
+  console.log(`\n🚀 Starting sync for set: ${SET_ID}\n`);
 
-  console.log(`📋 Fetching card list from TCGdex...`);
-  const listRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${SET_ID}`, {
-    headers: { "Accept": "application/json" }
-  });
+  // Step 1 — Fetch set overview (card list with localIds)
+  console.log(`📋 Fetching set overview...`);
+  const setData = await fetchWithRetry(`https://api.tcgdex.net/v2/en/sets/${SET_ID}`);
+  const briefCards = setData.cards || [];
+  const totalOfficial = setData.cardCount?.official || briefCards.length;
+  const totalCards = setData.cardCount?.total || briefCards.length;
 
-  if (!listRes.ok) {
-    const body = await listRes.text();
-    console.error(`❌ TCGdex returned ${listRes.status} for set "${SET_ID}"`);
-    console.error(`Tip: Scarlet & Violet Base = sv01, Paldea Evolved = sv02, Obsidian Flames = sv03`);
-    console.error(`Response: ${body.slice(0, 300)}`);
-    process.exit(1);
+  console.log(`✅ Set: ${setData.name} — ${briefCards.length} cards (${totalOfficial} official / ${totalCards} total incl. secrets)\n`);
+
+  // Step 2 — Fetch full card details for each card (needed for rarity)
+  console.log(`🔍 Fetching full card details for rarity data...`);
+  const fullCards = [];
+  for (let i = 0; i < briefCards.length; i++) {
+    const brief = briefCards[i];
+    process.stdout.write(`[${i + 1}/${briefCards.length}] ${brief.name}... `);
+    try {
+      const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${SET_ID}-${brief.localId}`);
+      fullCards.push({
+        localId: brief.localId,
+        name: card.name,
+        rarity: card.rarity || null,
+        image: brief.image ? `${brief.image}/high.webp` : null,
+      });
+      console.log(`✅ (${card.rarity || 'no rarity'})`);
+    } catch (err) {
+      console.log(`⚠️  metadata failed: ${err.message}`);
+      fullCards.push({ localId: brief.localId, name: brief.name, rarity: null, image: brief.image ? `${brief.image}/high.webp` : null });
+    }
+    await sleep(100); // be polite to TCGdex
   }
 
-  const setData = await listRes.json();
-  const cards = setData.cards || [];
+  // Step 3 — Build and upload the JSON metadata file to R2
+  console.log(`\n📦 Uploading metadata JSON to R2...`);
+  const metadata = {
+    id: SET_ID,
+    name: setData.name,
+    releaseDate: setData.releaseDate || null,
+    cardCount: { official: totalOfficial, total: totalCards },
+    cards: fullCards,
+  };
+  await uploadToR2(
+    `data/${SET_ID}.json`,
+    JSON.stringify(metadata),
+    "application/json"
+  );
+  console.log(`✅ Metadata saved to R2 at data/${SET_ID}.json`);
 
-  if (cards.length === 0) {
-    console.error(`❌ No cards found for set "${SET_ID}"`);
-    process.exit(1);
-  }
-
-  console.log(`✅ Found ${cards.length} cards — Set: ${setData.name}\n`);
-
-  let uploaded = 0;
-  let skipped = 0;
-  let failed = 0;
+  // Step 4 — Download and upload card images
+  console.log(`\n🖼️  Uploading card images to R2...`);
+  let uploaded = 0, skipped = 0, failed = 0;
   const failures = [];
 
-  for (let i = 0; i < cards.length; i++) {
-    const card = cards[i];
+  for (let i = 0; i < briefCards.length; i++) {
+    const card = briefCards[i];
     const localId = card.localId;
     const r2Key = `cards/${SET_ID}/${localId}.webp`;
     const imageUrl = card.image ? `${card.image}/high.webp` : null;
 
-    if (!imageUrl) {
-      console.log(`[${i + 1}/${cards.length}] ${card.name} (#${localId})... ⚠️  no image, skipping`);
-      skipped++;
-      continue;
-    }
+    if (!imageUrl) { skipped++; continue; }
+    process.stdout.write(`[${i + 1}/${briefCards.length}] #${localId}... `);
 
-    process.stdout.write(`[${i + 1}/${cards.length}] ${card.name} (#${localId})... `);
-
-    if (await existsInR2(r2Key)) {
-      console.log(`⏭️  already exists`);
-      skipped++;
-      continue;
-    }
+    if (await existsInR2(r2Key)) { console.log(`⏭️  exists`); skipped++; continue; }
 
     let success = false;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        const buffer = await downloadImage(imageUrl);
-        await uploadToR2(r2Key, buffer);
-        console.log(`✅ uploaded`);
-        uploaded++;
-        success = true;
-        break;
+        await uploadToR2(r2Key, await downloadImage(imageUrl), "image/webp");
+        console.log(`✅`); uploaded++; success = true; break;
       } catch (err) {
-        if (attempt < 3) {
-          process.stdout.write(`⚠️  retry ${attempt}... `);
-          await sleep(2000 * attempt);
-        } else {
-          console.log(`❌ failed: ${err.message}`);
-          failures.push({ localId, name: card.name, error: err.message });
-          failed++;
-        }
+        if (attempt < 3) { process.stdout.write(`⚠️  retry... `); await sleep(2000 * attempt); }
+        else { console.log(`❌ ${err.message}`); failures.push(localId); failed++; }
       }
     }
-
     if (success) await sleep(150);
   }
 
-  console.log(`\n📊 Sync complete for ${SET_ID}:`);
-  console.log(`   ✅ Uploaded: ${uploaded}`);
-  console.log(`   ⏭️  Skipped: ${skipped}`);
-  console.log(`   ❌ Failed: ${failed}`);
-
-  if (failures.length > 0) {
-    console.log(`\n⚠️  Failed cards:`);
-    failures.forEach(f => console.log(`   #${f.localId} ${f.name}: ${f.error}`));
-  }
-
-  console.log(`\n🌐 Images live at: ${process.env.CF_R2_PUBLIC_URL}/cards/${SET_ID}/{localId}.webp`);
+  console.log(`\n📊 Done! ${SET_ID}: ✅ ${uploaded} uploaded / ⏭️ ${skipped} skipped / ❌ ${failed} failed`);
+  if (failures.length) console.log(`Failed: ${failures.join(', ')}`);
+  console.log(`\n🌐 Data: ${process.env.CF_R2_PUBLIC_URL}/data/${SET_ID}.json`);
+  console.log(`🌐 Images: ${process.env.CF_R2_PUBLIC_URL}/cards/${SET_ID}/{localId}.webp`);
 
   if (failed > 0) process.exit(1);
 }
 
-main().catch(err => {
-  console.error("💥 Fatal error:", err);
-  process.exit(1);
-});
+main().catch(err => { console.error("💥", err); process.exit(1); });
