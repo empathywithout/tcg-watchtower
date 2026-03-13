@@ -598,7 +598,7 @@ const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: '__R2_PUBLIC_URL__'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
@@ -646,18 +646,33 @@ function renderChaseCards(cards) {
   let chaseList;
 
   if (cards && cards.length) {
+    const RARITY_TIER = {
+      'Hyper Rare': 0,
+      'Special Illustration Rare': 1,
+      'Ultra Rare': 2,
+      'Illustration Rare': 3,
+    };
+    const RARITY_LABEL = {
+      'Hyper Rare': 'HR',
+      'Special Illustration Rare': 'SIR',
+      'Ultra Rare': 'UR',
+      'Illustration Rare': 'IR',
+    };
+    const RARITY_CLASS = {
+      'Hyper Rare': 'rarity-hr',
+      'Special Illustration Rare': 'rarity-sir',
+      'Ultra Rare': 'rarity-ur',
+      'Illustration Rare': 'rarity-ir',
+    };
     chaseList = cards
       .filter(c => CHASE_RARITIES.includes(c.rarity))
+      .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
       .map(c => ({
         id: c.localId,
         name: c.name,
         rarity: c.rarity,
-        rarityClass: c.rarity === 'Hyper Rare' ? 'rarity-hr' :
-                     c.rarity === 'Special Illustration Rare' ? 'rarity-sir' :
-                     c.rarity === 'Ultra Rare' ? 'rarity-ur' : 'rarity-ir',
-        label: c.rarity === 'Hyper Rare' ? 'HR' :
-               c.rarity === 'Special Illustration Rare' ? 'SIR' :
-               c.rarity === 'Ultra Rare' ? 'UR' : 'IR',
+        rarityClass: RARITY_CLASS[c.rarity] || 'rarity-ir',
+        label: RARITY_LABEL[c.rarity] || c.rarity,
         searchName: `${c.name} ${c.localId} Scarlet Violet`,
         img: c.image || cardImg('sv01', c.localId),
       }));
@@ -785,14 +800,33 @@ async function loadCards() {
       });
     }
 
-    // Populate rarity dropdown from actual data — only show rarities that exist
-    const rarities = [...new Set(allCards.map(c => c.rarity).filter(Boolean))].sort();
+    // Rarity order per official SV rarity chart
+    const RARITY_ORDER = [
+      'Common', 'Uncommon', 'Rare', 'Double Rare',
+      'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare'
+    ];
+
+    // Populate rarity dropdown in correct order — only show rarities that exist in this set
+    const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
     const sel = document.getElementById('rarity-filter');
-    rarities.forEach(r => {
-      const opt = document.createElement('option');
-      opt.value = r;
-      opt.textContent = r;
-      sel.appendChild(opt);
+    // Clear any existing options except the first "All Rarities"
+    while (sel.options.length > 1) sel.remove(1);
+    RARITY_ORDER.forEach(r => {
+      if (raritySet.has(r)) {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        sel.appendChild(opt);
+      }
+    });
+    // Add any rarities not in our known list at the end
+    raritySet.forEach(r => {
+      if (!RARITY_ORDER.includes(r)) {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        sel.appendChild(opt);
+      }
     });
 
     // Auto-detect and render chase cards from rarity
