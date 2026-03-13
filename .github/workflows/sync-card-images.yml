@@ -4,12 +4,48 @@ on:
   workflow_dispatch:
     inputs:
       set_id:
-        description: 'TCGdex Set ID (sv01=SV Base, sv02=Paldea Evolved, sv03=Obsidian Flames...)'
+        description: 'TCGdex Set ID (sv01, sv02, sv03...)'
         required: true
         default: 'sv01'
+      set_full_name:
+        description: 'Full set name e.g. Scarlet & Violet Base Set (SV1)'
+        required: true
+        default: 'Scarlet & Violet Base Set (SV1)'
+      set_series:
+        description: 'Series name e.g. Scarlet & Violet'
+        required: false
+        default: 'Scarlet & Violet'
+      set_subtitle:
+        description: 'Set subtitle e.g. Base Set, Paldea Evolved'
+        required: false
+        default: 'Base Set'
+      set_short_name:
+        description: 'Short name for alerts e.g. SV1, SV2'
+        required: false
+        default: 'SV1'
+      set_release_date:
+        description: 'Release date e.g. Mar 2023 (leave blank to auto-detect)'
+        required: false
+        default: ''
+      set_description:
+        description: '2-3 sentence set description for the page'
+        required: false
+        default: ''
+      hero_card_1:
+        description: 'Hero card 1 localId (e.g. 198)'
+        required: false
+        default: '001'
+      hero_card_2:
+        description: 'Hero card 2 localId'
+        required: false
+        default: '002'
+      hero_card_3:
+        description: 'Hero card 3 localId'
+        required: false
+        default: '003'
 
 jobs:
-  sync-images:
+  sync-and-generate:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: npm install @aws-sdk/client-s3
 
-      - name: Download and upload card images
+      - name: Sync card images to R2
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
@@ -33,3 +69,29 @@ jobs:
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
         run: node scripts/sync-images.js
+
+      - name: Generate set guide page
+        env:
+          SET_ID: ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
+          SET_SERIES: ${{ github.event.inputs.set_series }}
+          SET_SUBTITLE: ${{ github.event.inputs.set_subtitle }}
+          SET_SHORT_NAME: ${{ github.event.inputs.set_short_name }}
+          SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
+          SET_DESCRIPTION: ${{ github.event.inputs.set_description }}
+          HERO_CARD_1: ${{ github.event.inputs.hero_card_1 }}
+          HERO_CARD_2: ${{ github.event.inputs.hero_card_2 }}
+          HERO_CARD_3: ${{ github.event.inputs.hero_card_3 }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+        run: node scripts/generate-set-page.js
+
+      - name: Commit generated page to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ github.event.inputs.set_id }}-set-guide.html
+          git diff --staged --quiet || git commit -m "Auto-generate ${{ github.event.inputs.set_id }}-set-guide.html"
+          git push
