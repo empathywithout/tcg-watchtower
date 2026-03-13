@@ -91,6 +91,34 @@ if (process.env.CF_R2_ENDPOINT) {
   console.log(`✅ Backed up to R2 at pages/${outFile}`);
 }
 
+
+// ── Update sets.json ─────────────────────────────────────────────────────────
+import { readFileSync as readFS2, writeFileSync as writeFS2, existsSync as existsFS2 } from 'fs';
+
+const setsPath = 'sets.json';
+const existingSets = existsFS2(setsPath) ? JSON.parse(readFS2(setsPath, 'utf8')) : [];
+
+const alreadyExists = existingSets.find(s => s.slug === SET_SLUG);
+if (alreadyExists) {
+  // Mark as live if it wasn't already
+  if (!alreadyExists.live) {
+    alreadyExists.live = true;
+    writeFS2(setsPath, JSON.stringify(existingSets, null, 2));
+    console.log(`\n📋 Marked ${SET_SLUG} as live in sets.json`);
+  } else {
+    console.log(`\n📋 ${SET_SLUG} already in sets.json`);
+  }
+} else {
+  existingSets.push({
+    slug: SET_SLUG,
+    name: SET_FULL_NAME,
+    series: SET_SERIES || 'Scarlet & Violet',
+    short: SET_SHORT_NAME || SET_ID.toUpperCase(),
+    live: true
+  });
+  writeFS2(setsPath, JSON.stringify(existingSets, null, 2));
+  console.log(`\n📋 Added ${SET_SLUG} to sets.json`);
+}
 console.log(`\n🎉 Done! Add ${outFile} to your repo and it will auto-deploy on Vercel.`);
 
 // ── Update sitemap.xml ────────────────────────────────────────────────────────
