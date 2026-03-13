@@ -16,8 +16,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scarlet & Violet Base Set (SV1) Complete Guide | TCG Watchtower</title>
-<meta name="description" content="Complete guide to Pokémon TCG Scarlet & Violet Base Set (SV1) — card list, chase cards, product prices, and where to buy booster boxes, ETBs, and more.">
+<title>{{SET_FULL_NAME}} Complete Guide | TCG Watchtower</title>
+<meta name="description" content="Complete guide to Pokémon TCG {{SET_FULL_NAME}} — card list, chase cards, product prices, and where to buy booster boxes, ETBs, and more.">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
 
 <!-- Fonts -->
@@ -425,7 +425,7 @@ footer {
       <span>›</span>
       <a href="#">Set Guides</a>
       <span>›</span>
-      <span style="color:var(--text-light)">Scarlet & Violet Base Set</span>
+      <span style="color:var(--text-light)">{{SET_FULL_NAME}}</span>
     </div>
     <div class="hero-grid">
       <div>
@@ -434,14 +434,14 @@ footer {
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
-          <span class="gradient-text">Scarlet & Violet</span><br>Base Set
+          <span class="gradient-text">{{SET_SERIES}}</span><br>{{SET_SUBTITLE}}
         </h1>
         <p class="set-desc">
-          The launch set of the Scarlet & Violet era — introducing ex mechanics, full-art trainer cards, and the most iconic Charizard pull rate since Base Set. SV1 launched March 31, 2023 and remains one of the most collected modern sets.
+          {{SET_DESCRIPTION}}
         </p>
         <div class="set-stats">
           <div class="stat-card">
-            <div class="stat-value">198</div>
+            <div class="stat-value" id="stat-card-count">…</div>
             <div class="stat-label">Base Cards</div>
           </div>
           <div class="stat-card">
@@ -449,16 +449,16 @@ footer {
             <div class="stat-label">Total w/ Secrets</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">Mar 2023</div>
+            <div class="stat-value">{{SET_RELEASE_DATE}}</div>
             <div class="stat-label">Release Date</div>
           </div>
         </div>
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="sv01" data-id="198" alt="Charizard ex SIR" loading="lazy">
-          <img data-set="sv01" data-id="234" alt="Miriam SIR" loading="lazy">
-          <img data-set="sv01" data-id="255" alt="Charizard ex Hyper Rare" loading="lazy">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_1}}" alt="{{HERO_ALT_1}}" loading="lazy">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_2}}" alt="{{HERO_ALT_2}}" loading="lazy">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_3}}" alt="{{HERO_ALT_3}}" loading="lazy">
         </div>
       </div>
     </div>
@@ -472,7 +472,7 @@ footer {
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">🔥 Top <span class="gradient-text">Chase Cards</span></h2>
-      <p class="section-sub">The highest-demand pulls from Scarlet & Violet Base Set</p>
+      <p class="section-sub">The highest-demand pulls from {{SET_FULL_NAME}}</p>
     </div>
     <div class="chase-slider" id="chase-grid">
       <!-- Populated by JS -->
@@ -534,9 +534,9 @@ footer {
       <span style="color:var(--accent-amber)">⚡</span>
       <span>Never miss a restock</span>
     </div>
-    <h2 class="section-title">Get <span class="gradient-text">SV1 Restock Alerts</span></h2>
+    <h2 class="section-title">Get <span class="gradient-text">{{SET_SHORT_NAME}} Restock Alerts</span></h2>
     <p style="color:var(--text-muted);max-width:560px;margin:0 auto 36px">
-      Join 1,800+ collectors on Discord and get instant notifications when SV1 Booster Boxes, ETBs, and sealed product goes live at major retailers.
+      Join 1,800+ collectors on Discord and get instant notifications when {{SET_SHORT_NAME}} Booster Boxes, ETBs, and sealed product goes live at major retailers.
     </p>
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
       <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
@@ -605,6 +605,11 @@ footer {
 
 <script>
 /* ===== CONFIG ===== */
+// ===== SET CONFIG — change these for each set =====
+const SET_ID = '{{SET_ID}}';
+const SET_OFFICIAL_COUNT = {{SET_OFFICIAL_COUNT}};
+// ===================================================
+
 const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
@@ -685,11 +690,11 @@ function renderChaseCards(cards) {
         rarityClass: RARITY_CLASS[c.rarity] || 'rarity-ir',
         label: RARITY_LABEL[c.rarity] || c.rarity,
         searchName: `${c.name} ${c.localId} Scarlet Violet`,
-        img: c.image || cardImg('sv01', c.localId),
+        img: c.image || cardImg('{{SET_ID}}', c.localId),
       }));
   } else {
     // Fallback to hardcoded until cards load
-    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('sv01', c.id) }));
+    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id) }));
   }
 
   grid.innerHTML = chaseList.map(c => {
@@ -700,7 +705,7 @@ function renderChaseCards(cards) {
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/198</div>
+        <div class="chase-card-number">#${c.id}/{{SET_OFFICIAL_COUNT}}</div>
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
@@ -791,7 +796,7 @@ const PAGE_SIZE = 60;
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
   try {
-    const res = await fetch('/api/cards?set=sv01');
+    const res = await fetch('/api/cards?set={{SET_ID}}');
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
     allCards = data.cards || [];
@@ -856,7 +861,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = card.image || cardImg('sv01', card.localId);
+    const imgUrl = card.image || cardImg('{{SET_ID}}', card.localId);
     const el = document.createElement('div');
     el.className = 'card-item';
     el.innerHTML = `
@@ -895,13 +900,13 @@ document.getElementById('load-more-btn').addEventListener('click', () => renderC
 
 /* ===== MODAL ===== */
 function openModal(localId, name, rarity, searchQuery, imgUrl) {
-  if (!imgUrl) imgUrl = cardImg('sv01', localId);
+  if (!imgUrl) imgUrl = cardImg('{{SET_ID}}', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
     <img class="modal-img" src="${imgUrl}" alt="${name}" loading="lazy">
     <div>
       <div class="modal-name">${name}</div>
-      <div class="modal-meta">#${localId} / Scarlet & Violet Base Set (SV1)</div>
+      <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
