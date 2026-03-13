@@ -1,12 +1,9 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "routes": [
     { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/api/alerts", "dest": "/api/alerts.js" },
-    { "src": "/api/cards", "dest": "/api/cards.js" },
-    { "src": "/privacy-policy", "dest": "/privacy-policy.html" },
-    { "src": "/terms-of-service", "dest": "/terms-of-service.html" },
-    { "src": "/disclaimer", "dest": "/disclaimer.html" },
-    { "src": "/contact", "dest": "/contact.html" }
+    { "src": "/api/cards", "dest": "/api/cards.js" }
   ]
 }
