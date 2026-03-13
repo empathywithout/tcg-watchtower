@@ -222,6 +222,16 @@ nav {
   border:1px solid rgba(255,255,255,0.08); border-radius:12px;
   padding:16px; text-align:center;
 }
+.stat-card-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.stat-card-logo img {
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
 .stat-value { font-family:'Space Mono',monospace; font-size:1.5rem; font-weight:bold; color:white; }
 .stat-label { font-size:0.75rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.05em; }
 
@@ -843,6 +853,10 @@ footer {
           {{SET_DESCRIPTION}}
         </p>
         <div class="set-stats">
+          <div class="stat-card stat-card-logo">
+            <img id="set-logo-hero" alt="{{SET_FULL_NAME}} Logo" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <div class="stat-label">{{SET_SHORT_NAME}}</div>
+          </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-total-count">…</div>
             <div class="stat-label">Total Cards</div>
@@ -1036,6 +1050,16 @@ function setLogoUrl(setId) {
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
   img.src = cardImg(img.dataset.set, img.dataset.id);
 });
+
+// Wire up set logo in hero stats
+const setLogoHero = document.getElementById('set-logo-hero');
+if (setLogoHero) {
+  setLogoHero.src = setLogoUrl('{{SET_ID}}');
+  setLogoHero.onerror = function() {
+    // Hide logo stat card if image fails to load
+    this.parentElement.style.display = 'none';
+  };
+}
 
 /* ===== AFFILIATE LINK BUILDERS ===== */
 function amazonLink(query) {
