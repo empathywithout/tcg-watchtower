@@ -485,7 +485,7 @@ footer {
     <div class="breadcrumb">
       <a href="/">Home</a>
       <span>›</span>
-      <a href="#">Set Guides</a>
+      <a href="/#pokemon">Visual Card Lists</a>
       <span>›</span>
       <span style="color:var(--text-light)">{{SET_FULL_NAME}}</span>
     </div>
@@ -854,14 +854,49 @@ const PAGE_SIZE = 60;
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
   try {
-    const res = await fetch('/api/cards?set={{SET_ID}}');
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
-    allCards = data.cards || [];
+    let data = null;
+
+    // Try R2 API first
+    try {
+      const res = await fetch('/api/cards?set={{SET_ID}}');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && (json.cards || json).length > 0) data = json;
+      }
+    } catch(e) {}
+
+    // Fall back to TCGdex directly — fetch cards with rarity in parallel batches
+    if (!data) {
+      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/{{SET_ID}}');
+      if (!setRes.ok) throw new Error('TCGdex failed');
+      const setData = await setRes.json();
+      const basicCards = setData.cards || [];
+      const BATCH = 10;
+      const fullCards = [];
+      for (let i = 0; i < basicCards.length; i += BATCH) {
+        const batch = basicCards.slice(i, i + BATCH);
+        const results = await Promise.allSettled(
+          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/{{SET_ID}}-${c.localId}`).then(r => r.json()))
+        );
+        results.forEach((result, idx) => {
+          const basic = batch[idx];
+          const detail = result.status === 'fulfilled' ? result.value : {};
+          fullCards.push({
+            localId: basic.localId,
+            name: basic.name,
+            image: `https://assets.tcgdex.net/en/sv/{{SET_ID}}/${basic.localId}/high.webp`,
+            rarity: detail.rarity || ''
+          });
+        });
+      }
+      data = { cards: fullCards, cardCount: { total: setData.cardCount?.official || setData.cardCount?.total || fullCards.length } };
+    }
+
+    allCards = data.cards || data || [];
     if (allCards.length === 0) throw new Error('No cards returned');
 
     // Update card count stat from API data
-    const total = data.cardCount?.total || allCards.length;
+    const total = (typeof data.cardCount?.total === 'number') ? data.cardCount.total : allCards.length;
     const el = document.getElementById('stat-total-count');
     if (el) el.textContent = total;
     // Update card list subtitle

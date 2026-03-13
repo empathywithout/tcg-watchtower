@@ -470,7 +470,7 @@ footer {
     <div class="breadcrumb">
       <a href="/">Home</a>
       <span>›</span>
-      <a href="#">Set Guides</a>
+      <a href="/#pokemon">Visual Card Lists</a>
       <span>›</span>
       <span style="color:var(--text-light)">Scarlet & Violet Base Set</span>
     </div>
@@ -869,13 +869,13 @@ async function loadCards() {
           });
         });
       }
-      data = { cards: fullCards, cardCount: { total: setData.cardCount } };
+      data = { cards: fullCards, cardCount: { total: setData.cardCount?.official || setData.cardCount?.total || fullCards.length } };
     }
 
     allCards = data.cards || data || [];
     if (allCards.length === 0) throw new Error('No cards returned');
 
-    const total = data.cardCount?.total || allCards.length;
+    const total = (typeof data.cardCount?.total === 'number') ? data.cardCount.total : allCards.length;
     const el = document.getElementById('stat-total-count');
     if (el) el.textContent = total;
     const subEl = document.getElementById('card-list-sub');
