@@ -445,9 +445,9 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/198/high.webp" alt="Charizard ex SIR" loading="lazy">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/234/high.webp" alt="Miriam SIR" loading="lazy">
-          <img src="https://assets.tcgdex.net/en/sv/sv1/255/high.webp" alt="Charizard ex Hyper Rare" loading="lazy">
+          <img data-set="sv1" data-id="198" alt="Charizard ex SIR" loading="lazy">
+          <img data-set="sv1" data-id="234" alt="Miriam SIR" loading="lazy">
+          <img data-set="sv1" data-id="255" alt="Charizard ex Hyper Rare" loading="lazy">
         </div>
       </div>
     </div>
@@ -605,8 +605,24 @@ footer {
 const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
-  tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' }
+  tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
+  // R2 public URL — update this if your bucket URL changes
+  r2: '__R2_PUBLIC_URL__'
 };
+
+// Build a card image URL from R2. Falls back gracefully if R2 not configured.
+function cardImg(setId, localId) {
+  if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
+    return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
+  }
+  // Fallback: TCGdex direct (works in browser even if unreliable server-side)
+  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
+}
+
+// Wire up hero stack images
+document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
+  img.src = cardImg(img.dataset.set, img.dataset.id);
+});
 
 /* ===== AFFILIATE LINK BUILDERS ===== */
 function amazonLink(query) {
@@ -621,21 +637,23 @@ function tcgplayerLink(query) {
 
 /* ===== CHASE CARDS ===== */
 const CHASE_CARDS = [
-  { id: '255', name: 'Charizard ex', rarity: 'Hyper Rare', rarityClass: 'rarity-hr', label: 'HR', searchName: 'Charizard ex 255/198 Scarlet Violet' },
-  { id: '198', name: 'Charizard ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Charizard ex 198 Scarlet Violet SIR' },
-  { id: '234', name: 'Miriam', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Miriam 234 Scarlet Violet SIR' },
-  { id: '182', name: 'Arcanine ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Arcanine ex 182 Scarlet Violet SIR' },
-  { id: '199', name: 'Gardevoir ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Gardevoir ex 199 Scarlet Violet SIR' },
-  { id: '256', name: 'Miraidon ex', rarity: 'Hyper Rare', rarityClass: 'rarity-hr', label: 'HR', searchName: 'Miraidon ex 256 Scarlet Violet Hyper Rare' },
-  { id: '219', name: 'Iono', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Iono 219 Scarlet Violet SIR' },
-  { id: '193', name: 'Koraidon ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Koraidon ex 193 Scarlet Violet SIR' },
+  { id: '255', name: 'Charizard ex',  rarity: 'Hyper Rare',                rarityClass: 'rarity-hr',  label: 'HR',  searchName: 'Charizard ex 255/198 Scarlet Violet' },
+  { id: '198', name: 'Charizard ex',  rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Charizard ex 198 Scarlet Violet SIR' },
+  { id: '234', name: 'Miriam',        rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Miriam 234 Scarlet Violet SIR' },
+  { id: '182', name: 'Arcanine ex',   rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Arcanine ex 182 Scarlet Violet SIR' },
+  { id: '199', name: 'Gardevoir ex',  rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Gardevoir ex 199 Scarlet Violet SIR' },
+  { id: '256', name: 'Miraidon ex',   rarity: 'Hyper Rare',                rarityClass: 'rarity-hr',  label: 'HR',  searchName: 'Miraidon ex 256 Scarlet Violet Hyper Rare' },
+  { id: '219', name: 'Iono',          rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Iono 219 Scarlet Violet SIR' },
+  { id: '193', name: 'Koraidon ex',   rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Koraidon ex 193 Scarlet Violet SIR' },
 ];
 
 function renderChaseCards() {
   const grid = document.getElementById('chase-grid');
-  grid.innerHTML = CHASE_CARDS.map(c => `
-    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','https://assets.tcgdex.net/en/sv/sv1/${c.id}/high.webp')">
-      <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv1/${c.id}/high.webp" alt="${c.name}" loading="lazy"
+  grid.innerHTML = CHASE_CARDS.map(c => {
+    const img = cardImg('sv1', c.id);
+    return `
+    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
+      <img class="chase-card-img" src="${img}" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -648,7 +666,8 @@ function renderChaseCards() {
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /* ===== PRODUCTS ===== */
@@ -729,7 +748,7 @@ const PAGE_SIZE = 60;
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
   try {
-    const res = await fetch('/api/sv1-cards');
+    const res = await fetch('/api/cards?set=sv1');
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
     allCards = data.cards || [];
@@ -747,9 +766,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = card.image
-      ? `${card.image}/high.webp`
-      : `https://assets.tcgdex.net/en/sv/sv1/${card.localId}/high.webp`;
+    const imgUrl = card.image || cardImg('sv1', card.localId);
     const el = document.createElement('div');
     el.className = 'card-item';
     el.innerHTML = `
@@ -788,7 +805,7 @@ document.getElementById('load-more-btn').addEventListener('click', () => renderC
 
 /* ===== MODAL ===== */
 function openModal(localId, name, rarity, searchQuery, imgUrl) {
-  if (!imgUrl) imgUrl = `https://assets.tcgdex.net/en/sv/sv1/${localId}/high.webp`;
+  if (!imgUrl) imgUrl = cardImg('sv1', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
     <img class="modal-img" src="${imgUrl}" alt="${name}" loading="lazy">
