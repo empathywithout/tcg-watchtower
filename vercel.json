@@ -4,6 +4,7 @@
   "routes": [
     { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/api/alerts", "dest": "/api/alerts.js" },
-    { "src": "/api/cards", "dest": "/api/cards.js" }
+    { "src": "/api/cards", "dest": "/api/cards.js" },
+    { "src": "/api/ebay-prices", "dest": "/api/ebay-prices.js" }
   ]
 }

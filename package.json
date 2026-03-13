@@ -6,12 +6,15 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "generate": "node scripts/generate-set-page.js",
+    "sync": "node scripts/sync-images.js"
   },
   "keywords": ["discord", "twitter", "reddit", "automation", "tcg"],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
     "discord.js": "^14.14.1",
     "twitter-api-v2": "^1.15.2",
     "snoowrap": "^1.23.0",
