@@ -896,7 +896,7 @@ async function loadCards() {
     if (allCards.length === 0) throw new Error('No cards returned');
 
     // Update card count stat from API data
-    const total = (typeof data.cardCount?.total === 'number') ? data.cardCount.total : allCards.length;
+    const total = allCards.length;
     const el = document.getElementById('stat-total-count');
     if (el) el.textContent = total;
     // Update card list subtitle

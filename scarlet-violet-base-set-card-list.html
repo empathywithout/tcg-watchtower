@@ -875,7 +875,7 @@ async function loadCards() {
     allCards = data.cards || data || [];
     if (allCards.length === 0) throw new Error('No cards returned');
 
-    const total = (typeof data.cardCount?.total === 'number') ? data.cardCount.total : allCards.length;
+    const total = allCards.length;
     const el = document.getElementById('stat-total-count');
     if (el) el.textContent = total;
     const subEl = document.getElementById('card-list-sub');
