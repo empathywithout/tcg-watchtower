@@ -1147,7 +1147,7 @@ function tcgplayerLink(query) {
 /* ===== CHASE CARDS ===== */
 const CHASE_CARDS = {{CHASE_CARDS_JSON}};
 
-// Chase list stored at module scope so flushPriceQueue can re-render it after prices load
+// Chase list stored at module scope so renderChaseCardsHTML can always read latest prices
 let currentChaseList = [];
 
 function renderChaseCards(cards) {
@@ -1175,14 +1175,7 @@ function renderChaseCards(cards) {
     currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id) }));
   }
 
-  // Queue all chase cards into the shared price cache — flushPriceQueue re-renders when done
-  currentChaseList.forEach(c => {
-    if (!(c.id in priceCache)) priceFetchQueue.add(c.id);
-  });
-  clearTimeout(priceFetchTimer);
-  priceFetchTimer = setTimeout(flushPriceQueue, 200);
-
-  // Render immediately with whatever is cached (likely nothing yet)
+  // Render immediately — loadTCGPlayerPrices() re-renders once prices arrive
   renderChaseCardsHTML(grid);
 }
 
@@ -1284,96 +1277,59 @@ let filteredCards = [];
 let displayedCount = 0;
 const PAGE_SIZE = 60;
 
-// ── Price cache & lazy-load system ──────────────────────────────────────────
-// priceCache: localId → { price, url } | null (null = fetch attempted, no result)
-const priceCache = {};
-// In-flight batch promise to avoid duplicate fetches
-let priceFetchQueue = new Set();
-let priceFetchTimer = null;
-const PRICE_BATCH_SIZE = 20;
+// ── TCGplayer price system ───────────────────────────────────────────────────
+// One fetch per page load via TCGCSV (free TCGplayer mirror, daily updated)
+// groupId is set per-page — template placeholder replaced by generator
+const TCGP_GROUP_ID = '{{TCGP_GROUP_ID}}';
+const priceCache = {};  // localId → { price, url } | null
+let pricesLoaded = false;
 
-// Called by IntersectionObserver when a card scrolls into view
-function queuePriceFetch(localId, name) {
-  if (localId in priceCache) return; // already have it
-  if (priceFetchQueue.has(localId)) return; // already queued
-  priceFetchQueue.add(localId);
-  // Debounce — wait 200ms so scrolling batches up naturally
-  clearTimeout(priceFetchTimer);
-  priceFetchTimer = setTimeout(flushPriceQueue, 200);
-}
-
-async function flushPriceQueue() {
-  if (!priceFetchQueue.size) return;
-  // Snapshot & clear queue
-  const batch = [...priceFetchQueue].slice(0, PRICE_BATCH_SIZE);
-  batch.forEach(id => priceFetchQueue.delete(id));
-
-  // Mark as in-flight so re-observations don't re-queue
-  batch.forEach(id => { priceCache[id] = undefined; }); // undefined = fetching
-
-  const cards = batch.map(id => {
-    const card = allCards.find(c => c.localId === id);
-    return { id, name: card?.name || id, setName: '{{SET_FULL_NAME}}' };
-  });
-
+async function loadTCGPlayerPrices() {
+  if (pricesLoaded) return;
+  pricesLoaded = true;
   try {
-    const res = await fetch('/api/ebay-prices', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cards })
+    const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}`);
+    if (!res.ok) throw new Error('price fetch failed');
+    const data = await res.json();
+
+    const prices = data.prices || {};
+    const urls = data.tcgpUrls || {};
+
+    // Index by both padded ("001") and unpadded ("1") forms to match any localId format
+    Object.entries(prices).forEach(([num, price]) => {
+      const withZeros = num.padStart(3, '0');
+      const withoutZeros = String(parseInt(num, 10));
+      const url = urls[num] || null;
+      const entry = price != null ? { price, url } : null;
+      priceCache[withZeros] = entry;
+      priceCache[withoutZeros] = entry;
     });
-    if (res.ok) {
-      const data = await res.json();
-      (data.cards || []).forEach(p => {
-        priceCache[p.id] = p.price ? { price: p.price, url: p.url } : null;
-      });
-    }
-  } catch(e) {
-    // fall through to null-mark below
-  }
-  // Always null-mark anything still pending so we don't retry endlessly
-  batch.forEach(id => { if (priceCache[id] === undefined) priceCache[id] = null; });
 
-  // Update card grid price labels
-  batch.forEach(id => {
-    const priceEl = document.querySelector(`.card-item[data-local-id="${id}"] .card-item-price`);
-    if (!priceEl) return;
-    const cached = priceCache[id];
-    if (cached?.price) {
-      priceEl.textContent = `$${cached.price.toFixed(2)}`;
-      priceEl.classList.remove('loading');
-    } else {
-      priceEl.textContent = '';
-    }
-  });
+    // Update any card grid elements already rendered
+    document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+      const id = el.dataset.localId;
+      const cached = priceCache[id];
+      const priceEl = el.querySelector('.card-item-price');
+      if (!priceEl) return;
+      if (cached?.price) {
+        priceEl.textContent = `$${cached.price.toFixed(2)}`;
+        priceEl.classList.remove('loading');
+      } else {
+        priceEl.textContent = '';
+      }
+    });
 
-  // Re-render chase section if any of these cards belong to it
-  const chaseIds = new Set(currentChaseList.map(c => c.id));
-  if (batch.some(id => chaseIds.has(id))) {
+    // Re-render chase section with real prices
     const grid = document.getElementById('chase-grid');
-    if (grid) renderChaseCardsHTML(grid);
-  }
+    if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
 
-  if (document.getElementById('sort-select')?.value === 'price') {
-    applyFilters();
-  }
+    // Re-sort if price sort is active
+    if (document.getElementById('sort-select')?.value === 'price') applyFilters();
 
-  if (priceFetchQueue.size) {
-    priceFetchTimer = setTimeout(flushPriceQueue, 200);
+  } catch(e) {
+    console.warn('TCGplayer prices unavailable:', e.message);
   }
 }
-
-// IntersectionObserver — watches card elements and triggers price fetches
-const priceObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const localId = el.dataset.localId;
-    const name = el.dataset.name;
-    if (localId) queuePriceFetch(localId, name);
-    priceObserver.unobserve(el); // only need to trigger once per element
-  });
-}, { rootMargin: '200px' }); // start fetching 200px before card enters viewport
 
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
@@ -1451,6 +1407,7 @@ async function loadCards() {
     renderChaseCards(allCards);
     filteredCards = allCards;
     renderCards(true);
+    loadTCGPlayerPrices(); // fetch all TCGplayer prices at once
   } catch(e) {
     console.error('Card load failed:', e);
     document.getElementById('card-count').textContent = '⚠️ Could not load cards — try refreshing.';
@@ -1486,11 +1443,6 @@ function renderCards(reset) {
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl);
     });
     grid.appendChild(el);
-
-    // Start observing for lazy price fetch (only if not already cached)
-    if (!(card.localId in priceCache)) {
-      priceObserver.observe(el);
-    }
   });
   displayedCount += slice.length;
   document.getElementById('card-count').textContent = `Showing ${Math.min(displayedCount, filteredCards.length)} of ${filteredCards.length} cards`;
@@ -1564,6 +1516,7 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 renderChaseCards();
 renderProducts();
 loadCards();
+loadTCGPlayerPrices(); // fetch all TCGplayer prices immediately on page load
 
 /* ===== HAMBURGER MENU ===== */
 (async function() {
