@@ -325,6 +325,40 @@ nav {
 .chase-card-info { padding:16px; }
 .chase-card-name { font-weight:700; font-size:1rem; margin-bottom:4px; }
 .chase-card-number { font-size:0.8rem; color:var(--text-muted); margin-bottom:8px; font-family:'Space Mono',monospace; }
+.chase-card-price {
+  background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(59,130,246,0.15));
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.price-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.price-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #22c55e;
+  font-family: 'Space Mono', monospace;
+}
+.price-count {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.chase-card-price-loading {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 8px 0;
+}
 .rarity-badge {
   display:inline-flex; align-items:center; gap:4px;
   padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:700;
@@ -343,6 +377,12 @@ nav {
 .buy-amazon:hover { background:rgba(251,191,36,0.25); }
 .buy-ebay { background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#93c5fd; }
 .buy-ebay:hover { background:rgba(59,130,246,0.25); }
+.buy-ebay-featured {
+  background: linear-gradient(135deg, rgba(59,130,246,0.25), rgba(168,85,247,0.25));
+  border: 1px solid rgba(59,130,246,0.5);
+  font-weight: 800;
+}
+.buy-ebay-featured:hover { background: linear-gradient(135deg, rgba(59,130,246,0.35), rgba(168,85,247,0.35)); }
 .buy-tcgp { background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); color:var(--accent-green); }
 .buy-tcgp:hover { background:rgba(74,222,128,0.25); }
 
@@ -1070,8 +1110,7 @@ function cardImg(setId, localId) {
   if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
-  // Fallback to TCGdex - use 'low' for faster loading (high.webp is too large)
-  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/low.webp`;
+  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
 }
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
@@ -1120,6 +1159,34 @@ const CHASE_CARDS = [
   { id: '193', name: 'Koraidon ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Koraidon ex 193 Scarlet Violet SIR' },
 ];
 
+// Fetch eBay prices for chase cards
+async function fetchEbayPrices(chaseCards) {
+  try {
+    const cardsToPrice = chaseCards.map(c => ({
+      id: c.id,
+      name: c.name,
+      setName: '{{SET_FULL_NAME}}'
+    }));
+    
+    const response = await fetch('/api/ebay-prices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cards: cardsToPrice })
+    });
+    
+    if (!response.ok) {
+      console.error('eBay API error:', response.status);
+      return null;
+    }
+    
+    const data = await response.json();
+    return data.cards || [];
+  } catch (error) {
+    console.error('Failed to fetch eBay prices:', error);
+    return null;
+  }
+}
+
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
@@ -1158,14 +1225,51 @@ function renderChaseCards(cards) {
         label: RARITY_LABEL[c.rarity] || c.rarity,
         searchName: `${c.name} ${c.localId} Scarlet Violet`,
         img: c.image || cardImg('{{SET_ID}}', c.localId),
+        price: null,
+        priceUrl: null
       }));
   } else {
     // Fallback to hardcoded until cards load
-    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id) }));
+    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id), price: null, priceUrl: null }));
   }
+
+  // Render initial cards without prices
+  renderChaseCardsHTML(chaseList, grid);
+  
+  // Fetch eBay prices in background
+  fetchEbayPrices(chaseList).then(priceData => {
+    if (priceData) {
+      // Merge price data with chase list
+      chaseList.forEach(card => {
+        const priceInfo = priceData.find(p => p.id === card.id);
+        if (priceInfo && priceInfo.price) {
+          card.price = priceInfo.price;
+          card.priceUrl = priceInfo.url;
+          card.listingCount = priceInfo.listingCount;
+        }
+      });
+      
+      // Sort by price (highest first)
+      chaseList.sort((a, b) => (b.price || 0) - (a.price || 0));
+      
+      // Re-render with prices
+      renderChaseCardsHTML(chaseList, grid);
+    }
+  });
+}
+
+function renderChaseCardsHTML(chaseList, grid) {
 
   grid.innerHTML = chaseList.map(c => {
     const img = c.img;
+    const priceHTML = c.price 
+      ? `<div class="chase-card-price">
+           <span class="price-label">eBay Price:</span>
+           <span class="price-value">$${c.price.toFixed(2)}</span>
+           ${c.listingCount ? `<span class="price-count">${c.listingCount} listings</span>` : ''}
+         </div>`
+      : `<div class="chase-card-price-loading">Loading price...</div>`;
+    
     return `
     <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
       <img class="chase-card-img" src="${img}" alt="${c.name}" loading="lazy"
@@ -1174,9 +1278,13 @@ function renderChaseCards(cards) {
         <div class="chase-card-name">${c.name}</div>
         <div class="chase-card-number">#${c.id}/{{SET_OFFICIAL_COUNT}}</div>
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
+        ${priceHTML}
         <div class="buy-links">
+          ${c.priceUrl 
+            ? `<a class="buy-link buy-ebay buy-ebay-featured" href="${c.priceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay - $${c.price.toFixed(2)}</a>`
+            : `<a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`
+          }
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
-          <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" href="${tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
