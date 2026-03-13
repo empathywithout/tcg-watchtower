@@ -77,6 +77,14 @@ const SET_SEARCH_NAME = process.env.SET_SEARCH_NAME || SET_SUBTITLE;
 const SET_TCGP_SLUG = process.env.SET_TCGP_SLUG
   || SET_SUBTITLE.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
+// TCGP_GROUP_ID: TCGplayer/TCGCSV groupId for this set — used to fetch accurate market prices
+// Find it at https://tcgcsv.com/tcgplayer/3/groups (Pokemon category = 3)
+// e.g. SV1 = 23533, SV2 = 23567, SV3 = 23636
+const TCGP_GROUP_ID = process.env.TCGP_GROUP_ID || '0';
+if (TCGP_GROUP_ID === '0') {
+  console.warn('⚠️  TCGP_GROUP_ID not set — prices will not load. Find your groupId at https://tcgcsv.com/tcgplayer/3/groups');
+}
+
 console.log(`✅  ${setData.name} — ${officialCount} official cards, released ${releaseDate}`);
 console.log(`    subtitle="${SET_SUBTITLE}", search="${SET_SEARCH_NAME}", tcgp="${SET_TCGP_SLUG}"`);
 
@@ -115,6 +123,7 @@ const vars = {
   '{{SET_OFFICIAL_COUNT}}': String(officialCount),
   '{{SET_SEARCH_NAME}}':    SET_SEARCH_NAME,
   '{{SET_TCGP_SLUG}}':      SET_TCGP_SLUG,
+  '{{TCGP_GROUP_ID}}':      TCGP_GROUP_ID,
   '{{SET_SLUG}}':           SET_SLUG,
   '{{HERO_CARD_1}}':        HERO_CARD_1,
   '{{HERO_CARD_2}}':        HERO_CARD_2,
