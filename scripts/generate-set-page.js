@@ -66,7 +66,7 @@ for (const [placeholder, value] of Object.entries(vars)) {
 }
 
 // ── Write output file ─────────────────────────────────────────────────────────
-const outFile = `${SET_ID}-set-guide.html`;
+const outFile = `${SET_SLUG}.html`;
 writeFileSync(outFile, html);
 console.log(`✅ Generated ${outFile}`);
 
