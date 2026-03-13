@@ -51,6 +51,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -93,4 +95,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ${{ github.event.inputs.set_id }}-set-guide.html
-          git diff --staged --quiet || (git pull --rebase origin main && git commit -m "Auto-generate ${{ github.event.inputs.set_id }}-set-guide.html" && git push)
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Auto-generate ${{ github.event.inputs.set_id }}-set-guide.html"
+          git pull --rebase origin main
+          git push
