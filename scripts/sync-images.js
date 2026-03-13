@@ -89,7 +89,25 @@ async function main() {
     await sleep(100); // be polite to TCGdex
   }
 
-  // Step 3 — Build and upload the JSON metadata file to R2
+  // Step 3 — Download and upload set logo
+  console.log(`\n🎨 Uploading set logo to R2...`);
+  const logoR2Key = `logos/${SET_ID}.png`;
+  
+  if (await existsInR2(logoR2Key)) {
+    console.log(`⏭️  Logo already exists at logos/${SET_ID}.png`);
+  } else {
+    // Try TCGdex logo first
+    const logoUrl = `https://assets.tcgdex.net/en/sv/${SET_ID}/logo.png`;
+    try {
+      const logoBuffer = await downloadImage(logoUrl);
+      await uploadToR2(logoR2Key, logoBuffer, "image/png");
+      console.log(`✅ Logo uploaded to R2 at logos/${SET_ID}.png`);
+    } catch (err) {
+      console.log(`⚠️  Logo download failed (${err.message}) — will use fallback`);
+    }
+  }
+
+  // Step 4 — Build and upload the JSON metadata file to R2
   console.log(`\n📦 Uploading metadata JSON to R2...`);
   const metadata = {
     id: SET_ID,
@@ -105,7 +123,7 @@ async function main() {
   );
   console.log(`✅ Metadata saved to R2 at data/${SET_ID}.json`);
 
-  // Step 4 — Download and upload card images
+  // Step 5 — Download and upload card images
   console.log(`\n🖼️  Uploading card images to R2...`);
   let uploaded = 0, skipped = 0, failed = 0;
   const failures = [];
@@ -136,7 +154,8 @@ async function main() {
 
   console.log(`\n📊 Done! ${SET_ID}: ✅ ${uploaded} uploaded / ⏭️ ${skipped} skipped / ❌ ${failed} failed`);
   if (failures.length) console.log(`Failed: ${failures.join(', ')}`);
-  console.log(`\n🌐 Data: ${process.env.CF_R2_PUBLIC_URL}/data/${SET_ID}.json`);
+  console.log(`\n🎨 Logo: ${process.env.CF_R2_PUBLIC_URL}/logos/${SET_ID}.png`);
+  console.log(`🌐 Data: ${process.env.CF_R2_PUBLIC_URL}/data/${SET_ID}.json`);
   console.log(`🌐 Images: ${process.env.CF_R2_PUBLIC_URL}/cards/${SET_ID}/{localId}.webp`);
 
   if (failed > 0) process.exit(1);
