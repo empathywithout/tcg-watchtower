@@ -1070,7 +1070,8 @@ function cardImg(setId, localId) {
   if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
-  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
+  // Fallback to TCGdex - use 'low' for faster loading (high.webp is too large)
+  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/low.webp`;
 }
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
