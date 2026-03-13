@@ -47,6 +47,7 @@ let html = readFileSync('set-template.html', 'utf8');
 
 const vars = {
   '{{SET_ID}}':             SET_ID,
+  '__R2_PUBLIC_URL__':      process.env.CF_R2_PUBLIC_URL || '',
   '{{SET_FULL_NAME}}':      SET_FULL_NAME,
   '{{SET_SERIES}}':         SET_SERIES        || 'Scarlet & Violet',
   '{{SET_SUBTITLE}}':       SET_SUBTITLE      || setData.name,
