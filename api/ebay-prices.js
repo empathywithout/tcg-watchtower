@@ -34,16 +34,10 @@ export default async function handler(req, res) {
     
     const prices = await Promise.all(pricePromises);
     
-    // Filter out cards with no price found
-    const validPrices = prices.filter(p => p.price !== null);
-    
-    // Sort by price (highest first)
-    validPrices.sort((a, b) => b.price - a.price);
-    
     return res.status(200).json({
       success: true,
       timestamp: new Date().toISOString(),
-      cards: validPrices
+      cards: prices  // includes nulls — frontend handles filtering
     });
     
   } catch (error) {
@@ -86,11 +80,12 @@ async function getEbayToken() {
 // Get price for a single card
 async function getCardPrice(token, cardName, cardId, setName) {
   try {
-    // Build search query - include set name for more accurate results
-    const searchQuery = `${cardName} ${setName || ''} Pokemon Card`.trim();
+    // Include card number in query so eBay returns the right specific card,
+    // not just any card with the same name (e.g. Gardevoir ex #199 vs #086)
+    const searchQuery = `${cardName} ${cardId} ${setName || ''} Pokemon Card`.trim();
     const query = encodeURIComponent(searchQuery);
     
-    const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=10&filter=categoryIds:183454`;
+    const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=20&filter=categoryIds:183454`;
     
     const response = await fetch(url, {
       headers: {
@@ -111,8 +106,8 @@ async function getCardPrice(token, cardName, cardId, setName) {
       return { id: cardId, name: cardName, price: null, url: null };
     }
     
-    // Filter for Buy It Now items (not auctions) and get median price
-    const buyNowItems = data.itemSummaries.filter(item => 
+    // Filter for Buy It Now listings only (no auctions)
+    let buyNowItems = data.itemSummaries.filter(item => 
       item.price && 
       item.price.value && 
       item.buyingOptions && 
@@ -122,14 +117,33 @@ async function getCardPrice(token, cardName, cardId, setName) {
     if (buyNowItems.length === 0) {
       return { id: cardId, name: cardName, price: null, url: null };
     }
+
+    // Further filter: listing title must contain the card number to avoid
+    // wrong-card matches (e.g. searching "Gardevoir ex 199" should not return
+    // listings for "Gardevoir ex 086" or "Gardevoir ex 228")
+    const cardIdStr = String(cardId).replace(/^0+/, ''); // strip leading zeros
+    const numberedItems = buyNowItems.filter(item => {
+      const title = (item.title || '').toLowerCase();
+      // Match the number appearing as a standalone token (e.g. "199" not "1990")
+      return new RegExp(`\\b${cardIdStr}\\b`).test(title);
+    });
+    // Fall back to unfiltered list if the number filter removes everything
+    // (some listings write numbers differently, e.g. "199/198")
+    if (numberedItems.length > 0) {
+      buyNowItems = numberedItems;
+    }
     
-    // Calculate median price to avoid outliers
+    // Calculate median price to avoid outliers (graded cards, lots, etc.)
     const prices = buyNowItems.map(item => parseFloat(item.price.value));
     prices.sort((a, b) => a - b);
     
-    const medianPrice = prices.length % 2 === 0
-      ? (prices[prices.length / 2 - 1] + prices[prices.length / 2]) / 2
-      : prices[Math.floor(prices.length / 2)];
+    // Drop top 10% to exclude graded/overpriced outliers
+    const trimCount = Math.floor(prices.length * 0.1);
+    const trimmedPrices = prices.slice(0, prices.length - trimCount || 1);
+    
+    const medianPrice = trimmedPrices.length % 2 === 0
+      ? (trimmedPrices[trimmedPrices.length / 2 - 1] + trimmedPrices[trimmedPrices.length / 2]) / 2
+      : trimmedPrices[Math.floor(trimmedPrices.length / 2)];
     
     // Get the listing closest to median price
     const closestItem = buyNowItems.reduce((prev, curr) => {
