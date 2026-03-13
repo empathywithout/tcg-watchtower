@@ -1549,8 +1549,7 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 /* ===== INIT ===== */
 renderChaseCards();
 renderProducts();
-loadCards();
-loadTCGPlayerPrices(); // fetch all TCGplayer prices immediately on page load
+loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards are rendered
 
 /* ===== HAMBURGER MENU ===== */
 (async function() {
