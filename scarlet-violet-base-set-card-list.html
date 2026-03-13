@@ -28,7 +28,7 @@
 <meta name="description" content="Complete Scarlet & Violet Base Set (SV1) guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs and sealed product. Updated Mar 2023.">
 <meta name="keywords" content="Scarlet & Violet Base Set (SV1), SV1 card list, SV1 chase cards, SV1 booster box, pokemon SV1, Scarlet & Violet cards">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://tcgwatchtower.com/scarlet-violet-base-set-card-list">
+<link rel="canonical" href="https://tcgwatchtower.com/{{SET_SLUG}}">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
 
 <!-- ===== OPEN GRAPH (Facebook, Discord, iMessage previews) ===== -->
@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="TCG Watchtower">
 <meta property="og:title" content="Scarlet & Violet Base Set (SV1) Complete Guide — Card List & Chase Cards">
 <meta property="og:description" content="Full Scarlet & Violet Base Set (SV1) card list with rarity filter, top chase cards, booster box prices and restock alerts. The complete collector's guide.">
-<meta property="og:url" content="https://tcgwatchtower.com/scarlet-violet-base-set-card-list">
+<meta property="og:url" content="https://tcgwatchtower.com/{{SET_SLUG}}">
 <meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -55,7 +55,7 @@
   "@type": "CollectionPage",
   "name": "Scarlet & Violet Base Set (SV1) Complete Guide",
   "description": "Complete guide to Scarlet & Violet Base Set (SV1) — full card list, chase cards, and where to buy sealed product.",
-  "url": "https://tcgwatchtower.com/scarlet-violet-base-set-card-list",
+  "url": "https://tcgwatchtower.com/{{SET_SLUG}}",
   "datePublished": "Mar 2023",
   "publisher": {
     "@type": "Organization",
@@ -81,7 +81,7 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Scarlet & Violet Base Set (SV1)",
-        "item": "https://tcgwatchtower.com/scarlet-violet-base-set-card-list"
+        "item": "https://tcgwatchtower.com/{{SET_SLUG}}"
       }
     ]
   }
@@ -1099,12 +1099,12 @@ const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: ''  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
-  if (CONFIG.r2 && CONFIG.r2 !== 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev') {
+  if (CONFIG.r2 && CONFIG.r2 !== '') {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
   return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
@@ -1112,7 +1112,7 @@ function cardImg(setId, localId) {
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
 function setLogoUrl(setId) {
-  if (CONFIG.r2 && CONFIG.r2 !== 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev') {
+  if (CONFIG.r2 && CONFIG.r2 !== '') {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
   return `https://assets.tcgdex.net/en/sv/${setId}/logo.png`;
@@ -1141,68 +1141,41 @@ function ebayLink(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
 function tcgplayerLink(query) {
-  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/base-set?productLineName=pokemon&q=' + query + '&view=grid')}`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/scarlet-violet-base-set?productLineName=pokemon&q=' + query + '&view=grid')}`;
 }
 
 /* ===== CHASE CARDS ===== */
-const CHASE_CARDS = [];
+const CHASE_CARDS = [
+  { id: '255', name: 'Charizard ex', rarity: 'Hyper Rare', rarityClass: 'rarity-hr', label: 'HR', searchName: 'Charizard ex 255/198 Scarlet Violet' },
+  { id: '198', name: 'Charizard ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Charizard ex 198 Scarlet Violet SIR' },
+  { id: '234', name: 'Miriam', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Miriam 234 Scarlet Violet SIR' },
+  { id: '182', name: 'Arcanine ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Arcanine ex 182 Scarlet Violet SIR' },
+  { id: '199', name: 'Gardevoir ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Gardevoir ex 199 Scarlet Violet SIR' },
+  { id: '256', name: 'Miraidon ex', rarity: 'Hyper Rare', rarityClass: 'rarity-hr', label: 'HR', searchName: 'Miraidon ex 256 Scarlet Violet Hyper Rare' },
+  { id: '219', name: 'Iono', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Iono 219 Scarlet Violet SIR' },
+  { id: '193', name: 'Koraidon ex', rarity: 'Special Illustration Rare', rarityClass: 'rarity-sir', label: 'SIR', searchName: 'Koraidon ex 193 Scarlet Violet SIR' },
+];
 
-// Fetch eBay prices for chase cards
-async function fetchEbayPrices(chaseCards) {
-  try {
-    const cardsToPrice = chaseCards.map(c => ({
-      id: c.id,
-      name: c.name,
-      setName: 'Scarlet & Violet Base Set (SV1)'
-    }));
-    
-    const response = await fetch('/api/ebay-prices', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cards: cardsToPrice })
-    });
-    
-    if (!response.ok) {
-      console.error('eBay API error:', response.status);
-      return null;
-    }
-    
-    const data = await response.json();
-    return data.cards || [];
-  } catch (error) {
-    console.error('Failed to fetch eBay prices:', error);
-    return null;
-  }
-}
+// Chase list stored at module scope so flushPriceQueue can update it
+let currentChaseList = [];
 
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  // If cards passed in, auto-detect chase cards by rarity (SIR, HR, UR)
-  // Otherwise fall back to the hardcoded list
   const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
-  let chaseList;
+  const RARITY_TIER = {
+    'Hyper Rare': 0, 'Special Illustration Rare': 1, 'Ultra Rare': 2, 'Illustration Rare': 3,
+  };
+  const RARITY_LABEL = {
+    'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR',
+  };
+  const RARITY_CLASS = {
+    'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir',
+    'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir',
+  };
 
   if (cards && cards.length) {
-    const RARITY_TIER = {
-      'Hyper Rare': 0,
-      'Special Illustration Rare': 1,
-      'Ultra Rare': 2,
-      'Illustration Rare': 3,
-    };
-    const RARITY_LABEL = {
-      'Hyper Rare': 'HR',
-      'Special Illustration Rare': 'SIR',
-      'Ultra Rare': 'UR',
-      'Illustration Rare': 'IR',
-    };
-    const RARITY_CLASS = {
-      'Hyper Rare': 'rarity-hr',
-      'Special Illustration Rare': 'rarity-sir',
-      'Ultra Rare': 'rarity-ur',
-      'Illustration Rare': 'rarity-ir',
-    };
-    chaseList = cards
+    currentChaseList = cards
       .filter(c => CHASE_RARITIES.includes(c.rarity))
       .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
       .map(c => ({
@@ -1211,51 +1184,43 @@ function renderChaseCards(cards) {
         rarity: c.rarity,
         rarityClass: RARITY_CLASS[c.rarity] || 'rarity-ir',
         label: RARITY_LABEL[c.rarity] || c.rarity,
-        searchName: `${c.name} ${c.localId} Base Set`,
+        searchName: `${c.name} ${c.localId} Scarlet Violet`,
         img: c.image || cardImg('sv01', c.localId),
-        price: null,
-        priceUrl: null
       }));
   } else {
-    // Fallback to hardcoded until cards load
-    chaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('sv01', c.id), price: null, priceUrl: null }));
+    currentChaseList = CHASE_CARDS.map(c => ({
+      ...c,
+      img: cardImg('sv01', c.id),
+    }));
   }
 
-  // Render initial cards without prices
-  renderChaseCardsHTML(chaseList, grid);
-  
-  // Fetch eBay prices in background
-  fetchEbayPrices(chaseList).then(priceData => {
-    if (priceData) {
-      // Merge price data with chase list
-      chaseList.forEach(card => {
-        const priceInfo = priceData.find(p => p.id === card.id);
-        if (priceInfo && priceInfo.price) {
-          card.price = priceInfo.price;
-          card.priceUrl = priceInfo.url;
-          card.listingCount = priceInfo.listingCount;
-        }
-      });
-      
-      // Sort by price (highest first)
-      chaseList.sort((a, b) => (b.price || 0) - (a.price || 0));
-      
-      // Re-render with prices
-      renderChaseCardsHTML(chaseList, grid);
+  // Queue all chase cards into the shared price cache system
+  currentChaseList.forEach(c => {
+    if (!(c.id in priceCache)) {
+      priceFetchQueue.add(c.id);
+      // Store name mapping so flushPriceQueue can build the right query
+      if (!window._cardNameMap) window._cardNameMap = {};
+      window._cardNameMap[c.id] = c.name;
     }
   });
+  clearTimeout(priceFetchTimer);
+  priceFetchTimer = setTimeout(flushPriceQueue, 200);
+
+  renderChaseCardsHTML(grid);
 }
 
-function renderChaseCardsHTML(chaseList, grid) {
+function renderChaseCardsHTML(grid) {
+  // Merge cache prices into chase list and sort by price descending
+  const sorted = [...currentChaseList]
+    .map(c => ({ ...c, price: priceCache[c.id]?.price || null, priceUrl: priceCache[c.id]?.url || null }))
+    .sort((a, b) => (b.price || 0) - (a.price || 0));
 
-  grid.innerHTML = chaseList.map(c => {
+  grid.innerHTML = sorted.map(c => {
     const img = c.img;
-    const priceHTML = c.price 
-      ? `<div class="chase-card-price">
-           <span class="price-value">$${c.price.toFixed(2)}</span>
-         </div>`
+    const priceHTML = c.price
+      ? `<div class="chase-card-price"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-loading">Loading price...</div>`;
-    
+
     return `
     <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
       <img class="chase-card-img" src="${img}" alt="${c.name}" loading="lazy"
@@ -1266,7 +1231,7 @@ function renderChaseCardsHTML(chaseList, grid) {
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
         ${priceHTML}
         <div class="buy-links">
-          ${c.priceUrl 
+          ${c.priceUrl
             ? `<a class="buy-link buy-ebay buy-ebay-featured" href="${c.priceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`
             : `<a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`
           }
@@ -1274,13 +1239,19 @@ function renderChaseCardsHTML(chaseList, grid) {
           <a class="buy-link buy-tcgp" href="${tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
   }).join('');
 }
 
 /* ===== PRODUCTS ===== */
-const PRODUCT_META = {};
+const PRODUCT_META = {
+  'B0BVK3Y82T': { type: 'Booster Box',      filterKey: 'box',        badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',          q: 'Pokemon Scarlet Violet Base Set Booster Box' },
+  'B0BVHHTK8Z': { type: 'Elite Trainer Box', filterKey: 'etb',        badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',               q: 'Pokemon Scarlet Violet Elite Trainer Box' },
+  'B0BVK3TNJQ': { type: 'Booster Bundle',    filterKey: 'bundle',     badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',           q: 'Pokemon Scarlet Violet Booster Bundle' },
+  'B0BVK3VNJB': { type: 'Booster Box Case',  filterKey: 'case',       badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',      q: 'Pokemon Scarlet Violet Booster Box Case' },
+  'B0BVHHTSWB': { type: 'Special Collection', filterKey: 'collection', badgeClass: 'badge-collection', name: 'Koraidon ex & Miraidon ex Special Collection',    q: 'Pokemon Koraidon Miraidon ex Special Collection' },
+  'B0BVHHTVNF': { type: 'Build & Battle Box', filterKey: 'battle',    badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',              q: 'Pokemon Scarlet Violet Build Battle Box' },
+};
 
 function renderProductCard(p) {
   const imgHtml = p.image
@@ -1312,7 +1283,7 @@ async function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px">Loading products…</div>';
   try {
-    const res = await fetch('/api/sv01-products');
+    const res = await fetch('/api/sv1-products');
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
     const products = (data.products || []).map(p => ({
@@ -1348,31 +1319,24 @@ let displayedCount = 0;
 const PAGE_SIZE = 60;
 
 // ── Price cache & lazy-load system ──────────────────────────────────────────
-// priceCache: localId → { price, url } | null (null = fetch attempted, no result)
 const priceCache = {};
-// In-flight batch promise to avoid duplicate fetches
 let priceFetchQueue = new Set();
 let priceFetchTimer = null;
 const PRICE_BATCH_SIZE = 20;
 
-// Called by IntersectionObserver when a card scrolls into view
 function queuePriceFetch(localId, name) {
-  if (localId in priceCache) return; // already have it
-  if (priceFetchQueue.has(localId)) return; // already queued
+  if (localId in priceCache) return;
+  if (priceFetchQueue.has(localId)) return;
   priceFetchQueue.add(localId);
-  // Debounce — wait 200ms so scrolling batches up naturally
   clearTimeout(priceFetchTimer);
   priceFetchTimer = setTimeout(flushPriceQueue, 200);
 }
 
 async function flushPriceQueue() {
   if (!priceFetchQueue.size) return;
-  // Snapshot & clear queue
   const batch = [...priceFetchQueue].slice(0, PRICE_BATCH_SIZE);
   batch.forEach(id => priceFetchQueue.delete(id));
-
-  // Mark as in-flight so re-observations don't re-queue
-  batch.forEach(id => { priceCache[id] = undefined; }); // undefined = fetching
+  batch.forEach(id => { priceCache[id] = undefined; });
 
   const cards = batch.map(id => {
     const card = allCards.find(c => c.localId === id);
@@ -1390,14 +1354,14 @@ async function flushPriceQueue() {
       (data.cards || []).forEach(p => {
         priceCache[p.id] = p.price ? { price: p.price, url: p.url } : null;
       });
-      // Cards that got no result — mark null so we don't retry
-      batch.forEach(id => { if (priceCache[id] === undefined) priceCache[id] = null; });
     }
   } catch(e) {
-    batch.forEach(id => { if (priceCache[id] === undefined) priceCache[id] = null; });
+    // fall through to null-mark below
   }
+  // Always null-mark anything still pending so we don't retry endlessly
+  batch.forEach(id => { if (priceCache[id] === undefined) priceCache[id] = null; });
 
-  // Update price elements that are currently in the DOM
+  // Update card grid price labels for any visible cards
   batch.forEach(id => {
     const priceEl = document.querySelector(`.card-item[data-local-id="${id}"] .card-item-price`);
     if (!priceEl) return;
@@ -1410,18 +1374,22 @@ async function flushPriceQueue() {
     }
   });
 
-  // If sort-by-price is active, re-sort now that we have more data
+  // Re-render chase section if any of these cards belong to the chase list
+  const chaseIds = new Set(currentChaseList.map(c => c.id));
+  if (batch.some(id => chaseIds.has(id))) {
+    const grid = document.getElementById('chase-grid');
+    if (grid) renderChaseCardsHTML(grid);
+  }
+
   if (document.getElementById('sort-select')?.value === 'price') {
     applyFilters();
   }
 
-  // Flush any remaining queue items that accumulated
   if (priceFetchQueue.size) {
     priceFetchTimer = setTimeout(flushPriceQueue, 200);
   }
 }
 
-// IntersectionObserver — watches card elements and triggers price fetches
 const priceObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -1429,16 +1397,15 @@ const priceObserver = new IntersectionObserver((entries) => {
     const localId = el.dataset.localId;
     const name = el.dataset.name;
     if (localId) queuePriceFetch(localId, name);
-    priceObserver.unobserve(el); // only need to trigger once per element
+    priceObserver.unobserve(el);
   });
-}, { rootMargin: '200px' }); // start fetching 200px before card enters viewport
+}, { rootMargin: '200px' });
 
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
   try {
     let data = null;
 
-    // Try R2 API first
     try {
       const res = await fetch('/api/cards?set=sv01');
       if (res.ok) {
@@ -1447,7 +1414,6 @@ async function loadCards() {
       }
     } catch(e) {}
 
-    // Fall back to TCGdex directly — fetch cards with rarity in parallel batches
     if (!data) {
       const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/sv01');
       if (!setRes.ok) throw new Error('TCGdex failed');
@@ -1526,10 +1492,9 @@ function renderCards(reset) {
     el.dataset.localId = card.localId;
     el.dataset.name = card.name;
 
-    // Show cached price immediately if we already have it
     const cached = priceCache[card.localId];
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
-    const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
+    const priceClass = !(card.localId in priceCache) ? 'loading' : '';
 
     el.innerHTML = `
       <img src="${imgUrl}" alt="${card.name}" loading="lazy"
@@ -1540,12 +1505,11 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId} Base Set`;
+      const sq = `${card.name} ${card.localId} Scarlet Violet`;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl);
     });
     grid.appendChild(el);
 
-    // Start observing for lazy price fetch (only if not already cached)
     if (!(card.localId in priceCache)) {
       priceObserver.observe(el);
     }
@@ -1568,7 +1532,6 @@ function applyFilters() {
   });
 
   if (sort === 'price') {
-    // Sort by known prices descending; unpriced cards go to the end
     cards = [...cards].sort((a, b) => {
       const pa = priceCache[a.localId]?.price || 0;
       const pb = priceCache[b.localId]?.price || 0;
