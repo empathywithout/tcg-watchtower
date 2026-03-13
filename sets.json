@@ -4,7 +4,7 @@
     "name": "Scarlet & Violet Base Set",
     "series": "Scarlet & Violet",
     "short": "SV1",
-    "setId": "sv1",
+    "setId": "sv01",
     "live": true
   },
   {
@@ -12,7 +12,7 @@
     "name": "Paldea Evolved",
     "series": "Scarlet & Violet",
     "short": "SV2",
-    "setId": "sv2",
+    "setId": "sv02",
     "live": true
   },
   {
@@ -20,7 +20,7 @@
     "name": "Obsidian Flames",
     "series": "Scarlet & Violet",
     "short": "SV3",
-    "setId": "sv3",
+    "setId": "sv03",
     "live": false
   },
   {
@@ -28,7 +28,7 @@
     "name": "Paradox Rift",
     "series": "Scarlet & Violet",
     "short": "SV4",
-    "setId": "sv4",
+    "setId": "sv04",
     "live": false
   }
 ]
