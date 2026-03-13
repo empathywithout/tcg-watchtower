@@ -35,6 +35,10 @@ on:
         description: 'TCGplayer URL slug e.g. scarlet-violet-base-set (leave blank to auto-derive)'
         required: false
         default: ''
+      tcgp_group_id:
+        description: 'TCGplayer groupId for pricing (find at tcgcsv.com/tcgplayer/3/groups) e.g. 23533 for SV1'
+        required: false
+        default: '0'
       set_release_date:
         description: 'Release date e.g. Mar 2023 (leave blank to auto-detect from TCGdex)'
         required: false
@@ -102,6 +106,7 @@ jobs:
           SET_SHORT_NAME: ${{ github.event.inputs.set_short_name }}
           SET_SEARCH_NAME: ${{ github.event.inputs.set_search_name }}
           SET_TCGP_SLUG: ${{ github.event.inputs.set_tcgp_slug }}
+          TCGP_GROUP_ID: ${{ github.event.inputs.tcgp_group_id }}
           SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
           SET_DESCRIPTION: ${{ github.event.inputs.set_description }}
           HERO_CARD_1: ${{ github.event.inputs.hero_card_1 }}
