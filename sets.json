@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "scarlet-violet-base-set-card-list",
+    "name": "Scarlet & Violet Base Set",
+    "series": "Scarlet & Violet",
+    "short": "SV1",
+    "live": true
+  },
+  {
+    "slug": "paldea-evolved-card-list",
+    "name": "Paldea Evolved",
+    "series": "Scarlet & Violet",
+    "short": "SV2",
+    "live": false
+  },
+  {
+    "slug": "obsidian-flames-card-list",
+    "name": "Obsidian Flames",
+    "series": "Scarlet & Violet",
+    "short": "SV3",
+    "live": false
+  },
+  {
+    "slug": "paradox-rift-card-list",
+    "name": "Paradox Rift",
+    "series": "Scarlet & Violet",
+    "short": "SV4",
+    "live": false
+  }
+]
