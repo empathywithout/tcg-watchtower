@@ -1983,7 +1983,10 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
         });
       });
 
-      dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
+      const homeLink = `<a href="/" class="nav-dropdown-set" style="border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;padding-bottom:14px">
+        <span style="font-size:1.1rem">🏠</span><span>Home</span>
+      </a>`;
+      dropdown.innerHTML = homeLink + (html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>');
       populated = true;
     } catch(e) {
       dropdown.innerHTML = '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Could not load sets</div>';
