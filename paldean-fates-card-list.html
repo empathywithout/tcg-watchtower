@@ -1274,14 +1274,13 @@ function tcgplayerLink(query) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/paldean-fates?productLineName=pokemon&q=' + query + '&view=grid')}`;
 }
 function tcgplayerAffiliate(directUrl) {
-  // Convert direct product URL to lowest-listing search URL
-  // e.g. https://www.tcgplayer.com/product/123 -> search with productId
-  const productId = directUrl.match(/product\/([0-9]+)/)?.[1];
-  if (productId) {
-    const searchUrl = `https://www.tcgplayer.com/search/all/product?Language=English&productLineName=pokemon&q=${productId}&view=grid&sort=price&sharedid=&irpid=7068180&afsrc=1`;
-    return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(searchUrl)}`;
-  }
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
+}
+function tcgplayerCardLink(name, number, setSlug) {
+  // Precise card search: "Kirlia 212/198" finds the exact card
+  const q = encodeURIComponent(`${name} ${number}`);
+  const url = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(url)}`;
 }
 
 /* ===== CHASE CARDS ===== */
@@ -1352,7 +1351,7 @@ function renderChaseCardsHTML(grid) {
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${c.priceUrl ? tcgplayerAffiliate(c.priceUrl) : tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + '91', 'sv-paldean-fates')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1667,8 +1666,8 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${directUrl ? tcgplayerAffiliate(directUrl) : tcgplayerLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>${directUrl ? 'View Lowest Prices on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/91', 'sv-paldean-fates')}" target="_blank" rel="noopener">
+          <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
       </div>
     </div>`;
