@@ -412,6 +412,16 @@ for (const [placeholder, value] of Object.entries(vars)) {
   html = html.replaceAll(placeholder, value);
 }
 
+// Strip the broken r2 exclusion guard — after substitution it becomes
+// CONFIG.r2 !== 'https://...' which is always false, breaking logo/image loading
+const r2Url = process.env.CF_R2_PUBLIC_URL || '';
+if (r2Url) {
+  html = html.replaceAll(
+    `CONFIG.r2 && CONFIG.r2 !== '${r2Url}'`,
+    'CONFIG.r2'
+  );
+}
+
 // Warn if any placeholders remain unreplaced
 const remaining = [...html.matchAll(/\{\{[A-Z_]+\}\}/g)].map(m => m[0]);
 if (remaining.length) {

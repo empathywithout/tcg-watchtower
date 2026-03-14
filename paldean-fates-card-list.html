@@ -1222,7 +1222,7 @@ const CONFIG = {
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
-  if (CONFIG.r2 && CONFIG.r2 !== 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev') {
+  if (CONFIG.r2) {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
   return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
@@ -1230,7 +1230,7 @@ function cardImg(setId, localId) {
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
 function setLogoUrl(setId) {
-  if (CONFIG.r2 && CONFIG.r2 !== 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev') {
+  if (CONFIG.r2) {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
   const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05'}[setId] || setId;
