@@ -1,0 +1,62 @@
+name: Generate Card Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      set_id:
+        description: 'Set ID (e.g. sv07)'
+        required: true
+      set_full_name:
+        description: 'Full set name (e.g. Stellar Crown (SV7))'
+        required: true
+      set_slug:
+        description: 'Set slug for URL (e.g. stellar-crown)'
+        required: true
+      set_slug_full:
+        description: 'Full slug for file (e.g. stellar-crown-card-list)'
+        required: true
+      set_series_slug:
+        description: 'Series slug (e.g. scarlet-violet)'
+        required: false
+        default: 'scarlet-violet'
+      set_series:
+        description: 'Series display name (e.g. Scarlet & Violet)'
+        required: false
+        default: 'Scarlet & Violet'
+      tcgp_group_id:
+        description: 'TCGplayer group ID for prices'
+        required: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate card pages
+        env:
+          SET_ID: ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
+          SET_SLUG: ${{ github.event.inputs.set_slug }}
+          SET_SLUG_FULL: ${{ github.event.inputs.set_slug_full }}
+          SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug }}
+          SET_SERIES: ${{ github.event.inputs.set_series }}
+          TCGP_GROUP_ID: ${{ github.event.inputs.tcgp_group_id }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+        run: node scripts/generate-card-pages.js
+
+      - name: Commit and push card pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Generate card pages for ${{ github.event.inputs.set_full_name }}"
+          git pull --rebase origin main
+          git push
