@@ -1968,6 +1968,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
       console.log('[Sets] raw response:', text.slice(0, 200));
       const sets = JSON.parse(text);
       console.log('[Sets] parsed', sets.length, 'sets:', JSON.stringify(sets.map(s => s.series)));
+      console.log('[Sets] grouped keys:', Object.keys(grouped));
       const grouped = {};
       sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
@@ -1988,6 +1989,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
           </a>`;
         });
       });
+      console.log('[Sets] html length:', html.length, 'preview:', html.slice(0, 100));
       dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
       populated = true;
     } catch(e) {
