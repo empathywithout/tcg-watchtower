@@ -1287,9 +1287,12 @@ function productImgUrl(q) {
 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
-  grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) =>
-    renderProductCard({ ...p, image: productImgUrl(p.q), price: null, amazonUrl: amazonLink(p.q) })
-  ).join('');
+  grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
+    // Use pre-fetched image URL if available (set at generation time via R2)
+    // Fall back to proxy for pages generated without R2 credentials
+    const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/{{SET_ID}}/${asin}.jpg` : null);
+    return renderProductCard({ ...p, image: img, price: null, amazonUrl: amazonLink(p.q) });
+  }).join('');
 }
 
 // Product filter buttons

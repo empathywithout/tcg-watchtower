@@ -98,9 +98,79 @@ try { JSON.parse(productMetaJson); } catch(e) {
   productMetaJson = '{}';
 }
 
-// ── Product images are fetched at runtime via /api/product-image?q=... ──────────
-// No generation-time fetching needed — the API handles caching.
+// ── Fetch product images from eBay and store in R2 at generation time ────────────
+// Bakes R2 URLs into the HTML — no runtime fetching, works with all ad blockers.
+import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+
+const r2 = process.env.CF_R2_ACCESS_KEY ? new S3Client({
+  region: 'auto',
+  endpoint: process.env.CF_R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.CF_R2_ACCESS_KEY,
+    secretAccessKey: process.env.CF_R2_SECRET_KEY,
+  },
+}) : null;
+
+async function getEbayToken() {
+  const id = process.env.EBAY_CLIENT_ID, secret = process.env.EBAY_CLIENT_SECRET;
+  if (!id || !secret) throw new Error('eBay credentials not set');
+  const res = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic ' + Buffer.from(`${id}:${secret}`).toString('base64') },
+    body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope',
+  });
+  return (await res.json()).access_token;
+}
+
+async function fetchProductImage(query) {
+  const token = await getEbayToken();
+  const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${encodeURIComponent(query)}&limit=10&filter=categoryIds:183468`;
+  const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' } });
+  const data = await res.json();
+  for (const item of data.itemSummaries || []) {
+    if (item.thumbnailImages?.[0]?.imageUrl) return item.thumbnailImages[0].imageUrl;
+    if (item.image?.imageUrl) return item.image.imageUrl;
+  }
+  return null;
+}
+
 const productMeta = JSON.parse(productMetaJson);
+const R2_PUBLIC_URL = process.env.CF_R2_PUBLIC_URL || '';
+
+if (Object.keys(productMeta).length > 0 && r2 && process.env.EBAY_CLIENT_ID) {
+  console.log(`\n🖼️  Fetching product images for ${Object.keys(productMeta).length} products...`);
+  await Promise.all(Object.entries(productMeta).map(async ([asin, p]) => {
+    try {
+      const r2Key = `products/${SET_ID}/${asin}.jpg`;
+      // Check if already in R2
+      try {
+        await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2Key }));
+        productMeta[asin].image = `${R2_PUBLIC_URL}/${r2Key}`;
+        console.log(`  ✅  ${asin} (cached in R2)`);
+        return;
+      } catch {}
+      // Fetch from eBay
+      const ebayImgUrl = await fetchProductImage(p.q);
+      if (!ebayImgUrl) { console.warn(`  ⚠️  No image found for ${asin}`); return; }
+      // Download image
+      const imgRes = await fetch(ebayImgUrl);
+      if (!imgRes.ok) throw new Error(`download failed: ${imgRes.status}`);
+      const buffer = Buffer.from(await imgRes.arrayBuffer());
+      // Upload to R2
+      await r2.send(new PutObjectCommand({
+        Bucket: process.env.CF_R2_BUCKET, Key: r2Key, Body: buffer,
+        ContentType: 'image/jpeg', CacheControl: 'public, max-age=31536000, immutable',
+      }));
+      productMeta[asin].image = `${R2_PUBLIC_URL}/${r2Key}`;
+      console.log(`  ✅  ${asin} → uploaded to R2`);
+    } catch(e) {
+      console.warn(`  ⚠️  Image failed for ${asin}: ${e.message}`);
+    }
+  }));
+} else if (Object.keys(productMeta).length > 0) {
+  console.log('  ℹ️  Skipping product images — no R2/eBay credentials');
+}
+
 productMetaJson = JSON.stringify(productMeta);
 
 // ── CHASE_CARDS: optional hardcoded fallback shown before cards load ───────────
