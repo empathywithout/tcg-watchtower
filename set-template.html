@@ -1194,6 +1194,9 @@ function amazonLink(query) {
 function ebayLink(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
+function ebayLinkNew(query) {
+  return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&LH_ItemCondition=1000&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
+}
 function tcgplayerLink(query) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/{{SET_TCGP_SLUG}}?productLineName=pokemon&q=' + query + '&view=grid')}`;
 }
@@ -1268,11 +1271,8 @@ function renderChaseCardsHTML(grid) {
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
         ${priceHTML}
         <div class="buy-links">
-          ${c.priceUrl
-            ? `<a class="buy-link buy-tcgp buy-tcgp-featured" href="${tcgplayerAffiliate(c.priceUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>`
-            : `<a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`}
-
-          <a class="buy-link buy-tcgp" href="${tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${c.priceUrl ? tcgplayerAffiliate(c.priceUrl) : tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1320,9 +1320,9 @@ function renderProducts() {
     // Use pre-fetched image URL if available (set at generation time via R2)
     // Fall back to proxy for pages generated without R2 credentials
     const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/{{SET_ID}}/${asin}.jpg` : null);
-    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent('"' + p.name + '" pokemon')}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
+    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent(p.q)}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
-    const ebayUrl   = ebayLink(p.q);
+    const ebayUrl   = ebayLinkNew(p.q);
     return renderProductCard({ ...p, image: img, price: null, amazonUrl, tcgpUrl, ebayUrl });
   }).join('');
 }
