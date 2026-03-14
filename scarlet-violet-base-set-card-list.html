@@ -1268,25 +1268,11 @@ function renderProductCard(p) {
     </div>`;
 }
 
-async function renderProducts() {
+function renderProducts() {
   const grid = document.getElementById('products-grid');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px">Loading products…</div>';
-  try {
-    const res = await fetch('/api/sv1-products');
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
-    const products = (data.products || []).map(p => ({
-      ...p,
-      ...(PRODUCT_META[p.asin] || {})
-    }));
-    grid.innerHTML = products.map(renderProductCard).join('');
-  } catch(e) {
-    console.error('Product load failed:', e);
-    // Fallback: render with search links, no images
-    grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) =>
-      renderProductCard({ ...p, image: null, price: null, amazonUrl: amazonLink(p.q) })
-    ).join('');
-  }
+  grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) =>
+    renderProductCard({ ...p, image: null, price: null, amazonUrl: amazonLink(p.q) })
+  ).join('');
 }
 
 // Product filter buttons
