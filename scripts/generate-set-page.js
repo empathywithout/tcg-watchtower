@@ -186,6 +186,7 @@ const PRODUCT_TYPE_MAP = {
   'Sleeved Booster':    { filterKey: 'sleeves', badgeClass: 'badge-collection', type: 'Sleeved Booster' },
 };
 
+console.log(`\n🔍 DEBUG: productMetaJson length=${productMetaJson.length}, TCGP_GROUP_ID=${TCGP_GROUP_ID}`);
 if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
   console.log(`\n📦  Auto-fetching sealed products from TCGCSV for group ${TCGP_GROUP_ID}...`);
   try {
