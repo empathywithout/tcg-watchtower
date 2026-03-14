@@ -85,7 +85,7 @@
     "series": "Scarlet & Violet",
     "short": "SV8",
     "setId": "sv08",
-    "live": false
+    "live": true
   },
   {
     "slug": "prismatic-evolutions-card-list",
