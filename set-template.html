@@ -401,7 +401,7 @@ nav {
   width:100%; aspect-ratio:1; background:rgba(15,23,42,0.6);
   display:flex; align-items:center; justify-content:center; overflow:hidden;
 }
-.product-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.product-img-wrap img { width:90%; height:90%; object-fit:contain; transition:transform 0.3s; }
 .product-card:hover .product-img-wrap img { transform:scale(1.05); }
 .product-info { padding:20px; }
 .product-type {
@@ -842,6 +842,48 @@ footer {
     right: auto;
   }
 }
+
+/* ===== SECTION NAV BAR ===== */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0;
+}
+.section-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-nav-inner::-webkit-scrollbar { display: none; }
+.section-nav-btn {
+  flex-shrink: 0;
+  padding: 14px 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.section-nav-btn:hover { color: var(--text-primary); }
+.section-nav-btn.active {
+  color: var(--primary-blue);
+  border-bottom-color: var(--primary-blue);
+}
 </style>
 </head>
 <body>
@@ -946,10 +988,21 @@ footer {
   </div>
 </section>
 
+<!-- ===== SECTION NAV ===== -->
+<nav class="section-nav" id="section-nav">
+  <div class="section-nav-inner">
+    <button class="section-nav-btn active" data-target="section-chase">🔥 Chase Cards</button>
+    <button class="section-nav-btn" data-target="section-cards">📋 Card List</button>
+    <button class="section-nav-btn" data-target="section-products">🛒 Sealed Products</button>
+  </div>
+</nav>
+
+
+
 <div class="section-divider"></div>
 
 <!-- ===== CHASE CARDS ===== -->
-<section class="section">
+<section class="section" id="section-chase">
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">🔥 {{SET_FULL_NAME}} <span class="gradient-text">Chase Cards</span></h2>
@@ -964,7 +1017,7 @@ footer {
 <div class="section-divider"></div>
 
 <!-- ===== VISUAL CARD LIST (under chase) ===== -->
-<section class="section">
+<section class="section" id="section-cards">
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">📋 {{SET_FULL_NAME}} <span class="gradient-text">Card List</span></h2>
@@ -989,7 +1042,7 @@ footer {
 <div class="section-divider"></div>
 
 <!-- ===== PRODUCTS ===== -->
-<section class="section">
+<section class="section" id="section-products">
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">🛒 Buy {{SET_SHORT_NAME}} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
@@ -1231,7 +1284,7 @@ const PRODUCT_META = {{PRODUCT_META_JSON}};
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
   const imgHtml = p.image
-    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.style.display='none'">`
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none'">`
     : fallbackHtml;
   return `
     <div class="product-card" data-type="${p.filterKey}">
@@ -1681,6 +1734,30 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   // Initialize
   await fetchSets();
 })();
+
+/* ===== SECTION NAV ACTIVE STATE ===== */
+(function() {
+  const btns = document.querySelectorAll('.section-nav-btn');
+  const sections = ['section-chase','section-cards','section-products']
+    .map(id => document.getElementById(id)).filter(Boolean);
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  const navHeight = document.getElementById('section-nav')?.offsetHeight || 60;
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        btns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+      }
+    });
+  }, { rootMargin: `-${navHeight}px 0px -60% 0px`, threshold: 0 });
+  sections.forEach(s => observer.observe(s));
+})();
+
 </script>
 </body>
 </html>
