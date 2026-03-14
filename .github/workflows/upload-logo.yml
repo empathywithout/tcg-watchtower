@@ -7,7 +7,7 @@ on:
         description: 'Set ID (e.g. sv05)'
         required: true
       logo_filename:
-        description: 'Logo filename committed to scripts/ folder (e.g. sv05-logo.png)'
+        description: 'Logo filename in scripts/ folder (e.g. sv05-logo.png)'
         required: true
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Upload logo to R2
         env:
