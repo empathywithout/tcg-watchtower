@@ -1353,8 +1353,9 @@ function loadTCGPlayerPrices() {
       });
       console.log('[TCGp] updated', updated, 'price labels');
 
+      console.log('[TCGp] chase list length:', currentChaseList.length);
       const grid = document.getElementById('chase-grid');
-      if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
+      if (grid) renderChaseCardsHTML(grid);
 
       if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
         applyFilters();
