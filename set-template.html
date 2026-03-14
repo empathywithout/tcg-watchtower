@@ -28,7 +28,7 @@
 <meta name="description" content="Complete {{SET_FULL_NAME}} guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs and sealed product. Updated {{SET_RELEASE_DATE}}.">
 <meta name="keywords" content="{{SET_FULL_NAME}}, {{SET_SHORT_NAME}} card list, {{SET_SHORT_NAME}} chase cards, {{SET_SHORT_NAME}} booster box, pokemon {{SET_SHORT_NAME}}, {{SET_SERIES}} cards">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://tcgwatchtower.com/{{SET_SLUG}}">
+<link rel="canonical" href="https://tcgwatchtower.com/{{SET_SEO_PATH}}">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
 
 <!-- ===== OPEN GRAPH (Facebook, Discord, iMessage previews) ===== -->
@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="TCG Watchtower">
 <meta property="og:title" content="{{SET_FULL_NAME}} Complete Guide — Card List & Chase Cards">
 <meta property="og:description" content="Full {{SET_FULL_NAME}} card list with rarity filter, top chase cards, booster box prices and restock alerts. The complete collector's guide.">
-<meta property="og:url" content="https://tcgwatchtower.com/{{SET_SLUG}}">
+<meta property="og:url" content="https://tcgwatchtower.com/{{SET_SEO_PATH}}">
 <meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -55,7 +55,7 @@
   "@type": "CollectionPage",
   "name": "{{SET_FULL_NAME}} Complete Guide",
   "description": "Complete guide to {{SET_FULL_NAME}} — full card list, chase cards, and where to buy sealed product.",
-  "url": "https://tcgwatchtower.com/{{SET_SLUG}}",
+  "url": "https://tcgwatchtower.com/{{SET_SEO_PATH}}",
   "datePublished": "{{SET_RELEASE_DATE}}",
   "publisher": {
     "@type": "Organization",
@@ -74,13 +74,24 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Set Guides",
-        "item": "https://tcgwatchtower.com/set-guides"
+        "name": "Pokémon TCG",
+        "item": "https://tcgwatchtower.com/pokemon"
       },
       {
         "@type": "ListItem",
         "position": 3,
+        "name": "Scarlet & Violet",
+        "item": "https://tcgwatchtower.com/pokemon/{{SET_SERIES_SLUG}}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
         "name": "{{SET_FULL_NAME}}",
+        "item": "https://tcgwatchtower.com/{{SET_SEO_PATH}}"
+      }
+    ]
+  }
+}",
         "item": "https://tcgwatchtower.com/{{SET_SLUG}}"
       }
     ]

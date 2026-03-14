@@ -36,6 +36,8 @@ const SET_ID           = process.env.SET_ID;
 const SET_FULL_NAME    = process.env.SET_FULL_NAME;
 const SET_SLUG         = process.env.SET_SLUG || `${SET_ID}-card-list`;
 const SET_SERIES       = process.env.SET_SERIES || 'Scarlet & Violet';
+const SET_SERIES_SLUG  = process.env.SET_SERIES_SLUG || 'scarlet-violet';
+const SET_SEO_PATH     = process.env.SET_SEO_PATH || `pokemon/${SET_SERIES_SLUG}/${SET_SLUG.replace('-card-list', '')}/card-list`;
 const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;
 const SET_DESCRIPTION  = process.env.SET_DESCRIPTION  || null;
@@ -389,6 +391,8 @@ const vars = {
   '__R2_PUBLIC_URL__':      process.env.CF_R2_PUBLIC_URL || '',
   '{{SET_FULL_NAME}}':      SET_FULL_NAME,
   '{{SET_SERIES}}':         SET_SERIES,
+  '{{SET_SERIES_SLUG}}':    SET_SERIES_SLUG,
+  '{{SET_SEO_PATH}}':       SET_SEO_PATH,
   '{{SET_SUBTITLE}}':       SET_SUBTITLE,
   '{{SET_SHORT_NAME}}':     SET_SHORT_NAME,
   '{{SET_RELEASE_DATE}}':   releaseDate,
@@ -489,7 +493,7 @@ console.log(`\n📋 sets.json updated — ${SET_SLUG} is now live`);
 // ── Update sitemap.xml ─────────────────────────────────────────────────────────
 const SITE_URL    = 'https://tcgwatchtower.com';
 const sitemapPath = 'sitemap.xml';
-const newUrl      = `${SITE_URL}/${SET_SLUG}`;
+const newUrl      = `${SITE_URL}/${SET_SEO_PATH}`;
 
 let sitemap = existsSync(sitemapPath) ? readFileSync(sitemapPath, 'utf8') : '';
 if (sitemap.includes(newUrl)) {

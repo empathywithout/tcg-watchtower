@@ -1,42 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://tcgwatchtower.com/</loc>
-    <changefreq>daily</changefreq>
+    <loc>https://tcgwatchtower.com</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/scarlet-violet-base-set-card-list</loc>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/sets</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet</loc>
+    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/sv02-set-guide</loc>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/base-set/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/privacy-policy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/terms-of-service</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/disclaimer</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://tcgwatchtower.com/sv01-set-guide</loc>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/paldea-evolved/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/obsidian-flames/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/paradox-rift/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/151/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/paldean-fates/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/temporal-forces/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/twilight-masquerade/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/shrouded-fable/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/stellar-crown/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/surging-sparks/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/prismatic-evolutions/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/journey-together/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>  <url>
+    <loc>https://tcgwatchtower.com/pokemon/scarlet-violet/destined-rivals/card-list</loc>
+    <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
