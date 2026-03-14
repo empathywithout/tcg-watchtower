@@ -1160,13 +1160,13 @@ function renderChaseCards(cards) {
 
   if (cards && cards.length) {
     currentChaseList = cards
-      .filter(c => CHASE_RARITIES.includes((c.rarity||'').toLowerCase().replace(/\w/g, l => l.toUpperCase())))
+      .filter(c => CHASE_RARITIES.includes((c.rarity||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ')))
       .sort((a, b) => {
-        const nr = r => (r||'').toLowerCase().replace(/\w/g, l => l.toUpperCase());
+        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         return (RARITY_TIER[nr(a.rarity)] ?? 99) - (RARITY_TIER[nr(b.rarity)] ?? 99);
       })
       .map(c => {
-        const nr = r => (r||'').toLowerCase().replace(/\w/g, l => l.toUpperCase());
+        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         const rarity = nr(c.rarity);
         return {
           id: c.localId,

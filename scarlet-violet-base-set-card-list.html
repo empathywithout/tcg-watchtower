@@ -1176,7 +1176,7 @@ function renderChaseCards(cards) {
 
   if (cards && cards.length) {
     // Normalise rarity strings to title case for matching (TCGdex returns mixed case)
-    const normaliseRarity = r => r ? r.toLowerCase().replace(/\w/g, l => l.toUpperCase()) : '';
+    const normaliseRarity = r => r ? r.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ') : '';
     currentChaseList = cards
       .filter(c => CHASE_RARITIES.includes(normaliseRarity(c.rarity)))
       .sort((a, b) => (RARITY_TIER[normaliseRarity(a.rarity)] ?? 99) - (RARITY_TIER[normaliseRarity(b.rarity)] ?? 99))
