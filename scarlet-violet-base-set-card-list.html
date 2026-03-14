@@ -1716,6 +1716,8 @@ document.getElementById('load-more-btn').addEventListener('click', () => renderC
 
 /* ===== MODAL ===== */
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
+  // If directUrl not passed yet, try priceCache again at open time
+  if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
   if (!imgUrl) imgUrl = cardImg('sv01', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `

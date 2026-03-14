@@ -1333,7 +1333,7 @@ function renderChaseCardsHTML(grid) {
       ? `<div class="chase-card-price"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-loading">Loading price...</div>`;
     return `
-    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}')">
+    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
@@ -1635,6 +1635,8 @@ document.getElementById('load-more-btn').addEventListener('click', () => renderC
 
 /* ===== MODAL ===== */
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
+  // If directUrl not passed yet, try priceCache again at open time
+  if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
   if (!imgUrl) imgUrl = cardImg('sv06', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
