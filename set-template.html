@@ -102,7 +102,9 @@
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -960,7 +962,7 @@ footer {
 <!-- ===== NAV ===== -->
 <nav class="container">
   <a href="/" class="nav-logo">
-            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
             <span>TCG Watchtower</span>
           </a>
   <div class="nav-links">
@@ -1028,7 +1030,7 @@ footer {
         </p>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" alt="{{SET_FULL_NAME}} Logo" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <img id="set-logo-hero" alt="{{SET_FULL_NAME}} Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
             <div class="stat-label">{{SET_SHORT_NAME}}</div>
           </div>
           <div class="stat-card">
@@ -1277,6 +1279,13 @@ function tcgplayerLink(query) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/{{SET_TCGP_SLUG}}?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
 }
 function tcgplayerAffiliate(directUrl) {
+  // Convert direct product URL to lowest-listing search URL
+  // e.g. https://www.tcgplayer.com/product/123 -> search with productId
+  const productId = directUrl.match(/product\/([0-9]+)/)?.[1];
+  if (productId) {
+    const searchUrl = `https://www.tcgplayer.com/search/all/product?Language=English&productLineName=pokemon&q=${productId}&view=grid&sort=price&sharedid=&irpid=7068180&afsrc=1`;
+    return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(searchUrl)}`;
+  }
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
 }
 
@@ -1597,8 +1606,8 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name}" loading="lazy"
-           onerror="this.style.background='#1e293b'">
+      <img src="${imgUrl}" alt="${card.name} ${c.id} {{SET_FULL_NAME}} Pokemon Card" loading="lazy"
+           onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
         <div class="card-item-num">#${card.localId}</div>
@@ -1663,7 +1672,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
         <a class="modal-buy-link pl-tcgp" href="${directUrl ? tcgplayerAffiliate(directUrl) : tcgplayerLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>${directUrl ? 'Buy on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
+          <span>${directUrl ? 'View Lowest Prices on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
       </div>
     </div>`;

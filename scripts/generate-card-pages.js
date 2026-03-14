@@ -68,9 +68,14 @@ function cardImgUrl(card) {
   return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
 }
 
-function tcgpSearchUrl(card) {
+function tcgpSearchUrl(card, productId) {
+  // Use productId search for direct lowest-listing results when available
+  if (productId) {
+    const pid = encodeURIComponent(productId);
+    return `https://www.tcgplayer.com/search/all/product?Language=English&productLineName=pokemon&q=${pid}&view=grid&sort=price&sharedid=&irpid=7068180&afsrc=1`;
+  }
   const query = encodeURIComponent(`${card.name} ${card.localId}/${metadata.cardCount?.official || ''} ${SET_FULL_NAME} Pokemon Card`);
-  return `https://www.tcgplayer.com/search/pokemon/${SET_SLUG}?productLineName=pokemon&q=${query}&view=grid&productTypeName=Cards`;
+  return `https://www.tcgplayer.com/search/pokemon/${SET_SLUG}?productLineName=pokemon&q=${query}&view=grid&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
 }
 
 function ebaySearchUrl(card) {
@@ -150,7 +155,9 @@ function generateCardPage(card, allCards) {
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
 <style>
