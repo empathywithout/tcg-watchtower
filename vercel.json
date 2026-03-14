@@ -24,6 +24,10 @@
     {
       "source": "/api/product-image",
       "destination": "/api/product-image.js"
+    },
+    {
+      "source": "/sets",
+      "destination": "/sets.html"
     }
   ]
 }
