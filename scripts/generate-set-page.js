@@ -39,12 +39,78 @@ const SET_SERIES       = process.env.SET_SERIES || 'Scarlet & Violet';
 const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;
 const SET_DESCRIPTION  = process.env.SET_DESCRIPTION  || null;
-const HERO_CARD_1      = process.env.HERO_CARD_1 || '001';
-const HERO_CARD_2      = process.env.HERO_CARD_2 || '002';
-const HERO_CARD_3      = process.env.HERO_CARD_3 || '003';
-const HERO_ALT_1       = process.env.HERO_ALT_1  || 'Card 1';
-const HERO_ALT_2       = process.env.HERO_ALT_2  || 'Card 2';
-const HERO_ALT_3       = process.env.HERO_ALT_3  || 'Card 3';
+// Hero cards — auto-fetched from TCGCSV top prices if not provided
+let HERO_CARD_1 = process.env.HERO_CARD_1 || '';
+let HERO_CARD_2 = process.env.HERO_CARD_2 || '';
+let HERO_CARD_3 = process.env.HERO_CARD_3 || '';
+let HERO_ALT_1  = process.env.HERO_ALT_1  || 'Card 1';
+let HERO_ALT_2  = process.env.HERO_ALT_2  || 'Card 2';
+let HERO_ALT_3  = process.env.HERO_ALT_3  || 'Card 3';
+
+if (!HERO_CARD_1 && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
+  console.log('\n🃏  Auto-fetching top chase cards for hero stack...');
+  try {
+    const [productsRes, pricesRes] = await Promise.all([
+      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/products`),
+      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/prices`),
+    ]);
+    const products  = (await productsRes.json()).results || [];
+    const pricesList = (await pricesRes.json()).results || [];
+
+    // Build price map — skip reverse holofoil, prefer Normal/Holofoil
+    const priceById = {};
+    for (const p of pricesList) {
+      const sub = (p.subTypeName || '').toLowerCase();
+      if (sub.includes('reverse')) continue;
+      const existing = priceById[p.productId];
+      if (!existing || (sub === 'normal' && (existing.subTypeName || '').toLowerCase() !== 'normal')) {
+        priceById[p.productId] = p;
+      }
+    }
+
+    // Get cards with prices, sorted descending
+    const cardRarities = ['Special Illustration Rare', 'Hyper Rare', 'Illustration Rare', 'Ultra Rare'];
+    const scored = products
+      .filter(p => {
+        const ext = p.extendedData || [];
+        const hasNumber = ext.some(e => e.name === 'Number');
+        if (!hasNumber) return false;
+        const price = priceById[p.productId]?.marketPrice;
+        return price != null && price > 0;
+      })
+      .map(p => {
+        const ext = p.extendedData || [];
+        const numEntry = ext.find(e => e.name === 'Number');
+        const cardNum = numEntry?.value.split('/')[0].trim();
+        return { id: cardNum, name: p.name, price: priceById[p.productId].marketPrice };
+      })
+      .sort((a, b) => b.price - a.price)
+      .slice(0, 3);
+
+    if (scored.length >= 3) {
+      HERO_CARD_1 = scored[0].id;  HERO_ALT_1 = scored[0].name;
+      HERO_CARD_2 = scored[1].id;  HERO_ALT_2 = scored[1].name;
+      HERO_CARD_3 = scored[2].id;  HERO_ALT_3 = scored[2].name;
+      console.log(`  ✅  #1: ${scored[0].name} #${scored[0].id} ($${scored[0].price})`);
+      console.log(`  ✅  #2: ${scored[1].name} #${scored[1].id} ($${scored[1].price})`);
+      console.log(`  ✅  #3: ${scored[2].name} #${scored[2].id} ($${scored[2].price})`);
+    } else {
+      console.warn('  ⚠️  Not enough priced cards found, falling back to 001/002/003');
+      HERO_CARD_1 = HERO_CARD_1 || '001';
+      HERO_CARD_2 = HERO_CARD_2 || '002';
+      HERO_CARD_3 = HERO_CARD_3 || '003';
+    }
+  } catch(e) {
+    console.warn(`  ⚠️  Hero card fetch failed: ${e.message} — falling back to 001/002/003`);
+    HERO_CARD_1 = HERO_CARD_1 || '001';
+    HERO_CARD_2 = HERO_CARD_2 || '002';
+    HERO_CARD_3 = HERO_CARD_3 || '003';
+  }
+} else {
+  HERO_CARD_1 = HERO_CARD_1 || '001';
+  HERO_CARD_2 = HERO_CARD_2 || '002';
+  HERO_CARD_3 = HERO_CARD_3 || '003';
+}
 
 if (!SET_ID || !SET_FULL_NAME) {
   console.error('❌  SET_ID and SET_FULL_NAME are required');
