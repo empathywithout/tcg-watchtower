@@ -10,26 +10,18 @@ if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
 // TCGdex uses dot-notation IDs internally (sv03.5) but our workflow uses pt-notation (sv3pt5)
 // Map our IDs to the correct TCGdex set overview IDs
-// TCGdex uses different ID formats — map our workflow IDs to their actual IDs
+// TCGdex uses dot-notation for special sets (sv03.5 not sv3pt5)
+// These IDs are used for BOTH the API endpoint and asset URLs
 const TCGDEX_ID_MAP = {
-  // Special sets
-  'sv3pt5': '151',
-  'sv4pt5': 'sv4pt5',
-  'sv6pt5': 'sv6pt5',
-  'sv8pt5': 'sv8pt5',
-  // Regular sets — TCGdex drops leading zeros on some
-  'sv05': 'sv05',  // confirmed sv06 works, try sv05 first
-};
-// Asset path map (dot notation for special sets)
-const TCGDEX_ASSET_MAP = {
   'sv3pt5': 'sv03.5',
   'sv4pt5': 'sv04.5',
   'sv6pt5': 'sv06.5',
   'sv8pt5': 'sv08.5',
 };
-const TCGDEX_SET_OVERVIEW_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
-const TCGDEX_CARD_ID_PREFIX  = SET_ID;
-const TCGDEX_ASSET_ID        = TCGDEX_ASSET_MAP[SET_ID] || SET_ID;
+const TCGDEX_SET_ID_RESOLVED = TCGDEX_ID_MAP[SET_ID] || SET_ID;
+const TCGDEX_SET_OVERVIEW_ID = TCGDEX_SET_ID_RESOLVED;
+const TCGDEX_CARD_ID_PREFIX  = TCGDEX_SET_ID_RESOLVED; // card IDs use resolved ID e.g. sv03.5-1
+const TCGDEX_ASSET_ID        = TCGDEX_SET_ID_RESOLVED;
 
 const s3 = new S3Client({
   region: "auto",

@@ -119,8 +119,9 @@ if (!SET_ID || !SET_FULL_NAME) {
 
 // ── Fetch set metadata from TCGdex ──────────────────────────────────────────────
 console.log(`📋 Fetching set metadata for ${SET_ID}…`);
-// TCGdex set overview uses '151' for the 151 set, all others match our internal ID
-const TCGDEX_SET_OVERVIEW_ID = SET_ID === 'sv3pt5' ? '151' : SET_ID;
+// TCGdex uses dot-notation for special sets (sv03.5, sv04.5 etc.)
+const TCGDEX_ID_MAP = { 'sv3pt5': 'sv03.5', 'sv4pt5': 'sv04.5', 'sv6pt5': 'sv06.5', 'sv8pt5': 'sv08.5' };
+const TCGDEX_SET_OVERVIEW_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
 const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
 if (!tcgRes.ok) {
   console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
