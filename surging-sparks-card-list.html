@@ -1601,7 +1601,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${c.id} {{SET_FULL_NAME}} Pokemon Card" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name} ${c.id} Surging Sparks (SV8) Pokemon Card" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
