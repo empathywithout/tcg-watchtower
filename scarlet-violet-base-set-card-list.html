@@ -1943,21 +1943,23 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!btn || !dropdown) return;
 
-  // Toggle open/close
-  btn.addEventListener('click', e => {
+  let populated = false;
+
+  btn.addEventListener('click', async e => {
     e.stopPropagation();
-    const isOpen = dropdown.classList.toggle('open');
+    const isOpen = !dropdown.classList.contains('open');
+    dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
-    if (isOpen) populateNavSets();
+    if (isOpen && !populated) await populateNavSets();
   });
-  document.addEventListener('click', () => {
-    dropdown.classList.remove('open');
-    btn.classList.remove('open');
+  document.addEventListener('click', e => {
+    if (!dropdown.contains(e.target) && e.target !== btn) {
+      dropdown.classList.remove('open');
+      btn.classList.remove('open');
+    }
   });
 
-  let populated = false;
   async function populateNavSets() {
-    if (populated) return;
     try {
       console.log('[Sets] fetching /sets.json...');
       const res = await fetch('/sets.json');
@@ -1965,7 +1967,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
       const text = await res.text();
       console.log('[Sets] raw response:', text.slice(0, 200));
       const sets = JSON.parse(text);
-      console.log('[Sets] parsed', sets.length, 'sets');
+      console.log('[Sets] parsed', sets.length, 'sets:', JSON.stringify(sets.map(s => s.series)));
       const grouped = {};
       sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
