@@ -1,65 +1,27 @@
 // api/product-image.js
-// Fetches clean sealed product images from eBay, proxied through our domain.
-// Filters for NEW condition items and scores by title relevance to get stock photos.
+// Fetches TCGplayer sealed product images by searching their catalog.
+// Used as fallback for auto-generated pages that don't have hardcoded image URLs.
 // GET /api/product-image?q=Pokemon+Scarlet+Violet+Booster+Box
 
 const cache = new Map();
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-async function getEbayToken() {
-  const id = process.env.EBAY_CLIENT_ID, secret = process.env.EBAY_CLIENT_SECRET;
-  if (!id || !secret) throw new Error('eBay credentials not configured');
-  const res = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + Buffer.from(`${id}:${secret}`).toString('base64'),
-    },
-    body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope',
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!res.ok) throw new Error(`eBay auth: ${res.status}`);
-  return (await res.json()).access_token;
-}
-
-async function findProductImage(query) {
-  const token = await getEbayToken();
-
-  // Search sealed TCG products (183468), NEW condition only, sorted by Best Match
-  const url = `https://api.ebay.com/buy/browse/v1/item_summary/search`
-    + `?q=${encodeURIComponent(query)}`
-    + `&limit=20`
-    + `&filter=conditions:NEW,categoryIds:183468`
-    + `&sort=bestMatch`;
-
+async function findTCGPlayerProductId(query) {
+  // Use TCGCSV's product search — it mirrors TCGplayer's catalog including sealed products
+  // Search across all Pokemon groups for sealed products matching our query
+  const words = query.toLowerCase().replace(/pokemon\s*/i, '').trim();
+  
+  // Try TCGplayer's own search API (no auth needed for public search)
+  const url = `https://api.tcgplayer.com/catalog/search?q=${encodeURIComponent(query)}&productLineName=pokemon&productTypeName=Sealed+Products&limit=5`;
   const res = await fetch(url, {
-    headers: { 'Authorization': `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
+    headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' },
     signal: AbortSignal.timeout(8000),
   });
-  if (!res.ok) throw new Error(`eBay search: ${res.status}`);
-
-  const items = (await res.json()).itemSummaries || [];
-  const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-
-  // Score each item: more query words in title = better match
-  // Also prefer items with thumbnailImages (usually stock photos from catalog)
-  const scored = items
-    .map(item => {
-      const title = (item.title || '').toLowerCase();
-      const wordScore = words.filter(w => title.includes(w)).length;
-      const hasThumb = !!(item.thumbnailImages?.[0]?.imageUrl);
-      const imgUrl = item.thumbnailImages?.[0]?.imageUrl || item.image?.imageUrl;
-      return { wordScore, hasThumb, imgUrl };
-    })
-    .filter(x => x.imgUrl)
-    .sort((a, b) => {
-      // Prefer thumbnail (stock photo) over regular image
-      if (a.hasThumb !== b.hasThumb) return a.hasThumb ? -1 : 1;
-      return b.wordScore - a.wordScore;
-    });
-
-  if (!scored.length) throw new Error('no results');
-  return scored[0].imgUrl;
+  if (!res.ok) throw new Error(`TCGplayer search: ${res.status}`);
+  const data = await res.json();
+  const results = data.results || [];
+  if (!results.length) throw new Error('no results');
+  return results[0].productId;
 }
 
 export default async function handler(req, res) {
@@ -78,9 +40,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const imgUrl = await findProductImage(q);
+    const productId = await findTCGPlayerProductId(q);
+    const imgUrl = `https://product-images.tcgplayer.com/fit-in/437x437/${productId}.jpg`;
+
     const imgRes = await fetch(imgUrl, { signal: AbortSignal.timeout(8000) });
-    if (!imgRes.ok) throw new Error(`proxy: ${imgRes.status}`);
+    if (!imgRes.ok) throw new Error(`image fetch: ${imgRes.status}`);
 
     const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
     const buffer = Buffer.from(await imgRes.arrayBuffer());
