@@ -98,42 +98,10 @@ try { JSON.parse(productMetaJson); } catch(e) {
   productMetaJson = '{}';
 }
 
-// ── Fetch product images from Amazon og:image at generation time ────────────────
-// Bakes image URLs into the HTML so no runtime proxy needed — works with ad blockers.
-async function fetchAmazonImage(asin) {
-  try {
-    const res = await fetch(`https://www.amazon.com/dp/${asin}`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept': 'text/html,application/xhtml+xml',
-      },
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const html = await res.text();
-    const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)
-           || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/i);
-    if (!m) throw new Error('no og:image found');
-    return m[1];
-  } catch(e) {
-    console.warn(`  ⚠️  Image fetch failed for ${asin}: ${e.message}`);
-    return null;
-  }
-}
-
+// ── Product images are fetched at runtime via /api/product-image?q=... ──────────
+// No generation-time fetching needed — the API handles caching.
 const productMeta = JSON.parse(productMetaJson);
-if (Object.keys(productMeta).length > 0) {
-  console.log(`🖼️  Fetching product images for ${Object.keys(productMeta).length} ASINs...`);
-  await Promise.all(Object.entries(productMeta).map(async ([asin, p]) => {
-    const imgUrl = await fetchAmazonImage(asin);
-    if (imgUrl) {
-      productMeta[asin].image = imgUrl;
-      console.log(`  ✅  ${asin} → ${imgUrl.slice(0, 70)}`);
-    }
-  }));
-  productMetaJson = JSON.stringify(productMeta);
-}
+productMetaJson = JSON.stringify(productMeta);
 
 // ── CHASE_CARDS: optional hardcoded fallback shown before cards load ───────────
 // If omitted, chase section starts empty and auto-populates from rarity on page load.

@@ -1280,15 +1280,15 @@ function renderProductCard(p) {
     </div>`;
 }
 
-function amazonImgUrl(asin) {
-  // Proxy through our own domain so ad blockers don't block the image
-  return `/api/product-image?asin=${asin}`;
+function productImgUrl(q) {
+  // Proxy through our own domain — fetches from eBay so ad blockers can't block it
+  return `/api/product-image?q=${encodeURIComponent(q)}`;
 }
 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) =>
-    renderProductCard({ ...p, image: amazonImgUrl(asin), price: null, amazonUrl: amazonLink(p.q) })
+    renderProductCard({ ...p, image: productImgUrl(p.q), price: null, amazonUrl: amazonLink(p.q) })
   ).join('');
 }
 
