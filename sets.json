@@ -17,11 +17,11 @@
   },
   {
     "slug": "obsidian-flames-card-list",
-    "name": "Obsidian Flames",
+    "name": "Obsidian Flames (SV3)",
     "series": "Scarlet & Violet",
     "short": "SV3",
     "setId": "sv03",
-    "live": false
+    "live": true
   },
   {
     "slug": "paradox-rift-card-list",
