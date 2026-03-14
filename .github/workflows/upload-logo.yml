@@ -1,35 +1,31 @@
-name: Upload Set Logo to R2
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-on:
-  workflow_dispatch:
-    inputs:
-      set_id:
-        description: 'Set ID (e.g. sv05)'
-        required: true
-      logo_filename:
-        description: 'Logo filename in scripts/ folder (e.g. sv05-logo.png)'
-        required: true
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-jobs:
-  upload-logo:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL } = process.env;
+const SET_ID    = process.env.SET_ID;
+const LOGO_FILE = process.env.LOGO_FILE;
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+if (!SET_ID || !LOGO_FILE) { console.error('Missing SET_ID or LOGO_FILE'); process.exit(1); }
+if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET_NAME) { console.error('Missing R2 credentials'); process.exit(1); }
 
-      - name: Install dependencies
-        run: npm install
+const s3 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY },
+});
 
-      - name: Upload logo to R2
-        env:
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
-          SET_ID: ${{ github.event.inputs.set_id }}
-          LOGO_FILE: scripts/${{ github.event.inputs.logo_filename }}
-        run: node scripts/upload-logo.js
+const logoPath = path.resolve(__dirname, '..', LOGO_FILE);
+if (!fs.existsSync(logoPath)) { console.error(`File not found: ${logoPath}`); process.exit(1); }
+
+const buffer = fs.readFileSync(logoPath);
+const contentType = path.extname(logoPath).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg';
+const r2Key = `logos/${SET_ID}.png`;
+
+console.log(`📤 Uploading → R2 at ${r2Key} ...`);
+await s3.send(new PutObjectCommand({ Bucket: R2_BUCKET_NAME, Key: r2Key, Body: buffer, ContentType: contentType }));
+const publicUrl = R2_PUBLIC_URL ? `${R2_PUBLIC_URL.replace(/\/$/, '')}/${r2Key}` : r2Key;
+console.log(`✅ Done! ${publicUrl}`);
