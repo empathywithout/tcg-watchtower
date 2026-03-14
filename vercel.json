@@ -189,111 +189,111 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/base-set/card-list",
-      "destination": "/scarlet-violet-base-set-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/card-list",
-      "destination": "/paldea-evolved-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/card-list",
-      "destination": "/obsidian-flames-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paradox-rift/card-list",
-      "destination": "/paradox-rift-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/151/card-list",
-      "destination": "/scarlet-violet-151-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldean-fates/card-list",
-      "destination": "/paldean-fates-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/temporal-forces/card-list",
-      "destination": "/temporal-forces-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/card-list",
-      "destination": "/twilight-masquerade-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/card-list",
-      "destination": "/shrouded-fable-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/stellar-crown/card-list",
-      "destination": "/stellar-crown-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/surging-sparks/card-list",
-      "destination": "/surging-sparks-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/card-list",
-      "destination": "/prismatic-evolutions-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/journey-together/card-list",
-      "destination": "/journey-together-card-list"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
-      "destination": "/destined-rivals-card-list"
+      "destination": "/scarlet-violet-base-set-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/base-set/sealed-product",
       "destination": "/scarlet-violet-base-set-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/card-list",
+      "destination": "/paldea-evolved-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product",
       "destination": "/paldea-evolved-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/card-list",
+      "destination": "/obsidian-flames-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
       "destination": "/obsidian-flames-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/card-list",
+      "destination": "/paradox-rift-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
       "destination": "/paradox-rift-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/card-list",
+      "destination": "/scarlet-violet-151-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/151/sealed-product",
       "destination": "/scarlet-violet-151-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/card-list",
+      "destination": "/paldean-fates-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
       "destination": "/paldean-fates-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/card-list",
+      "destination": "/temporal-forces-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product",
       "destination": "/temporal-forces-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/card-list",
+      "destination": "/twilight-masquerade-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/sealed-product",
       "destination": "/twilight-masquerade-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/card-list",
+      "destination": "/shrouded-fable-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product",
       "destination": "/shrouded-fable-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/card-list",
+      "destination": "/stellar-crown-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
       "destination": "/stellar-crown-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/surging-sparks/card-list",
+      "destination": "/surging-sparks-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/surging-sparks/sealed-product",
       "destination": "/surging-sparks-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/card-list",
+      "destination": "/prismatic-evolutions-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/sealed-product",
       "destination": "/prismatic-evolutions-card-list.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/journey-together/card-list",
+      "destination": "/journey-together-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/journey-together/sealed-product",
       "destination": "/journey-together-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
+      "destination": "/destined-rivals-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
