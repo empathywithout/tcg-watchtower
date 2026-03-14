@@ -1351,7 +1351,7 @@ function renderProducts() {
       || (CONFIG.r2 && CONFIG.r2 !== '' ? `${CONFIG.r2}/products/sv01/${asin}.jpg` : null)
       || productImgUrl(p.q);
     // Direct product page URLs — far more precise than search queries
-    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/dp/${asin}?linkCode=ll1&tag=${CONFIG.amazon.tag}`;
+    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent('"' + p.name + '" pokemon')}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
     const ebayUrl   = ebayLink(p.q);
     return renderProductCard({ ...p, image: img, price: null, amazonUrl, tcgpUrl, ebayUrl });
