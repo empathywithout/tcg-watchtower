@@ -1279,10 +1279,15 @@ function renderProductCard(p) {
     </div>`;
 }
 
+function amazonImgUrl(asin) {
+  // Amazon Associates image widget — uses your affiliate tag, works as direct img src
+  return `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${asin}&Format=_SL500_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${CONFIG.amazon.tag}`;
+}
+
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) =>
-    renderProductCard({ ...p, image: null, price: null, amazonUrl: amazonLink(p.q) })
+    renderProductCard({ ...p, image: amazonImgUrl(asin), price: null, amazonUrl: amazonLink(p.q) })
   ).join('');
 }
 
