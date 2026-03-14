@@ -299,7 +299,8 @@ function renderSets() {
   Object.entries(grouped).forEach(([series, sets]) => {
     html += `<div class="series-label">${series}</div><div class="sets-grid">`;
     sets.forEach(s => {
-      const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${s.setId}/logo.png` : '';
+      const TCGDEX_ID = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
+      const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${TCGDEX_ID}/logo.png` : '';
       const isLive = s.live;
       html += `
         <a href="${isLive ? '/' + s.slug : 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
