@@ -119,7 +119,10 @@ if (!SET_ID || !SET_FULL_NAME) {
 
 // ── Fetch set metadata from TCGdex ──────────────────────────────────────────────
 console.log(`📋 Fetching set metadata for ${SET_ID}…`);
-const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${SET_ID}`);
+// Map internal set IDs to TCGdex API IDs for special sets
+const TCGDEX_ID_MAP = { 'sv3pt5': '151', 'sv4pt5': 'sv4pt5', 'sv6pt5': 'sv6pt5', 'sv8pt5': 'sv8pt5' };
+const TCGDEX_SET_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
+const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_ID}`);
 if (!tcgRes.ok) {
   console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
   process.exit(1);
