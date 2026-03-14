@@ -1939,12 +1939,23 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   const sections = ['section-chase','section-cards','section-products']
     .map(id => document.getElementById(id)).filter(Boolean);
 
+  // Set initial active button based on current URL
+  const currentPath = window.location.pathname;
+  btns.forEach(btn => {
+    if (btn.dataset.url && currentPath === btn.dataset.url) {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  });
+
   // Click scrolls to section and updates URL
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     });
   });
 
