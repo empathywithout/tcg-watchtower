@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/sets.json",
+      "destination": "/sets.json"
+    },
+    {
       "source": "/api/cards",
       "destination": "/api/cards.js"
     },

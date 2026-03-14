@@ -1894,7 +1894,8 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
       dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
       populated = true;
     } catch(e) {
-      dropdown.innerHTML = '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Could not load sets</div>';
+      console.error('[Sets dropdown] failed:', e.message);
+      dropdown.innerHTML = `<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Could not load sets: ${e.message}</div>`;
     }
   }
 })();
