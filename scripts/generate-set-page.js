@@ -29,7 +29,7 @@
 //   CF_R2_ENDPOINT / CF_R2_ACCESS_KEY / CF_R2_SECRET_KEY / CF_R2_BUCKET  (for R2 backup)
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 
 // ── Inputs ─────────────────────────────────────────────────────────────────────
 const SET_ID           = process.env.SET_ID;
@@ -233,8 +233,6 @@ if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
 
 // ── Fetch product images from eBay and store in R2 at generation time ────────────
 // Bakes R2 URLs into the HTML — no runtime fetching, works with all ad blockers.
-import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-
 const r2 = process.env.CF_R2_ACCESS_KEY ? new S3Client({
   region: 'auto',
   endpoint: process.env.CF_R2_ENDPOINT,
