@@ -242,6 +242,706 @@
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
       "destination": "/destined-rivals-card-list"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/venusaur-ex-001",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/venusaur-ex-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/ledyba-002",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/ledyba-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/ledian-003",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/ledian-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/celebi-004",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/celebi-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lileep-005",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lileep-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/cradily-006",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/cradily-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/carnivine-007",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/carnivine-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/mow-rotom-008",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/mow-rotom-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/grubbin-009",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/grubbin-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/gossifleur-010",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/gossifleur-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/eldegoss-011",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/eldegoss-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/applin-012",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/applin-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/dipplin-013",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/dipplin-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/hydrapple-ex-014",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/hydrapple-ex-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/nymble-015",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/nymble-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lokix-016",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lokix-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/toedscool-017",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/toedscool-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/toedscruel-018",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/toedscruel-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/ponyta-019",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/ponyta-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/rapidash-020",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/rapidash-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/pansear-021",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/pansear-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/reshiram-022",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/reshiram-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/salandit-023",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/salandit-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/salazzle-024",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/salazzle-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/turtonator-025",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/turtonator-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/scorbunny-026",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/scorbunny-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/raboot-027",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/raboot-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/cinderace-ex-028",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/cinderace-ex-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/charcadet-029",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/charcadet-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/blastoise-ex-030",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/blastoise-ex-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lapras-031",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lapras-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lapras-ex-032",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lapras-ex-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/marill-033",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/marill-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/azumarill-034",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/azumarill-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/finneon-035",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/finneon-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lumineon-036",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lumineon-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/tirtouga-037",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/tirtouga-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/carracosta-038",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/carracosta-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/froakie-039",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/froakie-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/frogadier-040",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/frogadier-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/greninja-ex-041",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/greninja-ex-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/crabominable-042",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/crabominable-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/chewtle-043",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/chewtle-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/drednaw-044",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/drednaw-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/veluza-045",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/veluza-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/electabuzz-046",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/electabuzz-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/electivire-047",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/electivire-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/chinchou-048",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/chinchou-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lanturn-049",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lanturn-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/joltik-050",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/joltik-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/galvantula-ex-051",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/galvantula-ex-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/charjabug-052",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/charjabug-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/vikavolt-053",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/vikavolt-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/togedemaru-054",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/togedemaru-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/zeraora-055",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/zeraora-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/pawmi-056",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/pawmi-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/slowpoke-057",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/slowpoke-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/slowking-058",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/slowking-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/mewtwo-059",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/mewtwo-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/drifloon-060",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/drifloon-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/drifblim-061",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/drifblim-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/yamask-062",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/yamask-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/comfey-063",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/comfey-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/milcery-064",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/milcery-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/alcremie-065",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/alcremie-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/fidough-066",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/fidough-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/dachsbun-ex-067",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/dachsbun-ex-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/flittle-068",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/flittle-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/espathra-069",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/espathra-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/greavard-070",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/greavard-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/iron-boulder-071",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/iron-boulder-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/cubone-072",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/cubone-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/marowak-073",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/marowak-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/rhyhorn-074",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/rhyhorn-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/rhydon-075",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/rhydon-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/rhyperior-076",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/rhyperior-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/meditite-077",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/meditite-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/meditite-078",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/meditite-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/medicham-079",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/medicham-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/medicham-ex-080",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/medicham-ex-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/riolu-081",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/riolu-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lucario-ex-082",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lucario-ex-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/mienfoo-083",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/mienfoo-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/mienshao-084",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/mienshao-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/pancham-085",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/pancham-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/diancie-086",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/diancie-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/crabrawler-087",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/crabrawler-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/falinks-088",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/falinks-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/garganacl-ex-089",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/garganacl-ex-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/koraidon-090",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/koraidon-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/gulpin-091",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/gulpin-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/swalot-092",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/swalot-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/pangoro-093",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/pangoro-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/impidimp-094",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/impidimp-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/morgrem-095",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/morgrem-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/grimmsnarl-096",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/grimmsnarl-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/bombirdier-097",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/bombirdier-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/jirachi-098",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/jirachi-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/klink-099",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/klink-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/klang-100",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/klang-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/klinklang-101",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/klinklang-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/meltan-102",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/meltan-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/meltan-103",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/meltan-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/melmetal-104",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/melmetal-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/melmetal-ex-105",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/melmetal-ex-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/duraludon-106",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/duraludon-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/archaludon-107",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/archaludon-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/varoom-108",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/varoom-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/revavroom-109",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/revavroom-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/orthworm-ex-110",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/orthworm-ex-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/raging-bolt-111",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/raging-bolt-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/tauros-112",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/tauros-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/eevee-113",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/eevee-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/hoothoot-114",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/hoothoot-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/noctowl-115",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/noctowl-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/glameow-116",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/glameow-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/purugly-117",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/purugly-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/fan-rotom-118",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/fan-rotom-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/bouffalant-119",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/bouffalant-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/tornadus-120",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/tornadus-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/fletchling-121",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/fletchling-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/fletchinder-122",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/fletchinder-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/talonflame-123",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/talonflame-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/wooloo-124",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/wooloo-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/dubwool-125",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/dubwool-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lechonk-126",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lechonk-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/cyclizar-127",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/cyclizar-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/terapagos-ex-128",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/terapagos-ex-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/antique-cover-fossil-129",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/antique-cover-fossil-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/antique-root-fossil-130",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/antique-root-fossil-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/area-zero-underdepths-131",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/area-zero-underdepths-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/briar-132",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/briar-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/crispin-133",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/crispin-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/deluxe-bomb-134",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/deluxe-bomb-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/glass-trumpet-135",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/glass-trumpet-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/grand-tree-136",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/grand-tree-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/gravity-gemstone-137",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/gravity-gemstone-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/kofu-138",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/kofu-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lacey-139",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lacey-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/occa-berry-140",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/occa-berry-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/payapa-berry-141",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/payapa-berry-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/sparkling-crystal-142",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/sparkling-crystal-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/bulbasaur-143",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/bulbasaur-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/ledian-144",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/ledian-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lileep-145",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lileep-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/turtonator-146",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/turtonator-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/raboot-147",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/raboot-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/squirtle-148",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/squirtle-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/crabominable-149",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/crabominable-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/joltik-150",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/joltik-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/zeraora-151",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/zeraora-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/milcery-152",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/milcery-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/meditite-153",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/meditite-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/gulpin-154",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/gulpin-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/archaludon-155",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/archaludon-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/hydrapple-ex-156",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/hydrapple-ex-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/cinderace-ex-157",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/cinderace-ex-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lapras-ex-158",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lapras-ex-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/galvantula-ex-159",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/galvantula-ex-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/dachsbun-ex-160",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/dachsbun-ex-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/medicham-ex-161",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/medicham-ex-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/orthworm-ex-162",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/orthworm-ex-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/briar-163",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/briar-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/crispin-164",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/crispin-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/kofu-165",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/kofu-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lacey-166",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lacey-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/hydrapple-ex-167",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/hydrapple-ex-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/galvantula-ex-168",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/galvantula-ex-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/dachsbun-ex-169",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/dachsbun-ex-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/terapagos-ex-170",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/terapagos-ex-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/briar-171",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/briar-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/lacey-172",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/lacey-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/terapagos-ex-173",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/terapagos-ex-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/area-zero-underdepths-174",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/area-zero-underdepths-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards/bravery-charm-175",
+      "destination": "/pokemon/scarlet-violet/stellar-crown/cards/bravery-charm-175.html"
     }
   ]
 }
