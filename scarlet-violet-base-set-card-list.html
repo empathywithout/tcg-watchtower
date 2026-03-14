@@ -1287,6 +1287,7 @@ function productImgUrl(q) {
 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
+  console.log('[Products] rendering', Object.keys(PRODUCT_META).length, 'products');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
     // Use pre-fetched image URL if available (set at generation time via R2)
     // Fall back to proxy for pages generated without R2 credentials
