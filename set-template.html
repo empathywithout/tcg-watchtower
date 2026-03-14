@@ -1294,9 +1294,9 @@ function renderProductCard(p) {
         <div class="product-name">${p.name}</div>
 
         <div class="product-links">
-          <a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
+          ${!p.noAmazon ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
             <span>Amazon</span><span>→</span>
-          </a>
+          </a>` : ''}
           <a class="product-link-row pl-ebay" href="${ebayLink(p.q)}" target="_blank" rel="noopener">
             <span>eBay</span><span>→</span>
           </a>
