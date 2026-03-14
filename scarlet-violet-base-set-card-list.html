@@ -1299,12 +1299,15 @@ function renderChaseCardsHTML(grid) {
 
 /* ===== PRODUCTS ===== */
 const PRODUCT_META = {
-  'B0BVK3Y82T': { type: 'Booster Box',       filterKey: 'box',        badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       q: 'Pokemon TCG Scarlet Violet Base Set SV1 Booster Box 36 Packs',           image: 'https://product-images.tcgplayer.com/fit-in/437x437/476452.jpg' },
-  'B0BVHHTK8Z': { type: 'Elite Trainer Box',  filterKey: 'etb',        badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',            q: 'Pokemon TCG Scarlet Violet Base Set SV1 Elite Trainer Box',              image: 'https://product-images.tcgplayer.com/fit-in/437x437/478335.jpg' },
-  'B0BVK3TNJQ': { type: 'Booster Bundle',     filterKey: 'bundle',     badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',        q: 'Pokemon TCG Scarlet Violet Base Set SV1 6 Pack Booster Bundle',          image: 'https://product-images.tcgplayer.com/fit-in/437x437/478258.jpg' },
-  'B0BVK3VNJB': { type: 'Booster Box Case',   filterKey: 'case',       badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',   q: 'Pokemon TCG Scarlet Violet Base Set SV1 Booster Box Case 6 Boxes',       image: 'https://product-images.tcgplayer.com/fit-in/437x437/476453.jpg', noAmazon: true },
-  'B0BVHHTSWB': { type: 'Sleeved Booster',    filterKey: 'sleeves',    badgeClass: 'badge-collection', name: 'Scarlet & Violet Sleeved Booster Pack',          q: 'Pokemon TCG Scarlet Violet Base Set SV1 Sleeved Booster Pack',           image: 'https://product-images.tcgplayer.com/fit-in/437x437/478273.jpg' },
-  'B0BVHHTVNF': { type: 'Build & Battle Box', filterKey: 'battle',     badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',           q: 'Pokemon TCG Scarlet Violet Base Set SV1 Build Battle Box',               image: 'https://product-images.tcgplayer.com/fit-in/437x437/478253.jpg' },
+  // asin = Amazon ASIN (used for Amazon direct product link)
+  // tcgpId = TCGplayer product ID (used for exact TCGplayer product page)
+  // q = fallback search query for eBay (no exact product ID system)
+  'B0BVK3Y82T': { type: 'Booster Box',       filterKey: 'box',        badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       tcgpId: '476452', q: 'Pokemon Scarlet Violet Base Set Booster Box 36 Packs SV1',     image: 'https://product-images.tcgplayer.com/fit-in/437x437/476452.jpg' },
+  'B0BVHHTK8Z': { type: 'Elite Trainer Box',  filterKey: 'etb',        badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',            tcgpId: '478335', q: 'Pokemon Scarlet Violet Base Set Elite Trainer Box Koraidon SV1', image: 'https://product-images.tcgplayer.com/fit-in/437x437/478335.jpg' },
+  'B0BVK3TNJQ': { type: 'Booster Bundle',     filterKey: 'bundle',     badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',        tcgpId: '478258', q: 'Pokemon Scarlet Violet Base Set 6 Pack Booster Bundle SV1',    image: 'https://product-images.tcgplayer.com/fit-in/437x437/478258.jpg' },
+  'B0BVK3VNJB': { type: 'Booster Box Case',   filterKey: 'case',       badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',   tcgpId: '476453', q: 'Pokemon Scarlet Violet Base Set Booster Box Case 6 Boxes SV1', image: 'https://product-images.tcgplayer.com/fit-in/437x437/476453.jpg', noAmazon: true },
+  'B0BVHHTSWB': { type: 'Sleeved Booster',    filterKey: 'sleeves',    badgeClass: 'badge-collection', name: 'Scarlet & Violet Sleeved Booster Pack',          tcgpId: '478273', q: 'Pokemon Scarlet Violet Base Set Sleeved Booster Pack SV1',     image: 'https://product-images.tcgplayer.com/fit-in/437x437/478273.jpg' },
+  'B0BVHHTVNF': { type: 'Build & Battle Box', filterKey: 'battle',     badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',           tcgpId: '478253', q: 'Pokemon Scarlet Violet Base Set Build Battle Box SV1',         image: 'https://product-images.tcgplayer.com/fit-in/437x437/478253.jpg' },
 };
 
 function renderProductCard(p) {
@@ -1320,13 +1323,13 @@ function renderProductCard(p) {
         <div class="product-name">${p.name}</div>
 
         <div class="product-links">
-          ${!p.noAmazon ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
+          ${!p.noAmazon && p.amazonUrl ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
             <span>Amazon</span><span>→</span>
           </a>` : ''}
-          <a class="product-link-row pl-ebay" href="${ebayLink(p.q)}" target="_blank" rel="noopener">
+          <a class="product-link-row pl-ebay" href="${p.ebayUrl || ebayLink(p.q)}" target="_blank" rel="noopener">
             <span>eBay</span><span>→</span>
           </a>
-          <a class="product-link-row pl-tcgp" href="${tcgplayerLink(p.q)}" target="_blank" rel="noopener">
+          <a class="product-link-row pl-tcgp" href="${p.tcgpUrl || tcgplayerLink(p.q)}" target="_blank" rel="noopener">
             <span>TCGplayer</span><span>→</span>
           </a>
         </div>
@@ -1347,7 +1350,11 @@ function renderProducts() {
     const img = p.image 
       || (CONFIG.r2 && CONFIG.r2 !== '' ? `${CONFIG.r2}/products/sv01/${asin}.jpg` : null)
       || productImgUrl(p.q);
-    return renderProductCard({ ...p, image: img, price: null, amazonUrl: amazonLink(p.q) });
+    // Direct product page URLs — far more precise than search queries
+    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/dp/${asin}?linkCode=ll1&tag=${CONFIG.amazon.tag}`;
+    const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
+    const ebayUrl   = ebayLink(p.q);
+    return renderProductCard({ ...p, image: img, price: null, amazonUrl, tcgpUrl, ebayUrl });
   }).join('');
 }
 

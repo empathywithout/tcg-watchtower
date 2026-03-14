@@ -1295,13 +1295,13 @@ function renderProductCard(p) {
         <div class="product-name">${p.name}</div>
 
         <div class="product-links">
-          ${!p.noAmazon ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
+          ${!p.noAmazon && p.amazonUrl ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
             <span>Amazon</span><span>→</span>
           </a>` : ''}
-          <a class="product-link-row pl-ebay" href="${ebayLink(p.q)}" target="_blank" rel="noopener">
+          <a class="product-link-row pl-ebay" href="${p.ebayUrl || ebayLink(p.q)}" target="_blank" rel="noopener">
             <span>eBay</span><span>→</span>
           </a>
-          <a class="product-link-row pl-tcgp" href="${tcgplayerLink(p.q)}" target="_blank" rel="noopener">
+          <a class="product-link-row pl-tcgp" href="${p.tcgpUrl || tcgplayerLink(p.q)}" target="_blank" rel="noopener">
             <span>TCGplayer</span><span>→</span>
           </a>
         </div>
@@ -1320,7 +1320,10 @@ function renderProducts() {
     // Use pre-fetched image URL if available (set at generation time via R2)
     // Fall back to proxy for pages generated without R2 credentials
     const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/{{SET_ID}}/${asin}.jpg` : null);
-    return renderProductCard({ ...p, image: img, price: null, amazonUrl: amazonLink(p.q) });
+    const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/dp/${asin}?linkCode=ll1&tag=${CONFIG.amazon.tag}`;
+    const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
+    const ebayUrl   = ebayLink(p.q);
+    return renderProductCard({ ...p, image: img, price: null, amazonUrl, tcgpUrl, ebayUrl });
   }).join('');
 }
 
