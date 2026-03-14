@@ -904,6 +904,35 @@ footer {
 .chase-arrow.hidden { opacity:0; pointer-events:none; }
 .chase-arrow-left  { left:-22px; }
 .chase-arrow-right { right:-22px; }
+
+/* ===== SETS DROPDOWN IN SECTION NAV ===== */
+.section-nav-sets { position: relative; margin-left: auto; flex-shrink: 0; }
+.section-nav-sets-btn {
+  padding: 14px 20px; font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
+  background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; transition: color 0.2s; white-space: nowrap; font-family: inherit;
+  display: flex; align-items: center; gap: 6px;
+}
+.section-nav-sets-btn:hover { color: var(--text-primary); }
+.section-nav-sets-btn.open { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
+.section-nav-dropdown {
+  display: none; position: absolute; right: 0; top: calc(100% + 4px);
+  width: 260px; background: rgba(10,15,30,0.98); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px;
+  z-index: 200; max-height: 400px; overflow-y: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.section-nav-dropdown.open { display: block; }
+.nav-dropdown-set {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 8px; text-decoration: none; color: var(--text-primary);
+  font-size: 0.85rem; transition: background 0.15s;
+}
+.nav-dropdown-set:hover { background: rgba(255,255,255,0.06); }
+.nav-dropdown-set.current { background: rgba(59,130,246,0.15); color: var(--primary-blue); }
+.nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
+.nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
+.nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
 </style>
 </head>
 <body>
@@ -1014,6 +1043,12 @@ footer {
     <button class="section-nav-btn active" data-target="section-chase">🔥 Chase Cards</button>
     <button class="section-nav-btn" data-target="section-cards">📋 Card List</button>
     <button class="section-nav-btn" data-target="section-products">🛒 Sealed Products</button>
+    <div class="section-nav-sets">
+      <button class="section-nav-sets-btn" id="nav-sets-btn">📦 Sets ▾</button>
+      <div class="section-nav-dropdown" id="nav-sets-dropdown">
+        <div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -1811,6 +1846,55 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   slider.addEventListener('scroll', updateArrows, { passive: true });
   new MutationObserver(updateArrows).observe(slider, { childList: true });
   updateArrows();
+})();
+
+
+/* ===== SECTION NAV SETS DROPDOWN ===== */
+(function() {
+  const btn      = document.getElementById('nav-sets-btn');
+  const dropdown = document.getElementById('nav-sets-dropdown');
+  if (!btn || !dropdown) return;
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = dropdown.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    if (isOpen) populateNavSets();
+  });
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('open');
+    btn.classList.remove('open');
+  });
+  let populated = false;
+  async function populateNavSets() {
+    if (populated) return;
+    try {
+      const res = await fetch('/sets.json');
+      const sets = await res.json();
+      const liveSets = sets.filter(s => s.live);
+      const grouped = {};
+      liveSets.forEach(s => {
+        if (!grouped[s.series]) grouped[s.series] = [];
+        grouped[s.series].push(s);
+      });
+      let html = '';
+      const currentPath = window.location.pathname.replace(/^\//, '');
+      Object.entries(grouped).forEach(([series, seriesSets]) => {
+        html += `<div class="nav-dropdown-series">${series}</div>`;
+        seriesSets.forEach(s => {
+          const isCurrent = currentPath === s.slug;
+          const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${s.setId}/logo.png` : '';
+          html += `<a href="/${s.slug}" class="nav-dropdown-set ${isCurrent ? 'current' : ''}">
+            ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
+            <span>${s.name}</span>
+          </a>`;
+        });
+      });
+      dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
+      populated = true;
+    } catch(e) {
+      dropdown.innerHTML = '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Could not load sets</div>';
+    }
+  }
 })();
 
 </script>
