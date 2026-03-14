@@ -1402,12 +1402,12 @@ function renderChaseCardsHTML(grid) {
       : `<div class="chase-card-price-loading">Loading price...</div>`;
 
     return `
-    <div class="chase-card" onclick="openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
+    <div class="chase-card" onclick="openModal('${card.localId}','${c.name}','${c.rarity}','${c.searchName}','${img}')">
       <img class="chase-card-img" src="${img}" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/198</div>
+        <div class="chase-card-number">#${card.localId}/198</div>
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
         ${priceHTML}
         <div class="buy-links">
@@ -1683,7 +1683,7 @@ function renderCards(reset) {
     const priceClass = !(card.localId in priceCache) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${c.id} Scarlet & Violet Base Set (SV1) Pokemon Card" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name} ${card.localId} Scarlet & Violet Base Set (SV1) Pokemon Card" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>

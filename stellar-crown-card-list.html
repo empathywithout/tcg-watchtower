@@ -1342,12 +1342,12 @@ function renderChaseCardsHTML(grid) {
       ? `<div class="chase-card-price"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-loading">Loading price...</div>`;
     return `
-    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
+    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${card.localId}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${card.localId}">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/142</div>
+        <div class="chase-card-number">#${card.localId}/142</div>
         <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
         ${priceHTML}
         <div class="buy-links">
@@ -1601,7 +1601,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${c.id} Stellar Crown (SV7) Pokemon Card" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name} ${card.localId} Stellar Crown (SV7) Pokemon Card" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
