@@ -82,7 +82,9 @@ async function main() {
     const brief = briefCards[i];
     process.stdout.write(`[${i + 1}/${briefCards.length}] ${brief.name}... `);
     try {
-      const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${TCGDEX_CARD_ID_PREFIX}-${brief.localId}`);
+      // Use the card's own id if available (e.g. sv3pt5-1), otherwise construct it
+      const cardId = brief.id || `${TCGDEX_CARD_ID_PREFIX}-${brief.localId}`;
+      const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
       fullCards.push({
         localId: brief.localId,
         name: card.name,
