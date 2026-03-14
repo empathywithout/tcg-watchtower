@@ -30,5 +30,13 @@
     "short": "SV4",
     "setId": "sv04",
     "live": false
+  },
+  {
+    "slug": "scarlet-violet-151-card-list",
+    "name": "Scarlet & Violet 151",
+    "series": "Scarlet & Violet",
+    "short": "MEW",
+    "setId": "sv3pt5",
+    "live": true
   }
 ]
