@@ -99,7 +99,7 @@ function generateCardPage(card, allCards) {
   const url  = cardUrl(card);
   const img  = cardImgUrl(card);
   const related = getRelated(card, allCards);
-  const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`;
+  const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`;
   const seriesUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
 
   const title = `${card.name} ${card.localId} Price, Rarity & Card Info | Pokémon TCG`;
@@ -435,13 +435,13 @@ const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 // Remove old card rewrites for this set and add new ones
 // Always ensure card-list and sealed-product rewrites exist for this set
 const permanentRewrites = [
-  { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`, destination: `/${SET_SLUG_FULL}.html` },
+  { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`, destination: `/${SET_SLUG_FULL}.html` },
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`, destination: `/${SET_SLUG_FULL}.html` },
 ];
 vercel.rewrites = [
   ...vercel.rewrites.filter(r =>
     !r.source.includes(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`) &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list` &&
+    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards` &&
     r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`
   ),
   ...permanentRewrites,
@@ -482,7 +482,7 @@ const chaseCards = cards
   .sort((a, b) => (RARITY_TIER[normalizeRarity(a.rarity)] ?? 99) - (RARITY_TIER[normalizeRarity(b.rarity)] ?? 99));
 
 const mvpUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`;
-const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`;
+const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`;
 const seriesUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
 const mvpTitle = `Most Valuable ${SET_FULL_NAME} Cards | Prices & Rankings | Pokémon TCG`;
 const mvpDescription = `The most valuable ${SET_FULL_NAME} Pokémon cards ranked by price. See current market prices for all Hyper Rare, Special Illustration Rare, and Ultra Rare cards.`;

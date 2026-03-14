@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/base-set/card-list",
+      "source": "/pokemon/sets/scarlet-violet/base-set/cards",
       "destination": "/scarlet-violet-base-set-card-list.html"
     },
     {
@@ -9,7 +9,7 @@
       "destination": "/scarlet-violet-base-set-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/card-list",
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards",
       "destination": "/paldea-evolved-card-list.html"
     },
     {
@@ -17,7 +17,7 @@
       "destination": "/paldea-evolved-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/card-list",
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards",
       "destination": "/obsidian-flames-card-list.html"
     },
     {
@@ -25,7 +25,7 @@
       "destination": "/obsidian-flames-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/paradox-rift/card-list",
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards",
       "destination": "/paradox-rift-card-list.html"
     },
     {
@@ -33,7 +33,7 @@
       "destination": "/paradox-rift-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/151/card-list",
+      "source": "/pokemon/sets/scarlet-violet/151/cards",
       "destination": "/scarlet-violet-151-card-list.html"
     },
     {
@@ -41,7 +41,7 @@
       "destination": "/scarlet-violet-151-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/paldean-fates/card-list",
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
       "destination": "/paldean-fates-card-list.html"
     },
     {
@@ -49,7 +49,7 @@
       "destination": "/paldean-fates-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/temporal-forces/card-list",
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards",
       "destination": "/temporal-forces-card-list.html"
     },
     {
@@ -57,7 +57,7 @@
       "destination": "/temporal-forces-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/card-list",
+      "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/cards",
       "destination": "/twilight-masquerade-card-list.html"
     },
     {
@@ -65,7 +65,7 @@
       "destination": "/twilight-masquerade-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/card-list",
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/cards",
       "destination": "/shrouded-fable-card-list.html"
     },
     {
@@ -73,7 +73,7 @@
       "destination": "/shrouded-fable-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/stellar-crown/card-list",
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards",
       "destination": "/stellar-crown-card-list.html"
     },
     {
@@ -81,7 +81,7 @@
       "destination": "/stellar-crown-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/surging-sparks/card-list",
+      "source": "/pokemon/sets/scarlet-violet/surging-sparks/cards",
       "destination": "/surging-sparks-card-list.html"
     },
     {
@@ -89,7 +89,7 @@
       "destination": "/surging-sparks-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/card-list",
+      "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/cards",
       "destination": "/prismatic-evolutions-card-list.html"
     },
     {
@@ -97,7 +97,7 @@
       "destination": "/prismatic-evolutions-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/journey-together/card-list",
+      "source": "/pokemon/sets/scarlet-violet/journey-together/cards",
       "destination": "/journey-together-card-list.html"
     },
     {
@@ -105,7 +105,7 @@
       "destination": "/journey-together-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
       "destination": "/destined-rivals-card-list.html"
     },
     {
