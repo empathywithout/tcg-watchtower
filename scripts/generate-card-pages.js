@@ -61,7 +61,7 @@ function cardSlug(card) {
 }
 
 function cardUrl(card) {
-  return `${SITE_URL}/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(card)}`;
+  return `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(card)}`;
 }
 
 function cardImgUrl(card) {
@@ -324,7 +324,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       <div class="section-title">Related Cards from ${SET_FULL_NAME}</div>
       <div class="related-grid">
         ${related.map(r => `
-        <a class="related-card" href="/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(r)}">
+        <a class="related-card" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(r)}">
           <img src="${R2_PUBLIC_URL}/cards/${SET_ID}/${r.localId}.webp" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
           <div class="related-card-info">
             <div class="related-card-name">${r.name}</div>
@@ -419,14 +419,14 @@ for (const card of cards) {
   fs.writeFileSync(filepath, html);
   rewrites.push({
     source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${slug}`,
-    destination: `/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${filename}`
+    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${filename}`
   });
   generated++;
   if (generated % 50 === 0) console.log(`  Generated ${generated}/${cards.length}...`);
 }
 
 console.log(`\n✅ Generated ${generated} card pages`);
-console.log(`📁 Output: pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
+console.log(`📁 Output: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
 
 // Update vercel.json with new rewrites
 const vercelPath = path.join(ROOT, 'vercel.json');

@@ -1738,6 +1738,10 @@ document.getElementById('sort-select').addEventListener('change', applyFilters);
 document.getElementById('load-more-btn').addEventListener('click', () => renderCards(false));
 
 /* ===== MODAL ===== */
+
+function toCardSlug(name, localId) {
+  return name.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + localId;
+}
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   // If directUrl not passed yet, try priceCache again at open time
   if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
@@ -1756,6 +1760,9 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         </a>
         <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/198', 'sv01-scarlet-and-violet-base-set')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
+        </a>
+        <a class="modal-buy-link" href="/pokemon/sets/scarlet-violet/base-set/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+          <span>📄 View Card Page</span><span>→</span>
         </a>
       </div>
     </div>`;
