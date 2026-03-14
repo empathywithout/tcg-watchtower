@@ -61,7 +61,7 @@
     "series": "Scarlet & Violet",
     "short": "SV6",
     "setId": "sv06",
-    "live": true
+    "live": false
   },
   {
     "slug": "shrouded-fable-card-list",
@@ -69,7 +69,7 @@
     "series": "Scarlet & Violet",
     "short": "SFA",
     "setId": "sv6pt5",
-    "live": true
+    "live": false
   },
   {
     "slug": "stellar-crown-card-list",
@@ -77,7 +77,7 @@
     "series": "Scarlet & Violet",
     "short": "SV7",
     "setId": "sv07",
-    "live": true
+    "live": false
   },
   {
     "slug": "surging-sparks-card-list",
@@ -85,7 +85,7 @@
     "series": "Scarlet & Violet",
     "short": "SV8",
     "setId": "sv08",
-    "live": true
+    "live": false
   },
   {
     "slug": "prismatic-evolutions-card-list",
@@ -93,7 +93,7 @@
     "series": "Scarlet & Violet",
     "short": "PRE",
     "setId": "sv8pt5",
-    "live": true
+    "live": false
   },
   {
     "slug": "journey-together-card-list",
@@ -101,7 +101,7 @@
     "series": "Scarlet & Violet",
     "short": "SV9",
     "setId": "sv09",
-    "live": true
+    "live": false
   },
   {
     "slug": "destined-rivals-card-list",
@@ -109,6 +109,6 @@
     "series": "Scarlet & Violet",
     "short": "SV10",
     "setId": "sv10",
-    "live": true
+    "live": false
   }
 ]
