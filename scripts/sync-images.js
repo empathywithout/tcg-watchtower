@@ -110,16 +110,15 @@ async function main() {
   console.log(`\n🎨 Uploading set logo to R2...`);
   const logoR2Key = `logos/${SET_ID}.png`;
   
-  // Always re-upload logo to ensure it's correct (tiny file, negligible cost)
-  // Try URLs in order: TCGdex API response → constructed with asset ID → stripped leading zero
+  // Try TCGdex URLs in order (primary + stripped-zero fallback)
   const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
   const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
-  // Also try without leading zero (sv05 → sv5) as fallback
   const strippedId = TCGDEX_ASSET_ID.replace(/^sv0(\d)$/, 'sv$1');
   const logoUrlAlt = `https://assets.tcgdex.net/en/sv/${strippedId}/logo.png`;
-  console.log(`  🔗 Logo URL: ${logoUrl} (alt: ${logoUrlAlt})`);
+  const urlsToTry = [logoUrl, logoUrlAlt].filter(Boolean);
+  console.log(`  🔗 Trying logo URLs: ${urlsToTry.join(', ')}`);
   let logoUploaded = false;
-  for (const url of [logoUrl, logoUrlAlt]) {
+  for (const url of urlsToTry) {
     try {
       const logoBuffer = await downloadImage(url);
       await uploadToR2(logoR2Key, logoBuffer, "image/png");
