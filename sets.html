@@ -300,7 +300,8 @@ function renderSets() {
     html += `<div class="series-label">${series}</div><div class="sets-grid">`;
     sets.forEach(s => {
       const TCGDEX_ID = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
-      const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${TCGDEX_ID}/logo.png` : '';
+      const R2_BASE = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+      const logoUrl = s.setId ? `${R2_BASE}/logos/${s.setId}.png` : '';
       const isLive = s.live;
       html += `
         <a href="${isLive ? '/' + s.slug : 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
