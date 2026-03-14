@@ -190,7 +190,12 @@ const PRODUCT_TYPE_MAP = {
   'Elite Trainer Box':  { filterKey: 'etb',     badgeClass: 'badge-etb',        type: 'Elite Trainer Box' },
   'Build & Battle Box': { filterKey: 'battle',  badgeClass: 'badge-battle',     type: 'Build & Battle Box' },
   'Sleeved Booster':    { filterKey: 'sleeves', badgeClass: 'badge-collection', type: 'Sleeved Booster' },
+  'Collection':         { filterKey: 'collection', badgeClass: 'badge-collection', type: 'Collection' },
 };
+
+// Special sets that don't have booster boxes — only show ETBs, bundles, collections
+const SPECIAL_SETS = new Set(['sv3pt5', 'sv4pt5', 'sv6pt5', 'sv8pt5']);
+const SKIP_FOR_SPECIAL = new Set(['Booster Box', 'Booster Case', 'Build & Battle Box']);
 
 if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
   console.log(`\n📦  Auto-fetching sealed products from TCGCSV for group ${TCGP_GROUP_ID}...`);
@@ -231,6 +236,8 @@ if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
       const combined     = `${extTypeName} ${topTypes} ${product.name || ''}`;
       const config       = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => combined.includes(k))?.[1];
       if (!config) continue;
+      // Skip booster boxes etc. for special sets (151, Paldean Fates, Shrouded Fable, Prismatic Evolutions)
+      if (SPECIAL_SETS.has(SET_ID) && SKIP_FOR_SPECIAL.has(config.type)) continue;
 
       // Use productId as key (no ASIN available from TCGCSV)
       const key = String(product.productId);
