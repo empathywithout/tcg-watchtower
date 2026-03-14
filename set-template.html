@@ -315,7 +315,7 @@ nav {
 
 /* ===== CHASE CARDS ===== */
 .chase-slider {
-  display:flex; gap:20px; align-items:stretch;
+  display:flex; gap:20px;
   overflow-x:auto; padding:8px 4px 20px;
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
@@ -333,6 +333,7 @@ nav {
   overflow:hidden; transition:transform 0.3s,box-shadow 0.3s;
   cursor:pointer;
   display:flex; flex-direction:column;
+  height:520px;
 }
 .chase-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(168,85,247,0.3); }
 .chase-card-img {
@@ -341,12 +342,11 @@ nav {
   display:block; flex-shrink:0;
 }
 .chase-card-info { padding:16px; display:flex; flex-direction:column; flex:1; }
-.chase-card-name { font-weight:700; font-size:1rem; margin-bottom:4px; min-height:1.2rem; }
+.chase-card-name { font-weight:700; font-size:1rem; margin-bottom:4px; height:2.6rem; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
 .chase-card-number-wrap { min-height:1.4rem; margin-bottom:8px; }
 .chase-card-rarity-wrap { min-height:2rem; display:flex; align-items:center; margin-bottom:4px; }
 .chase-card-price-wrap { min-height:2.5rem; display:flex; align-items:center; justify-content:center; border-top:1px solid rgba(255,255,255,0.07); margin-top:8px; padding-top:8px; }
-/* chase-card-name defined in chase-card-info block */
-.chase-card-number { font-size:0.8rem; color:var(--text-muted); margin-bottom:8px; font-family:'Space Mono',monospace; }
+.chase-card-number { font-size:0.8rem; color:var(--text-muted); margin-bottom:8px; font-family:'Space Mono',monospace; min-height:1.4rem; }
 .chase-card-price {
   border-top: 1px solid rgba(255,255,255,0.07);
   margin-top: 8px;
