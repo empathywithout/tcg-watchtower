@@ -1078,6 +1078,7 @@ footer {
 <!-- ===== SECTION NAV ===== -->
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
+    <a href="/" class="section-nav-btn" style="text-decoration:none">🏠 Home</a>
     <button class="section-nav-btn active" data-target="section-chase">🔥 Chase Cards</button>
     <button class="section-nav-btn" data-target="section-cards">📋 Card List</button>
     <button class="section-nav-btn" data-target="section-products">🛒 Sealed Products</button>
@@ -1960,33 +1961,27 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     try {
       const res = await fetch('/sets.json');
       const sets = await res.json();
-      const liveSets = sets.filter(s => s.live);
-
-      // Group by series
       const grouped = {};
-      liveSets.forEach(s => {
+      sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
         grouped[s.series].push(s);
       });
-
       let html = '';
-      const currentPath = window.location.pathname.replace(/^\//, '');
+      const currentPath = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
       Object.entries(grouped).forEach(([series, seriesSets]) => {
         html += `<div class="nav-dropdown-series">${series}</div>`;
         seriesSets.forEach(s => {
           const isCurrent = currentPath === s.slug;
+          const isDisabled = !s.live;
           const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${s.setId}/logo.png` : '';
-          html += `<a href="/${s.slug}" class="nav-dropdown-set ${isCurrent ? 'current' : ''}">
+          const cls = [isCurrent ? 'current' : '', isDisabled ? 'disabled' : ''].filter(Boolean).join(' ');
+          html += `<a href="${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set ${cls}">
             ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
-            <span>${s.name}</span>
+            <span>${s.name}${isDisabled ? ' <span style="font-size:0.7rem;opacity:0.5">(coming soon)</span>' : ''}</span>
           </a>`;
         });
       });
-
-      const homeLink = `<a href="/" class="nav-dropdown-set" style="border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;padding-bottom:14px">
-        <span style="font-size:1.1rem">🏠</span><span>Home</span>
-      </a>`;
-      dropdown.innerHTML = homeLink + (html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>');
+      dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
       populated = true;
     } catch(e) {
       dropdown.innerHTML = '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Could not load sets</div>';
