@@ -587,7 +587,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 
 <div class="container">
   <h1>Most Valuable ${SET_FULL_NAME} Cards</h1>
-  <p class="subtitle">${chaseCards.length} chase cards ranked by rarity — prices update daily from TCGplayer</p>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily from TCGplayer</p>
 
   <div class="cards-grid" id="cards-grid">
     ${chaseCards.map(c => {
