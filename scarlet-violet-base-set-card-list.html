@@ -1143,6 +1143,9 @@ function ebayLink(query) {
 function tcgplayerLink(query) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/scarlet-violet-base-set?productLineName=pokemon&q=' + query + '&view=grid')}`;
 }
+function tcgplayerAffiliate(directUrl) {
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
+}
 
 /* ===== CHASE CARDS ===== */
 const CHASE_CARDS = [
@@ -1229,7 +1232,7 @@ function renderChaseCardsHTML(grid) {
         ${priceHTML}
         <div class="buy-links">
           ${c.priceUrl
-            ? `<a class="buy-link buy-ebay buy-ebay-featured" href="${c.priceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`
+            ? `<a class="buy-link buy-tcgp buy-tcgp-featured" href="${tcgplayerAffiliate(c.priceUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>`
             : `<a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`
           }
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
