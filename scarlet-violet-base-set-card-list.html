@@ -304,11 +304,12 @@ nav {
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:thin;
-  scrollbar-color:rgba(168,85,247,0.4) transparent;
+  scrollbar-color:rgba(168,85,247,0.8) rgba(255,255,255,0.08);
 }
 .chase-slider::-webkit-scrollbar { height:6px; }
-.chase-slider::-webkit-scrollbar-track { background:transparent; }
-.chase-slider::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.4); border-radius:3px; }
+.chase-slider::-webkit-scrollbar-track { background:rgba(255,255,255,0.08); border-radius:3px; }
+.chase-slider::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.8); border-radius:3px; }
+.chase-slider::-webkit-scrollbar-thumb:hover { background:rgba(168,85,247,1); }
 .chase-card {
   flex:0 0 200px; scroll-snap-align:start;
   background:rgba(30,41,59,0.7); backdrop-filter:blur(10px);
@@ -885,6 +886,24 @@ footer {
   color: var(--primary-blue);
   border-bottom-color: var(--primary-blue);
 }
+
+/* ===== CHASE SLIDER ARROWS ===== */
+.chase-slider-wrap { position:relative; }
+.chase-arrow {
+  position:absolute; top:50%; transform:translateY(-60%);
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(15,23,42,0.85); backdrop-filter:blur(8px);
+  border:1px solid rgba(168,85,247,0.5);
+  color:#c084fc; font-size:1.2rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:10;
+  transition:background 0.2s, border-color 0.2s, opacity 0.2s;
+  opacity:0.85;
+}
+.chase-arrow:hover { background:rgba(168,85,247,0.2); border-color:rgba(168,85,247,0.9); opacity:1; }
+.chase-arrow.hidden { opacity:0; pointer-events:none; }
+.chase-arrow-left  { left:-22px; }
+.chase-arrow-right { right:-22px; }
 </style>
 </head>
 <body>
@@ -1009,8 +1028,12 @@ footer {
       <h2 class="section-title">🔥 Scarlet & Violet Base Set (SV1) <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls from Scarlet & Violet Base Set (SV1) — ranked by market price</p>
     </div>
-    <div class="chase-slider" id="chase-grid">
-      <!-- Populated by JS -->
+    <div class="chase-slider-wrap">
+      <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left" aria-label="Scroll left">&#8249;</button>
+      <div class="chase-slider" id="chase-grid">
+        <!-- Populated by JS -->
+      </div>
+      <button class="chase-arrow chase-arrow-right" id="chase-arrow-right" aria-label="Scroll right">&#8250;</button>
     </div>
   </div>
 </section>
@@ -1432,6 +1455,17 @@ function loadTCGPlayerPrices() {
       const grid = document.getElementById('chase-grid');
       if (grid) renderChaseCardsHTML(grid);
 
+      // Update hero stack with top 3 chase cards by price
+      if (currentChaseList.length) {
+        const top3 = [...currentChaseList]
+          .map(c => ({ ...c, price: priceCache[c.id]?.price ?? -1 }))
+          .sort((a, b) => b.price - a.price)
+          .slice(0, 3);
+        document.querySelectorAll('#hero-stack img').forEach((img, i) => {
+          if (top3[i]) img.src = top3[i].img || cardImg('sv01', top3[i].id);
+        });
+      }
+
       if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
         applyFilters();
       }
@@ -1802,6 +1836,30 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   }, { rootMargin: `-${navHeight}px 0px -60% 0px`, threshold: 0 });
 
   sections.forEach(s => observer.observe(s));
+})();
+
+
+/* ===== CHASE SLIDER ARROWS ===== */
+(function() {
+  const slider = document.getElementById('chase-grid');
+  const btnL   = document.getElementById('chase-arrow-left');
+  const btnR   = document.getElementById('chase-arrow-right');
+  if (!slider || !btnL || !btnR) return;
+
+  const SCROLL_AMT = 440; // ~2 cards
+
+  function updateArrows() {
+    btnL.classList.toggle('hidden', slider.scrollLeft <= 0);
+    btnR.classList.toggle('hidden', slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 4);
+  }
+
+  btnL.addEventListener('click', () => slider.scrollBy({ left: -SCROLL_AMT, behavior: 'smooth' }));
+  btnR.addEventListener('click', () => slider.scrollBy({ left:  SCROLL_AMT, behavior: 'smooth' }));
+  slider.addEventListener('scroll', updateArrows, { passive: true });
+
+  // Re-check after chase cards render (content changes scrollWidth)
+  new MutationObserver(updateArrows).observe(slider, { childList: true });
+  updateArrows();
 })();
 
 </script>
