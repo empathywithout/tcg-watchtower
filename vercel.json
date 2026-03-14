@@ -111,59 +111,59 @@
     },
     {
       "source": "/pokemon/scarlet-violet/base-set/card-list",
-      "destination": "/scarlet-violet-base-set-card-list.html"
+      "destination": "/scarlet-violet-base-set-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/paldea-evolved/card-list",
-      "destination": "/paldea-evolved-card-list.html"
+      "destination": "/paldea-evolved-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/obsidian-flames/card-list",
-      "destination": "/obsidian-flames-card-list.html"
+      "destination": "/obsidian-flames-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/paradox-rift/card-list",
-      "destination": "/paradox-rift-card-list.html"
+      "destination": "/paradox-rift-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/151/card-list",
-      "destination": "/scarlet-violet-151-card-list.html"
+      "destination": "/scarlet-violet-151-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/paldean-fates/card-list",
-      "destination": "/paldean-fates-card-list.html"
+      "destination": "/paldean-fates-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/temporal-forces/card-list",
-      "destination": "/temporal-forces-card-list.html"
+      "destination": "/temporal-forces-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/twilight-masquerade/card-list",
-      "destination": "/twilight-masquerade-card-list.html"
+      "destination": "/twilight-masquerade-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/shrouded-fable/card-list",
-      "destination": "/shrouded-fable-card-list.html"
+      "destination": "/shrouded-fable-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/stellar-crown/card-list",
-      "destination": "/stellar-crown-card-list.html"
+      "destination": "/stellar-crown-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/surging-sparks/card-list",
-      "destination": "/surging-sparks-card-list.html"
+      "destination": "/surging-sparks-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/prismatic-evolutions/card-list",
-      "destination": "/prismatic-evolutions-card-list.html"
+      "destination": "/prismatic-evolutions-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/journey-together/card-list",
-      "destination": "/journey-together-card-list.html"
+      "destination": "/journey-together-card-list"
     },
     {
       "source": "/pokemon/scarlet-violet/destined-rivals/card-list",
-      "destination": "/destined-rivals-card-list.html"
+      "destination": "/destined-rivals-card-list"
     }
   ]
 }
