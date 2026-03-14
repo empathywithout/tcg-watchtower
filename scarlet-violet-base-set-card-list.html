@@ -933,9 +933,9 @@ footer {
 .section-nav-sets-btn.open { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
 .section-nav-dropdown {
   display: none;
-  position: absolute;
-  right: 0;
-  top: calc(100% + 4px);
+  position: fixed;
+  right: 24px;
+  top: auto;
   width: 260px;
   background: rgba(10,15,30,0.98);
   backdrop-filter: blur(16px);
@@ -1950,6 +1950,11 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     const isOpen = !dropdown.classList.contains('open');
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
+    if (isOpen) {
+      // Position dropdown just below the nav bar
+      const navRect = document.getElementById('section-nav').getBoundingClientRect();
+      dropdown.style.top = (navRect.bottom + 4) + 'px';
+    }
     if (isOpen && !populated) await populateNavSets();
   });
   document.addEventListener('click', e => {
@@ -1961,19 +1966,13 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
 
   async function populateNavSets() {
     try {
-      console.log('[Sets] fetching /sets.json...');
       const res = await fetch('/sets.json');
-      console.log('[Sets] status:', res.status, res.headers.get('content-type'));
-      const text = await res.text();
-      console.log('[Sets] raw response:', text.slice(0, 200));
-      const sets = JSON.parse(text);
-      console.log('[Sets] parsed', sets.length, 'sets:', JSON.stringify(sets.map(s => s.series)));
+      const sets = await res.json();
       const grouped = {};
       sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
         grouped[s.series].push(s);
       });
-      console.log('[Sets] grouped keys:', Object.keys(grouped));
       let html = '';
       const currentPath = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
       Object.entries(grouped).forEach(([series, seriesSets]) => {
@@ -1989,7 +1988,6 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
           </a>`;
         });
       });
-      console.log('[Sets] html length:', html.length, 'preview:', html.slice(0, 100));
       dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
       populated = true;
     } catch(e) {
