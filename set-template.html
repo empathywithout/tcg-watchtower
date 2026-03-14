@@ -192,6 +192,9 @@ nav {
   background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--text-primary); letter-spacing:0.05em; }
 .nav-links { display:flex; gap:32px; align-items:center; }
 .nav-links a { color:var(--text-light); text-decoration:none; font-weight:500; transition:color 0.3s; }
 .nav-links a:hover { color:white; }
@@ -945,12 +948,10 @@ footer {
 
 <!-- ===== NAV ===== -->
 <nav class="container">
-  <a href="/" class="logo">
-    <div class="logo-icon">
-      <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
-    </div>
-  <span class="logo-text">TCG Watchtower</span>
-  </a>
+  <a href="/" class="nav-logo">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
+            <span>TCG Watchtower</span>
+          </a>
   <div class="nav-links">
     <a href="/#features">Features</a>
     <a href="/#how-it-works">How It Works</a>
