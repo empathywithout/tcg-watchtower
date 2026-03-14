@@ -106,8 +106,10 @@ async function main() {
   if (await existsInR2(logoR2Key)) {
     console.log(`⏭️  Logo already exists at logos/${SET_ID}.png`);
   } else {
-    // Try TCGdex logo first
-    const logoUrl = `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo.png`;
+    // Use the logo URL from the TCGdex set data if available, otherwise construct it
+    const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
+    // Ensure it ends without extension so we can append .png
+    const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
     try {
       const logoBuffer = await downloadImage(logoUrl);
       await uploadToR2(logoR2Key, logoBuffer, "image/png");
