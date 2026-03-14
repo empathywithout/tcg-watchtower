@@ -184,8 +184,17 @@ if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
       fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/products`),
       fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/prices`),
     ]);
-    const products = (await productsRes.json()).results || [];
+    const productsData = await productsRes.json();
+    const products = productsData.results || [];
     const prices   = (await pricesRes.json()).results || [];
+    console.log(`  📋  TCGCSV returned ${products.length} total products for group ${TCGP_GROUP_ID}`);
+    // Log a sample so we can debug field structure
+    if (products.length > 0) {
+      const sample = products[0];
+      console.log(`  🔍  Sample product: ${sample.name}`);
+      console.log(`      productTypes: ${JSON.stringify(sample.productTypes)}`);
+      console.log(`      extendedData: ${JSON.stringify(sample.extendedData?.slice(0,3))}`);
+    }
 
     // Price lookup by productId
     const priceById = {};
@@ -196,12 +205,16 @@ if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
     const autoMeta = {};
     for (const product of products) {
       const extData = product.extendedData || [];
-      // Sealed products have no card Number — they have a ProductType
-      const hasNumber  = extData.some(e => e.name === 'Number');
+      // Sealed products have no card Number
+      const hasNumber = extData.some(e => e.name === 'Number');
       if (hasNumber) continue;
-      const typeEntry  = extData.find(e => e.name === 'ProductType' || e.name === 'SubType');
-      const typeName   = typeEntry?.value || '';
-      const config     = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => typeName.includes(k))?.[1];
+
+      // Match against every available field — TCGCSV structure varies by response
+      const extTypeEntry = extData.find(e => e.name === 'ProductType' || e.name === 'SubType');
+      const extTypeName  = extTypeEntry?.value || '';
+      const topTypes     = (product.productTypes || []).join(' ');
+      const combined     = `${extTypeName} ${topTypes} ${product.name || ''}`;
+      const config       = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => combined.includes(k))?.[1];
       if (!config) continue;
 
       // Use productId as key (no ASIN available from TCGCSV)

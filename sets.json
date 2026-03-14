@@ -9,7 +9,7 @@
   },
   {
     "slug": "paldea-evolved-card-list",
-    "name": "Scarlet & Violet Base Set (SV1)",
+    "name": "Paldea Evolved",
     "series": "Scarlet & Violet",
     "short": "SV2",
     "setId": "sv02",
@@ -17,11 +17,11 @@
   },
   {
     "slug": "obsidian-flames-card-list",
-    "name": "Obsidian Flames (SV3)",
+    "name": "Obsidian Flames",
     "series": "Scarlet & Violet",
     "short": "SV3",
     "setId": "sv03",
-    "live": true
+    "live": false
   },
   {
     "slug": "paradox-rift-card-list",
