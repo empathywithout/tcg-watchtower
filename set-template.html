@@ -1869,8 +1869,13 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   async function populateNavSets() {
     if (populated) return;
     try {
+      console.log('[Sets] fetching /sets.json...');
       const res = await fetch('/sets.json');
-      const sets = await res.json();
+      console.log('[Sets] status:', res.status, res.headers.get('content-type'));
+      const text = await res.text();
+      console.log('[Sets] raw response:', text.slice(0, 200));
+      const sets = JSON.parse(text);
+      console.log('[Sets] parsed', sets.length, 'sets');
       const grouped = {};
       sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
