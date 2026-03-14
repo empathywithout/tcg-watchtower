@@ -222,24 +222,48 @@ if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
       if (!priceById[p.productId]) priceById[p.productId] = p;
     }
 
-    const autoMeta = {};
+    // Words that indicate a variant/promo product — skip these, keep only canonical items
+    const VARIANT_KEYWORDS = [
+      'fuecoco', 'sprigatito', 'quaxly', 'koraidon', 'miraidon',
+      'charizard', 'pikachu', 'pokémon center', 'pokemon center',
+      '(rebalanced)', 'promo', 'bundle)', 'collection box',
+      'tin', 'tins', 'blisters', 'blister', 'mini',
+    ];
+
+    // Keep only one product per type — the shortest/most generic name wins
+    const bestByType = {}; // type → product
+
     for (const product of products) {
       const extData = product.extendedData || [];
       // Sealed products have no card Number
       const hasNumber = extData.some(e => e.name === 'Number');
       if (hasNumber) continue;
 
-      // Match against every available field — TCGCSV structure varies by response
+      // Match against every available field
       const extTypeEntry = extData.find(e => e.name === 'ProductType' || e.name === 'SubType');
       const extTypeName  = extTypeEntry?.value || '';
       const topTypes     = (product.productTypes || []).join(' ');
-      const combined     = `${extTypeName} ${topTypes} ${product.name || ''}`;
+      const nameLower    = (product.name || '').toLowerCase();
+      const combined     = `${extTypeName} ${topTypes} ${nameLower}`;
       const config       = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => combined.includes(k))?.[1];
       if (!config) continue;
-      // Skip booster boxes etc. for special sets (151, Paldean Fates, Shrouded Fable, Prismatic Evolutions)
+
+      // Skip special set products that don't apply
       if (SPECIAL_SETS.has(SET_ID) && SKIP_FOR_SPECIAL.has(config.type)) continue;
 
-      // Use productId as key (no ASIN available from TCGCSV)
+      // Skip variant/promo products
+      if (VARIANT_KEYWORDS.some(kw => nameLower.includes(kw))) continue;
+
+      // Keep only one per type — prefer shorter (more generic) names
+      const existing = bestByType[config.type];
+      if (!existing || product.name.length < existing.name.length) {
+        bestByType[config.type] = product;
+      }
+    }
+
+    const autoMeta = {};
+    for (const [type, product] of Object.entries(bestByType)) {
+      const config = Object.values(PRODUCT_TYPE_MAP).find(c => c.type === type);
       const key = String(product.productId);
       autoMeta[key] = {
         ...config,
