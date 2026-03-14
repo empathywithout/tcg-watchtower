@@ -45,7 +45,7 @@
     "series": "Scarlet & Violet",
     "short": "PAF",
     "setId": "sv4pt5",
-    "live": true
+    "live": false
   },
   {
     "slug": "temporal-forces-card-list",
@@ -53,7 +53,7 @@
     "series": "Scarlet & Violet",
     "short": "SV5",
     "setId": "sv05",
-    "live": true
+    "live": false
   },
   {
     "slug": "twilight-masquerade-card-list",
