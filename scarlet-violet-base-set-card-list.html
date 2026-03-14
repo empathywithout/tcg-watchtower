@@ -359,7 +359,8 @@ nav {
 .rarity-hr { background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(239,68,68,0.2)); border:1px solid rgba(251,191,36,0.4); color:#fbbf24; }
 .rarity-sar { background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(59,130,246,0.2)); border:1px solid rgba(168,85,247,0.4); color:#c084fc; }
 .rarity-ur { background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(251,191,36,0.2)); border:1px solid rgba(239,68,68,0.4); color:#f87171; }
-.buy-links { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.buy-links { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
+.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
 .buy-link {
   padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;
   text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
@@ -1298,12 +1299,12 @@ function renderChaseCardsHTML(grid) {
 
 /* ===== PRODUCTS ===== */
 const PRODUCT_META = {
-  'B0BVK3Y82T': { type: 'Booster Box',       filterKey: 'box',        badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       q: 'Pokemon Scarlet Violet Base Set Booster Box',      image: 'https://product-images.tcgplayer.com/fit-in/437x437/476452.jpg' },
-  'B0BVHHTK8Z': { type: 'Elite Trainer Box',  filterKey: 'etb',        badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',            q: 'Pokemon Scarlet Violet Elite Trainer Box',         image: 'https://product-images.tcgplayer.com/fit-in/437x437/478335.jpg' },
-  'B0BVK3TNJQ': { type: 'Booster Bundle',     filterKey: 'bundle',     badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',        q: 'Pokemon Scarlet Violet Booster Bundle',            image: 'https://product-images.tcgplayer.com/fit-in/437x437/478258.jpg' },
-  'B0BVK3VNJB': { type: 'Booster Box Case',   filterKey: 'case',       badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',   q: 'Pokemon TCG Scarlet Violet Booster Display Case 6 Boxes',          image: 'https://product-images.tcgplayer.com/fit-in/437x437/476453.jpg', noAmazon: true },
-  'B0BVHHTSWB': { type: 'Sleeved Booster',    filterKey: 'sleeves',    badgeClass: 'badge-collection', name: 'Scarlet & Violet Sleeved Booster Pack',          q: 'Pokemon Scarlet Violet Sleeved Booster Pack',      image: 'https://product-images.tcgplayer.com/fit-in/437x437/478273.jpg' },
-  'B0BVHHTVNF': { type: 'Build & Battle Box', filterKey: 'battle',     badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',           q: 'Pokemon Scarlet Violet Build Battle Box',          image: 'https://product-images.tcgplayer.com/fit-in/437x437/478253.jpg' },
+  'B0BVK3Y82T': { type: 'Booster Box',       filterKey: 'box',        badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       q: 'Pokemon TCG Scarlet Violet Base Set SV1 Booster Box 36 Packs',           image: 'https://product-images.tcgplayer.com/fit-in/437x437/476452.jpg' },
+  'B0BVHHTK8Z': { type: 'Elite Trainer Box',  filterKey: 'etb',        badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',            q: 'Pokemon TCG Scarlet Violet Base Set SV1 Elite Trainer Box',              image: 'https://product-images.tcgplayer.com/fit-in/437x437/478335.jpg' },
+  'B0BVK3TNJQ': { type: 'Booster Bundle',     filterKey: 'bundle',     badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',        q: 'Pokemon TCG Scarlet Violet Base Set SV1 6 Pack Booster Bundle',          image: 'https://product-images.tcgplayer.com/fit-in/437x437/478258.jpg' },
+  'B0BVK3VNJB': { type: 'Booster Box Case',   filterKey: 'case',       badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',   q: 'Pokemon TCG Scarlet Violet Base Set SV1 Booster Box Case 6 Boxes',       image: 'https://product-images.tcgplayer.com/fit-in/437x437/476453.jpg', noAmazon: true },
+  'B0BVHHTSWB': { type: 'Sleeved Booster',    filterKey: 'sleeves',    badgeClass: 'badge-collection', name: 'Scarlet & Violet Sleeved Booster Pack',          q: 'Pokemon TCG Scarlet Violet Base Set SV1 Sleeved Booster Pack',           image: 'https://product-images.tcgplayer.com/fit-in/437x437/478273.jpg' },
+  'B0BVHHTVNF': { type: 'Build & Battle Box', filterKey: 'battle',     badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',           q: 'Pokemon TCG Scarlet Violet Base Set SV1 Build Battle Box',               image: 'https://product-images.tcgplayer.com/fit-in/437x437/478253.jpg' },
 };
 
 function renderProductCard(p) {
