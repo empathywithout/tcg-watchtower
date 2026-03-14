@@ -1102,9 +1102,9 @@ footer {
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn" style="text-decoration:none">🏠 Home</a>
-    <button class="section-nav-btn active" data-target="section-chase">🔥 Chase Cards</button>
-    <a href="/pokemon/sets/scarlet-violet/base-set/card-list" class="section-nav-btn" style="text-decoration:none">📋 Card List</a>
-    <a href="/pokemon/sets/scarlet-violet/base-set/sealed-product" class="section-nav-btn" style="text-decoration:none">🛒 Sealed Products</a>
+    <button class="section-nav-btn active" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/base-set/top-chase-cards">🔥 Chase Cards</button>
+    <button class="section-nav-btn" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/base-set/card-list">📋 Card List</button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/base-set/sealed-product">🛒 Sealed Products</button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn">📦 Sets ▾</button>
     </div>
@@ -1939,11 +1939,12 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
   const sections = ['section-chase','section-cards','section-products']
     .map(id => document.getElementById(id)).filter(Boolean);
 
-  // Click scrolls to section
+  // Click scrolls to section and updates URL
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
     });
   });
 

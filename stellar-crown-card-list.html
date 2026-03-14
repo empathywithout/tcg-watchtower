@@ -1060,9 +1060,9 @@ footer {
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn" style="text-decoration:none">🏠 Home</a>
-    <button class="section-nav-btn active" data-target="section-chase">🔥 Chase Cards</button>
-    <a href="/pokemon/sets/scarlet-violet/stellar-crown/card-list" class="section-nav-btn" style="text-decoration:none">📋 Card List</a>
-    <a href="/pokemon/sets/scarlet-violet/stellar-crown/sealed-product" class="section-nav-btn" style="text-decoration:none">🛒 Sealed Products</a>
+    <button class="section-nav-btn active" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/stellar-crown/top-chase-cards">🔥 Chase Cards</button>
+    <button class="section-nav-btn" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/stellar-crown/card-list">📋 Card List</button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/stellar-crown/sealed-product">🛒 Sealed Products</button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn">📦 Sets ▾</button>
     </div>
@@ -1861,6 +1861,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
     });
   });
   const navHeight = document.getElementById('section-nav')?.offsetHeight || 60;

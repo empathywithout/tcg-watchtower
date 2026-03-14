@@ -392,6 +392,7 @@ const vars = {
   '{{SET_FULL_NAME}}':      SET_FULL_NAME,
   '{{SET_SERIES}}':         SET_SERIES,
   '{{SET_SERIES_SLUG}}':    SET_SERIES_SLUG,
+  '{{SET_URL_SLUG}}':       SET_SLUG.replace('-card-list', ''),
   '{{SET_SEO_PATH}}':       SET_SEO_PATH,
   '{{SET_SUBTITLE}}':       SET_SUBTITLE,
   '{{SET_SHORT_NAME}}':     SET_SHORT_NAME,

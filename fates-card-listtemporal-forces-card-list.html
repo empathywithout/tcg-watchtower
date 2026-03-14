@@ -1838,6 +1838,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
     });
   });
   const navHeight = document.getElementById('section-nav')?.offsetHeight || 60;
