@@ -92,9 +92,76 @@ console.log(`    subtitle="${SET_SUBTITLE}", search="${SET_SEARCH_NAME}", tcgp="
 // Pass as a JSON string via env var. Keys are Amazon ASINs.
 // Example:
 //   PRODUCT_META_JSON='{"B0CF7YNQ7T":{"type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Paldea Evolved Booster Box","q":"Pokemon Paldea Evolved Booster Box"}}'
-let productMetaJson = process.env.PRODUCT_META_JSON || '{}';
-try { JSON.parse(productMetaJson); } catch(e) {
-  console.warn('⚠️  PRODUCT_META_JSON is not valid JSON — using empty object');
+let productMetaJson = process.env.PRODUCT_META_JSON || '';
+if (productMetaJson) {
+  try { JSON.parse(productMetaJson); } catch(e) {
+    console.warn('⚠️  PRODUCT_META_JSON is not valid JSON — will auto-fetch from TCGCSV');
+    productMetaJson = '';
+  }
+}
+
+// ── Auto-fetch sealed products from TCGCSV if PRODUCT_META_JSON not provided ──
+// Maps TCGCSV product type names to our display config
+const PRODUCT_TYPE_MAP = {
+  'Booster Box':        { filterKey: 'box',     badgeClass: 'badge-box',        type: 'Booster Box' },
+  'Booster Bundle':     { filterKey: 'bundle',  badgeClass: 'badge-bundle',     type: 'Booster Bundle' },
+  'Booster Case':       { filterKey: 'case',    badgeClass: 'badge-case',       type: 'Booster Box Case', noAmazon: true },
+  'Elite Trainer Box':  { filterKey: 'etb',     badgeClass: 'badge-etb',        type: 'Elite Trainer Box' },
+  'Build & Battle Box': { filterKey: 'battle',  badgeClass: 'badge-battle',     type: 'Build & Battle Box' },
+  'Sleeved Booster':    { filterKey: 'sleeves', badgeClass: 'badge-collection', type: 'Sleeved Booster' },
+};
+
+if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
+  console.log(`\n📦  Auto-fetching sealed products from TCGCSV for group ${TCGP_GROUP_ID}...`);
+  try {
+    const [productsRes, pricesRes] = await Promise.all([
+      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/products`),
+      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/prices`),
+    ]);
+    const products = (await productsRes.json()).results || [];
+    const prices   = (await pricesRes.json()).results || [];
+
+    // Price lookup by productId
+    const priceById = {};
+    for (const p of prices) {
+      if (!priceById[p.productId]) priceById[p.productId] = p;
+    }
+
+    const autoMeta = {};
+    for (const product of products) {
+      const extData = product.extendedData || [];
+      // Sealed products have no card Number — they have a ProductType
+      const hasNumber  = extData.some(e => e.name === 'Number');
+      if (hasNumber) continue;
+      const typeEntry  = extData.find(e => e.name === 'ProductType' || e.name === 'SubType');
+      const typeName   = typeEntry?.value || '';
+      const config     = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => typeName.includes(k))?.[1];
+      if (!config) continue;
+
+      // Use productId as key (no ASIN available from TCGCSV)
+      const key = String(product.productId);
+      autoMeta[key] = {
+        ...config,
+        name:    product.name,
+        tcgpId:  String(product.productId),
+        q:       `Pokemon TCG ${SET_SUBTITLE} ${SET_SHORT_NAME} ${config.type}`,
+        image:   `https://product-images.tcgplayer.com/fit-in/437x437/${product.productId}.jpg`,
+      };
+      console.log(`  ✅  ${config.type}: ${product.name} (id: ${product.productId})`);
+    }
+
+    if (Object.keys(autoMeta).length > 0) {
+      productMetaJson = JSON.stringify(autoMeta);
+      console.log(`  📦  Auto-generated ${Object.keys(autoMeta).length} products`);
+    } else {
+      console.log('  ⚠️  No sealed products found in TCGCSV — products section will be empty');
+      productMetaJson = '{}';
+    }
+  } catch(e) {
+    console.warn(`  ⚠️  TCGCSV product fetch failed: ${e.message}`);
+    productMetaJson = '{}';
+  }
+} else if (!productMetaJson) {
   productMetaJson = '{}';
 }
 
