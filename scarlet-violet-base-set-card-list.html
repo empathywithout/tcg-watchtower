@@ -1199,10 +1199,17 @@ function renderChaseCards(cards) {
 }
 
 function renderChaseCardsHTML(grid) {
-  // Merge cache prices into chase list and sort by price descending
-  const sorted = [...currentChaseList]
-    .map(c => ({ ...c, price: priceCache[c.id]?.price || null, priceUrl: priceCache[c.id]?.url || null }))
-    .sort((a, b) => (b.price || 0) - (a.price || 0));
+  const pricesKnown = Object.keys(priceCache).length > 0;
+  const withPrices = [...currentChaseList]
+    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null, priceUrl: priceCache[c.id]?.url || null }));
+  console.log('[Chase] pricesKnown:', pricesKnown, 'sample:', withPrices.slice(0,3).map(c => c.id + '=' + c.price));
+  const sorted = withPrices.sort((a, b) => {
+    if (pricesKnown) {
+      return (b.price ?? -1) - (a.price ?? -1);
+    }
+    return 0;
+  });
+  console.log('[Chase] top 3 after sort:', sorted.slice(0,3).map(c => c.name + ' $' + c.price));
 
   grid.innerHTML = sorted.map(c => {
     const img = c.img;
