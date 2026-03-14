@@ -114,21 +114,16 @@ async function main() {
   console.log(`\n🎨 Uploading set logo to R2...`);
   const logoR2Key = `logos/${SET_ID}.png`;
   
-  if (await existsInR2(logoR2Key)) {
-    console.log(`⏭️  Logo already exists at logos/${SET_ID}.png`);
-  } else {
-    // Use the logo URL directly from TCGdex API response — it has the correct path
-    // e.g. https://assets.tcgdex.net/en/sv/sv03.5/logo for 151
-    const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
-    const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
-    console.log(`  🔗 Logo URL: ${logoUrl}`);
-    try {
-      const logoBuffer = await downloadImage(logoUrl);
-      await uploadToR2(logoR2Key, logoBuffer, "image/png");
-      console.log(`✅ Logo uploaded to R2 at logos/${SET_ID}.png`);
-    } catch (err) {
-      console.log(`⚠️  Logo download failed (${err.message}) — will use fallback`);
-    }
+  // Always re-upload logo to ensure it's correct (tiny file, negligible cost)
+  const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
+  const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
+  console.log(`  🔗 Logo URL: ${logoUrl}`);
+  try {
+    const logoBuffer = await downloadImage(logoUrl);
+    await uploadToR2(logoR2Key, logoBuffer, "image/png");
+    console.log(`✅ Logo uploaded to R2 at logos/${SET_ID}.png`);
+  } catch (err) {
+    console.log(`⚠️  Logo download failed (${err.message}) — will use fallback`);
   }
 
   // Step 4 — Build and upload the JSON metadata file to R2
