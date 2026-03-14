@@ -1175,6 +1175,8 @@ function renderChaseCards(cards) {
   };
 
   if (cards && cards.length) {
+    const allRarities = [...new Set(cards.map(c => c.rarity).filter(Boolean))];
+    console.log('[Chase] all rarities in card data:', allRarities);
     currentChaseList = cards
       .filter(c => CHASE_RARITIES.includes(c.rarity))
       .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
@@ -1209,7 +1211,7 @@ function renderChaseCardsHTML(grid) {
     }
     return 0;
   });
-  console.log('[Chase] top 3 after sort:', sorted.slice(0,3).map(c => c.name + ' $' + c.price));
+  console.log('[Chase] all:', sorted.map(c => `${c.name}#${c.id}=$${c.price}`));
 
   grid.innerHTML = sorted.map(c => {
     const img = c.img;
