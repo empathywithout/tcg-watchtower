@@ -10,21 +10,25 @@ if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
 // TCGdex uses dot-notation IDs internally (sv03.5) but our workflow uses pt-notation (sv3pt5)
 // Map our IDs to the correct TCGdex set overview IDs
-const TCGDEX_OVERVIEW_MAP = {
-  'sv3pt5': '151',      // TCGdex endpoint is /sets/151
-  'sv4pt5': 'sv04pt5',  // check if needed
-  'sv6pt5': 'sv06pt5',
-  'sv8pt5': 'sv08pt5',
+// TCGdex uses different ID formats — map our workflow IDs to their actual IDs
+const TCGDEX_ID_MAP = {
+  // Special sets
+  'sv3pt5': '151',
+  'sv4pt5': 'sv4pt5',
+  'sv6pt5': 'sv6pt5',
+  'sv8pt5': 'sv8pt5',
+  // Regular sets — TCGdex drops leading zeros on some
+  'sv05': 'sv05',  // confirmed sv06 works, try sv05 first
 };
-// Logo asset path uses dot notation: sv03.5, sv04.5 etc.
+// Asset path map (dot notation for special sets)
 const TCGDEX_ASSET_MAP = {
   'sv3pt5': 'sv03.5',
   'sv4pt5': 'sv04.5',
   'sv6pt5': 'sv06.5',
   'sv8pt5': 'sv08.5',
 };
-const TCGDEX_SET_OVERVIEW_ID = TCGDEX_OVERVIEW_MAP[SET_ID] || SET_ID;
-const TCGDEX_CARD_ID_PREFIX  = SET_ID; // brief.id from API will have correct prefix
+const TCGDEX_SET_OVERVIEW_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
+const TCGDEX_CARD_ID_PREFIX  = SET_ID;
 const TCGDEX_ASSET_ID        = TCGDEX_ASSET_MAP[SET_ID] || SET_ID;
 
 const s3 = new S3Client({
@@ -115,16 +119,26 @@ async function main() {
   const logoR2Key = `logos/${SET_ID}.png`;
   
   // Always re-upload logo to ensure it's correct (tiny file, negligible cost)
+  // Try URLs in order: TCGdex API response → constructed with asset ID → stripped leading zero
   const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
   const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
-  console.log(`  🔗 Logo URL: ${logoUrl}`);
-  try {
-    const logoBuffer = await downloadImage(logoUrl);
-    await uploadToR2(logoR2Key, logoBuffer, "image/png");
-    console.log(`✅ Logo uploaded to R2 at logos/${SET_ID}.png`);
-  } catch (err) {
-    console.log(`⚠️  Logo download failed (${err.message}) — will use fallback`);
+  // Also try without leading zero (sv05 → sv5) as fallback
+  const strippedId = TCGDEX_ASSET_ID.replace(/^sv0(\d)$/, 'sv$1');
+  const logoUrlAlt = `https://assets.tcgdex.net/en/sv/${strippedId}/logo.png`;
+  console.log(`  🔗 Logo URL: ${logoUrl} (alt: ${logoUrlAlt})`);
+  let logoUploaded = false;
+  for (const url of [logoUrl, logoUrlAlt]) {
+    try {
+      const logoBuffer = await downloadImage(url);
+      await uploadToR2(logoR2Key, logoBuffer, "image/png");
+      console.log(`✅ Logo uploaded to R2 at logos/${SET_ID}.png (from ${url})`);
+      logoUploaded = true;
+      break;
+    } catch (err) {
+      console.log(`  ⚠️  Logo failed at ${url}: ${err.message}`);
+    }
   }
+  if (!logoUploaded) console.log(`⚠️  Logo upload failed for ${SET_ID} — will use fallback`);
 
   // Step 4 — Build and upload the JSON metadata file to R2
   console.log(`\n📦 Uploading metadata JSON to R2...`);
