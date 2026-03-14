@@ -337,6 +337,10 @@ nav {
 }
 .chase-card-info { padding:16px; display:flex; flex-direction:column; flex:1; }
 .chase-card-name { font-weight:700; font-size:1rem; margin-bottom:4px; min-height:2.5rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.chase-card-number-wrap { min-height:1.4rem; margin-bottom:8px; }
+.chase-card-rarity-wrap { min-height:2rem; display:flex; align-items:center; margin-bottom:4px; }
+.chase-card-price-wrap { min-height:2.5rem; display:flex; align-items:center; justify-content:center; border-top:1px solid rgba(255,255,255,0.07); margin-top:8px; padding-top:8px; }
+/* chase-card-name defined in chase-card-info block */
 .chase-card-number { font-size:0.8rem; color:var(--text-muted); margin-bottom:8px; font-family:'Space Mono',monospace; }
 .chase-card-price {
   border-top: 1px solid rgba(255,255,255,0.07);
@@ -1341,8 +1345,8 @@ function renderChaseCardsHTML(grid) {
 
   grid.innerHTML = sorted.map(c => {
     const priceHTML = c.price
-      ? `<div class="chase-card-price"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
-      : `<div class="chase-card-price-loading">Loading price...</div>`;
+      ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
+      : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy"
@@ -1350,7 +1354,7 @@ function renderChaseCardsHTML(grid) {
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
         <div class="chase-card-number">#${c.id}/131</div>
-        <span class="rarity-badge ${c.rarityClass}">${c.label}</span>
+        <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
