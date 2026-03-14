@@ -42,20 +42,14 @@
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .container { max-width: 860px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
         nav { padding: 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
-        .logo { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            text-decoration: none; 
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
         }
         .logo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+            opacity: 0.85;
         }
         .logo-icon { 
             background: transparent;
@@ -119,6 +113,7 @@
             <div class="logo-icon">
                 <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" style="height: 55px; width: auto; object-fit: contain; filter: brightness(1.05);">
             </div>
+        <span class="logo-text">TCG Watchtower</span>
         </a>
         <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
     </nav>
