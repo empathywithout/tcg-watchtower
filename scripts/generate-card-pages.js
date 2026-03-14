@@ -338,9 +338,9 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       <div class="set-block">
         <div class="set-block-title">${SET_FULL_NAME}</div>
         <div class="set-links">
-          <a class="set-link" href="${cardListUrl}">📋 View Full Card List →</a>
-          <a class="set-link" href="${cardListUrl}#chase-cards">⭐ Most Valuable Cards →</a>
-          <a class="set-link" href="${cardListUrl}#sealed-product">📦 Sealed Product Prices →</a>
+          <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards">📋 View Full Card List →</a>
+          <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable">⭐ Most Valuable Cards →</a>
+          <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product">📦 Sealed Product Prices →</a>
         </div>
       </div>
 
