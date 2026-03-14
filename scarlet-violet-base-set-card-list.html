@@ -1175,17 +1175,17 @@ function renderChaseCards(cards) {
   };
 
   if (cards && cards.length) {
-    const allRarities = [...new Set(cards.map(c => c.rarity).filter(Boolean))];
-    console.log('[Chase] all rarities in card data:', allRarities);
+    // Normalise rarity strings to title case for matching (TCGdex returns mixed case)
+    const normaliseRarity = r => r ? r.toLowerCase().replace(/\w/g, l => l.toUpperCase()) : '';
     currentChaseList = cards
-      .filter(c => CHASE_RARITIES.includes(c.rarity))
-      .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
+      .filter(c => CHASE_RARITIES.includes(normaliseRarity(c.rarity)))
+      .sort((a, b) => (RARITY_TIER[normaliseRarity(a.rarity)] ?? 99) - (RARITY_TIER[normaliseRarity(b.rarity)] ?? 99))
       .map(c => ({
         id: c.localId,
         name: c.name,
-        rarity: c.rarity,
-        rarityClass: RARITY_CLASS[c.rarity] || 'rarity-ir',
-        label: RARITY_LABEL[c.rarity] || c.rarity,
+        rarity: normaliseRarity(c.rarity),
+        rarityClass: RARITY_CLASS[normaliseRarity(c.rarity)] || 'rarity-ir',
+        label: RARITY_LABEL[normaliseRarity(c.rarity)] || c.rarity,
         searchName: `${c.name} ${c.localId} Scarlet Violet`,
         img: c.image || cardImg('sv01', c.localId),
       }));
@@ -1204,14 +1204,13 @@ function renderChaseCardsHTML(grid) {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const withPrices = [...currentChaseList]
     .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null, priceUrl: priceCache[c.id]?.url || null }));
-  console.log('[Chase] pricesKnown:', pricesKnown, 'sample:', withPrices.slice(0,3).map(c => c.id + '=' + c.price));
   const sorted = withPrices.sort((a, b) => {
     if (pricesKnown) {
       return (b.price ?? -1) - (a.price ?? -1);
     }
     return 0;
   });
-  console.log('[Chase] all:', sorted.map(c => `${c.name}#${c.id}=$${c.price}`));
+
 
   grid.innerHTML = sorted.map(c => {
     const img = c.img;
@@ -1355,7 +1354,6 @@ function loadTCGPlayerPrices() {
       });
       console.log('[TCGp] updated', updated, 'price labels');
 
-      console.log('[TCGp] chase list length:', currentChaseList.length);
       const grid = document.getElementById('chase-grid');
       if (grid) renderChaseCardsHTML(grid);
 

@@ -1160,17 +1160,24 @@ function renderChaseCards(cards) {
 
   if (cards && cards.length) {
     currentChaseList = cards
-      .filter(c => CHASE_RARITIES.includes(c.rarity))
-      .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
-      .map(c => ({
-        id: c.localId,
-        name: c.name,
-        rarity: c.rarity,
-        rarityClass: RARITY_CLASS[c.rarity] || 'rarity-ir',
-        label: RARITY_LABEL[c.rarity] || c.rarity,
-        searchName: `${c.name} ${c.localId} {{SET_SEARCH_NAME}}`,
-        img: c.image || cardImg('{{SET_ID}}', c.localId),
-      }));
+      .filter(c => CHASE_RARITIES.includes((c.rarity||'').toLowerCase().replace(/\w/g, l => l.toUpperCase())))
+      .sort((a, b) => {
+        const nr = r => (r||'').toLowerCase().replace(/\w/g, l => l.toUpperCase());
+        return (RARITY_TIER[nr(a.rarity)] ?? 99) - (RARITY_TIER[nr(b.rarity)] ?? 99);
+      })
+      .map(c => {
+        const nr = r => (r||'').toLowerCase().replace(/\w/g, l => l.toUpperCase());
+        const rarity = nr(c.rarity);
+        return {
+          id: c.localId,
+          name: c.name,
+          rarity,
+          rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
+          label: RARITY_LABEL[rarity] || c.rarity,
+          searchName: `${c.name} ${c.localId} {{SET_SEARCH_NAME}}`,
+          img: c.image || cardImg('{{SET_ID}}', c.localId),
+        };
+      });
   } else {
     currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id) }));
   }
