@@ -74,6 +74,10 @@
   ],
   "rewrites": [
     {
+      "source": "/pokemon/sets",
+      "destination": "/sets.html"
+    },
+    {
       "source": "/sets.json",
       "destination": "/sets.json"
     },
