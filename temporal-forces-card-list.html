@@ -1434,13 +1434,21 @@ function loadTCGPlayerPrices() {
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
 
+      // Store prices
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
-        const url   = urls[num] || null;
+        const url   = urls[num] || urls[withZeros] || urls[withoutZeros] || null;
         const entry = price != null ? { price, url } : null;
         priceCache[withZeros]    = entry;
         priceCache[withoutZeros] = entry;
+      });
+      // Also store URLs for cards that have a URL but no price entry
+      Object.entries(urls).forEach(([num, url]) => {
+        const withZeros    = num.padStart(3, '0');
+        const withoutZeros = String(parseInt(num, 10));
+        if (!priceCache[withZeros])    priceCache[withZeros]    = { price: null, url };
+        if (!priceCache[withoutZeros]) priceCache[withoutZeros] = { price: null, url };
       });
 
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {

@@ -100,7 +100,8 @@ export default async function handler(req, res) {
     // (lowest productId = earliest/original TCGplayer listing = the main card, not a promo variant)
     const prices   = {};
     const tcgpUrls = {};
-    const bestProductId = {}; // cardNumber -> best productId chosen so far
+    // For each card number, track all candidates then pick the best one
+    const candidates = {}; // cardNumber -> [{ productId, marketPrice, lowPrice, highPrice }]
 
     for (const product of products) {
       const extData  = product.extendedData || [];
@@ -109,14 +110,32 @@ export default async function handler(req, res) {
 
       const cardNumber = numEntry.value.split('/')[0].trim();
       const priceObj   = priceByProductId[product.productId];
-      if (!priceObj || priceObj.marketPrice == null) continue; // no price for this product
+      if (!priceObj || priceObj.marketPrice == null) continue;
 
-      // Keep lowest productId - that's the original/canonical listing
-      if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
+      if (!candidates[cardNumber]) candidates[cardNumber] = [];
+      candidates[cardNumber].push({
+        productId:   product.productId,
+        marketPrice: priceObj.marketPrice,
+        lowPrice:    priceObj.lowPrice,
+        highPrice:   priceObj.highPrice,
+      });
+    }
 
-      prices[cardNumber]    = priceObj.marketPrice;
-      tcgpUrls[cardNumber]  = `https://www.tcgplayer.com/product/${product.productId}`;
-      bestProductId[cardNumber] = product.productId;
+    // Pick best candidate per card number:
+    // - If only one candidate, use it
+    // - If multiple, pick the one whose lowPrice is closest to marketPrice
+    //   (tightest spread = most liquid, most listings = canonical card)
+    for (const [cardNumber, opts] of Object.entries(candidates)) {
+      let best = opts[0];
+      if (opts.length > 1) {
+        best = opts.reduce((a, b) => {
+          const spreadA = a.marketPrice - (a.lowPrice || a.marketPrice);
+          const spreadB = b.marketPrice - (b.lowPrice || b.marketPrice);
+          return spreadA <= spreadB ? a : b;
+        });
+      }
+      prices[cardNumber]   = best.marketPrice;
+      tcgpUrls[cardNumber] = \`https://www.tcgplayer.com/product/\${best.productId}\`;
     }
 
     const responseData = {
