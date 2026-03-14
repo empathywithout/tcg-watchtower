@@ -1587,7 +1587,8 @@ function renderCards(reset) {
       </div>`;
     el.addEventListener('click', () => {
       const sq = `${card.name} ${card.localId}/193 Paldea Evolved (SV2) Pokemon Card`;
-      openModal(card.localId, card.name, card.rarity || '', sq, imgUrl);
+      const directUrl = priceCache[card.localId]?.url || null;
+      openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
     grid.appendChild(el);
   });
@@ -1627,7 +1628,7 @@ document.getElementById('sort-select').addEventListener('change', applyFilters);
 document.getElementById('load-more-btn').addEventListener('click', () => renderCards(false));
 
 /* ===== MODAL ===== */
-function openModal(localId, name, rarity, searchQuery, imgUrl) {
+function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg('sv02', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
@@ -1641,8 +1642,8 @@ function openModal(localId, name, rarity, searchQuery, imgUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>🔍 Find on TCGplayer</span><span>→</span>
+        <a class="modal-buy-link pl-tcgp" href="${directUrl ? tcgplayerAffiliate(directUrl) : tcgplayerLink(searchQuery)}" target="_blank" rel="noopener">
+          <span>${directUrl ? 'Buy on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
       </div>
     </div>`;
