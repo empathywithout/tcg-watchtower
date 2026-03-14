@@ -1233,7 +1233,8 @@ function setLogoUrl(setId) {
   if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
-  return `https://assets.tcgdex.net/en/sv/${setId}/logo.png`;
+  const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[setId] || setId;
+  return `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`;
 }
 
 // Wire up hero stack images
@@ -1893,7 +1894,8 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
         seriesSets.forEach(s => {
           const isCurrent = currentPath === s.slug;
           const isDisabled = !s.live;
-          const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${s.setId}/logo.png` : '';
+          const tcgdexSetId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
+          const logoUrl = s.setId ? `https://assets.tcgdex.net/en/sv/${tcgdexSetId}/logo.png` : '';
           const cls = [isCurrent ? 'current' : '', isDisabled ? 'disabled' : ''].filter(Boolean).join(' ');
           html += `<a href="${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set ${cls}">
             ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}

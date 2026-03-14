@@ -8,13 +8,24 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s
 const SET_ID = process.env.SET_ID;
 if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
-// TCGdex uses different IDs in different contexts for special sets:
-// - Set overview endpoint: uses '151' for the 151 set
-// - Card detail endpoint: uses 'sv3pt5-{localId}'
-// - Logo/image assets: uses 'sv3pt5'
-const TCGDEX_SET_OVERVIEW_ID = SET_ID === 'sv3pt5' ? '151' : SET_ID;
-const TCGDEX_CARD_ID_PREFIX  = SET_ID; // card IDs always use our internal ID (sv3pt5-1, sv4pt5-1 etc)
-const TCGDEX_ASSET_ID        = SET_ID; // asset paths also use our internal ID
+// TCGdex uses dot-notation IDs internally (sv03.5) but our workflow uses pt-notation (sv3pt5)
+// Map our IDs to the correct TCGdex set overview IDs
+const TCGDEX_OVERVIEW_MAP = {
+  'sv3pt5': '151',      // TCGdex endpoint is /sets/151
+  'sv4pt5': 'sv04pt5',  // check if needed
+  'sv6pt5': 'sv06pt5',
+  'sv8pt5': 'sv08pt5',
+};
+// Logo asset path uses dot notation: sv03.5, sv04.5 etc.
+const TCGDEX_ASSET_MAP = {
+  'sv3pt5': 'sv03.5',
+  'sv4pt5': 'sv04.5',
+  'sv6pt5': 'sv06.5',
+  'sv8pt5': 'sv08.5',
+};
+const TCGDEX_SET_OVERVIEW_ID = TCGDEX_OVERVIEW_MAP[SET_ID] || SET_ID;
+const TCGDEX_CARD_ID_PREFIX  = SET_ID; // brief.id from API will have correct prefix
+const TCGDEX_ASSET_ID        = TCGDEX_ASSET_MAP[SET_ID] || SET_ID;
 
 const s3 = new S3Client({
   region: "auto",
@@ -106,10 +117,11 @@ async function main() {
   if (await existsInR2(logoR2Key)) {
     console.log(`⏭️  Logo already exists at logos/${SET_ID}.png`);
   } else {
-    // Use the logo URL from the TCGdex set data if available, otherwise construct it
+    // Use the logo URL directly from TCGdex API response — it has the correct path
+    // e.g. https://assets.tcgdex.net/en/sv/sv03.5/logo for 151
     const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
-    // Ensure it ends without extension so we can append .png
     const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
+    console.log(`  🔗 Logo URL: ${logoUrl}`);
     try {
       const logoBuffer = await downloadImage(logoUrl);
       await uploadToR2(logoR2Key, logoBuffer, "image/png");
