@@ -918,10 +918,11 @@ footer {
 .section-nav-sets-btn:hover { color: var(--text-primary); }
 .section-nav-sets-btn.open { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
 .section-nav-dropdown {
-  display: none; position: fixed; right: 24px; top: auto;
+  display: none; position: absolute; right: 24px; top: 100%;
   width: 260px; background: rgba(10,15,30,0.98); backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px;
   z-index: 500; max-height: 400px; overflow-y: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  margin-top: 4px;
 }
 .section-nav-dropdown.open { display: block; }
 .nav-dropdown-set {
@@ -1865,11 +1866,6 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     const isOpen = !dropdown.classList.contains('open');
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
-    if (isOpen) {
-      // Anchor dropdown directly below the button, not the nav bar
-      const btnRect = btn.getBoundingClientRect();
-      dropdown.style.top = (btnRect.bottom + 4) + 'px';
-    }
     if (isOpen && !populated) await populateNavSets();
   });
   document.addEventListener('click', e => {
