@@ -849,11 +849,12 @@ footer {
 .section-nav {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background: rgba(10,15,30,0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   padding: 0;
+  /* overflow must NOT be set here — it would clip position:fixed children */
 }
 .section-nav-inner {
   max-width: 1400px;
@@ -1046,10 +1047,11 @@ footer {
     <button class="section-nav-btn" data-target="section-products">🛒 Sealed Products</button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn">📦 Sets ▾</button>
-      <div class="section-nav-dropdown" id="nav-sets-dropdown">
-        <div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
-      </div>
     </div>
+  </div>
+  <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
+  <div class="section-nav-dropdown" id="nav-sets-dropdown">
+    <div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
   </div>
 </nav>
 
