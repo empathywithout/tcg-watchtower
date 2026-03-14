@@ -1866,9 +1866,9 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
     if (isOpen) {
-      // Position dropdown just below the nav bar
-      const navRect = document.getElementById('section-nav').getBoundingClientRect();
-      dropdown.style.top = (navRect.bottom + 4) + 'px';
+      // Anchor dropdown directly below the button, not the nav bar
+      const btnRect = btn.getBoundingClientRect();
+      dropdown.style.top = (btnRect.bottom + 4) + 'px';
     }
     if (isOpen && !populated) await populateNavSets();
   });
