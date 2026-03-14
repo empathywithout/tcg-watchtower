@@ -433,13 +433,23 @@ const vercelPath = path.join(ROOT, 'vercel.json');
 const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 
 // Remove old card rewrites for this set and add new ones
+// Always ensure card-list and sealed-product rewrites exist for this set
+const permanentRewrites = [
+  { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`, destination: `/${SET_SLUG_FULL}.html` },
+  { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`, destination: `/${SET_SLUG_FULL}.html` },
+];
 vercel.rewrites = [
-  ...vercel.rewrites.filter(r => !r.source.includes(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`)),
+  ...vercel.rewrites.filter(r =>
+    !r.source.includes(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`) &&
+    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list` &&
+    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`
+  ),
+  ...permanentRewrites,
   ...rewrites
 ];
 
 fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
-console.log(`✅ vercel.json updated with ${rewrites.length} card rewrites`);
+console.log(`✅ vercel.json updated with ${rewrites.length} card rewrites + card-list/sealed-product`);
 
 // Update sitemap.xml
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
