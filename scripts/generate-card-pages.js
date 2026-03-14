@@ -456,3 +456,393 @@ const cardEntries = cards.map(c => `  <url>
 sitemap = sitemap.replace('</urlset>', `${cardEntries}\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap);
 console.log(`✅ sitemap.xml updated with ${cards.length} card URLs`);
+
+// ─── Generate Most Valuable Page ───────────────────────────────────────────
+
+const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
+const RARITY_TIER = { 'Hyper Rare': 0, 'Special Illustration Rare': 1, 'Ultra Rare': 2, 'Illustration Rare': 3 };
+const RARITY_LABEL = { 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+
+function normalizeRarity(r) {
+  return (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+}
+
+const chaseCards = cards
+  .filter(c => CHASE_RARITIES.includes(normalizeRarity(c.rarity)))
+  .sort((a, b) => (RARITY_TIER[normalizeRarity(a.rarity)] ?? 99) - (RARITY_TIER[normalizeRarity(b.rarity)] ?? 99));
+
+const mvpUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`;
+const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`;
+const seriesUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
+const mvpTitle = `Most Valuable ${SET_FULL_NAME} Cards | Prices & Rankings | Pokémon TCG`;
+const mvpDescription = `The most valuable ${SET_FULL_NAME} Pokémon cards ranked by price. See current market prices for all Hyper Rare, Special Illustration Rare, and Ultra Rare cards.`;
+
+const mvpHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${mvpTitle}</title>
+<meta name="description" content="${mvpDescription}">
+<link rel="canonical" href="${mvpUrl}">
+<meta property="og:title" content="${mvpTitle}">
+<meta property="og:description" content="${mvpDescription}">
+<meta property="og:url" content="${mvpUrl}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "${mvpTitle}",
+  "description": "${mvpDescription}",
+  "url": "${mvpUrl}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}" },
+      { "@type": "ListItem", "position": 2, "name": "Pokémon TCG", "item": "${SITE_URL}/pokemon" },
+      { "@type": "ListItem", "position": 3, "name": "${SET_SERIES}", "item": "${seriesUrl}" },
+      { "@type": "ListItem", "position": 4, "name": "${SET_FULL_NAME}", "item": "${cardListUrl}" },
+      { "@type": "ListItem", "position": 5, "name": "Most Valuable Cards", "item": "${mvpUrl}" }
+    ]
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;--text:#f1f5f9;--text-muted:#94a3b8;--accent:#3b82f6;--accent-amber:#f59e0b;--green:#22c55e;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
+.nav-back{color:var(--text-muted);font-size:0.85rem}
+.nav-back:hover{color:var(--text)}
+.breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
+.breadcrumb a:hover{color:var(--text)}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
+.subtitle{color:var(--text-muted);margin-bottom:2rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
+.card-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.2s;cursor:pointer}
+.card-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card-item img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--surface2)}
+.card-info{padding:0.75rem}
+.card-name{font-weight:600;font-size:0.85rem;margin-bottom:2px}
+.card-num{font-size:0.75rem;color:var(--text-muted);margin-bottom:6px}
+.card-rarity{display:inline-block;padding:2px 8px;border-radius:99px;font-size:0.7rem;font-weight:700;margin-bottom:8px}
+.rarity-hr{background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);color:#fbbf24}
+.rarity-sir{background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);color:#fbbf24}
+.rarity-ur{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#f87171}
+.rarity-ir{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc}
+.card-price{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:8px;min-height:1.5rem}
+.card-price.loading{color:var(--text-muted);font-size:0.8rem}
+.buy-btns{display:flex;gap:6px}
+.btn{flex:1;padding:6px;border-radius:6px;font-size:0.75rem;font-weight:600;text-align:center;border:none;cursor:pointer}
+.btn-tcgp{background:#1a6ef5;color:#fff}
+.btn-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.btn:hover{opacity:0.85}
+.set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
+.set-link:hover{text-decoration:underline}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <a href="${cardListUrl}" class="nav-back">← ${SET_FULL_NAME} Card List</a>
+</nav>
+
+<div class="breadcrumb">
+  <a href="/">Home</a><span>›</span>
+  <a href="/pokemon">Pokémon TCG</a><span>›</span>
+  <a href="${seriesUrl}">${SET_SERIES}</a><span>›</span>
+  <a href="${cardListUrl}">${SET_FULL_NAME}</a><span>›</span>
+  <span>Most Valuable Cards</span>
+</div>
+
+<div class="container">
+  <h1>Most Valuable ${SET_FULL_NAME} Cards</h1>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by rarity — prices update daily from TCGplayer</p>
+
+  <div class="cards-grid" id="cards-grid">
+    ${chaseCards.map(c => {
+      const rarity = normalizeRarity(c.rarity);
+      const rarityClass = RARITY_TIER[rarity] === 0 ? 'rarity-hr' : RARITY_TIER[rarity] === 1 ? 'rarity-sir' : RARITY_TIER[rarity] === 2 ? 'rarity-ur' : 'rarity-ir';
+      const label = RARITY_LABEL[rarity] || rarity;
+      const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
+      const cardPageSlug = toSlug(c.name) + '-' + c.localId;
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&productTypeName=Cards&sort=price`;
+      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
+      return `
+    <div class="card-item">
+      <a href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardPageSlug}">
+        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'">
+      </a>
+      <div class="card-info">
+        <div class="card-name">${c.name}</div>
+        <div class="card-num">#${c.localId}</div>
+        <span class="card-rarity ${rarityClass}">${label}</span>
+        <div class="card-price loading" data-local-id="${c.localId}">Loading...</div>
+        <div class="buy-btns">
+          <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+        </div>
+      </div>
+    </div>`;
+    }).join('')}
+  </div>
+
+  <a href="${cardListUrl}" class="set-link">← View Full ${SET_FULL_NAME} Card List</a>
+</div>
+
+<footer>
+  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices sourced from TCGplayer via TCGCSV.</p>
+</footer>
+
+<script>
+const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
+async function loadPrices() {
+  if (!TCGP_GROUP_ID) return;
+  try {
+    const res = await fetch('/api/tcgplayer-prices?groupId=' + TCGP_GROUP_ID);
+    if (!res.ok) return;
+    const data = await res.json();
+    const prices = data.prices || {};
+    const urls = data.tcgpUrls || {};
+    document.querySelectorAll('[data-local-id]').forEach(el => {
+      const id = el.dataset.localId;
+      const price = prices[id.padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+      const url = urls[id.padStart(3,'0')] ?? urls[String(parseInt(id,10))];
+      if (price != null) {
+        el.textContent = '$' + price.toFixed(2);
+        el.classList.remove('loading');
+        // Update TCGplayer link to direct URL if available
+        if (url) {
+          const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
+          if (tcgpBtn) tcgpBtn.href = url;
+        }
+      } else {
+        el.textContent = 'N/A';
+        el.classList.remove('loading');
+      }
+    });
+    // Re-sort by price descending
+    const grid = document.getElementById('cards-grid');
+    const items = [...grid.querySelectorAll('.card-item')];
+    items.sort((a, b) => {
+      const pa = parseFloat(a.querySelector('[data-local-id]').textContent.replace('$','')) || 0;
+      const pb = parseFloat(b.querySelector('[data-local-id]').textContent.replace('$','')) || 0;
+      return pb - pa;
+    });
+    items.forEach(i => grid.appendChild(i));
+  } catch(e) {}
+}
+loadPrices();
+</script>
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+</body>
+</html>`;
+
+// Write most-valuable page
+const mvpDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG);
+fs.mkdirSync(mvpDir, { recursive: true });
+const mvpFilepath = path.join(mvpDir, 'most-valuable.html');
+fs.writeFileSync(mvpFilepath, mvpHtml);
+console.log(`✅ Generated most-valuable page: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable.html`);
+
+// Add most-valuable rewrite to vercel.json
+vercel.rewrites = vercel.rewrites.filter(r => r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`);
+vercel.rewrites.push({
+  source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`,
+  destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable.html`
+});
+fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
+console.log(`✅ vercel.json updated with most-valuable rewrite`);
+
+// Add to sitemap
+let sitemap2 = fs.readFileSync(sitemapPath, 'utf8');
+const mvpEntry = `  <url>
+    <loc>${mvpUrl}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+sitemap2 = sitemap2.replace('</urlset>', `${mvpEntry}\n</urlset>`);
+fs.writeFileSync(sitemapPath, sitemap2);
+console.log(`✅ sitemap.xml updated with most-valuable URL`);
+
+// ─── Generate Top Chase Cards SEO Page ─────────────────────────────────────────
+
+const chaseUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`;
+const chaseTitle = `${SET_FULL_NAME} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`;
+const chaseDescription = `All chase cards in ${SET_FULL_NAME} — every Hyper Rare, Special Illustration Rare, Ultra Rare, and Illustration Rare. Find out what the best pulls are and see current prices.`;
+
+const chaseHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${chaseTitle}</title>
+<meta name="description" content="${chaseDescription}">
+<link rel="canonical" href="${chaseUrl}">
+<meta property="og:title" content="${chaseTitle}">
+<meta property="og:description" content="${chaseDescription}">
+<meta property="og:url" content="${chaseUrl}">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "${chaseTitle}",
+  "description": "${chaseDescription}",
+  "url": "${chaseUrl}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}" },
+      { "@type": "ListItem", "position": 2, "name": "Pokémon TCG", "item": "${SITE_URL}/pokemon" },
+      { "@type": "ListItem", "position": 3, "name": "${SET_SERIES}", "item": "${seriesUrl}" },
+      { "@type": "ListItem", "position": 4, "name": "${SET_FULL_NAME}", "item": "${cardListUrl}" },
+      { "@type": "ListItem", "position": 5, "name": "Chase Cards", "item": "${chaseUrl}" }
+    ]
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;--text:#f1f5f9;--text-muted:#94a3b8;--accent:#3b82f6;--green:#22c55e;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.05em}
+.nav-back{color:var(--text-muted);font-size:0.85rem}.nav-back:hover{color:var(--text)}
+.breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
+.breadcrumb a:hover{color:var(--text)}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
+.subtitle{color:var(--text-muted);margin-bottom:2rem;line-height:1.6}
+.cta-banner{background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(168,85,247,0.15));border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.cta-banner p{color:var(--text-muted);font-size:0.9rem;margin-top:4px}
+.cta-banner strong{color:var(--text);font-size:1rem}
+.cta-btn{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;padding:10px 20px;border-radius:8px;font-weight:600;white-space:nowrap;font-size:0.9rem}
+.cta-btn:hover{opacity:0.9}
+.rarity-section{margin-bottom:2rem}
+.rarity-section h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem}
+.card-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.2s}
+.card-item:hover{border-color:var(--accent)}
+.card-item img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--surface2)}
+.card-info{padding:8px}
+.card-name{font-size:0.8rem;font-weight:600;margin-bottom:2px}
+.card-num{font-size:0.72rem;color:var(--text-muted)}
+.see-all{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:0.85rem;margin-top:8px}
+.see-all:hover{text-decoration:underline}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <a href="${cardListUrl}" class="nav-back">← ${SET_FULL_NAME} Card List</a>
+</nav>
+<div class="breadcrumb">
+  <a href="/">Home</a><span>›</span>
+  <a href="/pokemon">Pokémon TCG</a><span>›</span>
+  <a href="${seriesUrl}">${SET_SERIES}</a><span>›</span>
+  <a href="${cardListUrl}">${SET_FULL_NAME}</a><span>›</span>
+  <span>Chase Cards</span>
+</div>
+<div class="container">
+  <h1>${SET_FULL_NAME} Top Chase Cards</h1>
+  <p class="subtitle">The ${chaseCards.length} chase cards in ${SET_FULL_NAME} — the rarest and most sought-after pulls in the set. Chase cards are the high-rarity cards collectors target, and they typically command the highest prices on the secondary market.</p>
+
+  <div class="cta-banner">
+    <div>
+      <strong>Looking for current prices?</strong>
+      <p>See live market prices for all ${SET_FULL_NAME} chase cards, updated daily from TCGplayer.</p>
+    </div>
+    <a href="${mvpUrl}" class="cta-btn">⭐ See Most Valuable Cards →</a>
+  </div>
+
+  ${['Hyper Rare', 'Special Illustration Rare', 'Ultra Rare', 'Illustration Rare'].map(rarity => {
+    const rarityCards = chaseCards.filter(c => normalizeRarity(c.rarity) === rarity);
+    if (!rarityCards.length) return '';
+    return `
+  <div class="rarity-section">
+    <h2>${rarity} (${rarityCards.length} cards)</h2>
+    <div class="cards-grid">
+      ${rarityCards.map(c => {
+        const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
+        const cardPageSlug = toSlug(c.name) + '-' + c.localId;
+        return `
+      <a class="card-item" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardPageSlug}">
+        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME}" loading="lazy">
+        <div class="card-info">
+          <div class="card-name">${c.name}</div>
+          <div class="card-num">#${c.localId}</div>
+        </div>
+      </a>`;
+      }).join('')}
+    </div>
+  </div>`;
+  }).join('')}
+
+  <a href="${mvpUrl}" class="see-all">⭐ View prices for all chase cards →</a>
+</div>
+<footer>
+  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company.</p>
+</footer>
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+</body>
+</html>`;
+
+// Write top-chase-cards page
+const chaseFilepath = path.join(mvpDir, 'top-chase-cards.html');
+fs.writeFileSync(chaseFilepath, chaseHtml);
+console.log(`✅ Generated top-chase-cards page: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards.html`);
+
+// Add chase-cards rewrite to vercel.json
+const vercel3 = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
+vercel3.rewrites = vercel3.rewrites.filter(r => r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`);
+vercel3.rewrites.push({
+  source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`,
+  destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards.html`
+});
+fs.writeFileSync(vercelPath, JSON.stringify(vercel3, null, 2));
+console.log(`✅ vercel.json updated with top-chase-cards rewrite`);
+
+// Add to sitemap
+let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
+const chaseEntry = `  <url>
+    <loc>${chaseUrl}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+sitemap3 = sitemap3.replace('</urlset>', `${chaseEntry}\n</urlset>`);
+fs.writeFileSync(sitemapPath, sitemap3);
+console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
