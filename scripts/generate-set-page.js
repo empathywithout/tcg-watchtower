@@ -183,107 +183,112 @@ if (productMetaJson) {
 
 // ── Auto-fetch sealed products from TCGCSV if PRODUCT_META_JSON not provided ──
 // Maps TCGCSV product type names to our display config
-const PRODUCT_TYPE_MAP = {
-  'Booster Box':        { filterKey: 'box',     badgeClass: 'badge-box',        type: 'Booster Box' },
-  'Booster Bundle':     { filterKey: 'bundle',  badgeClass: 'badge-bundle',     type: 'Booster Bundle' },
-  'Booster Case':       { filterKey: 'case',    badgeClass: 'badge-case',       type: 'Booster Box Case', noAmazon: true },
-  'Elite Trainer Box':  { filterKey: 'etb',     badgeClass: 'badge-etb',        type: 'Elite Trainer Box' },
-  'Build & Battle Box': { filterKey: 'battle',  badgeClass: 'badge-battle',     type: 'Build & Battle Box' },
-  'Sleeved Booster':    { filterKey: 'sleeves', badgeClass: 'badge-collection', type: 'Sleeved Booster' },
-  'Collection':         { filterKey: 'collection', badgeClass: 'badge-collection', type: 'Collection' },
+// ── Per-set sealed product definitions ────────────────────────────────────────
+// Mirrors the SV1 base set page structure: Booster Box, ETB, Bundle, Case, Build & Battle
+// tcgpId drives the image (product-images.tcgplayer.com) and TCGplayer link
+const SET_PRODUCTS = {
+  sv01: [
+    { tcgpId: '476452', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       q: 'Pokemon Scarlet Violet Base Set Booster Box SV1' },
+    { tcgpId: '478335', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Scarlet & Violet Elite Trainer Box',             q: 'Pokemon Scarlet Violet Base Set Elite Trainer Box SV1' },
+    { tcgpId: '478258', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 6-Pack Booster Bundle',         q: 'Pokemon Scarlet Violet Booster Bundle SV1' },
+    { tcgpId: '476453', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Scarlet & Violet Booster Box Case (6 Boxes)',    q: 'Pokemon Scarlet Violet Booster Box Case SV1', noAmazon: true },
+    { tcgpId: '478253', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Scarlet & Violet Build & Battle Box',            q: 'Pokemon Scarlet Violet Build Battle Box SV1' },
+  ],
+  sv02: [
+    { tcgpId: '493975', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Paldea Evolved Booster Box (36 Packs)',          q: 'Pokemon Paldea Evolved Booster Box SV2' },
+    { tcgpId: '493974', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Paldea Evolved Elite Trainer Box',               q: 'Pokemon Paldea Evolved Elite Trainer Box SV2' },
+    { tcgpId: '496914', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Paldea Evolved Booster Bundle',                  q: 'Pokemon Paldea Evolved Booster Bundle SV2' },
+    { tcgpId: '496905', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Paldea Evolved Booster Box Case (6 Boxes)',      q: 'Pokemon Paldea Evolved Booster Box Case SV2', noAmazon: true },
+    { tcgpId: '496929', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Paldea Evolved Build & Battle Box',              q: 'Pokemon Paldea Evolved Build Battle Box SV2' },
+  ],
+  sv03: [
+    { tcgpId: '501257', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Obsidian Flames Booster Box (36 Packs)',         q: 'Pokemon Obsidian Flames Booster Box SV3' },
+    { tcgpId: '501264', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Obsidian Flames Elite Trainer Box',              q: 'Pokemon Obsidian Flames Elite Trainer Box SV3' },
+    { tcgpId: '501263', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Obsidian Flames Booster Bundle',                 q: 'Pokemon Obsidian Flames Booster Bundle SV3' },
+    { tcgpId: '501258', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Obsidian Flames Booster Box Case (6 Boxes)',     q: 'Pokemon Obsidian Flames Booster Box Case SV3', noAmazon: true },
+    { tcgpId: '501268', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Obsidian Flames Build & Battle Box',             q: 'Pokemon Obsidian Flames Build Battle Box SV3' },
+  ],
+  sv04: [
+    { tcgpId: '512821', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Paradox Rift Booster Box (36 Packs)',            q: 'Pokemon Paradox Rift Booster Box SV4' },
+    { tcgpId: '512813', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Paradox Rift Elite Trainer Box',                 q: 'Pokemon Paradox Rift Elite Trainer Box SV4' },
+    { tcgpId: '512820', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Paradox Rift Booster Bundle',                    q: 'Pokemon Paradox Rift Booster Bundle SV4' },
+    { tcgpId: '512828', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Paradox Rift Booster Box Case (6 Boxes)',        q: 'Pokemon Paradox Rift Booster Box Case SV4', noAmazon: true },
+    { tcgpId: '514068', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Paradox Rift Build & Battle Box',                q: 'Pokemon Paradox Rift Build Battle Box SV4' },
+  ],
+  sv3pt5: [
+    { tcgpId: '503313', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Scarlet & Violet 151 Elite Trainer Box',         q: 'Pokemon Scarlet Violet 151 Elite Trainer Box MEW' },
+    { tcgpId: '502000', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Scarlet & Violet 151 Booster Bundle',            q: 'Pokemon Scarlet Violet 151 Booster Bundle MEW' },
+  ],
+  sv4pt5: [
+    { tcgpId: '528040', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Paldean Fates Elite Trainer Box',                q: 'Pokemon Paldean Fates Elite Trainer Box PAF' },
+    { tcgpId: '528771', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Paldean Fates Booster Bundle',                   q: 'Pokemon Paldean Fates Booster Bundle PAF' },
+  ],
+  sv05: [
+    { tcgpId: '536225', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Temporal Forces Booster Box (36 Packs)',         q: 'Pokemon Temporal Forces Booster Box SV5' },
+    { tcgpId: '532848', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Temporal Forces Elite Trainer Box',              q: 'Pokemon Temporal Forces Elite Trainer Box SV5' },
+    { tcgpId: '541017', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Temporal Forces Booster Bundle',                 q: 'Pokemon Temporal Forces Booster Bundle SV5' },
+    { tcgpId: '537417', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Temporal Forces Booster Box Case (6 Boxes)',     q: 'Pokemon Temporal Forces Booster Box Case SV5', noAmazon: true },
+    { tcgpId: '537411', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Temporal Forces Build & Battle Box',             q: 'Pokemon Temporal Forces Build Battle Box SV5' },
+  ],
+  sv06: [
+    { tcgpId: '543846', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Twilight Masquerade Booster Box (36 Packs)',     q: 'Pokemon Twilight Masquerade Booster Box SV6' },
+    { tcgpId: '543845', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Twilight Masquerade Elite Trainer Box',          q: 'Pokemon Twilight Masquerade Elite Trainer Box SV6' },
+    { tcgpId: '543852', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Twilight Masquerade Booster Bundle',             q: 'Pokemon Twilight Masquerade Booster Bundle SV6' },
+    { tcgpId: '544384', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Twilight Masquerade Booster Box Case (6 Boxes)', q: 'Pokemon Twilight Masquerade Booster Box Case SV6', noAmazon: true },
+    { tcgpId: '544386', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Twilight Masquerade Build & Battle Box',         q: 'Pokemon Twilight Masquerade Build Battle Box SV6' },
+  ],
+  sv6pt5: [
+    { tcgpId: '552999', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Shrouded Fable Elite Trainer Box',               q: 'Pokemon Shrouded Fable Elite Trainer Box SFA' },
+    { tcgpId: '553031', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Shrouded Fable Booster Bundle',                  q: 'Pokemon Shrouded Fable Booster Bundle SFA' },
+  ],
+  sv07: [
+    { tcgpId: '557354', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Stellar Crown Booster Box (36 Packs)',           q: 'Pokemon Stellar Crown Booster Box SV7' },
+    { tcgpId: '557350', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Stellar Crown Elite Trainer Box',                q: 'Pokemon Stellar Crown Elite Trainer Box SV7' },
+    { tcgpId: '557345', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Stellar Crown Booster Bundle',                   q: 'Pokemon Stellar Crown Booster Bundle SV7' },
+    { tcgpId: '557365', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Stellar Crown Booster Box Case (6 Boxes)',       q: 'Pokemon Stellar Crown Booster Box Case SV7', noAmazon: true },
+    { tcgpId: '557330', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Stellar Crown Build & Battle Box',               q: 'Pokemon Stellar Crown Build Battle Box SV7' },
+  ],
+  sv08: [
+    { tcgpId: '565606', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Surging Sparks Booster Box (36 Packs)',          q: 'Pokemon Surging Sparks Booster Box SV8' },
+    { tcgpId: '565630', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Surging Sparks Elite Trainer Box',               q: 'Pokemon Surging Sparks Elite Trainer Box SV8' },
+    { tcgpId: '565629', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Surging Sparks Booster Bundle',                  q: 'Pokemon Surging Sparks Booster Bundle SV8' },
+    { tcgpId: '580708', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Surging Sparks Booster Box Case (6 Boxes)',      q: 'Pokemon Surging Sparks Booster Box Case SV8', noAmazon: true },
+    { tcgpId: '565599', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Surging Sparks Build & Battle Box',              q: 'Pokemon Surging Sparks Build Battle Box SV8' },
+  ],
+  sv8pt5: [
+    { tcgpId: '593355', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Prismatic Evolutions Elite Trainer Box',         q: 'Pokemon Prismatic Evolutions Elite Trainer Box PRE' },
+    { tcgpId: '600518', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Prismatic Evolutions Booster Bundle',            q: 'Pokemon Prismatic Evolutions Booster Bundle PRE' },
+  ],
+  sv09: [
+    { tcgpId: '610931', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Journey Together Booster Box (36 Packs)',        q: 'Pokemon Journey Together Booster Box SV9' },
+    { tcgpId: '610930', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Journey Together Elite Trainer Box',             q: 'Pokemon Journey Together Elite Trainer Box SV9' },
+    { tcgpId: '610953', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Journey Together Booster Bundle',                q: 'Pokemon Journey Together Booster Bundle SV9' },
+    { tcgpId: '614449', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Journey Together Booster Box Case (6 Boxes)',    q: 'Pokemon Journey Together Booster Box Case SV9', noAmazon: true },
+  ],
+  sv10: [
+    { tcgpId: '624679', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Destined Rivals Booster Box (36 Packs)',         q: 'Pokemon Destined Rivals Booster Box SV10' },
+    { tcgpId: '624676', type: 'Elite Trainer Box',  filterKey: 'etb',     badgeClass: 'badge-etb',        name: 'Destined Rivals Elite Trainer Box',              q: 'Pokemon Destined Rivals Elite Trainer Box SV10' },
+    { tcgpId: '625670', type: 'Booster Bundle',     filterKey: 'bundle',  badgeClass: 'badge-bundle',     name: 'Destined Rivals Booster Bundle',                 q: 'Pokemon Destined Rivals Booster Bundle SV10' },
+    { tcgpId: '624678', type: 'Booster Box Case',   filterKey: 'case',    badgeClass: 'badge-case',       name: 'Destined Rivals Booster Box Case (6 Boxes)',     q: 'Pokemon Destined Rivals Booster Box Case SV10', noAmazon: true },
+    { tcgpId: '625677', type: 'Build & Battle Box', filterKey: 'battle',  badgeClass: 'badge-battle',     name: 'Destined Rivals Build & Battle Box',             q: 'Pokemon Destined Rivals Build Battle Box SV10' },
+  ],
 };
 
-// Special sets that don't have booster boxes — only show ETBs, bundles, collections
-const SPECIAL_SETS = new Set(['sv3pt5', 'sv4pt5', 'sv6pt5', 'sv8pt5']);
-const SKIP_FOR_SPECIAL = new Set(['Booster Box', 'Booster Case', 'Build & Battle Box']);
-
-if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
-  console.log(`\n📦  Auto-fetching sealed products from TCGCSV for group ${TCGP_GROUP_ID}...`);
-  try {
-    const [productsRes, pricesRes] = await Promise.all([
-      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/products`),
-      fetch(`https://tcgcsv.com/tcgplayer/3/${TCGP_GROUP_ID}/prices`),
-    ]);
-    const productsData = await productsRes.json();
-    const products = productsData.results || [];
-    const prices   = (await pricesRes.json()).results || [];
-    console.log(`  📋  TCGCSV returned ${products.length} total products for group ${TCGP_GROUP_ID}`);
-    // Log a sample so we can debug field structure
-    if (products.length > 0) {
-      const sample = products[0];
-      console.log(`  🔍  Sample product: ${sample.name}`);
-      console.log(`      productTypes: ${JSON.stringify(sample.productTypes)}`);
-      console.log(`      extendedData: ${JSON.stringify(sample.extendedData?.slice(0,3))}`);
-    }
-
-    // Price lookup by productId
-    const priceById = {};
-    for (const p of prices) {
-      if (!priceById[p.productId]) priceById[p.productId] = p;
-    }
-
-    // Words that indicate a variant/promo product — skip these, keep only canonical items
-    const VARIANT_KEYWORDS = [
-      'fuecoco', 'sprigatito', 'quaxly', 'koraidon', 'miraidon',
-      'charizard', 'pikachu', 'pokémon center', 'pokemon center',
-      '(rebalanced)', 'promo', 'bundle)', 'collection box',
-      'tin', 'tins', 'blisters', 'blister', 'mini',
-    ];
-
-    // Keep only one product per type — the shortest/most generic name wins
-    const bestByType = {}; // type → product
-
-    for (const product of products) {
-      const extData = product.extendedData || [];
-      // Sealed products have no card Number
-      const hasNumber = extData.some(e => e.name === 'Number');
-      if (hasNumber) continue;
-
-      // Match against every available field
-      const extTypeEntry = extData.find(e => e.name === 'ProductType' || e.name === 'SubType');
-      const extTypeName  = extTypeEntry?.value || '';
-      const topTypes     = (product.productTypes || []).join(' ');
-      const nameLower    = (product.name || '').toLowerCase();
-      const combined     = `${extTypeName} ${topTypes} ${nameLower}`;
-      const config       = Object.entries(PRODUCT_TYPE_MAP).find(([k]) => combined.includes(k))?.[1];
-      if (!config) continue;
-
-      // Skip special set products that don't apply
-      if (SPECIAL_SETS.has(SET_ID) && SKIP_FOR_SPECIAL.has(config.type)) continue;
-
-      // Skip variant/promo products
-      if (VARIANT_KEYWORDS.some(kw => nameLower.includes(kw))) continue;
-
-      // Keep only one per type — prefer shorter (more generic) names
-      const existing = bestByType[config.type];
-      if (!existing || product.name.length < existing.name.length) {
-        bestByType[config.type] = product;
-      }
-    }
-
+if (!productMetaJson) {
+  const setProducts = SET_PRODUCTS[SET_ID];
+  if (setProducts) {
+    console.log(`\n📦  Using hardcoded product list for ${SET_ID} (${setProducts.length} products)`);
     const autoMeta = {};
-    for (const [type, product] of Object.entries(bestByType)) {
-      const config = Object.values(PRODUCT_TYPE_MAP).find(c => c.type === type);
-      const key = String(product.productId);
-      autoMeta[key] = {
-        ...config,
-        name:    product.name,
-        tcgpId:  String(product.productId),
-        q:       `Pokemon TCG ${SET_SUBTITLE} ${SET_SHORT_NAME} ${config.type}`,
-        image:   `https://product-images.tcgplayer.com/fit-in/437x437/${product.productId}.jpg`,
+    for (const p of setProducts) {
+      autoMeta[p.tcgpId] = {
+        ...p,
+        image: `https://product-images.tcgplayer.com/fit-in/437x437/${p.tcgpId}.jpg`,
       };
-      console.log(`  ✅  ${config.type}: ${product.name} (id: ${product.productId})`);
+      console.log(`  ✅  ${p.type}: ${p.name}`);
     }
-
-    if (Object.keys(autoMeta).length > 0) {
-      productMetaJson = JSON.stringify(autoMeta);
-      console.log(`  📦  Auto-generated ${Object.keys(autoMeta).length} products`);
-    } else {
-      console.log('  ⚠️  No sealed products found in TCGCSV — products section will be empty');
-      productMetaJson = '{}';
-    }
-  } catch(e) {
-    console.warn(`  ⚠️  TCGCSV product fetch failed: ${e.message}`);
+    productMetaJson = JSON.stringify(autoMeta);
+  } else {
+    console.warn(`  ⚠️  No product list defined for ${SET_ID} — products section will be empty`);
     productMetaJson = '{}';
   }
 } else if (!productMetaJson) {
