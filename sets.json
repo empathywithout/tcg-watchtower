@@ -38,5 +38,77 @@
     "short": "MEW",
     "setId": "sv3pt5",
     "live": true
+  },
+  {
+    "slug": "paldean-fates-card-list",
+    "name": "Paldean Fates",
+    "series": "Scarlet & Violet",
+    "short": "PAF",
+    "setId": "sv4pt5",
+    "live": false
+  },
+  {
+    "slug": "temporal-forces-card-list",
+    "name": "Temporal Forces (SV5)",
+    "series": "Scarlet & Violet",
+    "short": "SV5",
+    "setId": "sv05",
+    "live": false
+  },
+  {
+    "slug": "twilight-masquerade-card-list",
+    "name": "Twilight Masquerade (SV6)",
+    "series": "Scarlet & Violet",
+    "short": "SV6",
+    "setId": "sv06",
+    "live": false
+  },
+  {
+    "slug": "shrouded-fable-card-list",
+    "name": "Shrouded Fable",
+    "series": "Scarlet & Violet",
+    "short": "SFA",
+    "setId": "sv6pt5",
+    "live": false
+  },
+  {
+    "slug": "stellar-crown-card-list",
+    "name": "Stellar Crown (SV7)",
+    "series": "Scarlet & Violet",
+    "short": "SV7",
+    "setId": "sv07",
+    "live": false
+  },
+  {
+    "slug": "surging-sparks-card-list",
+    "name": "Surging Sparks (SV8)",
+    "series": "Scarlet & Violet",
+    "short": "SV8",
+    "setId": "sv08",
+    "live": false
+  },
+  {
+    "slug": "prismatic-evolutions-card-list",
+    "name": "Prismatic Evolutions",
+    "series": "Scarlet & Violet",
+    "short": "PRE",
+    "setId": "sv8pt5",
+    "live": false
+  },
+  {
+    "slug": "journey-together-card-list",
+    "name": "Journey Together (SV9)",
+    "series": "Scarlet & Violet",
+    "short": "SV9",
+    "setId": "sv09",
+    "live": false
+  },
+  {
+    "slug": "destined-rivals-card-list",
+    "name": "Destined Rivals (SV10)",
+    "series": "Scarlet & Violet",
+    "short": "SV10",
+    "setId": "sv10",
+    "live": false
   }
 ]

@@ -8,15 +8,13 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s
 const SET_ID = process.env.SET_ID;
 if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
-// Map our internal set IDs to TCGdex API set IDs
-// Special sets use different IDs on the TCGdex API
-const TCGDEX_ID_MAP = {
-  'sv3pt5': '151',       // 151 set
-  'sv4pt5': 'sv4pt5',   // Paldean Fates
-  'sv6pt5': 'sv6pt5',   // Shrouded Fable
-  'sv8pt5': 'sv8pt5',   // Prismatic Evolutions
-};
-const TCGDEX_SET_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
+// TCGdex uses different IDs in different contexts for special sets:
+// - Set overview endpoint: uses '151' for the 151 set
+// - Card detail endpoint: uses 'sv3pt5-{localId}'
+// - Logo/image assets: uses 'sv3pt5'
+const TCGDEX_SET_OVERVIEW_ID = SET_ID === 'sv3pt5' ? '151' : SET_ID;
+const TCGDEX_CARD_ID_PREFIX  = SET_ID; // card IDs always use our internal ID (sv3pt5-1, sv4pt5-1 etc)
+const TCGDEX_ASSET_ID        = SET_ID; // asset paths also use our internal ID
 
 const s3 = new S3Client({
   region: "auto",
@@ -70,7 +68,7 @@ async function main() {
 
   // Step 1 — Fetch set overview (card list with localIds)
   console.log(`📋 Fetching set overview...`);
-  const setData = await fetchWithRetry(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_ID}`);
+  const setData = await fetchWithRetry(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
   const briefCards = setData.cards || [];
   const totalOfficial = setData.cardCount?.official || briefCards.length;
   const totalCards = setData.cardCount?.total || briefCards.length;
@@ -84,7 +82,7 @@ async function main() {
     const brief = briefCards[i];
     process.stdout.write(`[${i + 1}/${briefCards.length}] ${brief.name}... `);
     try {
-      const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${TCGDEX_SET_ID}-${brief.localId}`);
+      const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${TCGDEX_CARD_ID_PREFIX}-${brief.localId}`);
       fullCards.push({
         localId: brief.localId,
         name: card.name,
@@ -107,7 +105,7 @@ async function main() {
     console.log(`⏭️  Logo already exists at logos/${SET_ID}.png`);
   } else {
     // Try TCGdex logo first
-    const logoUrl = `https://assets.tcgdex.net/en/sv/${TCGDEX_SET_ID}/logo.png`;
+    const logoUrl = `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo.png`;
     try {
       const logoBuffer = await downloadImage(logoUrl);
       await uploadToR2(logoR2Key, logoBuffer, "image/png");
