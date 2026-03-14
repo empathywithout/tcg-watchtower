@@ -1347,7 +1347,7 @@ function renderChaseCardsHTML(grid) {
       ? `<div class="chase-card-price"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-loading">Loading price...</div>`;
     return `
-    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${card.localId}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${card.localId}">
+    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
