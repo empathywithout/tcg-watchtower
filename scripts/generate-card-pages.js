@@ -45,7 +45,7 @@ const cards = metadata.cards || [];
 console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 
 // Output directory
-const outDir = path.join(ROOT, 'pokemon', SET_SERIES_SLUG, SET_SLUG, 'cards');
+const outDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG, 'cards');
 fs.mkdirSync(outDir, { recursive: true });
 
 // Slug helper
@@ -94,8 +94,8 @@ function generateCardPage(card, allCards) {
   const url  = cardUrl(card);
   const img  = cardImgUrl(card);
   const related = getRelated(card, allCards);
-  const cardListUrl = `${SITE_URL}/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`;
-  const seriesUrl   = `${SITE_URL}/pokemon/${SET_SERIES_SLUG}`;
+  const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/card-list`;
+  const seriesUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
 
   const title = `${card.name} ${card.localId} Price, Rarity & Card Info | Pokémon TCG`;
   const description = `View the price, rarity, and card details for ${card.name} #${card.localId} from the ${SET_FULL_NAME} Pokémon TCG expansion. Current market price and where to buy.`;
@@ -410,7 +410,7 @@ for (const card of cards) {
   const html = generateCardPage(card, cards);
   fs.writeFileSync(filepath, html);
   rewrites.push({
-    source: `/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${slug}`,
+    source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${slug}`,
     destination: `/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${filename}`
   });
   generated++;
@@ -426,7 +426,7 @@ const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 
 // Remove old card rewrites for this set and add new ones
 vercel.rewrites = [
-  ...vercel.rewrites.filter(r => !r.source.includes(`/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`)),
+  ...vercel.rewrites.filter(r => !r.source.includes(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`)),
   ...rewrites
 ];
 
