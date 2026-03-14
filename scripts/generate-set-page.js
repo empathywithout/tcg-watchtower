@@ -144,11 +144,20 @@ const SET_TCGP_SLUG = process.env.SET_TCGP_SLUG
   || SET_SUBTITLE.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 // TCGP_GROUP_ID: TCGplayer/TCGCSV groupId for this set — used to fetch accurate market prices
-// Find it at https://tcgcsv.com/tcgplayer/3/groups (Pokemon category = 3)
-// e.g. SV1 = 23533, SV2 = 23567, SV3 = 23636
-const TCGP_GROUP_ID = process.env.TCGP_GROUP_ID || '0';
+// Built-in lookup so the workflow works even if tcgp_group_id input is left blank
+const GROUP_ID_MAP = {
+  'sv01': '22873', 'sv02': '23120', 'sv03': '23228', 'sv04': '23286',
+  'sv3pt5': '23237', 'sv4pt5': '23353', 'sv05': '23381', 'sv06': '23473',
+  'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
+  'sv09': '24073', 'sv10': '24269',
+};
+const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID && process.env.TCGP_GROUP_ID !== '0')
+  ? process.env.TCGP_GROUP_ID
+  : (GROUP_ID_MAP[SET_ID] || '0');
 if (TCGP_GROUP_ID === '0') {
   console.warn('⚠️  TCGP_GROUP_ID not set — prices will not load. Find your groupId at https://tcgcsv.com/tcgplayer/3/groups');
+} else {
+  console.log(`✅  Using groupId ${TCGP_GROUP_ID} for ${SET_ID}`);
 }
 
 console.log(`✅  ${setData.name} — ${officialCount} official cards, released ${releaseDate}`);
