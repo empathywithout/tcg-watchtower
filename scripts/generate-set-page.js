@@ -169,7 +169,13 @@ console.log(`    subtitle="${SET_SUBTITLE}", search="${SET_SEARCH_NAME}", tcgp="
 //   PRODUCT_META_JSON='{"B0CF7YNQ7T":{"type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Paldea Evolved Booster Box","q":"Pokemon Paldea Evolved Booster Box"}}'
 let productMetaJson = process.env.PRODUCT_META_JSON || '';
 if (productMetaJson) {
-  try { JSON.parse(productMetaJson); } catch(e) {
+  try {
+    const parsed = JSON.parse(productMetaJson);
+    // Treat empty object {} as "not provided" — triggers auto-fetch
+    if (Object.keys(parsed).length === 0) {
+      productMetaJson = '';
+    }
+  } catch(e) {
     console.warn('⚠️  PRODUCT_META_JSON is not valid JSON — will auto-fetch from TCGCSV');
     productMetaJson = '';
   }
@@ -186,7 +192,6 @@ const PRODUCT_TYPE_MAP = {
   'Sleeved Booster':    { filterKey: 'sleeves', badgeClass: 'badge-collection', type: 'Sleeved Booster' },
 };
 
-console.log(`\n🔍 DEBUG: productMetaJson length=${productMetaJson.length}, TCGP_GROUP_ID=${TCGP_GROUP_ID}`);
 if (!productMetaJson && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
   console.log(`\n📦  Auto-fetching sealed products from TCGCSV for group ${TCGP_GROUP_ID}...`);
   try {
