@@ -1231,7 +1231,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId} {{SET_SEARCH_NAME}}`,
+          searchName: `${c.name} ${c.localId}/{{SET_OFFICIAL_COUNT}} {{SET_FULL_NAME}} Pokemon Card`,
           img: c.image || cardImg('{{SET_ID}}', c.localId),
         };
       });
@@ -1271,7 +1271,7 @@ function renderChaseCardsHTML(grid) {
           ${c.priceUrl
             ? `<a class="buy-link buy-tcgp buy-tcgp-featured" href="${tcgplayerAffiliate(c.priceUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>`
             : `<a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>`}
-          <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
+
           <a class="buy-link buy-tcgp" href="${tcgplayerLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
@@ -1510,7 +1510,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId} {{SET_SEARCH_NAME}}`;
+      const sq = `${card.name} ${card.localId}/{{SET_OFFICIAL_COUNT}} {{SET_FULL_NAME}} Pokemon Card`;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl);
     });
     grid.appendChild(el);
@@ -1561,9 +1561,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl) {
       <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
-        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>🔍 Find on Amazon</span><span>→</span>
-        </a>
+
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
