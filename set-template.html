@@ -1229,9 +1229,10 @@ function renderChaseCardsHTML(grid) {
 const PRODUCT_META = {{PRODUCT_META_JSON}};
 
 function renderProductCard(p) {
+  const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
   const imgHtml = p.image
-    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`
-    : `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='${fallbackHtml.replace(/'/g, '&apos;')}'">`
+    : fallbackHtml;
   return `
     <div class="product-card" data-type="${p.filterKey}">
       <div class="product-img-wrap">${imgHtml}</div>
@@ -1255,8 +1256,8 @@ function renderProductCard(p) {
 }
 
 function amazonImgUrl(asin) {
-  // Amazon Associates image widget — uses your affiliate tag, works as direct img src
-  return `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${asin}&Format=_SL500_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${CONFIG.amazon.tag}`;
+  // Proxy through our own domain so ad blockers don't block the image
+  return `/api/product-image?asin=${asin}`;
 }
 
 function renderProducts() {

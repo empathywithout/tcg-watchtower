@@ -1,9 +1,25 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/cards", "destination": "/api/cards.js" },
-    { "source": "/api/alerts", "destination": "/api/alerts.js" },
-    { "source": "/api/ebay-prices", "destination": "/api/ebay-prices.js" },
-    { "source": "/api/tcgplayer-prices", "destination": "/api/tcgplayer-prices.js" }
+    {
+      "source": "/api/cards",
+      "destination": "/api/cards.js"
+    },
+    {
+      "source": "/api/alerts",
+      "destination": "/api/alerts.js"
+    },
+    {
+      "source": "/api/ebay-prices",
+      "destination": "/api/ebay-prices.js"
+    },
+    {
+      "source": "/api/tcgplayer-prices",
+      "destination": "/api/tcgplayer-prices.js"
+    },
+    {
+      "source": "/api/product-image",
+      "destination": "/api/product-image.js"
+    }
   ]
 }
