@@ -1886,6 +1886,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
         if (!grouped[s.series]) grouped[s.series] = [];
         grouped[s.series].push(s);
       });
+      console.log('[Sets] grouped keys:', Object.keys(grouped));
       let html = '';
       const currentPath = window.location.pathname.replace(/^\//,'').replace(/\.html$/,'');
       Object.entries(grouped).forEach(([series, seriesSets]) => {
@@ -1901,6 +1902,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
           </a>`;
         });
       });
+      console.log('[Sets] html length:', html.length, 'preview:', html.slice(0, 100));
       dropdown.innerHTML = html || '<div style="color:var(--text-muted);padding:12px;text-align:center;font-size:0.8rem">No sets available</div>';
       populated = true;
     } catch(e) {
