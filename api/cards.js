@@ -1,11 +1,17 @@
 // api/cards.js
 // Returns card list with rarities for a given set.
-// Uses TCGCSV (TCGplayer mirror) for card names + rarities in 2 parallel requests,
-// then falls back to TCGdex if TCGCSV doesn't have the data.
-// Cached in-memory for 1 hour.
+//
+// Primary path: fetches pre-built data/{setId}.json from R2 (uploaded by sync-images.js)
+//   - Globally fast (Cloudflare CDN), no computation, no cold start issue
+//   - R2 JSON format: { id, name, releaseDate, cardCount, cards: [{localId, name, rarity, image}] }
+//
+// Fallback: TCGCSV (2 requests) then TCGdex (per-card) if R2 data not found
 //
 // URL: GET /api/cards?set=sv07
 
+const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+
+// In-memory cache to avoid re-fetching within the same function instance
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
@@ -27,6 +33,14 @@ const SET_TO_GROUP = {
   'sv10':   '24269',
 };
 
+// TCGdex uses dot-notation for special sets
+const TCGDEX_ID = {
+  'sv3pt5': 'sv03.5',
+  'sv4pt5': 'sv04.5',
+  'sv6pt5': 'sv06.5',
+  'sv8pt5': 'sv08.5',
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -39,74 +53,71 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing or invalid ?set= parameter' });
   }
 
-  // Check cache
+  // Check in-memory cache
   const cached = cache.get(setId);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(cached.data);
   }
-
-  const groupId = SET_TO_GROUP[setId];
 
   try {
     let cards = null;
 
-    // Strategy 1: TCGCSV — gets all cards + rarities in 2 parallel requests
-    if (groupId) {
+    // Strategy 1: R2 pre-built JSON (fastest — Cloudflare CDN, globally cached)
+    try {
+      const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
+      if (r2Res.ok) {
+        const r2Data = await r2Res.json();
+        if (r2Data.cards && r2Data.cards.length > 0) {
+          cards = r2Data.cards;
+          console.log(`[api/cards] R2 hit for ${setId}: ${cards.length} cards`);
+        }
+      }
+    } catch (e) {
+      console.warn(`[api/cards] R2 fetch failed for ${setId}:`, e.message);
+    }
+
+    // Strategy 2: TCGCSV (2 parallel requests, no per-card fetches needed)
+    const groupId = SET_TO_GROUP[setId];
+    if (!cards && groupId) {
       try {
         const [productsRes, rarityRes] = await Promise.all([
           fetch(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`),
           fetch(`https://tcgcsv.com/tcgplayer/3/${groupId}/product/rarities`)
         ]);
-
         if (productsRes.ok) {
           const productsData = await productsRes.json();
           const rarityData = rarityRes.ok ? await rarityRes.json() : { results: [] };
-
-          // Build rarity map by productId
           const rarityMap = {};
           (rarityData.results || []).forEach(r => {
             if (r.productId && r.name) rarityMap[r.productId] = r.name;
           });
-
-          // Filter to cards only (have a numeric card number, not sealed product)
           const cardRows = (productsData.results || []).filter(p =>
             p.number && /^\d+[a-zA-Z]?$/.test(p.number)
           );
-
           if (cardRows.length > 0) {
-            const r2Base = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
             cards = cardRows.map(p => ({
               localId: p.number,
               name: p.name,
-              image: `${r2Base}/cards/${setId}/${p.number}.webp`,
+              image: `${R2_BASE}/cards/${setId}/${p.number}.webp`,
               rarity: rarityMap[p.productId] || ''
             }));
+            console.log(`[api/cards] TCGCSV hit for ${setId}: ${cards.length} cards`);
           }
         }
       } catch (e) {
-        console.warn('[api/cards] TCGCSV failed:', e.message);
+        console.warn(`[api/cards] TCGCSV failed for ${setId}:`, e.message);
       }
     }
 
-    // Strategy 2: TCGdex fallback — set endpoint + per-card fetches for rarity
-    if (!cards || cards.length === 0) {
-      // TCGdex uses different IDs for the pt5 sets
-      const tcgdexId = {
-        'sv3pt5': 'sv03.5',
-        'sv4pt5': 'sv04.5',
-        'sv6pt5': 'sv06.5',
-        'sv8pt5': 'sv08.5',
-      }[setId] || setId;
-
+    // Strategy 3: TCGdex fallback (slow — per-card fetches)
+    if (!cards) {
+      const tcgdexId = TCGDEX_ID[setId] || setId;
       const setRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${tcgdexId}`);
-      if (!setRes.ok) {
-        return res.status(502).json({ error: `TCGdex set fetch failed: ${setRes.status}` });
-      }
+      if (!setRes.ok) return res.status(502).json({ error: `TCGdex failed: ${setRes.status}` });
       const setData = await setRes.json();
       const basicCards = setData.cards || [];
-
       const BATCH = 20;
       const fullCards = [];
       for (let i = 0; i < basicCards.length; i += BATCH) {
@@ -114,8 +125,7 @@ export default async function handler(req, res) {
         const results = await Promise.allSettled(
           batch.map(c =>
             fetch(`https://api.tcgdex.net/v2/en/cards/${tcgdexId}-${c.localId}`)
-              .then(r => r.ok ? r.json() : null)
-              .catch(() => null)
+              .then(r => r.ok ? r.json() : null).catch(() => null)
           )
         );
         results.forEach((result, idx) => {
@@ -130,12 +140,13 @@ export default async function handler(req, res) {
         });
       }
       cards = fullCards;
+      console.log(`[api/cards] TCGdex fallback for ${setId}: ${cards.length} cards`);
     }
 
     const data = { cards, cardCount: { total: cards.length } };
     cache.set(setId, { ts: Date.now(), data });
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(data);
 
   } catch (e) {
