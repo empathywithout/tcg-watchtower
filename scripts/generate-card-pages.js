@@ -33,20 +33,20 @@ const SITE_URL       = 'https://tcgwatchtower.com';
 // TCGplayer set slugs — format: {setCode}-{set-name-kebab}
 // Used in search URLs: tcgplayer.com/search/pokemon/{TCGP_SET_SLUG}?...&setName={TCGP_SET_SLUG}
 const TCGP_SLUG_MAP = {
-  'sv01':   'scarlet-violet-base-set',
-  'sv02':   'paldea-evolved',
-  'sv03':   'obsidian-flames',
-  'sv3pt5': '151',
-  'sv04':   'paradox-rift',
-  'sv4pt5': 'paldean-fates',
-  'sv05':   'temporal-forces',
-  'sv06':   'twilight-masquerade',
-  'sv6pt5': 'shrouded-fable',
-  'sv07':   'stellar-crown',
-  'sv08':   'surging-sparks',
-  'sv8pt5': 'prismatic-evolutions',
-  'sv09':   'journey-together',
-  'sv10':   'destined-rivals',
+  'sv01':   'sv01-scarlet-and-violet-base-set',
+  'sv02':   'sv02-paldea-evolved',
+  'sv03':   'sv03-obsidian-flames',
+  'sv3pt5': 'sv3pt5-151',
+  'sv04':   'sv04-paradox-rift',
+  'sv4pt5': 'sv4pt5-paldean-fates',
+  'sv05':   'sv05-temporal-forces',
+  'sv06':   'sv06-twilight-masquerade',
+  'sv6pt5': 'sv6pt5-shrouded-fable',
+  'sv07':   'sv07-stellar-crown',
+  'sv08':   'sv08-surging-sparks',
+  'sv8pt5': 'sv8pt5-prismatic-evolutions',
+  'sv09':   'sv09-journey-together',
+  'sv10':   'sv10-destined-rivals',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
 
@@ -94,8 +94,8 @@ function tcgpSearchUrl(card) {
   const baseName = card.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
   const official = metadata.cardCount?.official || '';
   const q = encodeURIComponent(`${baseName} ${card.localId}${official ? '/' + official : ''}`);
-  const slug = TCGP_SET_SLUG || 'scarlet-violet-base-set';
-  return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+  const slug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
+  return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${slug}`;
 }
 
 function ebaySearchUrl(card) {
@@ -620,7 +620,8 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
       const baseName = c.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
       const official = metadata.cardCount?.official || '';
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const tcgpSlug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${tcgpSlug}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${tcgpSlug}`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
@@ -829,7 +830,8 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
       const baseName = c.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
       const official = metadata.cardCount?.official || '';
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const tcgpSlug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${tcgpSlug}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${tcgpSlug}`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
