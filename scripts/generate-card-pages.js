@@ -63,6 +63,7 @@ if (!res.ok) throw new Error(`Failed to fetch metadata: ${res.status}`);
 const metadata = await res.json();
 const cards = metadata.cards || [];
 console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
+console.log(`🔗 TCGplayer slug: ${TCGP_SET_SLUG} (SET_ID=${SET_ID})`);
 
 // Output directory
 const outDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG, 'cards');
@@ -89,8 +90,11 @@ function cardImgUrl(card) {
 }
 
 function tcgpSearchUrl(card) {
-  const q = encodeURIComponent(`${card.name} ${card.localId}/${metadata.cardCount?.official || ''}`);
-  return `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+  // Strip any number suffixes baked into name from R2 data (e.g. "Drowzee - 210/198" -> "Drowzee")
+  const cleanName = card.name.replace(/\s*[-–]\s*/, ' ').trim();
+  const q = encodeURIComponent(cleanName);
+  const slug = TCGP_SET_SLUG || 'scarlet-violet-base-set';
+  return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
 }
 
 function ebaySearchUrl(card) {
@@ -623,7 +627,8 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const cleanName = c.name.replace(/\s*[-–]\s*/, ' ').trim();
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(cleanName)}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
@@ -830,7 +835,8 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const cleanName = c.name.replace(/\s*[-–]\s*/, ' ').trim();
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(cleanName)}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
