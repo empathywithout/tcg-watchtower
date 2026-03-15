@@ -1,3 +1,4 @@
+
 /**
  * generate-card-pages.js
  * Generates individual HTML pages for every card in a set.
@@ -10,6 +11,16 @@
  *   SET_SLUG="stellar-crown" \
  *   SET_SLUG_FULL="stellar-crown-card-list" \
  *   TCGP_GROUP_ID=23537 \
+ *   node scripts/generate-card-pages.js
+ *
+ * Mega Evolution example:
+ *   SET_ID=me1 \
+ *   SET_FULL_NAME="Mega Evolution" \
+ *   SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" \
+ *   SET_SLUG="mega-evolution-base-set" \
+ *   SET_SLUG_FULL="mega-evolution-base-set-card-list" \
+ *   TCGP_GROUP_ID=24380 \
  *   node scripts/generate-card-pages.js
  */
 
@@ -30,6 +41,8 @@ const TCGP_GROUP_ID   = process.env.TCGP_GROUP_ID   || '';
 const R2_PUBLIC_URL   = process.env.CF_R2_PUBLIC_URL || '';
 const SITE_URL        = 'https://tcgwatchtower.com';
 
+// FIX: me01 key corrected to me1 (matching actual SET_ID format),
+// and me2/me3 added for Phantasmal Flames and Perfect Order
 const TCGP_SLUG_MAP = {
   'sv01':   'sv01-scarlet-and-violet-base-set',
   'sv02':   'sv02-paldea-evolved',
@@ -45,7 +58,10 @@ const TCGP_SLUG_MAP = {
   'sv8pt5': 'sv8pt5-prismatic-evolutions',
   'sv09':   'sv09-journey-together',
   'sv10':   'sv10-destined-rivals',
-  'me01':   'me01-mega-evolution',
+  'me01':    'me01-mega-evolution',
+  'me02':    'me02-phantasmal-flames',
+  'me02.5':  'me-ascended-heroes',
+  'me03':    'me03-perfect-order',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
 

@@ -35,8 +35,17 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s
 const SET_ID           = process.env.SET_ID;
 const SET_FULL_NAME    = process.env.SET_FULL_NAME;
 const SET_SLUG         = process.env.SET_SLUG || `${SET_ID}-card-list`;
-const SET_SERIES       = process.env.SET_SERIES || 'Scarlet & Violet';
-const SET_SERIES_SLUG  = process.env.SET_SERIES_SLUG || 'scarlet-violet';
+const SET_SERIES       = process.env.SET_SERIES || (SET_ID?.startsWith('me') ? 'Mega Evolution' : 'Scarlet & Violet');
+
+// FIX 2: derive series slug from set ID so me* sets don't default to scarlet-violet
+const SERIES_SLUG_MAP = {
+  'me01': 'mega-evolution', 'me02': 'mega-evolution',
+  'me02.5': 'mega-evolution', 'me03': 'mega-evolution',
+};
+const SET_SERIES_SLUG  = process.env.SET_SERIES_SLUG
+  || SERIES_SLUG_MAP[SET_ID]
+  || 'scarlet-violet';
+
 const SET_SEO_PATH     = process.env.SET_SEO_PATH || `pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG.replace('-card-list', '')}/cards`;
 const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;
@@ -122,7 +131,7 @@ if (!SET_ID || !SET_FULL_NAME) {
 // ── Fetch set metadata from TCGdex ──────────────────────────────────────────────
 console.log(`📋 Fetching set metadata for ${SET_ID}…`);
 // TCGdex uses dot-notation for special sets (sv03.5, sv04.5 etc.)
-const TCGDEX_ID_MAP = { 'sv3pt5': 'sv03.5', 'sv4pt5': 'sv04.5', 'sv6pt5': 'sv06.5', 'sv8pt5': 'sv08.5' };
+const TCGDEX_ID_MAP = { 'sv3pt5': 'sv03.5', 'sv4pt5': 'sv04.5', 'sv6pt5': 'sv06.5', 'sv8pt5': 'sv08.5', 'me02pt5': 'me02.5' };
 const TCGDEX_SET_OVERVIEW_ID = TCGDEX_ID_MAP[SET_ID] || SET_ID;
 const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
 if (!tcgRes.ok) {
@@ -140,21 +149,20 @@ const releaseDate   = SET_RELEASE_DATE
 const SET_SUBTITLE = process.env.SET_SUBTITLE || setData.name || SET_FULL_NAME;
 
 // SET_SEARCH_NAME: appended to card names when building eBay/Amazon search queries
-// e.g. "Paldea Evolved" → queries like "Mewtwo 193 Paldea Evolved"
 const SET_SEARCH_NAME = process.env.SET_SEARCH_NAME || SET_SUBTITLE;
 
 // SET_TCGP_SLUG: used in TCGplayer search URLs
-// e.g. "paldea-evolved" → https://www.tcgplayer.com/search/pokemon/paldea-evolved
 const SET_TCGP_SLUG = process.env.SET_TCGP_SLUG
   || SET_SUBTITLE.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-// TCGP_GROUP_ID: TCGplayer/TCGCSV groupId for this set — used to fetch accurate market prices
-// Built-in lookup so the workflow works even if tcgp_group_id input is left blank
+// TCGP_GROUP_ID: TCGplayer/TCGCSV groupId — FIX 3a: added ME series IDs
 const GROUP_ID_MAP = {
   'sv01': '22873', 'sv02': '23120', 'sv03': '23228', 'sv04': '23286',
   'sv3pt5': '23237', 'sv4pt5': '23353', 'sv05': '23381', 'sv06': '23473',
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
+  // Mega Evolution series
+  'me01': '24380', 'me02': '24448', 'me02.5': '24541', 'me03': '24587',
 };
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID && process.env.TCGP_GROUP_ID !== '0')
   ? process.env.TCGP_GROUP_ID
@@ -169,14 +177,10 @@ console.log(`✅  ${setData.name} — ${officialCount} official cards, released 
 console.log(`    subtitle="${SET_SUBTITLE}", search="${SET_SEARCH_NAME}", tcgp="${SET_TCGP_SLUG}"`);
 
 // ── PRODUCT_META: per-set sealed product definitions ───────────────────────────
-// Pass as a JSON string via env var. Keys are Amazon ASINs.
-// Example:
-//   PRODUCT_META_JSON='{"B0CF7YNQ7T":{"type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Paldea Evolved Booster Box","q":"Pokemon Paldea Evolved Booster Box"}}'
 let productMetaJson = process.env.PRODUCT_META_JSON || '';
 if (productMetaJson) {
   try {
     const parsed = JSON.parse(productMetaJson);
-    // Treat empty object {} as "not provided" — triggers auto-fetch
     if (Object.keys(parsed).length === 0) {
       productMetaJson = '';
     }
@@ -186,11 +190,6 @@ if (productMetaJson) {
   }
 }
 
-// ── Auto-fetch sealed products from TCGCSV if PRODUCT_META_JSON not provided ──
-// Maps TCGCSV product type names to our display config
-// ── Per-set sealed product definitions ────────────────────────────────────────
-// Mirrors the SV1 base set page structure: Booster Box, ETB, Bundle, Case, Build & Battle
-// tcgpId drives the image (product-images.tcgplayer.com) and TCGplayer link
 const SET_PRODUCTS = {
   sv01: [
     { tcgpId: '476452', type: 'Booster Box',       filterKey: 'box',     badgeClass: 'badge-box',        name: 'Scarlet & Violet Booster Box (36 Packs)',       q: 'Pokemon Scarlet Violet Base Set Booster Box SV1' },
@@ -301,7 +300,6 @@ if (!productMetaJson) {
 }
 
 // ── Fetch product images from eBay and store in R2 at generation time ────────────
-// Bakes R2 URLs into the HTML — no runtime fetching, works with all ad blockers.
 const r2 = process.env.CF_R2_ACCESS_KEY ? new S3Client({
   region: 'auto',
   endpoint: process.env.CF_R2_ENDPOINT,
@@ -342,21 +340,17 @@ if (Object.keys(productMeta).length > 0 && r2 && process.env.EBAY_CLIENT_ID) {
   await Promise.all(Object.entries(productMeta).map(async ([asin, p]) => {
     try {
       const r2Key = `products/${SET_ID}/${asin}.jpg`;
-      // Check if already in R2
       try {
         await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2Key }));
         productMeta[asin].image = `${R2_PUBLIC_URL}/${r2Key}`;
         console.log(`  ✅  ${asin} (cached in R2)`);
         return;
       } catch {}
-      // Fetch from eBay
       const ebayImgUrl = await fetchProductImage(p.q);
       if (!ebayImgUrl) { console.warn(`  ⚠️  No image found for ${asin}`); return; }
-      // Download image
       const imgRes = await fetch(ebayImgUrl);
       if (!imgRes.ok) throw new Error(`download failed: ${imgRes.status}`);
       const buffer = Buffer.from(await imgRes.arrayBuffer());
-      // Upload to R2
       await r2.send(new PutObjectCommand({
         Bucket: process.env.CF_R2_BUCKET, Key: r2Key, Body: buffer,
         ContentType: 'image/jpeg', CacheControl: 'public, max-age=31536000, immutable',
@@ -374,9 +368,6 @@ if (Object.keys(productMeta).length > 0 && r2 && process.env.EBAY_CLIENT_ID) {
 productMetaJson = JSON.stringify(productMeta);
 
 // ── CHASE_CARDS: optional hardcoded fallback shown before cards load ───────────
-// If omitted, chase section starts empty and auto-populates from rarity on page load.
-// Example:
-//   CHASE_CARDS_JSON='[{"id":"215","name":"Charizard ex","rarity":"Hyper Rare","rarityClass":"rarity-hr","label":"HR","searchName":"Charizard ex 215 Obsidian Flames"}]'
 let chaseCardsJson = process.env.CHASE_CARDS_JSON || '[]';
 try { JSON.parse(chaseCardsJson); } catch(e) {
   console.warn('⚠️  CHASE_CARDS_JSON is not valid JSON — using empty array');
@@ -386,13 +377,17 @@ try { JSON.parse(chaseCardsJson); } catch(e) {
 // ── Fill template ──────────────────────────────────────────────────────────────
 let html = readFileSync('set-template.html', 'utf8');
 
+const SET_URL_SLUG = SET_SLUG.replace('-card-list', '');
+
 const vars = {
   '{{SET_ID}}':             SET_ID,
   '__R2_PUBLIC_URL__':      process.env.CF_R2_PUBLIC_URL || '',
   '{{SET_FULL_NAME}}':      SET_FULL_NAME,
   '{{SET_SERIES}}':         SET_SERIES,
   '{{SET_SERIES_SLUG}}':    SET_SERIES_SLUG,
-  '{{SET_URL_SLUG}}':       SET_SLUG.replace('-card-list', ''),
+  '{{SET_URL_SLUG}}':       SET_URL_SLUG,
+  // FIX 1: {{SET_SLUG_FOR_URL}} was used in template modal but never substituted
+  '{{SET_SLUG_FOR_URL}}':   SET_URL_SLUG,
   '{{SET_SEO_PATH}}':       SET_SEO_PATH,
   '{{SET_SUBTITLE}}':       SET_SUBTITLE,
   '{{SET_SHORT_NAME}}':     SET_SHORT_NAME,
@@ -417,8 +412,7 @@ for (const [placeholder, value] of Object.entries(vars)) {
   html = html.replaceAll(placeholder, value);
 }
 
-// Strip the broken r2 exclusion guard — after substitution it becomes
-// CONFIG.r2 !== 'https://...' which is always false, breaking logo/image loading
+// Strip the broken r2 exclusion guard after substitution
 const r2Url = process.env.CF_R2_PUBLIC_URL || '';
 if (r2Url) {
   html = html.replaceAll(
@@ -458,28 +452,32 @@ if (process.env.CF_R2_ENDPOINT) {
 }
 
 // ── Update sets.json ───────────────────────────────────────────────────────────
-// All known sets — ensures sets.json is always complete regardless of run order
+// FIX 3b: added Mega Evolution sets with correct series name and slugs
 const ALL_KNOWN_SETS = [
   { slug: 'scarlet-violet-base-set-card-list', name: 'Scarlet & Violet Base Set (SV1)', series: 'Scarlet & Violet', short: 'SV1',  setId: 'sv01'   },
   { slug: 'paldea-evolved-card-list',          name: 'Paldea Evolved (SV2)',            series: 'Scarlet & Violet', short: 'SV2',  setId: 'sv02'   },
   { slug: 'obsidian-flames-card-list',         name: 'Obsidian Flames (SV3)',           series: 'Scarlet & Violet', short: 'SV3',  setId: 'sv03'   },
   { slug: 'paradox-rift-card-list',            name: 'Paradox Rift (SV4)',              series: 'Scarlet & Violet', short: 'SV4',  setId: 'sv04'   },
-  { slug: 'scarlet-violet-151-card-list',      name: 'Scarlet & Violet 151',            series: 'Scarlet & Violet', short: 'MEW', setId: 'sv3pt5' },
-  { slug: 'paldean-fates-card-list',           name: 'Paldean Fates',                  series: 'Scarlet & Violet', short: 'PAF', setId: 'sv4pt5' },
+  { slug: 'scarlet-violet-151-card-list',      name: 'Scarlet & Violet 151',            series: 'Scarlet & Violet', short: 'MEW',  setId: 'sv3pt5' },
+  { slug: 'paldean-fates-card-list',           name: 'Paldean Fates',                  series: 'Scarlet & Violet', short: 'PAF',  setId: 'sv4pt5' },
   { slug: 'temporal-forces-card-list',         name: 'Temporal Forces (SV5)',           series: 'Scarlet & Violet', short: 'SV5',  setId: 'sv05'   },
   { slug: 'twilight-masquerade-card-list',     name: 'Twilight Masquerade (SV6)',       series: 'Scarlet & Violet', short: 'SV6',  setId: 'sv06'   },
-  { slug: 'shrouded-fable-card-list',          name: 'Shrouded Fable',                 series: 'Scarlet & Violet', short: 'SFA', setId: 'sv6pt5' },
+  { slug: 'shrouded-fable-card-list',          name: 'Shrouded Fable',                 series: 'Scarlet & Violet', short: 'SFA',  setId: 'sv6pt5' },
   { slug: 'stellar-crown-card-list',           name: 'Stellar Crown (SV7)',             series: 'Scarlet & Violet', short: 'SV7',  setId: 'sv07'   },
   { slug: 'surging-sparks-card-list',          name: 'Surging Sparks (SV8)',            series: 'Scarlet & Violet', short: 'SV8',  setId: 'sv08'   },
-  { slug: 'prismatic-evolutions-card-list',    name: 'Prismatic Evolutions',            series: 'Scarlet & Violet', short: 'PRE', setId: 'sv8pt5' },
+  { slug: 'prismatic-evolutions-card-list',    name: 'Prismatic Evolutions',            series: 'Scarlet & Violet', short: 'PRE',  setId: 'sv8pt5' },
   { slug: 'journey-together-card-list',        name: 'Journey Together (SV9)',          series: 'Scarlet & Violet', short: 'SV9',  setId: 'sv09'   },
   { slug: 'destined-rivals-card-list',         name: 'Destined Rivals (SV10)',          series: 'Scarlet & Violet', short: 'SV10', setId: 'sv10'   },
+  // Mega Evolution series
+  { slug: 'mega-evolution-base-set-card-list', name: 'Mega Evolution',                  series: 'Mega Evolution',   short: 'MEG',  setId: 'me01'    },
+  { slug: 'phantasmal-flames-card-list',       name: 'Phantasmal Flames',               series: 'Mega Evolution',   short: 'PFL',  setId: 'me02'    },
+  { slug: 'ascended-heroes-card-list',         name: 'Ascended Heroes',                 series: 'Mega Evolution',   short: 'ASC',  setId: 'me02.5'  },
+  { slug: 'perfect-order-card-list',           name: 'Perfect Order',                   series: 'Mega Evolution',   short: 'ME3',  setId: 'me03'    },
 ];
 
 const setsPath = 'sets.json';
 const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
 
-// Merge: start from ALL_KNOWN_SETS, preserve live status from existing, mark current as live
 const mergedSets = ALL_KNOWN_SETS.map(known => {
   const existing = existingSets.find(s => s.slug === known.slug);
   return {
@@ -516,4 +514,14 @@ console.log(``);
 console.log(`# Paradox Rift (SV4)`);
 console.log(`SET_ID=sv04 SET_FULL_NAME="Paradox Rift (SV4)" SET_SHORT_NAME=SV4 \\`);
 console.log(`  SET_SUBTITLE="Paradox Rift" HERO_CARD_1=182 HERO_CARD_2=245 HERO_CARD_3=197 \\`);
+console.log(`  node scripts/generate-set-page.js`);
+console.log(``);
+console.log(`# Mega Evolution (ME1)`);
+console.log(`SET_ID=me1 SET_FULL_NAME="Mega Evolution" SET_SHORT_NAME=MEG \\`);
+console.log(`  SET_SUBTITLE="Mega Evolution" \\`);
+console.log(`  node scripts/generate-set-page.js`);
+console.log(``);
+console.log(`# Phantasmal Flames (ME2)`);
+console.log(`SET_ID=me2 SET_FULL_NAME="Phantasmal Flames" SET_SHORT_NAME=PFL \\`);
+console.log(`  SET_SUBTITLE="Phantasmal Flames" \\`);
 console.log(`  node scripts/generate-set-page.js`);
