@@ -110,13 +110,5 @@
     "short": "SV10",
     "setId": "sv10",
     "live": true
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/mega-evolution-base-set/cards",
-    "name": "Mega Evolution Base Set",
-    "series": "Mega Evolution",
-    "short": "ME1",
-    "setId": "me01",
-    "live": true
   }
 ]
