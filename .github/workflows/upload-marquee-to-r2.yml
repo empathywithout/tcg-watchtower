@@ -1,0 +1,65 @@
+name: Upload Marquee Images to R2 (one-time)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install S3 client
+        run: npm install @aws-sdk/client-s3
+
+      - name: Upload marquee PNGs to R2
+        env:
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+        run: |
+          node <<'EOF'
+          const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+          const fs = require('fs');
+          const path = require('path');
+
+          const s3 = new S3Client({
+            region: 'auto',
+            endpoint: process.env.CF_R2_ENDPOINT,
+            credentials: {
+              accessKeyId: process.env.CF_R2_ACCESS_KEY,
+              secretAccessKey: process.env.CF_R2_SECRET_KEY,
+            },
+          });
+
+          const dir = path.join(process.cwd(), 'marquee');
+          const files = fs.readdirSync(dir).filter(f => f.endsWith('.png'));
+
+          console.log(`Found ${files.length} PNGs to upload...`);
+
+          async function upload() {
+            for (const file of files) {
+              const key = `marquee/${file}`;
+              const body = fs.readFileSync(path.join(dir, file));
+              await s3.send(new PutObjectCommand({
+                Bucket: process.env.CF_R2_BUCKET,
+                Key: key,
+                Body: body,
+                ContentType: 'image/png',
+                CacheControl: 'public, max-age=31536000, immutable',
+              }));
+              console.log(`Uploaded: ${key}`);
+            }
+            console.log('Done — all marquee images uploaded to R2.');
+          }
+
+          upload().catch(err => { console.error(err); process.exit(1); });
+          EOF
