@@ -813,11 +813,11 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const rarity = normalizeRarity(c.rarity);
       const rarityClass = RARITY_TIER[rarity] === 0 ? 'rarity-hr' : RARITY_TIER[rarity] === 1 ? 'rarity-sir' : RARITY_TIER[rarity] === 2 ? 'rarity-ur' : 'rarity-ir';
       const label = RARITY_LABEL[rarity] || rarity;
-      const img = \`${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp\`;
+      const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const tcgpUrl = \`https://www.tcgplayer.com/search/pokemon/${SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&productTypeName=Cards&sort=price\`;
-      const ebayUrl = \`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}\`;
-      return \`
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&productTypeName=Cards&sort=price`;
+      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
+      return `
     <div class="card-item">
       <a href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardPageSlug}">
         <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME} Pokemon Card" width="180" height="251" loading="lazy" onerror="this.style.background='#1e293b'">
@@ -832,7 +832,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
           <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
-    </div>\`;
+    </div>`;
     }).join('')}
   </div>
   <a href="${cardListUrl}" class="set-link">← View Full ${SET_FULL_NAME} Card List</a>
