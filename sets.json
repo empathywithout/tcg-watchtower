@@ -110,13 +110,5 @@
     "short": "SV10",
     "setId": "sv10",
     "live": true
-  },
-  {
-    "slug": "mega-evolution-base-set-card-list",
-    "name": "Mega Evolution (ME1)",
-    "series": "Mega Evolution",
-    "short": "ME1",
-    "setId": "me01",
-    "live": true
   }
 ]
