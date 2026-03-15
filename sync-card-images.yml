@@ -75,6 +75,11 @@ on:
         description: 'JSON array of fallback chase cards — leave blank to auto-detect from rarity'
         required: false
         default: ''
+      force_resync:
+        description: 'Re-download and re-upload all card images even if they already exist in R2 (use to apply the contain/no-stretch fix to existing images)'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   sync-and-generate:
@@ -97,6 +102,7 @@ jobs:
       - name: Sync card images to R2
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
+          FORCE_RESYNC: ${{ github.event.inputs.force_resync }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}

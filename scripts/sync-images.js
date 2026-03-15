@@ -6,7 +6,8 @@
 import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 
-const SET_ID = (process.env.SET_ID || '').trim();
+const SET_ID      = (process.env.SET_ID || '').trim();
+const FORCE_RESYNC = (process.env.FORCE_RESYNC || '').trim().toLowerCase() === 'true';
 if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
 // Card display dimensions on the page: 200×279px (card list), 200×279px (chase cards)
@@ -96,7 +97,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function main() {
   console.log(`\n🚀 Starting sync for set: ${SET_ID}`);
-  console.log(`    TCGdex ID: ${TCGDEX_SET_ID_RESOLVED}\n`);
+  console.log(`    TCGdex ID: ${TCGDEX_SET_ID_RESOLVED}`);
+  if (FORCE_RESYNC) console.log(`    ⚠️  Force resync enabled — all images will be re-downloaded and re-uploaded`);
+  console.log('');
 
   // Step 1 — Fetch set overview (card list with localIds)
   console.log(`📋 Fetching set overview...`);
@@ -188,7 +191,8 @@ async function main() {
     if (!imageUrl) { skipped++; continue; }
     process.stdout.write(`[${i + 1}/${briefCards.length}] #${localId}... `);
 
-    if (await existsInR2(r2Key)) { console.log(`⏭️  exists`); skipped++; continue; }
+    if (!FORCE_RESYNC && await existsInR2(r2Key)) { console.log(`⏭️  exists`); skipped++; continue; }
+    if (FORCE_RESYNC) process.stdout.write(`🔄 force... `);
 
     let success = false;
     for (let attempt = 1; attempt <= 3; attempt++) {
