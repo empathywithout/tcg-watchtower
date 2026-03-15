@@ -891,13 +891,13 @@ footer {
   scrollbar-width: none;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
+.nav-short { display: none; }
 @media (max-width: 640px) {
   .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
   .nav-short { display: inline; }
 }
-.nav-short { display: none; }
 .section-nav-btn {
   flex-shrink: 0;
   padding: 14px 20px;
@@ -1078,7 +1078,7 @@ footer {
     <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/{{SET_SERIES_SLUG}}/{{SET_URL_SLUG}}/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">📋 Cards</span></button>
     <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/{{SET_SERIES_SLUG}}/{{SET_URL_SLUG}}/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">🛒 Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn">📦 Sets ▾</button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">📦</span></button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
