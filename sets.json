@@ -133,7 +133,7 @@
     "series": "Mega Evolution",
     "short": "ASC",
     "setId": "me02.5",
-    "live": false
+    "live": true
   },
   {
     "slug": "perfect-order-card-list",
