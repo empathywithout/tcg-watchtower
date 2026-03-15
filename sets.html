@@ -306,7 +306,7 @@ function renderSets() {
         <a href="${isLive ? '/' + s.slug : 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
           ${!isLive ? '<div class="coming-soon-tag">Coming Soon</div>' : ''}
           <div class="set-card-logo">
-            ${logoUrl ? `<img src="${logoUrl}" data-setid="${s.setId}" alt="${s.name}" onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;this.onerror=null;this.src='https://assets.tcgdex.net/en/sv/'+id+'/logo.png'" width="48" height="48">` : '<span style="font-size:2rem">🃏</span>'}
+            ${logoUrl ? `<img src="${logoUrl}" data-setid="${s.setId}" alt="${s.name}" onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;this.onerror=null;this.src='https://assets.tcgdex.net/en/sv/'+id+'/logo.png'">` : '<span style="font-size:2rem">🃏</span>'}
           </div>
           <div class="set-card-body">
             <div class="set-card-name">${s.name}</div>
