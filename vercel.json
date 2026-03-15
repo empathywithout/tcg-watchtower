@@ -5,10 +5,6 @@
       "destination": "/paldean-fates-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product",
-      "destination": "/temporal-forces-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/sealed-product",
       "destination": "/twilight-masquerade-card-list.html"
     },
@@ -55,14 +51,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
       "destination": "/paldean-fates-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards",
-      "destination": "/temporal-forces-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product",
-      "destination": "/temporal-forces-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/cards",
@@ -8099,6 +8087,894 @@
     {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards",
+      "destination": "/temporal-forces-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product",
+      "destination": "/temporal-forces-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scyther-001",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scyther-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pineco-002",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pineco-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/seedot-003",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/seedot-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/nuzleaf-004",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/nuzleaf-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shiftry-005",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shiftry-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shroomish-006",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shroomish-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/breloom-007",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/breloom-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roselia-008",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roselia-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roserade-009",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roserade-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/turtwig-010",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/turtwig-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grotle-011",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grotle-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torterra-ex-012",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torterra-ex-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shaymin-013",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shaymin-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cottonee-014",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cottonee-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/whimsicott-015",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/whimsicott-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/deerling-016",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/deerling-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sawsbuck-017",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sawsbuck-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grubbin-018",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grubbin-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dhelmise-019",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dhelmise-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bramblin-020",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bramblin-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/brambleghast-021",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/brambleghast-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scovillain-ex-022",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scovillain-ex-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rellor-023",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rellor-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rabsca-024",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rabsca-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-025",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ponyta-026",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ponyta-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rapidash-027",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rapidash-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/slugma-028",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/slugma-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/magcargo-029",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/magcargo-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/victini-030",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/victini-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heatmor-031",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heatmor-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/litten-032",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/litten-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torracat-033",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torracat-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/incineroar-ex-034",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/incineroar-ex-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/turtonator-035",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/turtonator-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sizzlipede-036",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sizzlipede-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/centiskorch-037",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/centiskorch-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-038",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/totodile-039",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/totodile-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/croconaw-040",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/croconaw-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/feraligatr-041",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/feraligatr-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/carvanha-042",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/carvanha-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sharpedo-043",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sharpedo-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/keldeo-044",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/keldeo-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/snom-045",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/snom-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/frosmoth-046",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/frosmoth-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wiglett-047",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wiglett-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/finizen-048",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/finizen-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/palafin-049",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/palafin-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-050",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pikachu-051",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pikachu-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raichu-052",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raichu-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/electabuzz-053",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/electabuzz-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/electivire-054",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/electivire-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/charjabug-055",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/charjabug-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/vikavolt-056",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/vikavolt-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/zeraora-057",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/zeraora-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/yamper-058",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/yamper-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/boltund-059",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/boltund-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wugtrio-ex-060",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wugtrio-ex-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-hands-061",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-hands-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-thorns-062",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-thorns-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mr-mime-063",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mr-mime-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/marill-064",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/marill-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/azumarill-065",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/azumarill-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/girafarig-066",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/girafarig-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/latias-067",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/latias-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzor-068",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzor-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzong-069",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzong-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/solosis-070",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/solosis-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/duosion-071",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/duosion-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reuniclus-072",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reuniclus-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/elgyem-073",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/elgyem-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/beheeyem-074",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/beheeyem-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cutiefly-075",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cutiefly-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ribombee-076",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ribombee-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scream-tail-077",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scream-tail-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/flutter-mane-078",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/flutter-mane-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-valiant-079",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-valiant-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-valiant-080",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-valiant-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-081",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meditite-082",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meditite-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/medicham-083",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/medicham-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/relicanth-084",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/relicanth-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drilbur-085",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drilbur-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/excadrill-086",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/excadrill-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/golett-087",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/golett-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/golurk-088",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/golurk-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rockruff-089",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rockruff-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lycanroc-090",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lycanroc-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudbray-091",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudbray-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudsdale-092",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudsdale-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rolycoly-093",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rolycoly-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/carkol-094",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/carkol-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/coalossal-095",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/coalossal-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/great-tusk-096",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/great-tusk-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/great-tusk-097",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/great-tusk-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sandy-shocks-098",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sandy-shocks-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-099",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ekans-100",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ekans-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/arbok-101",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/arbok-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gastly-102",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gastly-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/haunter-103",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/haunter-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gengar-ex-104",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gengar-ex-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/poochyena-105",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/poochyena-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mightyena-106",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mightyena-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sableye-107",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sableye-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/farigiraf-ex-108",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/farigiraf-ex-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roaring-moon-109",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/roaring-moon-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/forretress-110",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/forretress-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scizor-ex-111",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scizor-ex-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mawile-112",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mawile-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/beldum-113",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/beldum-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metang-114",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metang-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metagross-115",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metagross-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meltan-116",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meltan-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/melmetal-117",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/melmetal-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-treads-118",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-treads-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/koraidon-119",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/koraidon-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/koraidon-ex-120",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/koraidon-ex-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/miraidon-121",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/miraidon-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/miraidon-ex-122",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/miraidon-ex-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-123",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickitung-124",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickitung-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickilicky-125",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickilicky-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/hoothoot-126",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/hoothoot-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/noctowl-127",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/noctowl-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dunsparce-128",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dunsparce-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dudunsparce-129",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/dudunsparce-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/skitty-130",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/skitty-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/delcatty-131",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/delcatty-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/chatot-132",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/chatot-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pidove-133",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/pidove-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/tranquill-134",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/tranquill-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/unfezant-135",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/unfezant-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/minccino-136",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/minccino-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cinccino-137",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cinccino-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drampa-138",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drampa-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-jugulis-139",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-jugulis-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ancient-booster-energy-capsule-140",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ancient-booster-energy-capsule-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/awakening-drum-141",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/awakening-drum-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-142",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/boxed-order-143",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/boxed-order-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/buddy-buddy-poffin-144",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/buddy-buddy-poffin-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ciphermaniacs-codebreaking-145",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ciphermaniacs-codebreaking-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-146",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/explorers-guidance-147",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/explorers-guidance-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/full-metal-lab-148",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/full-metal-lab-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/future-booster-energy-capsule-149",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/future-booster-energy-capsule-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/hand-trimmer-150",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/hand-trimmer-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heavy-baton-151",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heavy-baton-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heros-cape-152",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/heros-cape-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/master-ball-153",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/master-ball-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/maximum-belt-154",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/maximum-belt-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-155",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/perilous-jungle-156",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/perilous-jungle-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/prime-catcher-157",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/prime-catcher-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reboot-pod-158",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reboot-pod-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rescue-board-159",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/rescue-board-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-160",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mist-energy-161",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mist-energy-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/neo-upper-energy-162",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/neo-upper-energy-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shiftry-163",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/shiftry-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grotle-164",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/grotle-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/deerling-165",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/deerling-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sawsbuck-166",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/sawsbuck-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/litten-167",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/litten-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/snom-168",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/snom-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/charjabug-169",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/charjabug-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzor-170",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/bronzor-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reuniclus-171",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/reuniclus-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cutiefly-172",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cutiefly-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/relicanth-173",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/relicanth-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/excadrill-174",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/excadrill-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudsdale-175",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mudsdale-175.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/arbok-176",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/arbok-176.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gastly-177",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gastly-177.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metagross-178",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/metagross-178.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meltan-179",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/meltan-179.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickitung-180",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/lickitung-180.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/chatot-181",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/chatot-181.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/minccino-182",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/minccino-182.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cinccino-183",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/cinccino-183.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drampa-184",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/drampa-184.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torterra-ex-185",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/torterra-ex-185.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-186",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-186.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/incineroar-ex-187",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/incineroar-ex-187.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-188",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-188.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-189",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-189.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wugtrio-ex-190",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/wugtrio-ex-190.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-191",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-191.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-192",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-192.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gengar-ex-193",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gengar-ex-193.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/farigiraf-ex-194",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/farigiraf-ex-194.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scizor-ex-195",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/scizor-ex-195.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-196",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-196.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-197",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-197.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ciphermaniacs-codebreaking-198",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/ciphermaniacs-codebreaking-198.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-199",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-199.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/explorers-guidance-200",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/explorers-guidance-200.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-201",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-201.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-202",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-202.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-203",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-203.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-204",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-204.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-205",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-205.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-206",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-206.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-207",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-207.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-208",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-208.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-209",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/biancas-devotion-209.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-210",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/eri-210.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-211",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/mortys-conviction-211.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-212",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/salvatore-212.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-213",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-leaves-ex-213.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-214",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/gouging-fire-ex-214.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-215",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/walking-wake-ex-215.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-216",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-crown-ex-216.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-217",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/iron-boulder-ex-217.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-218",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards/raging-bolt-ex-218.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/temporal-forces/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/top-chase-cards.html"
     }
   ],
   "redirects": [
