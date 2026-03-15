@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
-      "destination": "/obsidian-flames-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
       "destination": "/paradox-rift-card-list.html"
     },
@@ -59,14 +55,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards",
-      "destination": "/obsidian-flames-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
-      "destination": "/obsidian-flames-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards",
@@ -4431,6 +4419,942 @@
     {
       "source": "/pokemon/sets/scarlet-violet/paldea-evolved/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards",
+      "destination": "/obsidian-flames-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
+      "destination": "/obsidian-flames-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oddish-001",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oddish-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gloom-002",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gloom-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellossom-003",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellossom-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scyther-004",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scyther-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/shuckle-005",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/shuckle-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/surskit-006",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/surskit-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/masquerain-007",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/masquerain-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/combee-008",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/combee-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/foongus-009",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/foongus-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/amoonguss-010",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/amoonguss-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/phantump-011",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/phantump-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/trevenant-012",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/trevenant-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/rowlet-013",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/rowlet-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dartrix-014",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dartrix-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/decidueye-ex-015",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/decidueye-ex-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bounsweet-016",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bounsweet-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/steenee-017",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/steenee-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tsareena-018",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tsareena-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/smoliv-019",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/smoliv-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dolliv-020",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dolliv-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/arboliva-021",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/arboliva-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscruel-ex-022",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscruel-ex-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/capsakid-023",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/capsakid-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/capsakid-024",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/capsakid-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scovillain-025",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scovillain-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charmander-026",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charmander-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charmeleon-027",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charmeleon-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vulpix-028",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vulpix-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ninetales-029",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ninetales-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/entei-030",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/entei-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/numel-031",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/numel-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/camerupt-032",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/camerupt-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/victini-ex-033",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/victini-ex-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darumaka-034",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darumaka-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darmanitan-035",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darmanitan-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/litwick-036",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/litwick-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lampent-037",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lampent-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/chandelure-038",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/chandelure-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/heatmor-039",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/heatmor-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvesta-040",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvesta-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/volcarona-041",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/volcarona-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-042",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charcadet-043",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charcadet-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/armarouge-044",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/armarouge-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lapras-045",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lapras-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/carvanha-046",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/carvanha-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/sharpedo-047",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/sharpedo-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/buizel-048",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/buizel-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/floatzel-049",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/floatzel-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tympole-050",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tympole-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palpitoad-051",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palpitoad-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/seismitoad-052",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/seismitoad-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cubchoo-053",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cubchoo-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/beartic-054",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/beartic-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cryogonal-055",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cryogonal-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/froakie-056",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/froakie-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/frogadier-057",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/frogadier-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/wiglett-058",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/wiglett-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/wugtrio-059",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/wugtrio-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/finizen-060",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/finizen-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/finizen-061",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/finizen-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palafin-062",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palafin-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magnemite-063",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magnemite-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magneton-064",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magneton-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magnezone-065",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/magnezone-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tyranitar-ex-066",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tyranitar-ex-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tynamo-067",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tynamo-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eelektrik-068",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eelektrik-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eelektross-069",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eelektross-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/thundurus-070",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/thundurus-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toxel-071",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toxel-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toxtricity-072",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toxtricity-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pawmot-ex-073",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pawmot-ex-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-074",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-075",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-076",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tadbulb-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-077",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-078",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/miraidon-ex-079",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/miraidon-ex-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cleffa-080",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cleffa-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/clefairy-081",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/clefairy-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/clefable-ex-082",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/clefable-ex-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togepi-083",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togepi-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togetic-084",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togetic-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togekiss-085",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togekiss-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/espeon-086",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/espeon-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/snubbull-087",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/snubbull-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/granbull-088",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/granbull-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/mawile-089",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/mawile-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/spoink-090",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/spoink-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/grumpig-091",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/grumpig-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lunatone-092",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lunatone-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/solrock-093",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/solrock-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/baltoy-094",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/baltoy-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/claydol-095",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/claydol-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vespiquen-ex-096",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vespiquen-ex-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/sinistea-097",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/sinistea-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/polteageist-098",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/polteageist-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greavard-099",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greavard-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greavard-100",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greavard-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndstone-101",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndstone-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndstone-ex-102",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndstone-ex-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/diglett-103",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/diglett-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dugtrio-104",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dugtrio-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvitar-105",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvitar-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pupitar-106",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pupitar-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/nosepass-107",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/nosepass-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/barboach-108",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/barboach-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/whiscash-109",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/whiscash-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bonsly-110",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bonsly-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/drilbur-111",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/drilbur-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/stunfisk-112",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/stunfisk-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/diggersby-113",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/diggersby-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/crabrawler-114",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/crabrawler-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/crabominable-115",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/crabominable-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/rockruff-116",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/rockruff-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lycanroc-117",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lycanroc-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscool-118",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscool-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscruel-119",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/toedscruel-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/klawf-ex-120",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/klawf-ex-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmet-121",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmet-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmet-122",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmet-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmora-ex-123",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmora-ex-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/koraidon-ex-124",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/koraidon-ex-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-125",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-wooper-126",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-wooper-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-wooper-127",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-wooper-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-clodsire-128",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-clodsire-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-clodsire-129",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/paldean-clodsire-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/umbreon-130",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/umbreon-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-131",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-132",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndoom-133",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndoom-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndoom-ex-134",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndoom-ex-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/absol-ex-135",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/absol-ex-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darkrai-136",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/darkrai-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/inkay-137",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/inkay-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/malamar-138",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/malamar-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/salandit-139",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/salandit-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/salazzle-140",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/salazzle-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scizor-141",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scizor-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/skarmory-142",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/skarmory-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/mawile-143",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/mawile-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bronzor-144",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bronzor-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bronzong-145",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bronzong-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/probopass-146",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/probopass-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/excadrill-147",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/excadrill-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pawniard-148",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pawniard-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bisharp-149",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bisharp-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/kingambit-150",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/kingambit-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togedemaru-151",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/togedemaru-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/meltan-152",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/meltan-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/melmetal-ex-153",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/melmetal-ex-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-154",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-155",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-156",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dratini-157",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dratini-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dragonair-158",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dragonair-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dragonite-ex-159",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/dragonite-ex-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/altaria-160",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/altaria-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/drampa-161",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/drampa-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgey-162",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgey-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeotto-163",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeotto-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-164",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/kangaskhan-165",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/kangaskhan-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eevee-166",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eevee-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/zigzagoon-167",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/zigzagoon-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/linoone-168",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/linoone-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/swablu-169",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/swablu-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lillipup-170",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lillipup-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/herdier-171",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/herdier-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/stoutland-172",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/stoutland-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/audino-173",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/audino-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bouffalant-174",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bouffalant-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bunnelby-175",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bunnelby-175.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/yungoos-176",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/yungoos-176.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gumshoos-177",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gumshoos-177.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/skwovet-178",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/skwovet-178.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greedent-ex-179",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/greedent-ex-179.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-180",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-180.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-181",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-181.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-182",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-182.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oinkologne-183",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oinkologne-183.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oinkologne-184",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/oinkologne-184.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/flamigo-185",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/flamigo-185.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/arven-186",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/arven-186.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/brassius-187",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/brassius-187.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-188",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-188.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/letter-of-encouragement-189",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/letter-of-encouragement-189.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ortega-190",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ortega-190.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/patrol-cap-191",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/patrol-cap-191.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pok-mon-league-headquarters-192",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pok-mon-league-headquarters-192.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-193",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-193.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ryme-194",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ryme-194.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/team-star-grunt-195",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/team-star-grunt-195.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/town-store-196",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/town-store-196.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vengeful-punch-197",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vengeful-punch-197.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gloom-198",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/gloom-198.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ninetales-199",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ninetales-199.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palafin-200",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/palafin-200.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-201",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/bellibolt-201.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cleffa-202",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/cleffa-202.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvitar-203",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/larvitar-203.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-204",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/houndour-204.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scizor-205",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/scizor-205.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-206",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/varoom-206.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgey-207",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgey-207.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeotto-208",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeotto-208.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-209",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/lechonk-209.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-210",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-210.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tyranitar-ex-211",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/tyranitar-ex-211.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vespiquen-ex-212",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/vespiquen-ex-212.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmora-ex-213",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/glimmora-ex-213.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/absol-ex-214",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/absol-ex-214.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-215",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-215.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-216",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-216.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-217",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-217.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-218",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-218.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ortega-219",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ortega-219.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-220",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-220.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ryme-221",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/ryme-221.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-222",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/eiscue-ex-222.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-223",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-223.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-224",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/revavroom-ex-224.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-225",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/pidgeot-ex-225.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-226",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/geeta-226.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-227",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/poppy-227.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-228",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/charizard-ex-228.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/artazon-229",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/artazon-229.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/basic-fire-energy-230",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards/basic-fire-energy-230.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/obsidian-flames/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/top-chase-cards.html"
     }
   ],
   "redirects": [
