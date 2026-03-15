@@ -254,7 +254,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 @media(max-width:480px){.related-grid{grid-template-columns:repeat(2,1fr)}}
 .related-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.2s}
 .related-card:hover{border-color:var(--accent)}
-.related-card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--surface2)}
+.related-card img{width:100%;aspect-ratio:245/337;object-fit:contain;background:var(--surface2)}
 .related-card-info{padding:0.6rem 0.75rem}
 .related-card-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .related-card-num{font-size:0.75rem;color:var(--text-muted)}
@@ -568,7 +568,7 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
 .card-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.2s;cursor:pointer}
 .card-item:hover{border-color:var(--accent);transform:translateY(-2px)}
-.card-item img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--surface2)}
+.card-item img{width:100%;aspect-ratio:245/337;object-fit:contain;background:var(--surface2)}
 .card-info{padding:0.75rem}
 .card-name{font-weight:600;font-size:0.85rem;margin-bottom:2px}
 .card-num{font-size:0.75rem;color:var(--text-muted);margin-bottom:6px}
@@ -779,7 +779,7 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
 .card-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
 .card-item:hover{border-color:var(--accent);transform:translateY(-2px)}
-.card-item img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--surface2)}
+.card-item img{width:100%;aspect-ratio:245/337;object-fit:contain;background:var(--surface2)}
 .card-info{padding:0.75rem}
 .card-name{font-weight:600;font-size:0.85rem;margin-bottom:2px}
 .card-num{font-size:0.75rem;color:var(--text-muted);margin-bottom:6px}
