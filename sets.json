@@ -110,5 +110,37 @@
     "short": "SV10",
     "setId": "sv10",
     "live": true
+  },
+  {
+    "slug": "mega-evolution-base-set-card-list",
+    "name": "Mega Evolution",
+    "series": "Mega Evolution",
+    "short": "MEG",
+    "setId": "me01",
+    "live": true
+  },
+  {
+    "slug": "phantasmal-flames-card-list",
+    "name": "Phantasmal Flames",
+    "series": "Mega Evolution",
+    "short": "PFL",
+    "setId": "me02",
+    "live": false
+  },
+  {
+    "slug": "ascended-heroes-card-list",
+    "name": "Ascended Heroes",
+    "series": "Mega Evolution",
+    "short": "ASC",
+    "setId": "me02.5",
+    "live": false
+  },
+  {
+    "slug": "perfect-order-card-list",
+    "name": "Perfect Order",
+    "series": "Mega Evolution",
+    "short": "ME3",
+    "setId": "me03",
+    "live": false
   }
 ]
