@@ -1542,6 +1542,7 @@
         
         <div class="sets-filter-tabs" id="sets-filter-tabs">
             <div class="filter-tab active" data-filter="all">All Sets</div>
+            <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
             <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
             <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
             <div class="filter-tab" data-filter="live">Live Only</div>
@@ -2110,13 +2111,18 @@
         let currentFilter = 'all';
         
         // Build set logo URL - uses R2 if configured, falls back to TCGdex
+        const TCGDEX_ID_REMAP = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};
+        function tcgdexSeriesPrefix(setId) {
+            const remapped = TCGDEX_ID_REMAP[setId] || setId;
+            return remapped.replace(/[^a-z]/gi, '').toLowerCase().replace(/\d.*$/, '') || 'sv';
+        }
         function setLogoUrl(setId) {
             if (R2_PUBLIC_URL && R2_PUBLIC_URL !== '__R2_PUBLIC_URL__') {
-                console.log('Using R2 for logos:', `${R2_PUBLIC_URL}/logos/${setId}.png`);
                 return `${R2_PUBLIC_URL}/logos/${setId}.png`;
             }
-            console.log('Using TCGdex fallback for logos:', `https://assets.tcgdex.net/en/sv/${setId}/logo.png`);
-            return `https://assets.tcgdex.net/en/sv/${setId}/logo.png`;
+            const prefix = tcgdexSeriesPrefix(setId);
+            const remapped = TCGDEX_ID_REMAP[setId] || setId;
+            return `https://assets.tcgdex.net/en/${prefix}/${remapped}/logo.png`;
         }
         
         // Toggle hamburger menu
@@ -2238,7 +2244,7 @@
                                     <img src="${logoUrl}" data-setid="${set.setId}" 
                                          alt="${set.name}" 
                                          style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
-                                         onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;this.onerror=null;this.src='https://assets.tcgdex.net/en/sv/'+id+'/logo.png'">
+                                         onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;const p=id.replace(/[^a-z]/gi,'').toLowerCase().replace(/\d.*$/,'');this.onerror=null;this.src='https://assets.tcgdex.net/en/'+p+'/'+id+'/logo.png'">
                                     <div style="font-size: 3rem; display: none;">🎴</div>
                                 ` : `
                                     <div style="font-size: 3rem;">🎴</div>
