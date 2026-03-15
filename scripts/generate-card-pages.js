@@ -33,20 +33,20 @@ const SITE_URL       = 'https://tcgwatchtower.com';
 // TCGplayer set slugs — format: {setCode}-{set-name-kebab}
 // Used in search URLs: tcgplayer.com/search/pokemon/{TCGP_SET_SLUG}?...&setName={TCGP_SET_SLUG}
 const TCGP_SLUG_MAP = {
-  'sv01':   'sv01-scarlet-and-violet-base-set',
-  'sv02':   'sv02-paldea-evolved',
-  'sv03':   'sv03-obsidian-flames',
-  'sv3pt5': 'sv3pt5-151',
-  'sv04':   'sv04-paradox-rift',
-  'sv4pt5': 'sv4pt5-paldean-fates',
-  'sv05':   'sv05-temporal-forces',
-  'sv06':   'sv06-twilight-masquerade',
-  'sv6pt5': 'sv6pt5-shrouded-fable',
-  'sv07':   'sv07-stellar-crown',
-  'sv08':   'sv08-surging-sparks',
-  'sv8pt5': 'sv8pt5-prismatic-evolutions',
-  'sv09':   'sv09-journey-together',
-  'sv10':   'sv10-destined-rivals',
+  'sv01':   'scarlet-violet-base-set',
+  'sv02':   'paldea-evolved',
+  'sv03':   'obsidian-flames',
+  'sv3pt5': '151',
+  'sv04':   'paradox-rift',
+  'sv4pt5': 'paldean-fates',
+  'sv05':   'temporal-forces',
+  'sv06':   'twilight-masquerade',
+  'sv6pt5': 'shrouded-fable',
+  'sv07':   'stellar-crown',
+  'sv08':   'surging-sparks',
+  'sv8pt5': 'prismatic-evolutions',
+  'sv09':   'journey-together',
+  'sv10':   'destined-rivals',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
 
