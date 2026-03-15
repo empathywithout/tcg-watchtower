@@ -425,7 +425,6 @@ loadPrice();
 
 // Generate all card pages
 let generated = 0;
-const rewrites = [];
 
 for (const card of cards) {
   const slug = cardSlug(card);
@@ -433,10 +432,6 @@ for (const card of cards) {
   const filepath = path.join(outDir, filename);
   const html = generateCardPage(card, cards);
   fs.writeFileSync(filepath, html);
-  rewrites.push({
-    source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${slug}`,
-    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${filename}`
-  });
   generated++;
   if (generated % 50 === 0) console.log(`  Generated ${generated}/${cards.length}...`);
 }
@@ -444,28 +439,39 @@ for (const card of cards) {
 console.log(`\n✅ Generated ${generated} card pages`);
 console.log(`📁 Output: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
 
-// Update vercel.json with new rewrites
+// Update vercel.json
+// Card pages are served by a single global wildcard rewrite — no per-card entries needed.
+// We only need per-set rewrites for the /cards list and /sealed-product pages.
 const vercelPath = path.join(ROOT, 'vercel.json');
 const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 
-// Remove old card rewrites for this set and add new ones
-// Always ensure card-list and sealed-product rewrites exist for this set
+// Global wildcard that covers all card pages across all sets in one route entry
+const CARD_WILDCARD = {
+  source: '/pokemon/sets/:series/:set/cards/:slug',
+  destination: '/pokemon/sets/:series/:set/cards/:slug.html',
+};
+
+// Per-set rewrites for the card list and sealed-product pages
 const permanentRewrites = [
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`, destination: `/${SET_SLUG_FULL}.html` },
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`, destination: `/${SET_SLUG_FULL}.html` },
 ];
-vercel.rewrites = [
-  ...vercel.rewrites.filter(r =>
-    !r.source.includes(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`) &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards` &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`
-  ),
-  ...permanentRewrites,
-  ...rewrites
-];
+
+// Remove any stale individual card rewrites for this set, old permanent rewrites,
+// and the old wildcard (so we re-add it at the end in the right position)
+const individualCardPattern = new RegExp(`^/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/[^/]+$`);
+const filtered = (vercel.rewrites || []).filter(r =>
+  !individualCardPattern.test(r.source) &&
+  r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards` &&
+  r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product` &&
+  r.source !== CARD_WILDCARD.source
+);
+
+// Specific rewrites first, then the global wildcard last so it acts as a catch-all
+vercel.rewrites = [...filtered, ...permanentRewrites, CARD_WILDCARD];
 
 fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
-console.log(`✅ vercel.json updated with ${rewrites.length} card rewrites + card-list/sealed-product`);
+console.log(`✅ vercel.json updated with card-list/sealed-product rewrites + global card wildcard`);
 
 // Update sitemap.xml
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
@@ -473,7 +479,7 @@ let sitemap = fs.readFileSync(sitemapPath, 'utf8');
 const today = new Date().toISOString().split('T')[0];
 
 const cardEntries = cards.map(c => `  <url>
-    <loc>${SITE_URL}/pokemon/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(c)}</loc>
+    <loc>${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(c)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
