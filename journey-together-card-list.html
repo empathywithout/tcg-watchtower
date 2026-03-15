@@ -1604,8 +1604,11 @@ async function loadCards() {
 
     renderChaseCards(allCards);
     filteredCards = allCards;
-    renderCards(true);
-    loadTCGPlayerPrices(); // fetch all TCGplayer prices at once
+    // Defer card list rendering to avoid blocking main thread after chase cards paint
+    setTimeout(() => {
+      renderCards(true);
+      loadTCGPlayerPrices();
+    }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
     document.getElementById('card-count').textContent = '⚠️ Could not load cards — try refreshing.';
