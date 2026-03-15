@@ -88,18 +88,9 @@ function cardImgUrl(card) {
   return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
 }
 
-const TCGP_AFFILIATE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
-function tcgpAffiliate(directUrl) {
-  return `${TCGP_AFFILIATE}?u=${encodeURIComponent(directUrl)}`;
-}
-function tcgpSearchUrl(card, productId) {
-  if (productId) {
-    const directUrl = `https://www.tcgplayer.com/search/all/product?Language=English&productLineName=pokemon&q=${encodeURIComponent(productId)}&view=grid&sort=price&sharedid=&irpid=7068180&afsrc=1`;
-    return tcgpAffiliate(directUrl);
-  }
-  const query = encodeURIComponent(`${card.name} ${card.localId}/${metadata.cardCount?.official || ''}`);
-  const directUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${query}&view=grid&Language=English&productTypeName=Cards&setName=${TCGP_SET_SLUG}&sharedid=&irpid=7068180&afsrc=1`;
-  return tcgpAffiliate(directUrl);
+function tcgpSearchUrl(card) {
+  const q = encodeURIComponent(`${card.name} ${card.localId}/${metadata.cardCount?.official || ''}`);
+  return `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
 }
 
 function ebaySearchUrl(card) {
@@ -405,7 +396,7 @@ async function loadPrice() {
       // Update buy button to direct URL if available
       if (url) {
         const tcgpBtn = document.querySelector('.btn-tcgp');
-        if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url);
+        if (tcgpBtn) tcgpBtn.href = url;
       }
 
       // Update related card prices
@@ -632,7 +623,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const tcgpUrl = tcgpAffiliate(`https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&setName=${TCGP_SET_SLUG}&sharedid=&irpid=7068180&afsrc=1`);
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
@@ -680,7 +671,7 @@ async function loadPrices() {
         // Update TCGplayer link to direct URL if available
         if (url) {
           const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
-          if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url);
+          if (tcgpBtn) tcgpBtn.href = url;
         }
       } else {
         el.textContent = 'N/A';
@@ -839,7 +830,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const tcgpUrl = tcgpAffiliate(`https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&setName=${TCGP_SET_SLUG}&sharedid=&irpid=7068180&afsrc=1`);
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG}?productLineName=pokemon&q=${encodeURIComponent(c.name + ' ' + c.localId + '/' + (metadata.cardCount?.official || ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
@@ -883,7 +874,7 @@ async function loadPrices() {
         el.classList.remove('loading');
         if (url) {
           const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
-          if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url);
+          if (tcgpBtn) tcgpBtn.href = url;
         }
       } else {
         el.textContent = 'N/A';
