@@ -1373,6 +1373,7 @@ function renderProductCard(p) {
       <div class="product-info">
         <span class="rarity-badge ${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">${p.type}</span>
         <div class="product-name">${p.name}</div>
+        <div class="product-price" data-tcgp-id="${p.tcgpId}" style="font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem;">${p.price ? '$' + p.price.toFixed(2) : ''}</div>
 
         <div class="product-links">
           ${!p.noAmazon && p.amazonUrl ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
@@ -1468,6 +1469,16 @@ function loadTCGPlayerPrices() {
 
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
+
+      // Update sealed product prices
+      const sealedPrices = data.sealedPrices || {};
+      document.querySelectorAll('[data-tcgp-id]').forEach(el => {
+        const tid = el.dataset.tcgpId;
+        const price = sealedPrices[tid];
+        if (price != null) {
+          el.textContent = '$' + price.toFixed(2);
+        }
+      });
 
       // Update hero stack with top 3 chase cards by price
       if (currentChaseList.length) {

@@ -112,6 +112,18 @@ export default async function handler(req, res) {
       bestProductId[cardNumber] = product.productId;
     }
 
+    // Build sealed product prices keyed by productId
+    // Sealed products have no 'Number' extendedData — identify by absence of Number field
+    const sealedPrices = {};
+    for (const product of products) {
+      const extData  = product.extendedData || [];
+      const hasNumber = extData.some(e => e.name === 'Number');
+      if (hasNumber) continue; // skip cards
+      const priceObj = priceByProductId[product.productId];
+      if (!priceObj || priceObj.marketPrice == null) continue;
+      sealedPrices[String(product.productId)] = priceObj.marketPrice;
+    }
+
     const responseData = {
       success: true,
       groupId,
@@ -119,6 +131,7 @@ export default async function handler(req, res) {
       count: Object.keys(prices).length,
       prices,
       tcgpUrls,
+      sealedPrices,
     };
 
     cache.set(groupId, { ts: Date.now(), data: responseData });
