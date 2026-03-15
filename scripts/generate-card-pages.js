@@ -405,7 +405,7 @@ async function loadPrice() {
       // Update buy button to direct URL if available
       if (url) {
         const tcgpBtn = document.querySelector('.btn-tcgp');
-        if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url + '?sharedid=&irpid=7068180&afsrc=1&Language=English');
+        if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url);
       }
 
       // Update related card prices
