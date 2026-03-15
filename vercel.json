@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
-      "destination": "/paldean-fates-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/sealed-product",
       "destination": "/twilight-masquerade-card-list.html"
     },
@@ -43,14 +39,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
-      "destination": "/paldean-fates-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
-      "destination": "/paldean-fates-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/cards",
@@ -253,8 +241,24 @@
       "destination": "/pokemon/sets/scarlet-violet/temporal-forces/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
+      "destination": "/paldean-fates-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
+      "destination": "/paldean-fates-card-list.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/paldean-fates/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldean-fates/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/paldean-fates/top-chase-cards.html"
     }
   ],
   "redirects": [
