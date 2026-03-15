@@ -15,6 +15,7 @@
 <script src="https://epnt.ebay.com/static/epn-smart-tools.js" defer></script>
 
 <meta charset="UTF-8">
+  <link rel="preload" as="image" href="https://assets.tcgdex.net/en/sv/sv04/001/high.webp" fetchpriority="high">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Favicons -->
@@ -1097,7 +1098,18 @@ footer {
     <div class="chase-slider-wrap">
       <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left" aria-label="Scroll left">&#8249;</button>
       <div class="chase-slider" id="chase-grid">
-        <!-- Populated by JS -->
+        <div class="chase-card" id="chase-prerender-1">
+          <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv04/001/high.webp" alt="Chase Card" width="200" height="279" fetchpriority="high">
+          <div class="chase-card-info"><div class="chase-card-name">Loading...</div></div>
+        </div>
+        <div class="chase-card" id="chase-prerender-2">
+          <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv04/002/high.webp" alt="Chase Card" width="200" height="279" loading="lazy">
+          <div class="chase-card-info"><div class="chase-card-name">Loading...</div></div>
+        </div>
+        <div class="chase-card" id="chase-prerender-3">
+          <img class="chase-card-img" src="https://assets.tcgdex.net/en/sv/sv04/003/high.webp" alt="Chase Card" width="200" height="279" loading="lazy">
+          <div class="chase-card-info"><div class="chase-card-name">Loading...</div></div>
+        </div>
       </div>
       <button class="chase-arrow chase-arrow-right" id="chase-arrow-right" aria-label="Scroll right">&#8250;</button>
     </div>
