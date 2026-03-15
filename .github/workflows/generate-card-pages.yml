@@ -49,7 +49,7 @@ jobs:
           echo "Cleaning $DIR"
           rm -rf "$DIR"
           git rm -r --cached --ignore-unmatch "$DIR"
-          echo "Done cleaning"
+          echo "Done cleaning" 
 
       - name: Generate card pages
         env:
@@ -67,6 +67,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "=== Untracked files ==="
+          git ls-files --others --exclude-standard | head -20
+          echo "=== Modified files ==="
+          git ls-files --modified | head -20
+          echo "=== Deleted files ==="
+          git ls-files --deleted | head -20
           git add -A
           git status
           if git diff --cached --quiet; then
