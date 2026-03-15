@@ -26,6 +26,8 @@ const TCGDEX_SET_ID_RESOLVED = TCGDEX_ID_MAP[SET_ID] || SET_ID;
 const TCGDEX_SET_OVERVIEW_ID = TCGDEX_SET_ID_RESOLVED;
 const TCGDEX_CARD_ID_PREFIX  = TCGDEX_SET_ID_RESOLVED;
 const TCGDEX_ASSET_ID        = TCGDEX_SET_ID_RESOLVED;
+// Derive series prefix from set ID (e.g. 'sv01' -> 'sv', 'me01' -> 'me')
+const TCGDEX_SERIES_PREFIX   = TCGDEX_SET_ID_RESOLVED.replace(/[^a-z]/gi, '').toLowerCase().replace(/\d.*$/, '') || 'sv';
 
 const s3 = new S3Client({
   region: "auto",
@@ -122,10 +124,10 @@ async function main() {
   // Step 3 — Download and upload set logo
   console.log(`\n🎨 Uploading set logo to R2...`);
   const logoR2Key = `logos/${SET_ID}.png`;
-  const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
+  const logoBase = setData.logo || `https://assets.tcgdex.net/en/${TCGDEX_SERIES_PREFIX}/${TCGDEX_ASSET_ID}/logo`;
   const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
-  const strippedId = TCGDEX_ASSET_ID.replace(/^sv0(\d)$/, 'sv$1');
-  const logoUrlAlt = `https://assets.tcgdex.net/en/sv/${strippedId}/logo.png`;
+  const strippedId = TCGDEX_ASSET_ID.replace(/^([a-z]+)0(\d)$/, '$1$2');
+  const logoUrlAlt = `https://assets.tcgdex.net/en/${TCGDEX_SERIES_PREFIX}/${strippedId}/logo.png`;
   const urlsToTry = [logoUrl, logoUrlAlt].filter(Boolean);
   console.log(`  🔗 Trying logo URLs: ${urlsToTry.join(', ')}`);
   let logoUploaded = false;

@@ -47,6 +47,7 @@ const TCGP_SLUG_MAP = {
   'sv8pt5': 'sv8pt5-prismatic-evolutions',
   'sv09':   'sv09-journey-together',
   'sv10':   'sv10-destined-rivals',
+  'me01':   'me01-mega-evolution',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
 
