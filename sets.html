@@ -18,7 +18,7 @@
 <link rel="shortcut icon" href="/favicon.ico">
 
 <title>Pokémon TCG Set Guides | TCG Watchtower</title>
-<meta name="description" content="Complete visual card list guides for every Pokémon TCG Scarlet & Violet set — chase cards ranked by price, full card lists, and where to buy sealed product.">
+<meta name="description" content="Complete visual card list guides for every Pokémon TCG set — chase cards ranked by price, full card lists, and where to buy sealed product.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/sets">
 
@@ -31,6 +31,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -76,7 +77,7 @@ nav {
 .nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--text-primary); letter-spacing:0.05em; }
 .nav-links { display:flex; align-items:center; gap:20px; }
 .nav-links a { color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:500; transition:color 0.2s; }
-.nav-links a:hover { color:var(--text-primary); }
+.nav-links a:hover, .nav-links a.active { color:var(--text-primary); }
 .btn-discord {
   padding:8px 16px; background:rgba(88,101,242,0.2); border:1px solid rgba(88,101,242,0.4);
   color:#818cf8; border-radius:8px; text-decoration:none; font-size:0.8rem; font-weight:700;
@@ -227,6 +228,7 @@ footer a:hover { color:var(--text-primary); }
   </a>
   <div class="nav-links">
     <a href="/">Home</a>
+    <a href="/sets" class="active">Sets</a>
     <a href="https://discord.gg/cZxJV9YRyb" class="btn-discord">Join Discord</a>
   </div>
 </nav>
@@ -239,7 +241,8 @@ footer a:hover { color:var(--text-primary); }
 
 <div class="filter-bar" id="filter-bar">
   <button class="filter-tab active" data-filter="all">All Sets</button>
-  <button class="filter-tab" data-filter="live">Available Now</button>
+  <button class="filter-tab" data-filter="live">Live Only</button>
+  <!-- Series tabs injected here by JS -->
 </div>
 
 <div class="sets-section" id="sets-section">
@@ -247,47 +250,95 @@ footer a:hover { color:var(--text-primary); }
 </div>
 
 <footer>
-  <p>© 2024 TCG Watchtower · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a> · <a href="/disclaimer">Disclaimer</a></p>
+  <p>© 2025 TCG Watchtower · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a> · <a href="/disclaimer">Disclaimer</a></p>
 </footer>
 
 <script>
 let allSets = [];
 let currentFilter = 'all';
 
+const R2_BASE = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+
+// Maps setId → correct URL path
+// For new-style sets (me01, future sets) the slug IS the full path already.
+// For legacy SV sets the slug is the old root-level HTML filename, so we
+// build the canonical /pokemon/sets/… URL ourselves.
+const SERIES_SLUG_MAP = {
+  'Scarlet & Violet': 'scarlet-violet',
+  'Mega Evolution':   'mega-evolution',
+  // Add future series here: 'Sword & Shield': 'sword-shield', etc.
+};
+
+// Legacy sets that still use the old /{slug} root URL structure
+const LEGACY_SLUG_SET = new Set([
+  'scarlet-violet-base-set-card-list',
+  'paldea-evolved-card-list',
+  'obsidian-flames-card-list',
+  'paradox-rift-card-list',
+  'scarlet-violet-151-card-list',
+  'paldean-fates-card-list',
+  'temporal-forces-card-list',
+  'twilight-masquerade-card-list',
+  'shrouded-fable-card-list',
+  'stellar-crown-card-list',
+  'surging-sparks-card-list',
+  'prismatic-evolutions-card-list',
+  'journey-together-card-list',
+  'destined-rivals-card-list',
+]);
+
+function setCardUrl(s) {
+  if (!s.live) return 'javascript:void(0)';
+  // Legacy SV sets: keep existing root slug URLs
+  if (LEGACY_SLUG_SET.has(s.slug)) return '/' + s.slug;
+  // New sets: use canonical path if slug is already a full path
+  if (s.slug.startsWith('pokemon/')) return '/' + s.slug;
+  // Fallback: build from series + set slug
+  const seriesSlug = SERIES_SLUG_MAP[s.series] || s.series.toLowerCase().replace(/\s+/g, '-');
+  return `/pokemon/sets/${seriesSlug}/${s.slug}/cards`;
+}
+
 async function loadSets() {
   try {
     const res = await fetch('/sets.json');
     allSets = await res.json();
 
-    // Add series filter buttons dynamically
-    const series = [...new Set(allSets.map(s => s.series))];
+    // Inject one filter tab per unique series, in order of first appearance
+    const seen = new Set();
     const bar = document.getElementById('filter-bar');
-    series.forEach(s => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-tab';
-      btn.dataset.filter = s;
-      btn.textContent = s;
-      bar.appendChild(btn);
+    allSets.forEach(s => {
+      if (!seen.has(s.series)) {
+        seen.add(s.series);
+        const btn = document.createElement('button');
+        btn.className = 'filter-tab';
+        btn.dataset.filter = s.series;
+        btn.textContent = s.series;
+        bar.appendChild(btn);
+      }
     });
 
     renderSets();
   } catch(e) {
-    document.getElementById('sets-section').innerHTML = '<div class="empty-state">Could not load sets. Please try again.</div>';
+    document.getElementById('sets-section').innerHTML =
+      '<div class="empty-state">Could not load sets. Please try again.</div>';
   }
 }
 
 function renderSets() {
   const container = document.getElementById('sets-section');
   let filtered = allSets;
-  if (currentFilter === 'live') filtered = allSets.filter(s => s.live);
-  else if (currentFilter !== 'all') filtered = allSets.filter(s => s.series === currentFilter);
+  if (currentFilter === 'live') {
+    filtered = allSets.filter(s => s.live);
+  } else if (currentFilter !== 'all') {
+    filtered = allSets.filter(s => s.series === currentFilter);
+  }
 
   if (!filtered.length) {
     container.innerHTML = '<div class="empty-state">No sets found.</div>';
     return;
   }
 
-  // Group by series
+  // Group by series, preserving insertion order
   const grouped = {};
   filtered.forEach(s => {
     if (!grouped[s.series]) grouped[s.series] = [];
@@ -298,16 +349,25 @@ function renderSets() {
   Object.entries(grouped).forEach(([series, sets]) => {
     html += `<div class="series-label">${series}</div><div class="sets-grid">`;
     sets.forEach(s => {
-      const TCGDEX_ID = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
-      const R2_BASE = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
       const logoUrl = s.setId ? `${R2_BASE}/logos/${s.setId}.png` : '';
-      const isLive = s.live;
+      const href    = setCardUrl(s);
+      const isLive  = s.live;
+
+      // Fallback logo: try TCGDex for SV sets
+      const tcgdexIdMap = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};
+      const tcgdexId = tcgdexIdMap[s.setId] || s.setId;
+      const fallbackLogo = s.setId && s.setId.startsWith('sv')
+        ? `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`
+        : '';
+
+      const logoHtml = logoUrl
+        ? `<img src="${logoUrl}" alt="${s.name}"${fallbackLogo ? ` onerror="this.onerror=null;this.src='${fallbackLogo}'"` : ''} loading="lazy">`
+        : '<span style="font-size:2rem">🃏</span>';
+
       html += `
-        <a href="${isLive ? '/' + s.slug : 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
+        <a href="${href}" class="set-card${isLive ? '' : ' coming-soon'}">
           ${!isLive ? '<div class="coming-soon-tag">Coming Soon</div>' : ''}
-          <div class="set-card-logo">
-            ${logoUrl ? `<img src="${logoUrl}" data-setid="${s.setId}" alt="${s.name}" onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;this.onerror=null;this.src='https://assets.tcgdex.net/en/sv/'+id+'/logo.png'">` : '<span style="font-size:2rem">🃏</span>'}
-          </div>
+          <div class="set-card-logo">${logoHtml}</div>
           <div class="set-card-body">
             <div class="set-card-name">${s.name}</div>
             <div class="set-card-meta">
@@ -324,7 +384,7 @@ function renderSets() {
   container.innerHTML = html;
 }
 
-// Filter buttons
+// Filter button clicks
 document.getElementById('filter-bar').addEventListener('click', e => {
   const btn = e.target.closest('.filter-tab');
   if (!btn) return;
