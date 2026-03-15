@@ -102,9 +102,7 @@ nav {
 .hero h1 {
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(3rem,8vw,5.5rem);
-  line-height:0.95;
-  color:#fff;
-  margin-bottom:20px;
+  line-height:0.95; color:#fff; margin-bottom:20px;
 }
 .hero h1 span { color:var(--primary-blue); }
 .hero p { color:var(--text-muted); font-size:1.1rem; max-width:600px; margin:0 auto; }
@@ -146,8 +144,7 @@ nav {
 .sets-grid {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:20px;
-  margin-bottom:8px;
+  gap:20px; margin-bottom:8px;
 }
 .set-card {
   position:relative;
@@ -162,14 +159,11 @@ nav {
   box-shadow:0 16px 40px rgba(59,130,246,0.2);
   border-color:rgba(59,130,246,0.3);
 }
-.set-card.coming-soon {
-  opacity:0.5; pointer-events:none; cursor:default;
-}
+.set-card.coming-soon { opacity:0.5; pointer-events:none; cursor:default; }
 .set-card-logo {
   background:rgba(15,23,42,0.6);
   display:flex; align-items:center; justify-content:center;
-  padding:28px 24px;
-  height:120px;
+  padding:28px 24px; height:120px;
 }
 .set-card-logo img { max-width:160px; max-height:64px; object-fit:contain; }
 .set-card-body { padding:16px 20px 20px; flex:1; display:flex; flex-direction:column; gap:8px; }
@@ -207,7 +201,6 @@ footer {
 footer a { color:var(--text-muted); text-decoration:none; }
 footer a:hover { color:var(--text-primary); }
 
-/* EMPTY STATE */
 .empty-state { text-align:center; padding:80px 24px; color:var(--text-muted); }
 
 @media (max-width:640px) {
@@ -242,7 +235,7 @@ footer a:hover { color:var(--text-primary); }
 <div class="filter-bar" id="filter-bar">
   <button class="filter-tab active" data-filter="all">All Sets</button>
   <button class="filter-tab" data-filter="live">Live Only</button>
-  <!-- Series tabs injected here by JS -->
+  <!-- Series tabs injected by JS -->
 </div>
 
 <div class="sets-section" id="sets-section">
@@ -259,18 +252,8 @@ let currentFilter = 'all';
 
 const R2_BASE = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
-// Maps setId → correct URL path
-// For new-style sets (me01, future sets) the slug IS the full path already.
-// For legacy SV sets the slug is the old root-level HTML filename, so we
-// build the canonical /pokemon/sets/… URL ourselves.
-const SERIES_SLUG_MAP = {
-  'Scarlet & Violet': 'scarlet-violet',
-  'Mega Evolution':   'mega-evolution',
-  // Add future series here: 'Sword & Shield': 'sword-shield', etc.
-};
-
-// Legacy sets that still use the old /{slug} root URL structure
-const LEGACY_SLUG_SET = new Set([
+// Legacy SV sets that still use the old root-level slug URLs e.g. /stellar-crown-card-list
+const LEGACY_SLUGS = new Set([
   'scarlet-violet-base-set-card-list',
   'paldea-evolved-card-list',
   'obsidian-flames-card-list',
@@ -288,22 +271,40 @@ const LEGACY_SLUG_SET = new Set([
 ]);
 
 function setCardUrl(s) {
-  if (!s.live) return 'javascript:void(0)';
-  // Legacy SV sets: keep existing root slug URLs
-  if (LEGACY_SLUG_SET.has(s.slug)) return '/' + s.slug;
-  // New sets: use canonical path if slug is already a full path
-  if (s.slug.startsWith('pokemon/')) return '/' + s.slug;
-  // Fallback: build from series + set slug
-  const seriesSlug = SERIES_SLUG_MAP[s.series] || s.series.toLowerCase().replace(/\s+/g, '-');
-  return `/pokemon/sets/${seriesSlug}/${s.slug}/cards`;
+  if (!s.live) return null;
+  // Legacy sets: root-level slug
+  if (LEGACY_SLUGS.has(s.slug)) return '/' + s.slug;
+  // New sets: slug is already a full path
+  return '/' + s.slug;
+}
+
+// TCGdex logo fallback map for SV sets
+const TCGDEX_ID_MAP = {
+  'sv3pt5': 'sv03.5',
+  'sv4pt5': 'sv04.5',
+  'sv6pt5': 'sv06.5',
+  'sv8pt5': 'sv08.5',
+};
+
+function logoHtml(s) {
+  const r2Url = `${R2_BASE}/logos/${s.setId}.png`;
+  const tcgdexId = TCGDEX_ID_MAP[s.setId] || s.setId;
+  const fallback = s.setId && s.setId.startsWith('sv')
+    ? `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`
+    : '';
+  const fallbackAttr = fallback
+    ? ` onerror="this.onerror=null;this.src='${fallback}'"`
+    : ` onerror="this.style.display='none'"`;
+  return `<img src="${r2Url}" alt="${s.name}" loading="lazy"${fallbackAttr}>`;
 }
 
 async function loadSets() {
   try {
     const res = await fetch('/sets.json');
+    if (!res.ok) throw new Error('Failed to fetch sets.json: ' + res.status);
     allSets = await res.json();
 
-    // Inject one filter tab per unique series, in order of first appearance
+    // Inject one tab per unique series in order of first appearance
     const seen = new Set();
     const bar = document.getElementById('filter-bar');
     allSets.forEach(s => {
@@ -319,6 +320,7 @@ async function loadSets() {
 
     renderSets();
   } catch(e) {
+    console.error(e);
     document.getElementById('sets-section').innerHTML =
       '<div class="empty-state">Could not load sets. Please try again.</div>';
   }
@@ -326,6 +328,7 @@ async function loadSets() {
 
 function renderSets() {
   const container = document.getElementById('sets-section');
+
   let filtered = allSets;
   if (currentFilter === 'live') {
     filtered = allSets.filter(s => s.live);
@@ -338,7 +341,7 @@ function renderSets() {
     return;
   }
 
-  // Group by series, preserving insertion order
+  // Group by series preserving insertion order
   const grouped = {};
   filtered.forEach(s => {
     if (!grouped[s.series]) grouped[s.series] = [];
@@ -349,25 +352,12 @@ function renderSets() {
   Object.entries(grouped).forEach(([series, sets]) => {
     html += `<div class="series-label">${series}</div><div class="sets-grid">`;
     sets.forEach(s => {
-      const logoUrl = s.setId ? `${R2_BASE}/logos/${s.setId}.png` : '';
-      const href    = setCardUrl(s);
-      const isLive  = s.live;
-
-      // Fallback logo: try TCGDex for SV sets
-      const tcgdexIdMap = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};
-      const tcgdexId = tcgdexIdMap[s.setId] || s.setId;
-      const fallbackLogo = s.setId && s.setId.startsWith('sv')
-        ? `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`
-        : '';
-
-      const logoHtml = logoUrl
-        ? `<img src="${logoUrl}" alt="${s.name}"${fallbackLogo ? ` onerror="this.onerror=null;this.src='${fallbackLogo}'"` : ''} loading="lazy">`
-        : '<span style="font-size:2rem">🃏</span>';
-
+      const href   = setCardUrl(s);
+      const isLive = s.live;
       html += `
-        <a href="${href}" class="set-card${isLive ? '' : ' coming-soon'}">
+        <a href="${href || 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
           ${!isLive ? '<div class="coming-soon-tag">Coming Soon</div>' : ''}
-          <div class="set-card-logo">${logoHtml}</div>
+          <div class="set-card-logo">${logoHtml(s)}</div>
           <div class="set-card-body">
             <div class="set-card-name">${s.name}</div>
             <div class="set-card-meta">
@@ -384,7 +374,7 @@ function renderSets() {
   container.innerHTML = html;
 }
 
-// Filter button clicks
+// Filter clicks
 document.getElementById('filter-bar').addEventListener('click', e => {
   const btn = e.target.closest('.filter-tab');
   if (!btn) return;
