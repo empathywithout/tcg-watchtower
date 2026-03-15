@@ -1411,7 +1411,7 @@ function renderChaseCardsHTML(grid) {
   });
 
 
-  grid.innerHTML = sorted.map((c, idx) => {
+  grid.innerHTML = sorted.map(c => {
     const img = c.img;
     const priceHTML = c.price
       ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
