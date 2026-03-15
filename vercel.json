@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
-      "destination": "/paradox-rift-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
       "destination": "/paldean-fates-card-list.html"
     },
@@ -51,14 +47,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards",
-      "destination": "/paradox-rift-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
-      "destination": "/paradox-rift-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
@@ -7031,6 +7019,1086 @@
     {
       "source": "/pokemon/sets/scarlet-violet/151/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/151/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards",
+      "destination": "/paradox-rift-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
+      "destination": "/paradox-rift-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/surskit-001",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/surskit-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/masquerain-002",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/masquerain-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/froslass-ex-003",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/froslass-ex-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pansage-004",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pansage-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simisage-005",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simisage-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dwebble-006",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dwebble-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crustle-007",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crustle-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bounsweet-008",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bounsweet-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steenee-009",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steenee-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blipbug-010",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blipbug-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dottler-011",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dottler-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/orbeetle-012",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/orbeetle-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nymble-013",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nymble-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nymble-014",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nymble-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscool-015",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscool-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscool-016",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscool-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscruel-017",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscruel-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wo-chien-018",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wo-chien-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/magby-019",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/magby-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pansear-020",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pansear-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simisear-021",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simisear-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/volcanion-022",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/volcanion-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/fuecoco-023",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/fuecoco-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crocalor-024",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crocalor-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/charcadet-025",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/charcadet-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/charcadet-026",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/charcadet-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/armarouge-ex-027",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/armarouge-ex-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-moth-028",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-moth-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/chi-yu-029",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/chi-yu-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/horsea-030",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/horsea-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/seadra-031",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/seadra-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/kingdra-032",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/kingdra-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/remoraid-033",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/remoraid-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/octillery-034",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/octillery-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/feebas-035",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/feebas-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/milotic-036",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/milotic-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorunt-037",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorunt-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-038",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mantyke-039",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mantyke-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/palkia-040",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/palkia-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/panpour-041",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/panpour-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simipour-042",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/simipour-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillite-043",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillite-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillish-044",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillish-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanilluxe-045",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanilluxe-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tsareena-ex-046",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tsareena-ex-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-047",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-048",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-049",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-050",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wiglett-051",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wiglett-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wiglett-052",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wiglett-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wugtrio-053",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wugtrio-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/veluza-054",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/veluza-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dondozo-055",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dondozo-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-bundle-056",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-bundle-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/chien-pao-057",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/chien-pao-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mewtwo-ex-058",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mewtwo-ex-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/elekid-059",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/elekid-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/plusle-060",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/plusle-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minun-061",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minun-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blitzle-062",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blitzle-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zebstrika-063",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zebstrika-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/joltik-064",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/joltik-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/galvantula-065",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/galvantula-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zekrom-066",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zekrom-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/oricorio-067",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/oricorio-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-068",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxel-069",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxel-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-070",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/natu-071",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/natu-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/xatu-072",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/xatu-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/latios-073",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/latios-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/deoxys-074",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/deoxys-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yamask-075",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yamask-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cofagrigus-ex-076",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cofagrigus-ex-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pumpkaboo-077",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/pumpkaboo-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gourgeist-078",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gourgeist-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flittle-079",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flittle-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flittle-080",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flittle-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/espathra-081",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/espathra-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatink-082",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatink-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatink-083",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatink-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatuff-084",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkatuff-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkaton-085",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tinkaton-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/scream-tail-086",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/scream-tail-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-087",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-088",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-089",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/onix-090",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/onix-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gligar-091",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gligar-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gliscor-092",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gliscor-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/groudon-093",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/groudon-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gible-094",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gible-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gabite-095",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gabite-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienfoo-096",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienfoo-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienshao-097",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienshao-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/hoopa-ex-098",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/hoopa-ex-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minior-099",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minior-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxtricity-ex-100",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxtricity-ex-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nacli-101",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nacli-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nacli-102",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nacli-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/naclstack-103",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/naclstack-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garganacl-104",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garganacl-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/klawf-105",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/klawf-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flamigo-106",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/flamigo-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/slither-wing-107",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/slither-wing-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-108",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ting-lu-109",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ting-lu-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zubat-110",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zubat-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golbat-111",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golbat-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crobat-112",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crobat-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/absol-113",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/absol-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/purrloin-114",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/purrloin-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/liepard-115",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/liepard-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/trubbish-116",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/trubbish-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garbodor-117",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garbodor-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yveltal-118",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yveltal-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nickit-119",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/nickit-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/thievul-120",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/thievul-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/morpeko-121",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/morpeko-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/lokix-122",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/lokix-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/brute-bonnet-123",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/brute-bonnet-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-124",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steelix-125",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steelix-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/jirachi-126",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/jirachi-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferroseed-127",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferroseed-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferrothorn-128",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferrothorn-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/durant-129",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/durant-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/honedge-130",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/honedge-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/honedge-131",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/honedge-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/doublade-132",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/doublade-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/doublade-133",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/doublade-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-134",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-ex-135",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-ex-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zacian-136",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/zacian-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/skeledirge-ex-137",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/skeledirge-ex-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/orthworm-138",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/orthworm-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-139",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-140",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tatsugiri-141",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tatsugiri-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-142",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon2-143",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon2-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-z-144",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-z-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aipom-145",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aipom-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ambipom-146",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ambipom-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/miltank-147",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/miltank-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/whismur-148",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/whismur-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/loudred-149",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/loudred-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/exploud-150",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/exploud-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/spinda-151",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/spinda-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/swablu-152",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/swablu-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tandemaus-153",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tandemaus-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tandemaus-154",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tandemaus-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/maushold-ex-155",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/maushold-ex-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bombirdier-ex-156",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bombirdier-ex-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cyclizar-157",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cyclizar-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-jugulis-158",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-jugulis-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ancient-booster-energy-capsule-159",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ancient-booster-energy-capsule-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/counter-catcher-160",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/counter-catcher-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cursed-duster-161",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cursed-duster-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/defiance-vest-162",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/defiance-vest-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/earthen-vessel-163",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/earthen-vessel-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/future-booster-energy-capsule-164",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/future-booster-energy-capsule-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/larry-165",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/larry-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/luxurious-cape-166",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/luxurious-cape-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-167",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/norman-168",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/norman-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-169",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-170",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-171",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-172",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roark-173",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roark-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/shauntal-174",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/shauntal-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorlax-doll-175",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorlax-doll-175.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-blindside-176",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-blindside-176.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-devolution-177",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-devolution-177.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-evolution-178",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-evolution-178.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-turbo-energize-179",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/technical-machine-turbo-energize-179.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/techno-radar-180",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/techno-radar-180.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-181",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-181.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/medical-energy-182",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/medical-energy-182.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crustle-183",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/crustle-183.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dottler-184",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/dottler-184.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscruel-185",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toedscruel-185.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/magby-186",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/magby-186.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-moth-187",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-moth-187.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorunt-188",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/snorunt-188.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mantyke-189",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mantyke-189.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillish-190",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/vanillish-190.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-191",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/wimpod-191.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/veluza-192",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/veluza-192.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/plusle-193",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/plusle-193.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minun-194",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minun-194.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blitzle-195",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/blitzle-195.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/joltik-196",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/joltik-196.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/espathra-197",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/espathra-197.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-198",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gimmighoul-198.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/groudon-199",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/groudon-199.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienshao-200",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mienshao-200.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minior-201",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/minior-201.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garganacl-202",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garganacl-202.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/slither-wing-203",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/slither-wing-203.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garbodor-204",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garbodor-204.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yveltal-205",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/yveltal-205.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/morpeko-206",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/morpeko-206.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/brute-bonnet-207",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/brute-bonnet-207.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steelix-208",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/steelix-208.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferrothorn-209",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/ferrothorn-209.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-210",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-210.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aipom-211",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aipom-211.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/loudred-212",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/loudred-212.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/swablu-213",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/swablu-213.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-z-214",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/porygon-z-214.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cyclizar-215",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cyclizar-215.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-jugulis-216",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-jugulis-216.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/froslass-ex-217",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/froslass-ex-217.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/armarouge-ex-218",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/armarouge-ex-218.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-219",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-219.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tsareena-ex-220",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tsareena-ex-220.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-221",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-221.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-222",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-222.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-223",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-223.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cofagrigus-ex-224",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/cofagrigus-ex-224.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-225",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-225.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/hoopa-ex-226",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/hoopa-ex-226.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxtricity-ex-227",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/toxtricity-ex-227.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-228",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-228.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-229",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-229.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-ex-230",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/aegislash-ex-230.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-231",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-231.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-232",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-232.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/maushold-ex-233",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/maushold-ex-233.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bombirdier-ex-234",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/bombirdier-ex-234.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/larry-235",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/larry-235.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-236",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-236.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/norman-237",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/norman-237.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-238",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-238.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-239",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-239.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-240",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-240.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-241",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-241.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roark-242",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roark-242.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/shauntal-243",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/shauntal-243.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-244",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-244.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-245",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-245.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-246",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/golisopod-ex-246.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-247",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tapu-koko-ex-247.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-248",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-hands-ex-248.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-249",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-249.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-250",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/sandy-shocks-ex-250.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-251",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-251.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-252",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/gholdengo-ex-252.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-253",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/altaria-ex-253.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-254",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/mela-254.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-255",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/parasol-lady-255.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-256",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-sadas-vitality-256.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-257",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/professor-turos-scenario-257.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-258",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/rika-258.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-259",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/tulip-259.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-260",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/garchomp-ex-260.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-261",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/iron-valiant-ex-261.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-262",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/roaring-moon-ex-262.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/beach-court-263",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/beach-court-263.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/counter-catcher-264",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/counter-catcher-264.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/luxurious-cape-265",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/luxurious-cape-265.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/cards/reversal-energy-266",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards/reversal-energy-266.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards.html"
     }
   ],
   "redirects": [
