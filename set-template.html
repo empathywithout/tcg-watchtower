@@ -879,7 +879,6 @@ footer {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   padding: 0;
-  /* overflow must NOT be set here — it would clip position:fixed children */
 }
 .section-nav-inner {
   max-width: 1400px;
@@ -1250,12 +1249,21 @@ const CONFIG = {
   r2: '__R2_PUBLIC_URL__'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
+// ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────
+// e.g. "sv1" → "sv", "sv8pt5" → "sv", "me1" → "me", "me2" → "me"
+function tcgdexSeriesId(setId) {
+  return (setId.match(/^([a-z]+)/i) || ['', 'sv'])[1].toLowerCase();
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
   if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
-  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
+  // FIX 1: was hardcoded "/sv/" — now derives series from setId
+  const series = tcgdexSeriesId(setId);
+  return `https://assets.tcgdex.net/en/${series}/${setId}/${localId}/high.webp`;
 }
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
@@ -1263,8 +1271,10 @@ function setLogoUrl(setId) {
   if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
-  const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05'}[setId] || setId;
-  return `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`;
+  const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05','me02pt5':'me02.5'}[setId] || setId;
+  // FIX 2: was hardcoded "/sv/" — now derives series from the resolved tcgdexId
+  const series = tcgdexSeriesId(tcgdexId);
+  return `https://assets.tcgdex.net/en/${series}/${tcgdexId}/logo.png`;
 }
 
 // Wire up hero stack images
@@ -1299,7 +1309,6 @@ function tcgplayerAffiliate(directUrl) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
 }
 function tcgplayerCardLink(name, number, setSlug) {
-  // Precise card search: "Kirlia 212/198" finds the exact card
   const q = encodeURIComponent(`${name} ${number}`);
   const url = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(url)}`;
@@ -1380,7 +1389,7 @@ function renderChaseCardsHTML(grid) {
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${card.localId}/{{SET_OFFICIAL_COUNT}}</div>
+        <div class="chase-card-number">#${c.id}/{{SET_OFFICIAL_COUNT}}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
@@ -1424,15 +1433,12 @@ function renderProductCard(p) {
 }
 
 function productImgUrl(q) {
-  // Proxy through our own domain — fetches from eBay so ad blockers can't block it
   return `/api/product-image?q=${encodeURIComponent(q)}`;
 }
 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
-    // Use pre-fetched image URL if available (set at generation time via R2)
-    // Fall back to proxy for pages generated without R2 credentials
     const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/{{SET_ID}}/${asin}.jpg` : null);
     const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent(p.q)}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
@@ -1460,10 +1466,8 @@ let displayedCount = 0;
 const PAGE_SIZE = 60;
 
 // ── TCGplayer price system ───────────────────────────────────────────────────
-// One fetch per page load via TCGCSV (free TCGplayer mirror, daily updated)
-// groupId is set per-page — template placeholder replaced by generator
 const TCGP_GROUP_ID = '{{TCGP_GROUP_ID}}';
-const priceCache = {};  // localId → { price, url } | null (null = confirmed no price)
+const priceCache = {};
 let _pricesFetchPromise = null;
 
 function loadTCGPlayerPrices() {
@@ -1477,7 +1481,6 @@ function loadTCGPlayerPrices() {
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
 
-      // Store prices
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
@@ -1486,7 +1489,6 @@ function loadTCGPlayerPrices() {
         priceCache[withZeros]    = entry;
         priceCache[withoutZeros] = entry;
       });
-      // Also store URLs for cards that have a URL but no price entry
       Object.entries(urls).forEach(([num, url]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
@@ -1511,7 +1513,6 @@ function loadTCGPlayerPrices() {
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
 
-      // Update sealed product prices
       const sealedPrices = data.sealedPrices || {};
       document.querySelectorAll('[data-tcgp-id]').forEach(el => {
         const tid = el.dataset.tcgpId;
@@ -1521,7 +1522,6 @@ function loadTCGPlayerPrices() {
         }
       });
 
-      // Update hero stack with top 3 chase cards by price
       if (currentChaseList.length) {
         const top3 = [...currentChaseList]
           .map(c => ({ ...c, price: priceCache[c.id]?.price ?? -1 }))
@@ -1532,7 +1532,6 @@ function loadTCGPlayerPrices() {
         });
       }
 
-      // Only re-render via applyFilters if price sort is active (targeted DOM updates above handle the rest)
       if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
         applyFilters();
       }
@@ -1559,7 +1558,7 @@ async function loadCards() {
       }
     } catch(e) {}
 
-    // Fall back to TCGdex directly — fetch cards with rarity in parallel batches
+    // Fall back to TCGdex directly
     if (!data) {
       const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/{{SET_ID}}');
       if (!setRes.ok) throw new Error('TCGdex failed');
@@ -1578,7 +1577,8 @@ async function loadCards() {
           fullCards.push({
             localId: basic.localId,
             name: basic.name,
-            image: `https://assets.tcgdex.net/en/sv/{{SET_ID}}/${basic.localId}/high.webp`,
+            // FIX 3: was hardcoded "/sv/" — now derives series from SET_ID at runtime
+            image: cardImg('{{SET_ID}}', basic.localId),
             rarity: detail.rarity || ''
           });
         });
@@ -1620,7 +1620,6 @@ async function loadCards() {
 
     renderChaseCards(allCards);
     filteredCards = allCards;
-    // Defer card list rendering to avoid blocking main thread after chase cards paint
     setTimeout(() => {
       renderCards(true);
       loadTCGPlayerPrices();
@@ -1642,7 +1641,6 @@ function renderCards(reset) {
     el.dataset.localId = card.localId;
     el.dataset.name = card.name;
 
-    // Show cached price immediately if we already have it
     const cached = priceCache[card.localId];
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
@@ -1680,11 +1678,10 @@ function applyFilters() {
   });
 
   if (sort === 'price') {
-    // Sort by known prices descending; unpriced cards go to the end
     cards = [...cards].sort((a, b) => {
       const pa = priceCache[a.localId]?.price ?? -1;
       const pb = priceCache[b.localId]?.price ?? -1;
-      return pb - pa; // cards with no price (-1) sort to bottom
+      return pb - pa;
     });
   }
 
@@ -1713,7 +1710,6 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
       <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
-
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
@@ -1739,10 +1735,9 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 /* ===== INIT ===== */
 renderChaseCards();
 renderProducts();
-loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards are rendered
+loadCards();
 
 /* ===== HASH SCROLL ===== */
-// Scroll to section if URL contains a hash (e.g. /sealed-product#section-products)
 if (window.location.hash) {
   const target = document.querySelector(window.location.hash);
   if (target) {
@@ -1768,7 +1763,6 @@ if (window.location.hash) {
   let allSets = [];
   let currentFilter = 'all';
   
-  // Toggle hamburger menu
   function toggleHamburgerMenu() {
     const isOpen = hamburgerMenu.classList.contains('open');
     if (isOpen) {
@@ -1797,18 +1791,15 @@ if (window.location.hash) {
     hamburgerMenu.classList.add('open');
   }
   
-  // Event listeners
   hamburger.addEventListener('click', toggleHamburgerMenu);
   hamburgerOverlay.addEventListener('click', closeAllMenus);
   pokemonMenuItem.addEventListener('click', showPokemonSets);
   backToMenu.addEventListener('click', backToMainMenu);
   
-  // Close menu when clicking internal links
   hamburgerMenu.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(link => {
     link.addEventListener('click', closeAllMenus);
   });
   
-  // Filter tabs
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       filterTabs.forEach(t => t.classList.remove('active'));
@@ -1818,7 +1809,6 @@ if (window.location.hash) {
     });
   });
   
-  // Fetch and render sets
   async function fetchSets() {
     try {
       const res = await fetch('/sets.json');
@@ -1839,12 +1829,10 @@ if (window.location.hash) {
       return;
     }
     
-    // Filter sets
     let filteredSets = allSets;
     if (currentFilter === 'live') {
       filteredSets = allSets.filter(set => set.live);
     } else if (currentFilter !== 'all') {
-      // Normalize both the filter and series name for comparison
       const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
       filteredSets = allSets.filter(set => {
         const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1852,7 +1840,6 @@ if (window.location.hash) {
       });
     }
     
-    // Group by series
     const groupedSets = {};
     filteredSets.forEach(set => {
       if (!groupedSets[set.series]) {
@@ -1861,7 +1848,6 @@ if (window.location.hash) {
       groupedSets[set.series].push(set);
     });
     
-    // Render grouped sets
     let html = '';
     Object.keys(groupedSets).forEach(series => {
       html += `<div class="series-label">${series}</div>`;
@@ -1870,8 +1856,6 @@ if (window.location.hash) {
         const isDisabled = !set.live;
         const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
         const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-        
-        // Get logo URL (R2 or TCGdex fallback)
         const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
         
         html += `
@@ -1901,7 +1885,6 @@ if (window.location.hash) {
     setsGridContainer.innerHTML = html;
   }
   
-  // Initialize
   await fetchSets();
 })();
 
@@ -1910,7 +1893,6 @@ if (window.location.hash) {
   const btns = document.querySelectorAll('.section-nav-btn');
   const sections = ['section-chase','section-cards','section-products']
     .map(id => document.getElementById(id)).filter(Boolean);
-  // Set initial active button based on current URL
   const currentPath = window.location.pathname;
   btns.forEach(btn => {
     if (btn.dataset.url && currentPath === btn.dataset.url) {
@@ -1998,8 +1980,8 @@ if (window.location.hash) {
         seriesSets.forEach(s => {
           const isCurrent = currentPath === s.slug;
           const isDisabled = !s.live;
-          const tcgdexSetId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
-          const logoUrl = s.setId ? `__R2_PUBLIC_URL__/logos/${s.setId}.png` : '';
+          // FIX: setLogoUrl already handles series derivation correctly
+          const logoUrl = s.setId ? setLogoUrl(s.setId) : '';
           const cls = [isCurrent ? 'current' : '', isDisabled ? 'disabled' : ''].filter(Boolean).join(' ');
           html += `<a href="${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set ${cls}">
             ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
