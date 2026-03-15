@@ -108,7 +108,10 @@ export default async function handler(req, res) {
       if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
 
       prices[cardNumber]    = priceObj.marketPrice;
-      tcgpUrls[cardNumber]  = 'https://www.tcgplayer.com/product/' + product.productId;
+      const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+      const setSlug  = (product.groupName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const q = encodeURIComponent(`${cardName} ${cardNumber}`);
+      tcgpUrls[cardNumber]  = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
       bestProductId[cardNumber] = product.productId;
     }
 
