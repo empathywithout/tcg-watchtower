@@ -4,69 +4,77 @@ on:
   workflow_dispatch:
     inputs:
       set_id:
-        description: 'TCGdex Set ID (sv01, sv02, sv03...)'
+        description: 'TCGdex Set ID (sv01, me01, me02pt5...)'
         required: true
         default: 'sv01'
-      set_slug:
-        description: 'SEO-friendly URL slug e.g. scarlet-violet-base-set-card-list'
-        required: true
-        default: 'scarlet-violet-base-set-card-list'
       set_full_name:
-        description: 'Full set name e.g. Scarlet & Violet Base Set (SV1)'
+        description: 'Full set name e.g. "Mega Evolution" or "Stellar Crown (SV7)"'
         required: true
         default: 'Scarlet & Violet Base Set (SV1)'
       set_series:
-        description: 'Series name e.g. Scarlet & Violet'
+        description: 'Series display name e.g. "Mega Evolution" or "Scarlet & Violet"'
         required: false
         default: 'Scarlet & Violet'
-      set_subtitle:
-        description: 'Short title shown in hero heading e.g. Base Set, Paldea Evolved'
+      set_series_slug:
+        description: 'Series URL slug e.g. mega-evolution or scarlet-violet'
         required: false
-        default: 'Base Set'
+        default: 'scarlet-violet'
+      set_slug:
+        description: 'HTML filename slug e.g. mega-evolution-base-set-card-list or stellar-crown-card-list'
+        required: true
+        default: 'scarlet-violet-base-set-card-list'
+      set_url_slug:
+        description: 'URL path slug e.g. base-set or stellar-crown (leave blank to auto-derive; sv01/me01 always get base-set)'
+        required: false
+        default: ''
       set_short_name:
-        description: 'Short code e.g. SV1, SV2'
+        description: 'Short badge code e.g. SV1, MEG, PFL'
         required: false
         default: 'SV1'
+      tcgp_group_id:
+        description: 'TCGplayer groupId for pricing — leave blank to use script map (find at tcgcsv.com/tcgplayer/3/groups)'
+        required: false
+        default: ''
+      set_release_date:
+        description: 'Release date e.g. "Mar 2023" — leave blank to auto-detect from TCGdex'
+        required: false
+        default: ''
+      set_subtitle:
+        description: 'Short title for hero heading — leave blank to auto-derive from full name'
+        required: false
+        default: ''
       set_search_name:
-        description: 'Name appended to card search queries e.g. "Scarlet Violet", "Paldea Evolved" (leave blank to use set_subtitle)'
+        description: 'Name appended to card search queries — leave blank to use subtitle'
         required: false
         default: ''
       set_tcgp_slug:
-        description: 'TCGplayer URL slug e.g. scarlet-violet-base-set (leave blank to auto-derive)'
-        required: false
-        default: ''
-      tcgp_group_id:
-        description: 'TCGplayer groupId for pricing (find at tcgcsv.com/tcgplayer/3/groups) e.g. 23533 for SV1'
-        required: false
-        default: '0'
-      set_release_date:
-        description: 'Release date e.g. Mar 2023 (leave blank to auto-detect from TCGdex)'
+        description: 'TCGplayer URL slug e.g. me01-mega-evolution — leave blank to auto-derive'
         required: false
         default: ''
       set_description:
-        description: '2-3 sentence set description for the page (leave blank to auto-generate)'
+        description: '2-3 sentence set description — leave blank to auto-generate'
         required: false
         default: ''
       hero_card_1:
-        description: 'Hero card 1 localId (e.g. 198)'
+        description: 'Hero card 1 localId — leave blank to auto-fetch from top prices'
         required: false
-        default: '001'
+        default: ''
       hero_card_2:
-        description: 'Hero card 2 localId'
+        description: 'Hero card 2 localId — leave blank to auto-fetch from top prices'
         required: false
-        default: '002'
+        default: ''
       hero_card_3:
-        description: 'Hero card 3 localId'
+        description: 'Hero card 3 localId — leave blank to auto-fetch from top prices'
         required: false
-        default: '003'
+        default: ''
       product_meta_json:
-        description: 'JSON object of sealed products keyed by Amazon ASIN (leave blank if none)'
+        description: 'JSON object of sealed products keyed by TCGplayer product ID — leave blank to use script map'
         required: false
-        default: '{}'
+        default: ''
       chase_cards_json:
-        description: 'JSON array of fallback chase cards shown before page loads (leave blank to auto-detect from rarity)'
+        description: 'JSON array of fallback chase cards — leave blank to auto-detect from rarity'
         required: false
-        default: '[]'
+        default: ''
 
 jobs:
   sync-and-generate:
@@ -99,15 +107,17 @@ jobs:
       - name: Generate set guide page
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
-          SET_SLUG: ${{ github.event.inputs.set_slug }}
           SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
           SET_SERIES: ${{ github.event.inputs.set_series }}
-          SET_SUBTITLE: ${{ github.event.inputs.set_subtitle }}
+          SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug }}
+          SET_SLUG: ${{ github.event.inputs.set_slug }}
+          SET_URL_SLUG: ${{ github.event.inputs.set_url_slug }}
           SET_SHORT_NAME: ${{ github.event.inputs.set_short_name }}
-          SET_SEARCH_NAME: ${{ github.event.inputs.set_search_name }}
-          SET_TCGP_SLUG: ${{ github.event.inputs.set_tcgp_slug }}
           TCGP_GROUP_ID: ${{ github.event.inputs.tcgp_group_id }}
           SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
+          SET_SUBTITLE: ${{ github.event.inputs.set_subtitle }}
+          SET_SEARCH_NAME: ${{ github.event.inputs.set_search_name }}
+          SET_TCGP_SLUG: ${{ github.event.inputs.set_tcgp_slug }}
           SET_DESCRIPTION: ${{ github.event.inputs.set_description }}
           HERO_CARD_1: ${{ github.event.inputs.hero_card_1 }}
           HERO_CARD_2: ${{ github.event.inputs.hero_card_2 }}
@@ -119,13 +129,15 @@ jobs:
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
         run: node scripts/generate-set-page.js
 
       - name: Commit generated page to repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ github.event.inputs.set_slug }}.html sitemap.xml sets.json
+          git add ${{ github.event.inputs.set_slug }}.html sitemap.xml sets.json vercel.json
           git diff --staged --quiet && echo "No changes to commit" && exit 0
           git commit -m "Auto-generate ${{ github.event.inputs.set_slug }}.html"
           git stash
