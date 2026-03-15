@@ -31,7 +31,7 @@
     "price": "0",
     "priceSpecification": { "valueAddedTaxIncluded": false },
     "availability": "https://schema.org/InStock",
-    "url": "https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fsv01-scarlet-and-violet-base-set%3FproductLineName%3Dpokemon%26q%3DYoungster%2520198%252F198%26view%3Dgrid%26Language%3DEnglish%26productTypeName%3DCards%26setName%3Dsv01-scarlet-and-violet-base-set%26sharedid%3D%26irpid%3D7068180%26afsrc%3D1"
+    "url": "https://www.tcgplayer.com/search/pokemon/sv01-scarlet-and-violet-base-set?productLineName=pokemon&q=Youngster%20198%2F198&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1"
   },
   "breadcrumb": {
     "@type": "BreadcrumbList",
@@ -197,7 +197,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 
       <!-- Buy Buttons -->
       <div class="buy-buttons">
-        <a class="btn btn-tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fsv01-scarlet-and-violet-base-set%3FproductLineName%3Dpokemon%26q%3DYoungster%2520198%252F198%26view%3Dgrid%26Language%3DEnglish%26productTypeName%3DCards%26setName%3Dsv01-scarlet-and-violet-base-set%26sharedid%3D%26irpid%3D7068180%26afsrc%3D1" target="_blank" rel="noopener">
+        <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/sv01-scarlet-and-violet-base-set?productLineName=pokemon&q=Youngster%20198%2F198&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1" target="_blank" rel="noopener">
           <span>Buy on TCGplayer</span><span>→</span>
         </a>
         <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Youngster%20198%20Scarlet%20%26%20Violet%20Base%20Set%20(SV1)%20Pokemon%20Card&_sacat=2536" target="_blank" rel="noopener">
@@ -290,7 +290,7 @@ async function loadPrice() {
       // Update buy button to direct URL if available
       if (url) {
         const tcgpBtn = document.querySelector('.btn-tcgp');
-        if (tcgpBtn) tcgpBtn.href = 'https://partner.tcgplayer.com/c/7068180/1830156/21018?u=' + encodeURIComponent(url);
+        if (tcgpBtn) tcgpBtn.href = url;
       }
 
       // Update related card prices
