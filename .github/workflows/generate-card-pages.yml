@@ -49,7 +49,7 @@ jobs:
           echo "Cleaning $DIR"
           rm -rf "$DIR"
           git rm -r --cached --ignore-unmatch "$DIR"
-          echo "Done cleaning"
+          echo "Done cleaning" 
 
       - name: Generate card pages
         env:
@@ -73,7 +73,7 @@ jobs:
             echo "⚠️ Nothing to commit — all files already up to date"
           else
             git commit -m "Generate card pages for ${{ github.event.inputs.set_full_name }}"
-            git pull --rebase origin main
+            git pull --no-rebase origin main
             git push
             echo "✅ Committed and pushed"
           fi
