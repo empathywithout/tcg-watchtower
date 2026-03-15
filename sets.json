@@ -125,7 +125,7 @@
     "series": "Mega Evolution",
     "short": "PFL",
     "setId": "me02",
-    "live": false
+    "live": true
   },
   {
     "slug": "ascended-heroes-card-list",

@@ -309,6 +309,22 @@
       "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/cards",
+      "destination": "/phantasmal-flames-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/sealed-product",
+      "destination": "/phantasmal-flames-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/top-chase-cards.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
@@ -477,6 +493,11 @@
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
       "destination": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
+      "permanent": true
+    },
+    {
+      "source": "/phantasmal-flames-card-list",
+      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/cards",
       "permanent": true
     }
   ],
