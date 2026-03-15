@@ -33,17 +33,20 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 
 // ── Inputs ─────────────────────────────────────────────────────────────────────
-const SET_ID           = process.env.SET_ID;
-const SET_FULL_NAME    = process.env.SET_FULL_NAME;
-const SET_SLUG         = process.env.SET_SLUG || `${SET_ID}-card-list`;
-const SET_SERIES       = process.env.SET_SERIES || (SET_ID?.startsWith('me') ? 'Mega Evolution' : 'Scarlet & Violet');
+const SET_ID           = (process.env.SET_ID || '').trim();
+const SET_FULL_NAME    = (process.env.SET_FULL_NAME || '').trim();
+const SET_SLUG         = (process.env.SET_SLUG || '').trim() || `${SET_ID}-card-list`;
+const SET_SERIES       = (process.env.SET_SERIES || '').trim() || (SET_ID?.startsWith('me') ? 'Mega Evolution' : 'Scarlet & Violet');
 
 // Derive series slug from set ID so me* sets don't default to scarlet-violet
+// Also handles me02pt5 (shell-safe version of me02.5)
 const SERIES_SLUG_MAP = {
   'me01': 'mega-evolution', 'me02': 'mega-evolution',
-  'me02.5': 'mega-evolution', 'me03': 'mega-evolution',
+  'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
+  'me03': 'mega-evolution',
 };
-const SET_SERIES_SLUG = process.env.SET_SERIES_SLUG
+// .trim() guards against GitHub Actions passing empty string instead of omitting the var
+const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
   || SERIES_SLUG_MAP[SET_ID]
   || 'scarlet-violet';
 
@@ -57,7 +60,8 @@ const SET_URL_SLUG_MAP = {
 // SET_URL_SLUG: the path segment used in the live URL (after the series slug)
 // e.g. /pokemon/sets/mega-evolution/base-set/cards
 // Separate from SET_SLUG which is the HTML filename slug
-const SET_URL_SLUG = process.env.SET_URL_SLUG
+// .trim() guards against GitHub Actions passing empty string instead of omitting the var
+const SET_URL_SLUG = (process.env.SET_URL_SLUG || '').trim()
   || SET_URL_SLUG_MAP[SET_ID]
   || SET_SLUG.replace('-card-list', '');
 

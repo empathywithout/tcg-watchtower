@@ -309,20 +309,20 @@
       "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/cards",
+      "source": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
       "destination": "/phantasmal-flames-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/sealed-product",
+      "source": "/pokemon/sets/mega-evolution/phantasmal-flames/sealed-product",
       "destination": "/phantasmal-flames-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/most-valuable",
-      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/most-valuable.html"
+      "source": "/pokemon/sets/mega-evolution/phantasmal-flames/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/most-valuable.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/top-chase-cards",
-      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/top-chase-cards.html"
+      "source": "/pokemon/sets/mega-evolution/phantasmal-flames/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
@@ -496,8 +496,28 @@
       "permanent": true
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/cards",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/phantasmal-flames/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/top-chase-cards",
+      "permanent": true
+    },
+    {
       "source": "/phantasmal-flames-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/phantasmal-flames/cards",
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
       "permanent": true
     }
   ],

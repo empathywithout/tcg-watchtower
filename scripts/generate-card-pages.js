@@ -40,16 +40,27 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-const SET_ID          = process.env.SET_ID;
-const SET_FULL_NAME   = process.env.SET_FULL_NAME;
-const SET_SERIES      = process.env.SET_SERIES      || 'Scarlet & Violet';
-const SET_SERIES_SLUG = process.env.SET_SERIES_SLUG || 'scarlet-violet';
+const SET_ID          = (process.env.SET_ID || '').trim();
+const SET_FULL_NAME   = (process.env.SET_FULL_NAME || '').trim();
+
+// SERIES_SLUG_MAP: guards against GitHub Actions passing empty string for ME sets
+const SERIES_SLUG_MAP_CP = {
+  'me01': 'mega-evolution', 'me02': 'mega-evolution',
+  'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
+  'me03': 'mega-evolution',
+};
+// .trim() guards against GitHub Actions passing empty string instead of omitting the var
+const SET_SERIES      = (process.env.SET_SERIES || '').trim()
+  || (SET_ID?.startsWith('me') ? 'Mega Evolution' : 'Scarlet & Violet');
+const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
+  || SERIES_SLUG_MAP_CP[SET_ID]
+  || 'scarlet-violet';
 // SET_SLUG = URL path segment, e.g. "base-set" or "stellar-crown"
-const SET_SLUG        = process.env.SET_SLUG;
+const SET_SLUG        = (process.env.SET_SLUG || '').trim();
 // SET_SLUG_FULL = HTML filename slug, e.g. "mega-evolution-base-set-card-list"
-const SET_SLUG_FULL   = process.env.SET_SLUG_FULL   || `${SET_SLUG}-card-list`;
-const TCGP_GROUP_ID   = process.env.TCGP_GROUP_ID   || '';
-const R2_PUBLIC_URL   = process.env.CF_R2_PUBLIC_URL || '';
+const SET_SLUG_FULL   = (process.env.SET_SLUG_FULL || '').trim() || `${SET_SLUG}-card-list`;
+const TCGP_GROUP_ID   = (process.env.TCGP_GROUP_ID || '').trim();
+const R2_PUBLIC_URL   = (process.env.CF_R2_PUBLIC_URL || '').trim();
 const SITE_URL        = 'https://tcgwatchtower.com';
 
 const TCGP_SLUG_MAP = {
