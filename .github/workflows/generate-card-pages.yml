@@ -40,6 +40,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clean old generated pages
+        run: |
+          SET_SERIES_SLUG="${{ github.event.inputs.set_series_slug || 'scarlet-violet' }}"
+          SET_SLUG="${{ github.event.inputs.set_slug }}"
+          DIR="pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}"
+          if [ -d "$DIR" ]; then
+            echo "🗑️ Removing old pages at $DIR"
+            rm -rf "$DIR"
+          else
+            echo "No existing pages found at $DIR"
+          fi
+
       - name: Generate card pages
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
