@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product",
-      "destination": "/paldea-evolved-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
       "destination": "/obsidian-flames-card-list.html"
     },
@@ -63,14 +59,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards",
-      "destination": "/paldea-evolved-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product",
-      "destination": "/paldea-evolved-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/obsidian-flames/cards",
@@ -3311,6 +3299,1138 @@
     {
       "source": "/pokemon/sets/scarlet-violet/base-set/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/base-set/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards",
+      "destination": "/paldea-evolved-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product",
+      "destination": "/paldea-evolved-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hoppip-001",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hoppip-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skiploom-002",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skiploom-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jumpluff-003",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jumpluff-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pineco-004",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pineco-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/forretress-ex-005",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/forretress-ex-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/heracross-006",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/heracross-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tropius-007",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tropius-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/combee-008",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/combee-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/vespiquen-009",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/vespiquen-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/snover-010",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/snover-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/abomasnow-011",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/abomasnow-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-012",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-013",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/floragato-014",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/floragato-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-015",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tarountula-016",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tarountula-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tarountula-017",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tarountula-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/spidops-018",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/spidops-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nymble-019",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nymble-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nymble-020",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nymble-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lokix-021",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lokix-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-022",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-023",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/brambleghast-024",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/brambleghast-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rellor-025",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rellor-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rellor-026",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rellor-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-027",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-028",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchinder-029",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchinder-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/talonflame-030",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/talonflame-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/litleo-031",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/litleo-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pyroar-032",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pyroar-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/oricorio-033",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/oricorio-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-034",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-035",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/crocalor-036",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/crocalor-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-037",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/charcadet-038",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/charcadet-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/charcadet-039",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/charcadet-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-040",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-041",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magikarp-042",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magikarp-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gyarados-043",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gyarados-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/marill-044",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/marill-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/azumarill-045",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/azumarill-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/delibird-046",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/delibird-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luvdisc-047",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luvdisc-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/eiscue-048",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/eiscue-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-049",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-050",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxwell-051",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxwell-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-052",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetoddle-053",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetoddle-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetoddle-054",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetoddle-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetitan-055",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cetitan-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/veluza-056",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/veluza-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-057",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-058",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/arctibax-059",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/arctibax-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/baxcalibur-060",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/baxcalibur-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-061",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pikachu-062",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pikachu-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pikachu-ex-063",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pikachu-ex-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/raichu-064",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/raichu-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magnemite-065",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magnemite-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/voltorb-066",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/voltorb-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/electrode-067",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/electrode-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shinx-068",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shinx-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shinx-069",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shinx-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luxio-070",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luxio-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luxray-071",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luxray-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pincurchin-072",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pincurchin-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pincurchin-073",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pincurchin-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmi-074",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmi-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmo-075",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmo-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmot-076",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pawmot-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tadbulb-077",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tadbulb-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tadbulb-078",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tadbulb-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bellibolt-ex-079",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bellibolt-ex-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wattrel-080",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wattrel-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wattrel-081",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wattrel-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/kilowattrel-082",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/kilowattrel-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jigglypuff-083",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jigglypuff-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wigglytuff-084",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wigglytuff-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowpoke-085",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowpoke-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowking-ex-086",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowking-ex-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/misdreavus-087",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/misdreavus-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mismagius-088",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mismagius-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/spiritomb-089",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/spiritomb-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothita-090",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothita-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothorita-091",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothorita-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothitelle-092",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothitelle-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dedenne-ex-093",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dedenne-ex-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/oranguru-094",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/oranguru-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sandygast-095",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sandygast-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/palossand-096",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/palossand-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mimikyu-097",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mimikyu-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ceruledge-098",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ceruledge-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rabsca-099",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rabsca-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-100",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-101",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-102",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-103",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-104",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-105",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mankey-106",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mankey-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/primeape-107",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/primeape-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-108",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sudowoodo-109",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sudowoodo-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/larvitar-110",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/larvitar-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pupitar-111",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pupitar-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/makuhita-112",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/makuhita-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hariyama-113",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hariyama-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/croagunk-114",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/croagunk-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/toxicroak-115",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/toxicroak-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rockruff-116",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rockruff-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lycanroc-ex-117",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lycanroc-ex-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/passimian-118",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/passimian-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falinks-119",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falinks-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-120",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-121",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/naclstack-122",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/naclstack-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/garganacl-123",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/garganacl-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmet-124",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmet-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmet-125",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmet-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmora-126",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/glimmora-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-127",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-128",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-129",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-clodsire-ex-130",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-clodsire-ex-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/murkrow-131",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/murkrow-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/honchkrow-132",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/honchkrow-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sneasel-133",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sneasel-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/weavile-134",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/weavile-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tyranitar-135",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tyranitar-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sableye-136",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sableye-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/seviper-137",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/seviper-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/deino-138",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/deino-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/zweilous-139",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/zweilous-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hydreigon-140",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/hydreigon-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maschiff-141",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maschiff-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maschiff-142",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maschiff-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mabosstiff-143",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mabosstiff-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shroodle-144",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shroodle-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shroodle-145",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/shroodle-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grafaiai-146",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grafaiai-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bombirdier-147",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bombirdier-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/corviknight-148",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/corviknight-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cufant-149",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/cufant-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/copperajah-ex-150",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/copperajah-ex-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/orthworm-151",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/orthworm-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noibat-152",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noibat-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noivern-ex-153",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noivern-ex-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/girafarig-154",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/girafarig-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/farigiraf-155",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/farigiraf-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dunsparce-156",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dunsparce-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dudunsparce-157",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dudunsparce-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wingull-158",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wingull-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pelipper-159",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pelipper-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slakoth-160",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slakoth-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/vigoroth-161",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/vigoroth-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slaking-162",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slaking-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchling-163",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchling-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rookidee-164",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rookidee-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/corvisquire-165",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/corvisquire-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tandemaus-166",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tandemaus-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tandemaus-167",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tandemaus-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maushold-168",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maushold-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-169",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/flamigo-170",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/flamigo-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/artazon-171",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/artazon-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-172",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bravery-charm-173",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bravery-charm-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/calamitous-snowy-mountain-174",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/calamitous-snowy-mountain-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/calamitous-wasteland-175",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/calamitous-wasteland-175.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/choice-belt-176",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/choice-belt-176.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/clavell-177",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/clavell-177.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/delivery-drone-178",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/delivery-drone-178.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-179",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-179.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falkner-180",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falkner-180.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fighting-au-lait-181",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fighting-au-lait-181.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-182",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-182.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/great-ball-183",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/great-ball-183.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-184",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-184.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-185",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-185.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/practice-studio-186",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/practice-studio-186.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-187",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-187.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/super-rod-188",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/super-rod-188.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/superior-energy-retrieval-189",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/superior-energy-retrieval-189.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jet-energy-190",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/jet-energy-190.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luminous-energy-191",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/luminous-energy-191.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/reversal-energy-192",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/reversal-energy-192.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/therapeutic-energy-193",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/therapeutic-energy-193.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/heracross-194",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/heracross-194.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tropius-195",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tropius-195.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-196",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sprigatito-196.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/floragato-197",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/floragato-197.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-198",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bramblin-198.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchinder-199",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fletchinder-199.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pyroar-200",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/pyroar-200.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-201",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/fuecoco-201.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/crocalor-202",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/crocalor-202.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magikarp-203",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/magikarp-203.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/marill-204",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/marill-204.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/eiscue-205",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/eiscue-205.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-206",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxly-206.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxwell-207",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaxwell-207.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-208",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/frigibax-208.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/arctibax-209",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/arctibax-209.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/baxcalibur-210",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/baxcalibur-210.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/raichu-211",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/raichu-211.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mismagius-212",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/mismagius-212.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothorita-213",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/gothorita-213.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sandygast-214",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sandygast-214.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rabsca-215",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rabsca-215.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-216",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatink-216.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-217",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkatuff-217.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-218",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-tauros-218.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sudowoodo-219",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/sudowoodo-219.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-220",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/nacli-220.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-221",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-wooper-221.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tyranitar-222",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tyranitar-222.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grafaiai-223",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grafaiai-223.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/orthworm-224",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/orthworm-224.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rookidee-225",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/rookidee-225.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maushold-226",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/maushold-226.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/flamigo-227",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/flamigo-227.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/farigiraf-228",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/farigiraf-228.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dudunsparce-229",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dudunsparce-229.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/forretress-ex-230",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/forretress-ex-230.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-231",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-231.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-232",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-232.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-233",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-233.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-234",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-234.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-235",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-235.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-236",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-236.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bellibolt-ex-237",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bellibolt-ex-237.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowking-ex-238",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/slowking-ex-238.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dedenne-ex-239",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dedenne-ex-239.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-ex-240",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-ex-240.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lycanroc-ex-241",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/lycanroc-ex-241.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/annihilape-ex-242",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/annihilape-ex-242.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-243",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-243.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-clodsire-ex-244",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/paldean-clodsire-ex-244.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/copperajah-ex-245",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/copperajah-ex-245.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noivern-ex-246",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/noivern-ex-246.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-247",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-247.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-248",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-248.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/clavell-249",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/clavell-249.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-250",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-250.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falkner-251",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/falkner-251.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-252",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-252.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-253",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-253.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-254",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-254.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-255",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-255.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-256",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-256.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-257",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/wo-chien-ex-257.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-258",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-258.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-259",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chi-yu-ex-259.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-260",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-260.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-261",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-261.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-ex-262",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/tinkaton-ex-262.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-263",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-263.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-264",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/squawkabilly-ex-264.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-265",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/bosss-orders-265.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-266",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/dendra-266.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-267",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/giacomo-267.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-268",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/grusha-268.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-269",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/iono-269.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-270",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/saguaro-270.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-271",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/meowscarada-ex-271.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-272",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/skeledirge-ex-272.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-273",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/quaquaval-ex-273.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-274",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/chien-pao-ex-274.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-275",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/ting-lu-ex-275.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/super-rod-276",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/super-rod-276.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/superior-energy-retrieval-277",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/superior-energy-retrieval-277.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/basic-grass-energy-278",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/basic-grass-energy-278.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/basic-water-energy-279",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards/basic-water-energy-279.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/paldea-evolved/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/top-chase-cards.html"
     }
   ],
   "redirects": [
