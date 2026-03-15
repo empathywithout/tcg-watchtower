@@ -1,17 +1,21 @@
 // scripts/sync-images.js
 // Downloads card images + full card metadata for a set, uploads everything to Cloudflare R2
-// After this runs: images at /cards/{setId}/{localId}.webp
+// After this runs: images at /cards/{setId}/{localId}.webp  (resized to 400×557px for perf)
 //                  metadata at /data/{setId}.json
 
 import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 
 const SET_ID = process.env.SET_ID;
 if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
+// Card display dimensions on the page: 200×279px (card list), 200×279px (chase cards)
+// We store at 2× for retina: 400×557px
+// This is ~1/4 the area of the original 600×825px = ~4× smaller file size
+const CARD_WIDTH  = 400;
+const CARD_HEIGHT = 557;
+
 // TCGdex uses dot-notation IDs internally (sv03.5) but our workflow uses pt-notation (sv3pt5)
-// Map our IDs to the correct TCGdex set overview IDs
-// TCGdex uses dot-notation for special sets (sv03.5 not sv3pt5)
-// These IDs are used for BOTH the API endpoint and asset URLs
 const TCGDEX_ID_MAP = {
   'sv3pt5': 'sv03.5',
   'sv4pt5': 'sv04.5',
@@ -20,7 +24,7 @@ const TCGDEX_ID_MAP = {
 };
 const TCGDEX_SET_ID_RESOLVED = TCGDEX_ID_MAP[SET_ID] || SET_ID;
 const TCGDEX_SET_OVERVIEW_ID = TCGDEX_SET_ID_RESOLVED;
-const TCGDEX_CARD_ID_PREFIX  = TCGDEX_SET_ID_RESOLVED; // card IDs use resolved ID e.g. sv03.5-1
+const TCGDEX_CARD_ID_PREFIX  = TCGDEX_SET_ID_RESOLVED;
 const TCGDEX_ASSET_ID        = TCGDEX_SET_ID_RESOLVED;
 
 const s3 = new S3Client({
@@ -53,6 +57,16 @@ async function downloadImage(url) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return Buffer.from(await res.arrayBuffer());
   } finally { clearTimeout(timeout); }
+}
+
+async function resizeCardImage(buffer) {
+  return sharp(buffer)
+    .resize(CARD_WIDTH, CARD_HEIGHT, {
+      fit: "inside",        // preserve aspect ratio, don't crop
+      withoutEnlargement: true, // don't upscale if already smaller
+    })
+    .webp({ quality: 85 }) // re-encode as WebP quality 85
+    .toBuffer();
 }
 
 async function fetchWithRetry(url, attempts = 3) {
@@ -89,7 +103,6 @@ async function main() {
     const brief = briefCards[i];
     process.stdout.write(`[${i + 1}/${briefCards.length}] ${brief.name}... `);
     try {
-      // Use the card's own id if available (e.g. sv3pt5-1), otherwise construct it
       const cardId = brief.id || `${TCGDEX_CARD_ID_PREFIX}-${brief.localId}`;
       const card = await fetchWithRetry(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
       fullCards.push({
@@ -103,14 +116,12 @@ async function main() {
       console.log(`⚠️  metadata failed: ${err.message}`);
       fullCards.push({ localId: brief.localId, name: brief.name, rarity: null, image: brief.image ? `${brief.image}/high.webp` : null });
     }
-    await sleep(100); // be polite to TCGdex
+    await sleep(100);
   }
 
   // Step 3 — Download and upload set logo
   console.log(`\n🎨 Uploading set logo to R2...`);
   const logoR2Key = `logos/${SET_ID}.png`;
-  
-  // Try TCGdex URLs in order (primary + stripped-zero fallback)
   const logoBase = setData.logo || `https://assets.tcgdex.net/en/sv/${TCGDEX_ASSET_ID}/logo`;
   const logoUrl = logoBase.replace(/\.png$|\.webp$|\.jpg$/, '') + '.png';
   const strippedId = TCGDEX_ASSET_ID.replace(/^sv0(\d)$/, 'sv$1');
@@ -147,8 +158,8 @@ async function main() {
   );
   console.log(`✅ Metadata saved to R2 at data/${SET_ID}.json`);
 
-  // Step 5 — Download and upload card images
-  console.log(`\n🖼️  Uploading card images to R2...`);
+  // Step 5 — Download, resize, and upload card images
+  console.log(`\n🖼️  Uploading card images to R2 (resized to ${CARD_WIDTH}×${CARD_HEIGHT}px)...`);
   let uploaded = 0, skipped = 0, failed = 0;
   const failures = [];
 
@@ -166,8 +177,10 @@ async function main() {
     let success = false;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        await uploadToR2(r2Key, await downloadImage(imageUrl), "image/webp");
-        console.log(`✅`); uploaded++; success = true; break;
+        const original = await downloadImage(imageUrl);
+        const resized  = await resizeCardImage(original);
+        await uploadToR2(r2Key, resized, "image/webp");
+        console.log(`✅ (resized)`); uploaded++; success = true; break;
       } catch (err) {
         if (attempt < 3) { process.stdout.write(`⚠️  retry... `); await sleep(2000 * attempt); }
         else { console.log(`❌ ${err.message}`); failures.push(localId); failed++; }
