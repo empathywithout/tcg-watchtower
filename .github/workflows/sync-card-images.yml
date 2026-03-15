@@ -84,7 +84,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @aws-sdk/client-s3
+        run: npm install @aws-sdk/client-s3 sharp
 
       - name: Sync card images to R2
         env:
