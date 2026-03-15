@@ -1,4 +1,3 @@
-
 /**
  * generate-card-pages.js
  * Generates individual HTML pages for every card in a set.
@@ -13,15 +12,25 @@
  *   TCGP_GROUP_ID=23537 \
  *   node scripts/generate-card-pages.js
  *
- * Mega Evolution example:
- *   SET_ID=me1 \
- *   SET_FULL_NAME="Mega Evolution" \
- *   SET_SERIES="Mega Evolution" \
- *   SET_SERIES_SLUG="mega-evolution" \
- *   SET_SLUG="mega-evolution-base-set" \
- *   SET_SLUG_FULL="mega-evolution-base-set-card-list" \
- *   TCGP_GROUP_ID=24380 \
+ * Mega Evolution examples:
+ *   SET_ID=me01 SET_FULL_NAME="Mega Evolution" SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" SET_SLUG="base-set" \
+ *   SET_SLUG_FULL="mega-evolution-base-set-card-list" TCGP_GROUP_ID=24380 \
  *   node scripts/generate-card-pages.js
+ *
+ *   SET_ID=me02 SET_FULL_NAME="Phantasmal Flames" SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" SET_SLUG="phantasmal-flames" \
+ *   SET_SLUG_FULL="phantasmal-flames-card-list" TCGP_GROUP_ID=24448 \
+ *   node scripts/generate-card-pages.js
+ *
+ *   SET_ID=me02pt5 SET_FULL_NAME="Ascended Heroes" SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" SET_SLUG="ascended-heroes" \
+ *   SET_SLUG_FULL="ascended-heroes-card-list" TCGP_GROUP_ID=24541 \
+ *   node scripts/generate-card-pages.js
+ *
+ * NOTE: SET_SLUG is the URL path segment (e.g. "base-set", "stellar-crown").
+ *       SET_SLUG_FULL is the HTML filename without .html (e.g. "mega-evolution-base-set-card-list").
+ *       These can differ for sets like me01 where the URL slug is shorter than the filename.
  */
 
 import fs from 'fs';
@@ -35,32 +44,33 @@ const SET_ID          = process.env.SET_ID;
 const SET_FULL_NAME   = process.env.SET_FULL_NAME;
 const SET_SERIES      = process.env.SET_SERIES      || 'Scarlet & Violet';
 const SET_SERIES_SLUG = process.env.SET_SERIES_SLUG || 'scarlet-violet';
+// SET_SLUG = URL path segment, e.g. "base-set" or "stellar-crown"
 const SET_SLUG        = process.env.SET_SLUG;
+// SET_SLUG_FULL = HTML filename slug, e.g. "mega-evolution-base-set-card-list"
 const SET_SLUG_FULL   = process.env.SET_SLUG_FULL   || `${SET_SLUG}-card-list`;
 const TCGP_GROUP_ID   = process.env.TCGP_GROUP_ID   || '';
 const R2_PUBLIC_URL   = process.env.CF_R2_PUBLIC_URL || '';
 const SITE_URL        = 'https://tcgwatchtower.com';
 
-// FIX: me01 key corrected to me1 (matching actual SET_ID format),
-// and me2/me3 added for Phantasmal Flames and Perfect Order
 const TCGP_SLUG_MAP = {
-  'sv01':   'sv01-scarlet-and-violet-base-set',
-  'sv02':   'sv02-paldea-evolved',
-  'sv03':   'sv03-obsidian-flames',
-  'sv3pt5': 'sv3pt5-151',
-  'sv04':   'sv04-paradox-rift',
-  'sv4pt5': 'sv4pt5-paldean-fates',
-  'sv05':   'sv05-temporal-forces',
-  'sv06':   'sv06-twilight-masquerade',
-  'sv6pt5': 'sv6pt5-shrouded-fable',
-  'sv07':   'sv07-stellar-crown',
-  'sv08':   'sv08-surging-sparks',
-  'sv8pt5': 'sv8pt5-prismatic-evolutions',
-  'sv09':   'sv09-journey-together',
-  'sv10':   'sv10-destined-rivals',
+  'sv01':    'sv01-scarlet-and-violet-base-set',
+  'sv02':    'sv02-paldea-evolved',
+  'sv03':    'sv03-obsidian-flames',
+  'sv3pt5':  'sv3pt5-151',
+  'sv04':    'sv04-paradox-rift',
+  'sv4pt5':  'sv4pt5-paldean-fates',
+  'sv05':    'sv05-temporal-forces',
+  'sv06':    'sv06-twilight-masquerade',
+  'sv6pt5':  'sv6pt5-shrouded-fable',
+  'sv07':    'sv07-stellar-crown',
+  'sv08':    'sv08-surging-sparks',
+  'sv8pt5':  'sv8pt5-prismatic-evolutions',
+  'sv09':    'sv09-journey-together',
+  'sv10':    'sv10-destined-rivals',
   'me01':    'me01-mega-evolution',
   'me02':    'me02-phantasmal-flames',
   'me02.5':  'me-ascended-heroes',
+  'me02pt5': 'me-ascended-heroes',
   'me03':    'me03-perfect-order',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
@@ -80,9 +90,11 @@ const metadata = await res.json();
 const cards = metadata.cards || [];
 console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 console.log(`🔗 TCGplayer slug: ${TCGP_SET_SLUG} (SET_ID=${SET_ID})`);
+console.log(`📁 URL path: /pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
+console.log(`📄 File slug: ${SET_SLUG_FULL}.html`);
 
 // ─── Output directory ────────────────────────────────────────────────────────
-
+// Uses SET_SLUG (URL slug) for the directory path, not SET_SLUG_FULL
 const outDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG, 'cards');
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -139,19 +151,12 @@ const CARD_WILDCARD = {
   destination: '/pokemon/sets/:series/:set/cards/:slug.html',
 };
 
-/**
- * Read vercel.json, apply a mutation, write it back.
- * The wildcard is always stripped before mutating and re-appended last,
- * so it can never end up stranded mid-array no matter how many times
- * the script runs.
- */
 function updateVercel(mutate) {
   const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
   vercel.rewrites = vercel.rewrites || [];
-  // Strip wildcard so mutate() never has to worry about it
+  vercel.redirects = vercel.redirects || [];
   vercel.rewrites = vercel.rewrites.filter(r => r.source !== CARD_WILDCARD.source);
   mutate(vercel);
-  // Always pin wildcard last
   vercel.rewrites.push(CARD_WILDCARD);
   fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 }
@@ -318,18 +323,15 @@ ${sharedNav}
 ${breadcrumb(`${card.name} #${card.localId}`)}
 <div class="container">
   <div class="card-layout">
-
     <div class="card-image-wrap">
       <img src="${img}" alt="${card.name} #${card.localId} ${SET_FULL_NAME}" width="400" height="557"
            fetchpriority="high" onerror="this.style.background='#1e293b';this.style.aspectRatio='3/4'">
     </div>
-
     <div>
       <div class="card-name">${card.name}</div>
       <div class="card-meta">
         #${card.localId} · <a href="${cardListUrl}">${SET_FULL_NAME}</a> · ${SET_SERIES}
       </div>
-
       <div class="price-box">
         <div class="price-label">Market Price</div>
         <div class="price-value price-loading" id="card-price">Loading...</div>
@@ -338,7 +340,6 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
           <span id="price-updated">Updating...</span>
         </div>
       </div>
-
       <div class="info-table">
         <div class="info-row"><div class="info-key">Card Name</div><div class="info-val">${card.name}</div></div>
         <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${card.localId} / ${metadata.cardCount?.official || '?'}</div></div>
@@ -346,7 +347,6 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
         <div class="info-row"><div class="info-key">Series</div><div class="info-val"><a href="${seriesUrl}" style="color:var(--accent)">${SET_SERIES}</a></div></div>
         <div class="info-row"><div class="info-key">Rarity</div><div class="info-val"><span class="rarity-badge">${card.rarity || 'Unknown'}</span></div></div>
       </div>
-
       <div class="buy-buttons">
         <a class="btn btn-tcgp" href="${tcgpSearchUrl(card)}" target="_blank" rel="noopener">
           <span>Buy on TCGplayer</span><span>→</span>
@@ -355,14 +355,12 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
           <span>Find on eBay</span><span>→</span>
         </a>
       </div>
-
       <div class="section-title">About This Card</div>
       <p class="card-description">
         ${card.name} #${card.localId} is a${card.rarity ? ` <strong>${card.rarity}</strong>` : ''} card from the <strong>${SET_FULL_NAME}</strong> expansion of the Pokémon Trading Card Game.
         It is part of the ${SET_SERIES} series${card.rarity && card.rarity.toLowerCase().includes('rare') ? ', making it one of the harder cards to pull from a booster pack' : ''}.
         ${card.rarity && (card.rarity.toLowerCase().includes('ultra') || card.rarity.toLowerCase().includes('hyper') || card.rarity.toLowerCase().includes('special illustration')) ? 'As a high-rarity card, it is a sought-after collectible.' : ''}
       </p>
-
       ${related.length > 0 ? `
       <div class="section-title">Related Cards from ${SET_FULL_NAME}</div>
       <div class="related-grid">
@@ -376,7 +374,6 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
           </div>
         </a>`).join('')}
       </div>` : ''}
-
       <div class="set-block">
         <div class="set-block-title">${SET_FULL_NAME}</div>
         <div class="set-links">
@@ -385,19 +382,15 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
           <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product">📦 Sealed Product Prices →</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
 <footer>
   <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.</p>
 </footer>
-
 <script>
 const GROUP_ID = '${TCGP_GROUP_ID}';
 const LOCAL_ID = '${card.localId}';
-
 async function loadPrice() {
   if (!GROUP_ID) return;
   try {
@@ -426,7 +419,6 @@ async function loadPrice() {
     document.getElementById('card-price').textContent = 'N/A';
   }
 }
-
 loadPrice();
 </script>
 ${impactScript}

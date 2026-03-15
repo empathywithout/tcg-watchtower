@@ -17,6 +17,10 @@
       "destination": "/sets.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution",
+      "destination": "/sets.html"
+    },
+    {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/cards",
       "destination": "/scarlet-violet-base-card-list.html"
     },
@@ -289,20 +293,20 @@
       "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/cards",
+      "source": "/pokemon/sets/mega-evolution/base-set/cards",
       "destination": "/mega-evolution-base-set-card-list.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/sealed-product",
+      "source": "/pokemon/sets/mega-evolution/base-set/sealed-product",
       "destination": "/mega-evolution-base-set-card-list.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/mega-evolution-base-set/most-valuable.html"
+      "source": "/pokemon/sets/mega-evolution/base-set/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/base-set/most-valuable.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/mega-evolution-base-set/top-chase-cards.html"
+      "source": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
@@ -312,72 +316,97 @@
   "redirects": [
     {
       "source": "/scarlet-violet-base-set-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/base-set/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/base-set/cards",
       "permanent": true
     },
     {
       "source": "/paldea-evolved-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/cards",
       "permanent": true
     },
     {
       "source": "/obsidian-flames-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/cards",
       "permanent": true
     },
     {
       "source": "/paradox-rift-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/cards",
       "permanent": true
     },
     {
       "source": "/scarlet-violet-151-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/151/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards",
       "permanent": true
     },
     {
       "source": "/paldean-fates-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/paldean-fates/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
       "permanent": true
     },
     {
       "source": "/temporal-forces-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/cards",
       "permanent": true
     },
     {
       "source": "/twilight-masquerade-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/twilight-masquerade/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/twilight-masquerade/cards",
       "permanent": true
     },
     {
       "source": "/shrouded-fable-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/cards",
       "permanent": true
     },
     {
       "source": "/stellar-crown-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/stellar-crown/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/stellar-crown/cards",
       "permanent": true
     },
     {
       "source": "/surging-sparks-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/surging-sparks/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/surging-sparks/cards",
       "permanent": true
     },
     {
       "source": "/prismatic-evolutions-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/prismatic-evolutions/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/prismatic-evolutions/cards",
       "permanent": true
     },
     {
       "source": "/journey-together-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/journey-together/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/journey-together/cards",
       "permanent": true
     },
     {
       "source": "/destined-rivals-card-list",
-      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/card-list",
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
+      "permanent": true
+    },
+    {
+      "source": "/mega-evolution-base-set-card-list",
+      "destination": "/pokemon/sets/mega-evolution/base-set/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/cards",
+      "destination": "/pokemon/sets/mega-evolution/base-set/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/base-set/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/base-set/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
       "permanent": true
     },
     {
