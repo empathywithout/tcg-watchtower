@@ -334,7 +334,7 @@ nav {
 }
 .chase-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(168,85,247,0.3); }
 .chase-card-img {
-  width:100%; height:280px; object-fit:contain;
+  width:100%; aspect-ratio:245/337; object-fit:contain;
   background:rgba(15,23,42,0.5);
   display:block; flex-shrink:0;
 }
@@ -474,7 +474,7 @@ nav {
   transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
 }
 .card-item:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(0,0,0,0.5); border-color:rgba(59,130,246,0.3); }
-.card-item img { width:100%; height:260px; display:block; object-fit:contain; background:rgba(15,23,42,0.85); padding:4px 4px 0; }
+.card-item img { width:100%; aspect-ratio:245/337; display:block; object-fit:contain; background:rgba(15,23,42,0.85); }
 .card-item-info { padding:8px; }
 .card-item-name { font-size:0.75rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .card-item-num { font-size:0.65rem; color:var(--text-muted); font-family:'Space Mono',monospace; }
@@ -1343,6 +1343,12 @@ function renderChaseCards(cards) {
   renderChaseCardsHTML(grid);
 }
 
+
+function handleChaseClick(el) {
+  const du = priceCache[el.dataset.id]?.url || null;
+  openModal(el.dataset.id, el.dataset.name, el.dataset.rarity, el.dataset.search, el.dataset.img, du);
+}
+
 function renderChaseCardsHTML(grid) {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
@@ -1359,7 +1365,13 @@ function renderChaseCardsHTML(grid) {
       ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
-    <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
+    <div class="chase-card"
+      data-id="${c.id}"
+      data-name="${c.name.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
+      data-rarity="${c.rarity}"
+      data-search="${c.searchName.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
+      data-img="${c.img}"
+      onclick="handleChaseClick(this)">
       <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Paradox Rift (SV4) Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
