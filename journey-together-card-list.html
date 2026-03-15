@@ -334,7 +334,7 @@ nav {
 }
 .chase-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(168,85,247,0.3); }
 .chase-card-img {
-  width:100%; aspect-ratio:2.5/3.5; object-fit:contain;
+  width:100%; aspect-ratio:2.5/3.5; object-fit:cover;
   background:rgba(15,23,42,0.5);
   display:block; flex-shrink:0;
 }
@@ -474,7 +474,7 @@ nav {
   transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
 }
 .card-item:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,0,0,0.4); border-color:rgba(59,130,246,0.3); }
-.card-item img { width:100%; display:block; aspect-ratio:2.5/3.5; object-fit:contain; background:#0f172a; }
+.card-item img { width:100%; display:block; aspect-ratio:2.5/3.5; object-fit:cover; background:#0f172a; }
 .card-item-info { padding:8px; }
 .card-item-name { font-size:0.75rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .card-item-num { font-size:0.65rem; color:var(--text-muted); font-family:'Space Mono',monospace; }
@@ -509,8 +509,8 @@ nav {
   transition:background 0.2s; z-index:10;
 }
 .modal-close:hover { background:rgba(255,255,255,0.15); }
-.modal-inner { display:grid; grid-template-columns:340px 1fr; gap:32px; padding:36px; align-items:start; }
-.modal-img { width:100%; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+.modal-inner { display:grid; grid-template-columns:380px 1fr; gap:32px; padding:36px; align-items:start; }
+.modal-img { width:100%; aspect-ratio:2.5/3.5; object-fit:contain; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
 .modal-name { font-size:1.3rem; font-weight:700; margin-bottom:6px; }
 .modal-meta { font-size:0.85rem; color:var(--text-muted); margin-bottom:4px; font-family:'Space Mono',monospace; }
 .modal-links { margin-top:16px; display:flex; flex-direction:column; gap:10px; }
@@ -835,7 +835,7 @@ footer {
   .section-title { font-size:2rem; }
   .set-stats { grid-template-columns:repeat(2,1fr); }
   .modal-inner { grid-template-columns:1fr; }
-  .modal-img { max-width:320px; margin:0 auto; display:block; }
+  .modal-img { max-width:380px; margin:0 auto; display:block; aspect-ratio:2.5/3.5; object-fit:contain; }
   .card-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
   .sets-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -1689,7 +1689,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg('sv09', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
-    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" width="400" height="557" loading="lazy">
+    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy">
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / Journey Together (SV9)</div>
