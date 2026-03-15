@@ -110,50 +110,5 @@
     "short": "SV10",
     "setId": "sv10",
     "live": true
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/mega-evolution-base-set/cards",
-    "name": "Mega Evolution (ME1)",
-    "series": "Mega Evolution",
-    "short": "ME1",
-    "setId": "me01",
-    "live": true,
-    "releaseDate": "Sep 26, 2025"
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/phantasmal-flames/cards",
-    "name": "Phantasmal Flames (ME2)",
-    "series": "Mega Evolution",
-    "short": "ME2",
-    "setId": "me02",
-    "live": true,
-    "releaseDate": "Nov 14, 2025"
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
-    "name": "Ascended Heroes",
-    "series": "Mega Evolution",
-    "short": "ASC",
-    "setId": "meah",
-    "live": true,
-    "releaseDate": "Jan 30, 2026"
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/perfect-order/cards",
-    "name": "Perfect Order (ME3)",
-    "series": "Mega Evolution",
-    "short": "ME3",
-    "setId": "me03",
-    "live": true,
-    "releaseDate": "Mar 27, 2026"
-  },
-  {
-    "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
-    "name": "Chaos Rising (ME4)",
-    "series": "Mega Evolution",
-    "short": "ME4",
-    "setId": "me04",
-    "live": false,
-    "releaseDate": "May 22, 2026"
   }
 ]
