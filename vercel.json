@@ -5,10 +5,6 @@
       "destination": "/paradox-rift-card-list.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/151/sealed-product",
-      "destination": "/scarlet-violet-151-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
       "destination": "/paldean-fates-card-list.html"
     },
@@ -63,14 +59,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
       "destination": "/paradox-rift-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/151/cards",
-      "destination": "/scarlet-violet-151-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/151/sealed-product",
-      "destination": "/scarlet-violet-151-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/cards",
@@ -6199,6 +6187,850 @@
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/scarlet-violet-151/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards",
+      "destination": "/scarlet-violet-151-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/sealed-product",
+      "destination": "/scarlet-violet-151-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/bulbasaur-001",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/bulbasaur-001.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ivysaur-002",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ivysaur-002.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-003",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-003.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charmander-004",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charmander-004.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charmeleon-005",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charmeleon-005.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-006",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-006.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/squirtle-007",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/squirtle-007.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/wartortle-008",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/wartortle-008.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-009",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-009.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/caterpie-010",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/caterpie-010.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/metapod-011",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/metapod-011.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/butterfree-012",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/butterfree-012.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/weedle-013",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/weedle-013.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kakuna-014",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kakuna-014.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/beedrill-015",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/beedrill-015.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pidgey-016",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pidgey-016.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pidgeotto-017",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pidgeotto-017.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pidgeot-018",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pidgeot-018.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/rattata-019",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/rattata-019.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/raticate-020",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/raticate-020.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/spearow-021",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/spearow-021.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/fearow-022",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/fearow-022.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ekans-023",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ekans-023.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/arbok-ex-024",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/arbok-ex-024.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pikachu-025",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pikachu-025.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/raichu-026",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/raichu-026.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/sandshrew-027",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/sandshrew-027.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/sandslash-028",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/sandslash-028.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidoran-029",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidoran-029.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidorina-030",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidorina-030.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidoqueen-031",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidoqueen-031.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidoran-032",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidoran-032.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidorino-033",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidorino-033.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidoking-034",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidoking-034.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/clefairy-035",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/clefairy-035.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/clefable-036",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/clefable-036.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/vulpix-037",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/vulpix-037.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ninetales-ex-038",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ninetales-ex-038.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/jigglypuff-039",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/jigglypuff-039.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/wigglytuff-ex-040",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/wigglytuff-ex-040.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/zubat-041",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/zubat-041.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/golbat-042",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/golbat-042.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/oddish-043",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/oddish-043.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/gloom-044",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/gloom-044.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/vileplume-045",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/vileplume-045.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/paras-046",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/paras-046.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/parasect-047",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/parasect-047.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/venonat-048",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/venonat-048.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/venomoth-049",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/venomoth-049.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/diglett-050",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/diglett-050.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dugtrio-051",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dugtrio-051.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/meowth-052",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/meowth-052.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/persian-053",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/persian-053.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/psyduck-054",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/psyduck-054.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/golduck-055",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/golduck-055.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mankey-056",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mankey-056.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/primeape-057",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/primeape-057.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/growlithe-058",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/growlithe-058.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/arcanine-059",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/arcanine-059.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/poliwag-060",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/poliwag-060.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/poliwhirl-061",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/poliwhirl-061.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/poliwrath-062",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/poliwrath-062.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/abra-063",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/abra-063.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kadabra-064",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kadabra-064.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-065",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-065.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/machop-066",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/machop-066.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/machoke-067",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/machoke-067.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/machamp-068",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/machamp-068.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/bellsprout-069",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/bellsprout-069.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/weepinbell-070",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/weepinbell-070.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/victreebel-071",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/victreebel-071.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/tentacool-072",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/tentacool-072.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/tentacruel-073",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/tentacruel-073.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/geodude-074",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/geodude-074.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/graveler-075",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/graveler-075.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/golem-ex-076",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/golem-ex-076.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ponyta-077",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ponyta-077.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/rapidash-078",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/rapidash-078.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/slowpoke-079",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/slowpoke-079.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/slowbro-080",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/slowbro-080.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/magnemite-081",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/magnemite-081.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/magneton-082",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/magneton-082.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/farfetchd-083",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/farfetchd-083.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/doduo-084",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/doduo-084.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dodrio-085",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dodrio-085.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/seel-086",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/seel-086.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dewgong-087",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dewgong-087.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/grimer-088",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/grimer-088.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/muk-089",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/muk-089.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/shellder-090",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/shellder-090.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/cloyster-091",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/cloyster-091.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/gastly-092",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/gastly-092.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/haunter-093",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/haunter-093.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/gengar-094",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/gengar-094.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/onix-095",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/onix-095.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/drowzee-096",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/drowzee-096.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/hypno-097",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/hypno-097.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/krabby-098",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/krabby-098.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kingler-099",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kingler-099.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/voltorb-100",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/voltorb-100.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/electrode-101",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/electrode-101.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/exeggcute-102",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/exeggcute-102.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/exeggutor-103",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/exeggutor-103.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/cubone-104",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/cubone-104.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/marowak-105",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/marowak-105.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/hitmonlee-106",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/hitmonlee-106.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/hitmonchan-107",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/hitmonchan-107.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/lickitung-108",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/lickitung-108.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/koffing-109",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/koffing-109.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/weezing-110",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/weezing-110.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/rhyhorn-111",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/rhyhorn-111.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/rhydon-112",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/rhydon-112.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/chansey-113",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/chansey-113.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/tangela-114",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/tangela-114.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kangaskhan-ex-115",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kangaskhan-ex-115.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/horsea-116",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/horsea-116.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/seadra-117",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/seadra-117.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/goldeen-118",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/goldeen-118.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/seaking-119",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/seaking-119.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/staryu-120",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/staryu-120.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/starmie-121",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/starmie-121.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mr-mime-122",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mr-mime-122.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/scyther-123",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/scyther-123.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/jynx-ex-124",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/jynx-ex-124.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/electabuzz-125",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/electabuzz-125.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/magmar-126",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/magmar-126.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pinsir-127",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pinsir-127.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/tauros-128",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/tauros-128.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/magikarp-129",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/magikarp-129.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/gyarados-130",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/gyarados-130.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/lapras-131",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/lapras-131.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ditto-132",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ditto-132.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/eevee-133",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/eevee-133.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/vaporeon-134",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/vaporeon-134.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/jolteon-135",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/jolteon-135.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/flareon-136",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/flareon-136.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/porygon-137",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/porygon-137.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/omanyte-138",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/omanyte-138.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/omastar-139",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/omastar-139.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kabuto-140",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kabuto-140.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kabutops-141",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kabutops-141.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/aerodactyl-142",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/aerodactyl-142.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/snorlax-143",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/snorlax-143.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/articuno-144",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/articuno-144.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-145",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-145.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/moltres-146",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/moltres-146.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dratini-147",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dratini-147.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dragonair-148",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dragonair-148.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dragonite-149",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dragonite-149.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mewtwo-150",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mewtwo-150.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-151",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-151.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/antique-dome-fossil-152",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/antique-dome-fossil-152.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/antique-helix-fossil-153",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/antique-helix-fossil-153.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/antique-old-amber-154",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/antique-old-amber-154.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/big-air-balloon-155",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/big-air-balloon-155.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/bills-transfer-156",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/bills-transfer-156.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/cycling-road-157",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/cycling-road-157.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/daisys-help-158",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/daisys-help-158.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/energy-sticker-159",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/energy-sticker-159.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-160",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-160.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-161",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-161.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/grabber-162",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/grabber-162.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/leftovers-163",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/leftovers-163.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/protective-goggles-164",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/protective-goggles-164.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/rigid-band-165",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/rigid-band-165.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/bulbasaur-166",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/bulbasaur-166.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ivysaur-167",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ivysaur-167.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charmander-168",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charmander-168.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charmeleon-169",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charmeleon-169.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/squirtle-170",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/squirtle-170.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/wartortle-171",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/wartortle-171.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/caterpie-172",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/caterpie-172.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/pikachu-173",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/pikachu-173.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/nidoking-174",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/nidoking-174.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/psyduck-175",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/psyduck-175.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/poliwhirl-176",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/poliwhirl-176.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/machoke-177",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/machoke-177.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/tangela-178",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/tangela-178.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mr-mime-179",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mr-mime-179.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/omanyte-180",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/omanyte-180.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/dragonair-181",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/dragonair-181.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-182",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-182.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-183",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-183.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-184",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-184.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/arbok-ex-185",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/arbok-ex-185.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/ninetales-ex-186",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/ninetales-ex-186.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/wigglytuff-ex-187",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/wigglytuff-ex-187.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-188",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-188.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/golem-ex-189",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/golem-ex-189.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/kangaskhan-ex-190",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/kangaskhan-ex-190.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/jynx-ex-191",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/jynx-ex-191.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-192",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-192.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-193",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-193.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/bills-transfer-194",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/bills-transfer-194.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/daisys-help-195",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/daisys-help-195.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-196",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-196.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-197",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-197.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-198",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/venusaur-ex-198.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-199",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/charizard-ex-199.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-200",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/blastoise-ex-200.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-201",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/alakazam-ex-201.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-202",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/zapdos-ex-202.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-203",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/erikas-invitation-203.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-204",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/giovannis-charisma-204.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-205",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/mew-ex-205.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/switch-206",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/switch-206.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/cards/basic-psychic-energy-207",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards/basic-psychic-energy-207.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/151/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/151/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/151/top-chase-cards.html"
     }
   ],
   "redirects": [
