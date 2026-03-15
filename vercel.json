@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
-      "destination": "/destined-rivals-card-list.html"
-    },
-    {
       "source": "/pokemon",
       "destination": "/sets.html"
     },
@@ -15,14 +11,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
-      "destination": "/destined-rivals-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
-      "destination": "/destined-rivals-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/cards",
@@ -273,16 +261,32 @@
       "destination": "/journey-together-card-list.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/journey-together/most-valuable",
       "destination": "/pokemon/sets/scarlet-violet/journey-together/most-valuable.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/journey-together/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/journey-together/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
+      "destination": "/destined-rivals-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
+      "destination": "/destined-rivals-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
     }
   ],
   "redirects": [
