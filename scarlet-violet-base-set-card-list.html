@@ -1801,6 +1801,18 @@ renderChaseCards();
 renderProducts();
 loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards are rendered
 
+/* ===== HASH SCROLL ===== */
+if (window.location.hash) {
+  const target = document.querySelector(window.location.hash);
+  if (target) {
+    setTimeout(() => {
+      const navHeight = document.getElementById('section-nav')?.offsetHeight || 60;
+      const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 300);
+  }
+}
+
 /* ===== HAMBURGER MENU ===== */
 (async function() {
   const hamburger = document.getElementById('hamburger');
