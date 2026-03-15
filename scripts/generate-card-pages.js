@@ -155,6 +155,7 @@ function generateCardPage(card, allCards) {
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="${img}" fetchpriority="high">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
@@ -252,7 +253,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 
 <nav>
   <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
     <span>TCG Watchtower</span>
   </a>
   <a href="${cardListUrl}" class="nav-back">← ${SET_FULL_NAME} Card List</a>
@@ -271,8 +272,8 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 
     <!-- LEFT: Card Image -->
     <div class="card-image-wrap">
-      <img src="${img}" alt="${card.name} #${card.localId} ${SET_FULL_NAME}" 
-           onerror="this.style.background='#1e293b';this.style.aspectRatio='3/4'">
+      <img src="${img}" alt="${card.name} #${card.localId} ${SET_FULL_NAME}" width="400" height="557"
+           fetchpriority="high" onerror="this.style.background='#1e293b';this.style.aspectRatio='3/4'">
     </div>
 
     <!-- RIGHT: Card Info -->
@@ -325,7 +326,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       <div class="related-grid">
         ${related.map(r => `
         <a class="related-card" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(r)}">
-          <img src="${R2_PUBLIC_URL}/cards/${SET_ID}/${r.localId}.webp" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
+          <img src="${R2_PUBLIC_URL}/cards/${SET_ID}/${r.localId}.webp" alt="${r.name} ${r.localId} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy" onerror="this.style.display='none'">
           <div class="related-card-info">
             <div class="related-card-name">${r.name}</div>
             <div class="related-card-num">#${r.localId}</div>
@@ -601,7 +602,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       return `
     <div class="card-item">
       <a href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardPageSlug}">
-        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'">
+        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME} Pokemon Card" width="180" height="251" loading="lazy" onerror="this.style.background='#1e293b'">
       </a>
       <div class="card-info">
         <div class="card-name">${c.name}</div>
@@ -810,7 +811,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
         const cardPageSlug = toSlug(c.name) + '-' + c.localId;
         return `
       <a class="card-item" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardPageSlug}">
-        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME}" loading="lazy">
+        <img src="${img}" alt="${c.name} ${c.localId} ${SET_FULL_NAME} Pokemon Card" width="150" height="209" loading="lazy">
         <div class="card-info">
           <div class="card-name">${c.name}</div>
           <div class="card-num">#${c.localId}</div>

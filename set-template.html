@@ -12,7 +12,7 @@
 
 <!-- eBay Partner Network -->
 <script>window._epn = {campaign: 5339145069};</script>
-<script src="https://epnt.ebay.com/static/epn-smart-tools.js"></script>
+<script src="https://epnt.ebay.com/static/epn-smart-tools.js" defer></script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,6 +100,8 @@
 </script>
 
 <!-- Fonts -->
+<link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
+<link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
@@ -1052,9 +1054,9 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_1}}" alt="{{HERO_ALT_1}}" loading="lazy">
-          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_2}}" alt="{{HERO_ALT_2}}" loading="lazy">
-          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_3}}" alt="{{HERO_ALT_3}}" loading="lazy">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_1}}" alt="{{HERO_ALT_1}}" width="245" height="337" fetchpriority="high">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_2}}" alt="{{HERO_ALT_2}}" width="245" height="337" loading="lazy">
+          <img data-set="{{SET_ID}}" data-id="{{HERO_CARD_3}}" alt="{{HERO_ALT_3}}" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -1354,7 +1356,7 @@ function renderChaseCardsHTML(grid) {
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} {{SET_FULL_NAME}} Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -1376,7 +1378,7 @@ const PRODUCT_META = {{PRODUCT_META_JSON}};
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
   const imgHtml = p.image
-    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none'">`
+    ? `<img src="${p.image}" alt="${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'">`
     : fallbackHtml;
   return `
     <div class="product-card" data-type="${p.filterKey}">
@@ -1623,7 +1625,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${card.localId} {{SET_FULL_NAME}} Pokemon Card" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name} ${card.localId} {{SET_FULL_NAME}} Pokemon Card" width="245" height="337" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
@@ -1682,7 +1684,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg('{{SET_ID}}', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
-    <img class="modal-img" src="${imgUrl}" alt="${name}" loading="lazy">
+    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" width="400" height="557" loading="lazy">
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
