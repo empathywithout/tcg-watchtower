@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product",
-      "destination": "/shrouded-fable-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
       "destination": "/stellar-crown-card-list.html"
     },
@@ -35,14 +31,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/cards",
-      "destination": "/shrouded-fable-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product",
-      "destination": "/shrouded-fable-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards",
@@ -253,16 +241,32 @@
       "destination": "/twilight-masquerade-card-list.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/most-valuable",
       "destination": "/pokemon/sets/scarlet-violet/twilight-masquerade/most-valuable.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/twilight-masquerade/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/cards",
+      "destination": "/shrouded-fable-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product",
+      "destination": "/shrouded-fable-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/shrouded-fable/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/top-chase-cards.html"
     }
   ],
   "redirects": [
