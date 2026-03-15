@@ -1,5 +1,4 @@
 name: Generate Card Pages
-
 on:
   workflow_dispatch:
     inputs:
@@ -16,13 +15,21 @@ on:
         description: 'Full slug for file (e.g. stellar-crown-card-list)'
         required: true
       set_series_slug:
-        description: 'Series slug (e.g. scarlet-violet)'
+        description: 'Series slug for URL (e.g. scarlet-violet or mega-evolution)'
         required: false
         default: 'scarlet-violet'
       set_series:
         description: 'Series display name (e.g. Scarlet & Violet)'
         required: false
         default: 'Scarlet & Violet'
+      set_short:
+        description: 'Short badge label (e.g. SV7, ME1, PRE)'
+        required: false
+        default: ''
+      set_release_date:
+        description: 'Release date (e.g. March 28, 2025) — optional'
+        required: false
+        default: ''
       tcgp_group_id:
         description: 'TCGplayer group ID for prices'
         required: false
@@ -32,7 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -49,7 +55,7 @@ jobs:
           echo "Cleaning $DIR"
           rm -rf "$DIR"
           git rm -r --cached --ignore-unmatch "$DIR"
-          echo "Done cleaning" 
+          echo "Done cleaning"
 
       - name: Generate card pages
         env:
@@ -63,7 +69,18 @@ jobs:
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
         run: node scripts/generate-card-pages.js
 
-      - name: Commit and push card pages
+      - name: Update sets.json
+        env:
+          SET_ID: ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
+          SET_SLUG: ${{ github.event.inputs.set_slug }}
+          SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug || 'scarlet-violet' }}
+          SET_SERIES: ${{ github.event.inputs.set_series || 'Scarlet & Violet' }}
+          SET_SHORT: ${{ github.event.inputs.set_short }}
+          SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
+        run: node scripts/update-sets-json.js
+
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
