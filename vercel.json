@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
-      "destination": "/stellar-crown-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/surging-sparks/sealed-product",
       "destination": "/surging-sparks-card-list.html"
     },
@@ -31,14 +27,6 @@
     {
       "source": "/pokemon/sets/scarlet-violet",
       "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards",
-      "destination": "/stellar-crown-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
-      "destination": "/stellar-crown-card-list.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/surging-sparks/cards",
@@ -257,16 +245,32 @@
       "destination": "/shrouded-fable-card-list.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable",
       "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/shrouded-fable/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/cards",
+      "destination": "/stellar-crown-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
+      "destination": "/stellar-crown-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/stellar-crown/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/stellar-crown/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/stellar-crown/top-chase-cards.html"
     }
   ],
   "redirects": [
