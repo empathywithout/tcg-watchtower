@@ -1,4 +1,4 @@
-<!-- Generated: 2026-03-15T06:32:34.034Z -->
+<!-- Generated: 2026-03-15T06:39:42.374Z -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -287,12 +287,6 @@ async function loadPrice() {
     if (price != null) {
       priceEl.textContent = '$' + price.toFixed(2);
       priceEl.classList.remove('price-loading');
-
-      // Update buy button to direct URL if available
-      if (url) {
-        const tcgpBtn = document.querySelector('.btn-tcgp');
-        if (tcgpBtn) tcgpBtn.href = url;
-      }
 
       // Update related card prices
       document.querySelectorAll('[data-related-id]').forEach(el => {

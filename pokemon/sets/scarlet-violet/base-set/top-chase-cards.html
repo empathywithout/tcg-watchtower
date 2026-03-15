@@ -1017,10 +1017,7 @@ async function loadPrices() {
       if (price != null) {
         el.textContent = '$' + price.toFixed(2);
         el.classList.remove('loading');
-        if (url) {
-          const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
-          if (tcgpBtn) tcgpBtn.href = url;
-        }
+
       } else {
         el.textContent = 'N/A';
         el.classList.remove('loading');
