@@ -362,7 +362,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="set-links">
           <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards">📋 View Full Card List →</a>
           <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable">⭐ Most Valuable Cards →</a>
-          <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product">📦 Sealed Product Prices →</a>
+          <a class="set-link" href="${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product#section-products">📦 Sealed Product Prices →</a>
         </div>
       </div>
 
