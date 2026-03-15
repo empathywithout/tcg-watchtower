@@ -15,7 +15,6 @@
 <script src="https://epnt.ebay.com/static/epn-smart-tools.js" defer></script>
 
 <meta charset="UTF-8">
-  <link rel="preload" as="image" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/sv05.png" fetchpriority="high">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Favicons -->
@@ -1043,7 +1042,7 @@ footer {
         </p>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/sv05.png" fetchpriority="high" alt="Temporal Forces (SV5) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <img id="set-logo-hero" alt="Temporal Forces (SV5) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
             <div class="stat-label">SV5</div>
           </div>
           <div class="stat-card">
@@ -1271,7 +1270,7 @@ document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
 
 // Wire up set logo in hero stats
 const setLogoHero = document.getElementById('set-logo-hero');
-if (setLogoHero && !setLogoHero.src) {
+if (setLogoHero) {
   setLogoHero.src = setLogoUrl('sv05');
   setLogoHero.onerror = function() {
     // Hide logo stat card if image fails to load
