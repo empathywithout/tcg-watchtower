@@ -90,9 +90,10 @@ function cardImgUrl(card) {
 }
 
 function tcgpSearchUrl(card) {
-  // Strip any number suffixes baked into name from R2 data (e.g. "Drowzee - 210/198" -> "Drowzee")
-  const cleanName = card.name.replace(/\s*[-–]\s*/, ' ').trim();
-  const q = encodeURIComponent(cleanName);
+  // Use card name (strip any embedded " - number" from R2 data) + localId/total
+  const baseName = card.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
+  const official = metadata.cardCount?.official || '';
+  const q = encodeURIComponent(`${baseName} ${card.localId}${official ? '/' + official : ''}`);
   const slug = TCGP_SET_SLUG || 'scarlet-violet-base-set';
   return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
 }
@@ -497,19 +498,8 @@ function normalizeRarity(r) {
   return (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
 }
 
-// For Hyper Rare, only include Pokémon cards (ex, VSTAR, V, etc.)
-// TCGdex sometimes tags secret rare trainers/energies as "Hyper Rare" in sv01,
-// but collectors only consider Pokémon gold cards true chase HRs.
-const POKEMON_SUFFIXES = /\b(ex|EX|V|VMAX|VSTAR|GX|TAG TEAM)\b/;
-function isChaseWorthy(card) {
-  const rarity = normalizeRarity(card.rarity);
-  if (rarity !== 'Hyper Rare') return true; // SIR, UR, IR always qualify
-  // For HR, only include if name contains a Pokémon card suffix
-  return POKEMON_SUFFIXES.test(card.name);
-}
-
 const chaseCards = cards
-  .filter(c => CHASE_RARITIES.includes(normalizeRarity(c.rarity)) && isChaseWorthy(c))
+  .filter(c => CHASE_RARITIES.includes(normalizeRarity(c.rarity)))
   .sort((a, b) => (RARITY_TIER[normalizeRarity(a.rarity)] ?? 99) - (RARITY_TIER[normalizeRarity(b.rarity)] ?? 99));
 
 const mvpUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`;
@@ -627,8 +617,9 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const cleanName = c.name.replace(/\s*[-–]\s*/, ' ').trim();
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(cleanName)}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const baseName = c.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
+      const official = metadata.cardCount?.official || '';
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
@@ -835,8 +826,9 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const label = RARITY_LABEL[rarity] || rarity;
       const img = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
       const cardPageSlug = toSlug(c.name) + '-' + c.localId;
-      const cleanName = c.name.replace(/\s*[-–]\s*/, ' ').trim();
-      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(cleanName)}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
+      const baseName = c.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
+      const official = metadata.cardCount?.official || '';
+      const tcgpUrl = `https://www.tcgplayer.com/search/pokemon/${TCGP_SET_SLUG || 'scarlet-violet-base-set'}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
       return `
     <div class="card-item">
