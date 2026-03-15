@@ -1354,13 +1354,13 @@ function renderChaseCardsHTML(grid) {
       return 0;
     });
 
-  grid.innerHTML = sorted.map(c => {
+  grid.innerHTML = sorted.map((c, idx) => {
     const priceHTML = c.price
       ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card" onclick="const du=priceCache[this.dataset.id]?.url||null;openModal('${c.id}','${c.name}','${c.rarity}','${c.searchName}','${c.img}',du)" data-id="${c.id}">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Stellar Crown (SV7) Pokemon Card" width="200" height="279" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Stellar Crown (SV7) Pokemon Card" width="200" height="279" ${idx === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
