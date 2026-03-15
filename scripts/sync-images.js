@@ -6,28 +6,33 @@
 import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 
-const SET_ID = process.env.SET_ID;
+const SET_ID = (process.env.SET_ID || '').trim();
 if (!SET_ID) { console.error("❌ SET_ID required"); process.exit(1); }
 
 // Card display dimensions on the page: 200×279px (card list), 200×279px (chase cards)
 // We store at 2× for retina: 400×557px
-// This is ~1/4 the area of the original 600×825px = ~4× smaller file size
 const CARD_WIDTH  = 400;
 const CARD_HEIGHT = 557;
 
-// TCGdex uses dot-notation IDs internally (sv03.5) but our workflow uses pt-notation (sv3pt5)
+// TCGdex uses dot-notation IDs internally (sv03.5, me02.5) but our workflow uses
+// pt-notation (sv3pt5, me02pt5) to avoid shell/env var issues with dots
 const TCGDEX_ID_MAP = {
-  'sv3pt5': 'sv03.5',
-  'sv4pt5': 'sv04.5',
-  'sv6pt5': 'sv06.5',
-  'sv8pt5': 'sv08.5',
+  'sv3pt5':  'sv03.5',
+  'sv4pt5':  'sv04.5',
+  'sv6pt5':  'sv06.5',
+  'sv8pt5':  'sv08.5',
+  'me02pt5': 'me02.5',   // ← fix: was missing, caused 404 for Ascended Heroes
 };
 const TCGDEX_SET_ID_RESOLVED = TCGDEX_ID_MAP[SET_ID] || SET_ID;
 const TCGDEX_SET_OVERVIEW_ID = TCGDEX_SET_ID_RESOLVED;
 const TCGDEX_CARD_ID_PREFIX  = TCGDEX_SET_ID_RESOLVED;
 const TCGDEX_ASSET_ID        = TCGDEX_SET_ID_RESOLVED;
+
 // Derive series prefix from set ID (e.g. 'sv01' -> 'sv', 'me01' -> 'me')
-const TCGDEX_SERIES_PREFIX   = TCGDEX_SET_ID_RESOLVED.replace(/[^a-z]/gi, '').toLowerCase().replace(/\d.*$/, '') || 'sv';
+const TCGDEX_SERIES_PREFIX = TCGDEX_SET_ID_RESOLVED
+  .replace(/[^a-z]/gi, '')
+  .toLowerCase()
+  .replace(/\d.*$/, '') || 'sv';
 
 const s3 = new S3Client({
   region: "auto",
@@ -62,12 +67,15 @@ async function downloadImage(url) {
 }
 
 async function resizeCardImage(buffer) {
+  // fit: "contain" preserves aspect ratio and pads with transparent background
+  // rather than stretching to fill — fixes hero card stretching on the page
   return sharp(buffer)
     .resize(CARD_WIDTH, CARD_HEIGHT, {
-      fit: "inside",        // preserve aspect ratio, don't crop
-      withoutEnlargement: true, // don't upscale if already smaller
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 }, // transparent padding
+      withoutEnlargement: true,
     })
-    .webp({ quality: 85 }) // re-encode as WebP quality 85
+    .webp({ quality: 85 })
     .toBuffer();
 }
 
@@ -87,7 +95,8 @@ async function fetchWithRetry(url, attempts = 3) {
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function main() {
-  console.log(`\n🚀 Starting sync for set: ${SET_ID}\n`);
+  console.log(`\n🚀 Starting sync for set: ${SET_ID}`);
+  console.log(`    TCGdex ID: ${TCGDEX_SET_ID_RESOLVED}\n`);
 
   // Step 1 — Fetch set overview (card list with localIds)
   console.log(`📋 Fetching set overview...`);
@@ -116,7 +125,12 @@ async function main() {
       console.log(`✅ (${card.rarity || 'no rarity'})`);
     } catch (err) {
       console.log(`⚠️  metadata failed: ${err.message}`);
-      fullCards.push({ localId: brief.localId, name: brief.name, rarity: null, image: brief.image ? `${brief.image}/high.webp` : null });
+      fullCards.push({
+        localId: brief.localId,
+        name: brief.name,
+        rarity: null,
+        image: brief.image ? `${brief.image}/high.webp` : null,
+      });
     }
     await sleep(100);
   }
@@ -193,8 +207,8 @@ async function main() {
 
   console.log(`\n📊 Done! ${SET_ID}: ✅ ${uploaded} uploaded / ⏭️ ${skipped} skipped / ❌ ${failed} failed`);
   if (failures.length) console.log(`Failed: ${failures.join(', ')}`);
-  console.log(`\n🎨 Logo: ${process.env.CF_R2_PUBLIC_URL}/logos/${SET_ID}.png`);
-  console.log(`🌐 Data: ${process.env.CF_R2_PUBLIC_URL}/data/${SET_ID}.json`);
+  console.log(`\n🎨 Logo:   ${process.env.CF_R2_PUBLIC_URL}/logos/${SET_ID}.png`);
+  console.log(`🌐 Data:   ${process.env.CF_R2_PUBLIC_URL}/data/${SET_ID}.json`);
   console.log(`🌐 Images: ${process.env.CF_R2_PUBLIC_URL}/cards/${SET_ID}/{localId}.webp`);
 
   if (failed > 0) process.exit(1);
