@@ -399,12 +399,6 @@ async function loadPrice() {
       priceEl.textContent = '$' + price.toFixed(2);
       priceEl.classList.remove('price-loading');
 
-      // Update buy button to direct URL if available
-      if (url) {
-        const tcgpBtn = document.querySelector('.btn-tcgp');
-        if (tcgpBtn) tcgpBtn.href = url;
-      }
-
       // Update related card prices
       document.querySelectorAll('[data-related-id]').forEach(el => {
         const rid = el.dataset.relatedId;
@@ -667,10 +661,7 @@ async function loadPrices() {
         el.textContent = '$' + price.toFixed(2);
         el.classList.remove('loading');
         // Update TCGplayer link to direct URL if available
-        if (url) {
-          const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
-          if (tcgpBtn) tcgpBtn.href = url;
-        }
+
       } else {
         el.textContent = 'N/A';
         el.classList.remove('loading');
@@ -873,10 +864,7 @@ async function loadPrices() {
       if (price != null) {
         el.textContent = '$' + price.toFixed(2);
         el.classList.remove('loading');
-        if (url) {
-          const tcgpBtn = el.nextElementSibling?.querySelector('.btn-tcgp');
-          if (tcgpBtn) tcgpBtn.href = url;
-        }
+
       } else {
         el.textContent = 'N/A';
         el.classList.remove('loading');
