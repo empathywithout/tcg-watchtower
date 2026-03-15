@@ -73,7 +73,6 @@ jobs:
             echo "⚠️ Nothing to commit — all files already up to date"
           else
             git commit -m "Generate card pages for ${{ github.event.inputs.set_full_name }}"
-            git pull --no-rebase origin main
-            git push
+            git push origin main
             echo "✅ Committed and pushed"
           fi
