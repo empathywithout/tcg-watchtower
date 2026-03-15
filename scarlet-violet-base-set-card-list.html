@@ -890,6 +890,13 @@ footer {
   scrollbar-width: none;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
+@media (max-width: 640px) {
+  .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
+  .section-nav-btn { padding: 10px 6px; font-size: 0.6rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
+}
+@media (max-width: 400px) {
+  .section-nav-btn { font-size: 0.55rem; padding: 10px 4px; }
+}
 .section-nav-btn {
   flex-shrink: 0;
   padding: 14px 20px;
