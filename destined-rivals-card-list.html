@@ -144,7 +144,7 @@ body {
 .orb-1 { top:10%; left:10%; width:400px; height:400px; background:var(--primary-blue); animation:float 8s ease-in-out infinite; }
 .orb-2 { bottom:10%; right:10%; width:350px; height:350px; background:var(--primary-purple); animation:float 10s ease-in-out infinite 2s; }
 .orb-3 { top:50%; right:25%; width:250px; height:250px; background:var(--accent-amber); animation:float 12s ease-in-out infinite 4s; }
-@keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.1)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
@@ -258,7 +258,7 @@ nav {
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   background-size:200% 100%; animation:gradient-shift 3s ease infinite;
 }
-@keyframes gradient-shift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+@keyframes gradient-shift { 0%,100%{opacity:1} 50%{opacity:0.85} } 50%{background-position:100% 50%} }
 
 .set-desc {
   font-size:1.1rem; color:rgba(226,232,240,0.85); margin-bottom:32px;
@@ -1630,7 +1630,7 @@ function renderCards(reset) {
 
     el.innerHTML = `
       <img src="${imgUrl}" alt="${card.name} ${card.localId} Destined Rivals (SV10) Pokemon Card" loading="lazy"
-           onerror="this.style.background=\'#1e293b\'">
+           onerror="this.style.background=\'#1e293b\'" width="245" height="342">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
         <div class="card-item-num">#${card.localId}</div>
@@ -1689,7 +1689,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg('sv10', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
-    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy">
+    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / Destined Rivals (SV10)</div>
@@ -1850,7 +1850,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
                 <img src="${logoUrl}" 
                      alt="${set.name}" 
                      style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" width="48" height="48">
                 <div style="font-size: 3rem; display: none;">🎴</div>
               ` : `
                 <div style="font-size: 3rem;">🎴</div>
@@ -1971,7 +1971,7 @@ loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards a
           const logoUrl = s.setId ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/${s.setId}.png` : '';
           const cls = [isCurrent ? 'current' : '', isDisabled ? 'disabled' : ''].filter(Boolean).join(' ');
           html += `<a href="${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set ${cls}">
-            ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
+            ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'" width="48" height="48">` : ''}
             <span>${s.name}${isDisabled ? ' <span style="font-size:0.7rem;opacity:0.5">(coming soon)</span>' : ''}</span>
           </a>`;
         });
