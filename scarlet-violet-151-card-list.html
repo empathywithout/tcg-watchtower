@@ -1270,7 +1270,7 @@ document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
 
 // Wire up set logo in hero stats
 const setLogoHero = document.getElementById('set-logo-hero');
-if (setLogoHero) {
+if (setLogoHero && !setLogoHero.src) {
   setLogoHero.src = setLogoUrl('sv3pt5');
   setLogoHero.onerror = function() {
     // Hide logo stat card if image fails to load
