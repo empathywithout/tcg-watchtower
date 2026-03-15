@@ -1571,6 +1571,14 @@ function loadTCGPlayerPrices() {
       const grid = document.getElementById('chase-grid');
       if (grid) renderChaseCardsHTML(grid);
 
+      // Update sealed product prices
+      const sealedPrices = data.sealedPrices || {};
+      document.querySelectorAll('[data-tcgp-id]').forEach(el => {
+        const tid = el.dataset.tcgpId;
+        const price = sealedPrices[tid];
+        if (price != null) el.textContent = '$' + price.toFixed(2);
+      });
+
       // Update hero stack with top 3 chase cards by price
       if (currentChaseList.length) {
         const top3 = [...currentChaseList]
