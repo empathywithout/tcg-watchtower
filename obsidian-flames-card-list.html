@@ -892,6 +892,7 @@ footer {
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
   .nav-short { display: inline; }
+  .nav-home-btn { display: none; }
 }
 .section-nav-btn {
   flex-shrink: 0;
@@ -1068,12 +1069,12 @@ footer {
 <!-- ===== SECTION NAV ===== -->
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">🔥 Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">📋 Cards</span></button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">🛒 Sealed</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">📦</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
