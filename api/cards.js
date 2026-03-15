@@ -2,44 +2,31 @@
 // Returns card list with rarities for a given set.
 //
 // Primary path: fetches pre-built data/{setId}.json from R2 (uploaded by sync-images.js)
-//   - Globally fast (Cloudflare CDN), no computation, no cold start issue
-//   - R2 JSON format: { id, name, releaseDate, cardCount, cards: [{localId, name, rarity, image}] }
-//
-// Fallback: TCGCSV (2 requests) then TCGdex (per-card) if R2 data not found
+// Fallback: TCGCSV (2 requests) then TCGdex (per-card)
 //
 // URL: GET /api/cards?set=sv07
 
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
-// In-memory cache to avoid re-fetching within the same function instance
 const cache = new Map();
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 60 * 60 * 1000;
 
-// Maps set ID to TCGplayer group ID (verified from page configs)
 const SET_TO_GROUP = {
-  'sv01':   '22873',
-  'sv02':   '23120',
-  'sv03':   '23228',
-  'sv3pt5': '23237',
-  'sv04':   '23286',
-  'sv4pt5': '23353',
-  'sv05':   '23381',
-  'sv06':   '23473',
-  'sv6pt5': '23529',
-  'sv07':   '23537',
-  'sv08':   '23651',
-  'sv8pt5': '23821',
-  'sv09':   '24073',
-  'sv10':   '24269',
+  'sv01':'22873','sv02':'23120','sv03':'23228','sv3pt5':'23237',
+  'sv04':'23286','sv4pt5':'23353','sv05':'23381','sv06':'23473',
+  'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
+  'sv09':'24073','sv10':'24269',
 };
 
-// TCGdex uses dot-notation for special sets
 const TCGDEX_ID = {
-  'sv3pt5': 'sv03.5',
-  'sv4pt5': 'sv04.5',
-  'sv6pt5': 'sv06.5',
-  'sv8pt5': 'sv08.5',
+  'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5',
 };
+
+// Title-case each word: "special illustration rare" -> "Special Illustration Rare"
+function normalizeRarity(r) {
+  if (!r) return '';
+  return r.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,7 +40,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing or invalid ?set= parameter' });
   }
 
-  // Check in-memory cache
   const cached = cache.get(setId);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
@@ -64,21 +50,23 @@ export default async function handler(req, res) {
   try {
     let cards = null;
 
-    // Strategy 1: R2 pre-built JSON (fastest — Cloudflare CDN, globally cached)
+    // Strategy 1: R2 pre-built JSON (fastest)
     try {
       const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
       if (r2Res.ok) {
         const r2Data = await r2Res.json();
         if (r2Data.cards && r2Data.cards.length > 0) {
-          cards = r2Data.cards;
-          console.log(`[api/cards] R2 hit for ${setId}: ${cards.length} cards`);
+          cards = r2Data.cards.map(c => ({
+            ...c,
+            rarity: normalizeRarity(c.rarity)
+          }));
         }
       }
     } catch (e) {
-      console.warn(`[api/cards] R2 fetch failed for ${setId}:`, e.message);
+      console.warn(`[api/cards] R2 failed for ${setId}:`, e.message);
     }
 
-    // Strategy 2: TCGCSV (2 parallel requests, no per-card fetches needed)
+    // Strategy 2: TCGCSV (2 parallel requests)
     const groupId = SET_TO_GROUP[setId];
     if (!cards && groupId) {
       try {
@@ -101,9 +89,8 @@ export default async function handler(req, res) {
               localId: p.number,
               name: p.name,
               image: `${R2_BASE}/cards/${setId}/${p.number}.webp`,
-              rarity: rarityMap[p.productId] || ''
+              rarity: normalizeRarity(rarityMap[p.productId] || '')
             }));
-            console.log(`[api/cards] TCGCSV hit for ${setId}: ${cards.length} cards`);
           }
         }
       } catch (e) {
@@ -111,7 +98,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Strategy 3: TCGdex fallback (slow — per-card fetches)
+    // Strategy 3: TCGdex fallback
     if (!cards) {
       const tcgdexId = TCGDEX_ID[setId] || setId;
       const setRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${tcgdexId}`);
@@ -135,12 +122,11 @@ export default async function handler(req, res) {
             localId: basic.localId,
             name: basic.name,
             image: `https://assets.tcgdex.net/en/sv/${tcgdexId}/${basic.localId}/high.webp`,
-            rarity: detail?.rarity || ''
+            rarity: normalizeRarity(detail?.rarity || '')
           });
         });
       }
       cards = fullCards;
-      console.log(`[api/cards] TCGdex fallback for ${setId}: ${cards.length} cards`);
     }
 
     const data = { cards, cardCount: { total: cards.length } };
