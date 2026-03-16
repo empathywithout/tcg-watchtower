@@ -120,10 +120,10 @@
     "live": true
   },
   {
-    "slug": "pokemon/sets/mega-evolution/phantasmal-flames/cards",
+    "slug": "phantasmal-flames-card-list",
     "name": "Phantasmal Flames",
     "series": "Mega Evolution",
-    "short": "ME02",
+    "short": "PFL",
     "setId": "me02",
     "live": true
   },
@@ -132,7 +132,7 @@
     "name": "Ascended Heroes",
     "series": "Mega Evolution",
     "short": "ASC",
-    "setId": "me02.5",
+    "setId": "me02pt5",
     "live": true
   },
   {
