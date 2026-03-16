@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// patch-html-files.js  
+// patch-html-files.js
 // Run from repo root: node patch-html-files.js
-// Patches set-template.html and all *-card-list.html files
+// Patches set-template.html, sets.html, and all *-card-list.html files
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
 
+// ── Rarity patches (applied to all card list HTML + set-template.html) ──────
 const RARITY_PATCHES = [
   [
     "['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare']",
@@ -22,23 +23,21 @@ const RARITY_PATCHES = [
     "{ 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' }",
     "{ 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' }"
   ],
-  [
-    "'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare'\n",
-    "'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare'\n"
-  ],
 ];
 
+// ── Per-file patches ──────────────────────────────────────────────────────────
 const FILE_PATCHES = {
   'ascended-heroes-card-list.html': [
     ["const TCGP_GROUP_ID = '0';", "const TCGP_GROUP_ID = '24541';"],
   ],
 };
 
-function patchFile(filepath, extra = []) {
+function patchFile(filepath, extra = [], skipRarity = false) {
   if (!existsSync(filepath)) { console.log(`  skip (not found): ${filepath}`); return 0; }
   let content = readFileSync(filepath, 'utf8');
   let n = 0;
-  for (const [find, replace] of [...RARITY_PATCHES, ...extra]) {
+  const patches = skipRarity ? extra : [...RARITY_PATCHES, ...extra];
+  for (const [find, replace] of patches) {
     if (content.includes(find)) { content = content.replaceAll(find, replace); n++; }
   }
   if (n > 0) { writeFileSync(filepath, content); console.log(`  ✅ ${n} patches → ${filepath}`); }
@@ -46,11 +45,29 @@ function patchFile(filepath, extra = []) {
   return n;
 }
 
+// ── sets.html: fix logo fallback for ME sets ──────────────────────────────────
+console.log('\n🔧 Patching sets.html...');
+patchFile('sets.html', [
+  [
+    // Add me02pt5 to TCGDEX_ID_MAP
+    `  'sv8pt5': 'sv08.5',\n};`,
+    `  'sv8pt5': 'sv08.5',\n  'me02pt5': 'me02.5',\n};`
+  ],
+  [
+    // Fix logoHtml fallback to derive series from setId (handles me* sets)
+    `s.setId && s.setId.startsWith('sv')\n    ? \`https://assets.tcgdex.net/en/sv/\${tcgdexId}/logo.png\`\n    : ''`,
+    `s.setId ? \`https://assets.tcgdex.net/en/\${(s.setId.match(/^([a-z]+)/i)||['','sv'])[1].toLowerCase()}/\${tcgdexId}/logo.png\` : ''`
+  ],
+], true);
+
+// ── set-template.html ─────────────────────────────────────────────────────────
 console.log('\n🔧 Patching set-template.html...');
 patchFile('set-template.html');
 
+// ── All *-card-list.html files ────────────────────────────────────────────────
 console.log('\n🔧 Patching *-card-list.html files...');
 for (const f of readdirSync('.').filter(f => f.endsWith('-card-list.html'))) {
   patchFile(f, FILE_PATCHES[f] || []);
 }
+
 console.log('\n✅ Done — commit and push to deploy.\n');
