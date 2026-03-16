@@ -295,9 +295,10 @@ nav {
 .hero-visual { position:relative; display:flex; justify-content:center; align-items:center; min-height:400px; }
 .card-stack { position:relative; width:260px; height:360px; }
 .card-stack img {
-  position:absolute; width:180px; border-radius:12px;
+  position:absolute; width:180px; height:auto; border-radius:12px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   transition: transform 0.3s;
+  object-fit: contain;
 }
 .card-stack img:nth-child(1) { left:80px; top:20px; z-index:3; transform:rotate(3deg); }
 .card-stack img:nth-child(2) { left:40px; top:40px; z-index:2; transform:rotate(-4deg); }
