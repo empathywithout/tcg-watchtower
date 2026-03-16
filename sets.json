@@ -120,10 +120,10 @@
     "live": true
   },
   {
-    "slug": "phantasmal-flames-card-list",
+    "slug": "pokemon/sets/mega-evolution/phantasmal-flames/cards",
     "name": "Phantasmal Flames",
     "series": "Mega Evolution",
-    "short": "PFL",
+    "short": "ME02",
     "setId": "me02",
     "live": true
   },
