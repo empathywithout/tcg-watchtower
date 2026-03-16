@@ -293,22 +293,6 @@
       "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/ascended-heroes/cards",
-      "destination": "/ascended-heroes-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/ascended-heroes/sealed-product",
-      "destination": "/ascended-heroes-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/ascended-heroes/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/ascended-heroes/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
       "destination": "/phantasmal-flames-card-list.html"
     },
@@ -355,6 +339,22 @@
     {
       "source": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
       "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/ascended-heroes/cards",
+      "destination": "/ascended-heroes-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/ascended-heroes/sealed-product",
+      "destination": "/ascended-heroes-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/ascended-heroes/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/ascended-heroes/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
