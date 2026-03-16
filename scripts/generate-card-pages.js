@@ -487,9 +487,9 @@ console.log(`✅ sitemap.xml updated with ${cards.length} card URLs`);
 
 // ─── Chase cards shared helpers ───────────────────────────────────────────────
 
-const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
-const RARITY_TIER    = { 'Hyper Rare': 0, 'Special Illustration Rare': 1, 'Ultra Rare': 2, 'Illustration Rare': 3 };
-const RARITY_LABEL   = { 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
+const RARITY_TIER    = { 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
+const RARITY_LABEL   = { 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
 
 function normalizeRarity(r) {
   return (r || '').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
@@ -573,9 +573,9 @@ loadPrices();`;
 function chaseCardGridItems(cardList) {
   return cardList.map(c => {
     const rarity      = normalizeRarity(c.rarity);
-    const rarityClass = RARITY_TIER[rarity] === 0 ? 'rarity-hr'
-                      : RARITY_TIER[rarity] === 1 ? 'rarity-sir'
-                      : RARITY_TIER[rarity] === 2 ? 'rarity-ur'
+    const rarityClass = (RARITY_TIER[rarity] === 0 || RARITY_TIER[rarity] === 1) ? 'rarity-hr'
+                      : RARITY_TIER[rarity] === 2 ? 'rarity-sir'
+                      : RARITY_TIER[rarity] === 3 ? 'rarity-ur'
                       : 'rarity-ir';
     const label    = RARITY_LABEL[rarity] || rarity;
     const img      = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
