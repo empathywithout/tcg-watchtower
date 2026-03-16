@@ -1361,7 +1361,7 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
   const RARITY_TIER = {
     'Hyper Rare': 0, 'Special Illustration Rare': 1, 'Ultra Rare': 2, 'Illustration Rare': 3,
   };
@@ -1672,7 +1672,7 @@ async function loadCards() {
 
     const RARITY_ORDER = [
       'Common', 'Uncommon', 'Rare', 'Double Rare',
-      'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare'
+      'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare'
     ];
 
     const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
