@@ -295,9 +295,10 @@ nav {
 .hero-visual { position:relative; display:flex; justify-content:center; align-items:center; min-height:400px; }
 .card-stack { position:relative; width:260px; height:360px; }
 .card-stack img {
-  position:absolute; width:180px; border-radius:12px;
+  position:absolute; width:180px; height:auto; border-radius:12px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   transition: transform 0.3s;
+  object-fit: contain;
 }
 .card-stack img:nth-child(1) { left:80px; top:20px; z-index:3; transform:rotate(3deg); }
 .card-stack img:nth-child(2) { left:40px; top:40px; z-index:2; transform:rotate(-4deg); }
@@ -1061,9 +1062,9 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="me01" data-id="001" alt="Card 1" width="245" height="337" fetchpriority="high">
-          <img data-set="me01" data-id="002" alt="Card 2" width="245" height="337" loading="lazy">
-          <img data-set="me01" data-id="003" alt="Card 3" width="245" height="337" loading="lazy">
+          <img data-set="me01" data-id="188" alt="Mega Lucario ex - 188/132" width="245" height="337" fetchpriority="high">
+          <img data-set="me01" data-id="187" alt="Mega Gardevoir ex - 187/132" width="245" height="337" loading="lazy">
+          <img data-set="me01" data-id="178" alt="Mega Gardevoir ex - 178/132" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
