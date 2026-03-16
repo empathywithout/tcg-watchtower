@@ -112,10 +112,10 @@
     "live": true
   },
   {
-    "slug": "mega-evolution-base-set-card-list",
-    "name": "Mega Evolution",
+    "slug": "pokemon/sets/mega-evolution/mega-evolution/cards",
+    "name": "Mega Evolution (ME1)",
     "series": "Mega Evolution",
-    "short": "MEG",
+    "short": "ME01",
     "setId": "me01",
     "live": true
   },

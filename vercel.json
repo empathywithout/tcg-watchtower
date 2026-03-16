@@ -341,6 +341,22 @@
       "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution/cards",
+      "destination": "/mega-evolution-base-set-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution/sealed-product",
+      "destination": "/mega-evolution-base-set-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/mega-evolution/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/mega-evolution/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/mega-evolution/top-chase-cards.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
