@@ -309,22 +309,6 @@
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/base-set/cards",
-      "destination": "/mega-evolution-base-set-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/base-set/sealed-product",
-      "destination": "/mega-evolution-base-set-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/base-set/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/base-set/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
       "destination": "/phantasmal-flames-card-list.html"
     },
@@ -355,6 +339,22 @@
     {
       "source": "/pokemon/sets/mega-evolution/mega-evolution/top-chase-cards",
       "destination": "/pokemon/sets/mega-evolution/mega-evolution/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/base-set/cards",
+      "destination": "/mega-evolution-base-set-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/base-set/sealed-product",
+      "destination": "/mega-evolution-base-set-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/base-set/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/base-set/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
