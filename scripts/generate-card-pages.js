@@ -487,9 +487,9 @@ console.log(`✅ sitemap.xml updated with ${cards.length} card URLs`);
 
 // ─── Chase cards shared helpers ───────────────────────────────────────────────
 
-const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
-const RARITY_TIER    = { 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-const RARITY_LABEL   = { 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
+const RARITY_TIER    = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
+const RARITY_LABEL   = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
 
 function normalizeRarity(r) {
   return (r || '').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
