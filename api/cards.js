@@ -70,6 +70,67 @@ async function getSetPhase(setId) {
   }
 }
 
+// Background-write card metadata + images to R2 after a Scrydex hit.
+// Runs async — does NOT block the response. Next request hits R2 for free.
+async function cacheToR2InBackground(setId, cards, phase) {
+  const endpoint  = process.env.CF_R2_ENDPOINT;
+  const accessKey = process.env.CF_R2_ACCESS_KEY;
+  const secretKey = process.env.CF_R2_SECRET_KEY;
+  const bucket    = process.env.CF_R2_BUCKET;
+  if (!endpoint || !accessKey || !secretKey || !bucket) return; // R2 not configured
+
+  try {
+    const { S3Client, PutObjectCommand, HeadObjectCommand } = await import('@aws-sdk/client-s3');
+    const s3 = new S3Client({
+      region: 'auto', endpoint,
+      credentials: { accessKeyId: accessKey, secretAccessKey: secretKey },
+    });
+
+    // 1 — Upload metadata JSON (always, even for JP — marks the set as known to R2)
+    const metadata = {
+      id: setId, phase,
+      cardCount: { official: cards.length, total: cards.length },
+      cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+    };
+    await s3.send(new PutObjectCommand({
+      Bucket: bucket, Key: `data/${setId}.json`,
+      Body: JSON.stringify(metadata), ContentType: 'application/json',
+      CacheControl: 'public, max-age=3600',
+    }));
+    console.log(`[r2-cache] Wrote data/${setId}.json`);
+
+    // 2 — Download and upload card images that aren't in R2 yet
+    // Skip for EN sets where image URL is already pointing at R2 (would be circular)
+    if (phase === 'jp') {
+      let uploaded = 0, skipped = 0;
+      for (const card of cards) {
+        if (!card.image || card.image.includes(process.env.CF_R2_PUBLIC_URL)) continue;
+        const r2Key = `cards/${setId}/${card.localId}.webp`;
+        try {
+          await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: r2Key }));
+          skipped++;
+          continue; // already exists
+        } catch { /* not in R2 yet — upload it */ }
+        try {
+          const imgRes = await fetch(card.image, { signal: AbortSignal.timeout(10000) });
+          if (!imgRes.ok) continue;
+          const buf = Buffer.from(await imgRes.arrayBuffer());
+          await s3.send(new PutObjectCommand({
+            Bucket: bucket, Key: r2Key, Body: buf,
+            ContentType: 'image/webp', CacheControl: 'public, max-age=31536000, immutable',
+          }));
+          uploaded++;
+        } catch (e) {
+          console.warn(`[r2-cache] image upload failed ${card.localId}: ${e.message}`);
+        }
+      }
+      console.log(`[r2-cache] JP images: ${uploaded} uploaded, ${skipped} skipped`);
+    }
+  } catch (e) {
+    console.warn(`[r2-cache] background write failed for ${setId}:`, e.message);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -96,8 +157,35 @@ export default async function handler(req, res) {
   try {
     let cards = null;
 
-    // ── Strategy 0: Scrydex ─────────────────────────────────────────────────
-    if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+    // ── Strategy 0: R2 pre-built JSON (EN sets — fastest, free, no API credits) ─
+    // Always try R2 first for EN sets. Scrydex only used when R2 misses (new sets)
+    // or for JP phase (images not in R2 yet).
+    if (phase === 'en') {
+      try {
+        const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
+        if (r2Res.ok) {
+          const r2Data = await r2Res.json();
+          if (r2Data.cards && r2Data.cards.length > 0) {
+            cards = r2Data.cards.map(c => ({
+              localId: c.localId,
+              name:    c.name,
+              rarity:  normalizeRarity(c.rarity),
+              image:   `${R2_BASE}/cards/${setId}/${c.localId}.webp`,
+              source:  'r2',
+              phase:   'en',
+            }));
+            console.log(`[api/cards] R2 hit for ${setId}: ${cards.length} cards`);
+          }
+        }
+      } catch (e) {
+        console.warn(`[api/cards] R2 failed for ${setId}:`, e.message);
+      }
+    }
+
+    // ── Strategy 1: Scrydex ──────────────────────────────────────────────────
+    // JP phase: always (R2 won't have JP images until after sync-images runs)
+    // EN phase: only when R2 missed — means it's a brand new set not yet synced
+    if (!cards && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
       try {
         const scrydexId = phase === 'jp'
           ? SCRYDEX_JP_ID_MAP[setId]
@@ -131,47 +219,24 @@ export default async function handler(req, res) {
 
           if (allCards.length > 0) {
             cards = allCards.map(c => {
-              // Scrydex ID format: "sv01-001" → localId = "001"
               const localId      = c.id ? c.id.split('-').slice(1).join('-') : '';
               const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
-              // EN sets: prefer R2 image (already synced, faster CDN)
-              // JP sets: use Scrydex image (not yet in R2)
+              // JP sets: use Scrydex image directly (not in R2 yet)
+              // EN new sets: use Scrydex image until sync-images runs and populates R2
               const image = phase === 'en'
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                 : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
-
               return { localId, name: c.name || '', rarity: normalizeRarity(c.rarity || ''), image, source: 'scrydex', phase };
             });
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
+            // Fire-and-forget: cache metadata + images to R2 so next request is free
+            cacheToR2InBackground(setId, cards, phase).catch(() => {});
           }
         } else {
-          console.log(`[api/cards] No Scrydex ID mapped for ${setId} — trying R2`);
+          console.log(`[api/cards] No Scrydex ID mapped for ${setId} — skipping`);
         }
       } catch (e) {
         console.warn(`[api/cards] Scrydex failed for ${setId}:`, e.message);
-      }
-    }
-
-    // ── Strategy 1: R2 pre-built JSON ───────────────────────────────────────
-    if (!cards) {
-      try {
-        const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
-        if (r2Res.ok) {
-          const r2Data = await r2Res.json();
-          if (r2Data.cards && r2Data.cards.length > 0) {
-            cards = r2Data.cards.map(c => ({
-              localId: c.localId,
-              name:    c.name,
-              rarity:  normalizeRarity(c.rarity),
-              image:   `${R2_BASE}/cards/${setId}/${c.localId}.webp`,
-              source:  'r2',
-              phase:   'en',
-            }));
-            console.log(`[api/cards] R2 hit for ${setId}: ${cards.length} cards`);
-          }
-        }
-      } catch (e) {
-        console.warn(`[api/cards] R2 failed for ${setId}:`, e.message);
       }
     }
 
