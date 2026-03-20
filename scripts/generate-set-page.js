@@ -127,8 +127,14 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
     });
     if (scrydexRes.ok) {
       setData       = await scrydexRes.json();
-      officialCount = setData.total || setData.printedTotal || 0;
-      console.log(`✅  Scrydex JP: ${setData.name} — ${officialCount} cards`);
+      // Scrydex uses different field names — try all known variants
+      const scrydexName = setData.name || setData.nameEn || setData.localName
+                       || setData.title || setData.expansionName || null;
+      officialCount = setData.total || setData.printedTotal || setData.cardCount || 0;
+      console.log(`✅  Scrydex JP: ${scrydexName || '(no name field)'} — ${officialCount} cards`);
+      console.log(`   Scrydex fields: ${Object.keys(setData).join(', ')}`);
+      // Patch name so SET_SUBTITLE fallback works
+      if (!setData.name && scrydexName) setData.name = scrydexName;
     } else {
       console.warn(`⚠️  Scrydex ${scrydexRes.status} — falling back to manual values`);
     }
@@ -194,7 +200,8 @@ if (!HERO_CARD_1 && TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
         const ext    = p.extendedData || [];
         const numEntry = ext.find(e => e.name === 'Number');
         const cardNum  = numEntry?.value.split('/')[0].trim();
-        return { id: cardNum, name: p.name, price: priceById[p.productId].marketPrice };
+        const rawName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').replace(/\s*[-–]\s*\d+\/\d+\s*$/, '').trim();
+        return { id: cardNum, name: rawName, price: priceById[p.productId].marketPrice };
       })
       .sort((a, b) => b.price - a.price)
       .slice(0, 3);
