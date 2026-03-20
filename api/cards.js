@@ -87,9 +87,11 @@ const JP_RARITY_MAP = {
   'HR':                             'Hyper Rare',
   'ハイパーレア':                     'Hyper Rare',
   'ゴールデンレア':                   'Hyper Rare',
-  // Mega Hyper Rare
+  // Mega Hyper Rare / Super Ultra Rare (top rainbow rarity in Mega Evolution era)
   'MHR':                            'Mega Hyper Rare',
   'メガハイパーレア':                 'Mega Hyper Rare',
+  '超ウルトラレア':                   'Mega Hyper Rare',
+  'スーパーウルトラレア':              'Mega Hyper Rare',
   // Promo
   'PR':                             'Promo',
   'プロモ':                           'Promo',
@@ -384,16 +386,23 @@ export default async function handler(req, res) {
               : [];
 
             cards = allCards.map((c, i) => {
-              const localId      = c.id ? c.id.split('-').slice(1).join('-') : '';
+              // Scrydex card IDs look like "m3_ja-111/088" or "sv10-001"
+              // localId should be just the card number: "111" or "001"
+              const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
+              const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+
               const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
               const image = phase === 'en'
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                 : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
 
-              let name = c.name || '';
+              // Strip JP name suffix like " – 111/088" that Scrydex sometimes includes
+              let name = (c.name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim();
+
               if (phase === 'jp') {
+                const paddedId = localId.padStart(3, '0');
                 if (hasNumbers) {
-                  name = enNameMap[localId] || enNameMap[String(parseInt(localId, 10))] || name;
+                  name = enNameMap[paddedId] || enNameMap[localId] || enNameMap[String(parseInt(localId, 10))] || name;
                 } else if (pidEntries[i]) {
                   name = pidEntries[i].name;
                 }

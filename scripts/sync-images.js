@@ -113,12 +113,19 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   }
 
   console.log(`✅ Scrydex returned ${allCards.length} ${language} cards`);
-  return allCards.map(c => ({
-    localId: c.id ? c.id.split('-').slice(1).join('-') : '',
-    name:    c.name    || '',
-    rarity:  c.rarity  || null,
-    image:   c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
-  }));
+  return allCards.map(c => {
+    // Scrydex IDs look like "m3_ja-111/088" → localId "111", or "sv10-001" → "001"
+    const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
+    const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+    // Strip trailing number suffix like " – 111/088" from JP card names
+    const name    = (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
+    return {
+      localId,
+      name,
+      rarity: c.rarity || null,
+      image:  c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
+    };
+  });
 }
 
 // ── Fetch EN name map from TCGCSV (most reliable source post-release) ────────

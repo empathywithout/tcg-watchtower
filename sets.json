@@ -159,7 +159,7 @@
     "short": "ME3",
     "setId": "me03",
     "phase": "jp",
-    "live": true
+    "live": false
   },
   {
     "slug": "chaos-rising-card-list",
