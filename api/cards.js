@@ -208,9 +208,11 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
           const ext      = p.extendedData || [];
           const numEntry = ext.find(e => e.name === 'Number');
           if (!numEntry || !p.name) return;
-          const num = numEntry.value.split('/')[0].trim();
-          map[num.padStart(3, '0')]          = p.name;
-          map[String(parseInt(num, 10))]     = p.name;
+          const num       = numEntry.value.split('/')[0].trim();
+          const cleanName = p.name.replace(/\s*\(.*?\)\s*$/, '').trim();
+          map[num.padStart(3, '0')]      = cleanName;
+          map[String(parseInt(num, 10))] = cleanName;
+          map[num]                       = cleanName;
         });
         if (Object.keys(map).length > 0) {
           console.log(`[api/cards] EN name map from TCGCSV: ${Object.keys(map).length} names`);

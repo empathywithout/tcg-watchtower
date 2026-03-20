@@ -141,11 +141,13 @@ async function fetchEnNameMapFromTCGCSV(setId) {
       const numEntry = ext.find(e => e.name === 'Number');
       if (!numEntry) return;
       const num = numEntry.value.split('/')[0].trim();
-      // Pad to 3 digits to match Scrydex localId format
       const localId = num.padStart(3, '0');
-      if (p.name) {
-        map[localId]            = p.name;
-        map[String(parseInt(num, 10))] = p.name; // also store without padding
+      // Strip TCGplayer name suffix e.g. "Mega Zygarde ex (Perfect Order 82)" → "Mega Zygarde ex"
+      const cleanName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+      if (cleanName) {
+        map[localId]                       = cleanName;
+        map[String(parseInt(num, 10))]     = cleanName;
+        map[num]                           = cleanName; // raw string too
       }
     });
     console.log(`✅ EN name map from TCGCSV: ${Object.keys(map).length} names`);
