@@ -128,6 +128,13 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   });
 }
 
+// Known first productId for each set — enables direct card-number → name lookup
+// JP card N maps to TCGCSV card number N (same numbering), confirmed via The Hobby Bin
+const FIRST_PRODUCT_ID = {
+  'me03': 674320,  // Perfect Order: card 001 = product 674320
+  'me04': null,    // Chaos Rising: TBD
+};
+
 // ── Fetch EN name map from TCGCSV (most reliable source post-release) ────────
 async function fetchEnNameMapFromTCGCSV(setId) {
   const GROUP_ID_MAP = {
@@ -136,12 +143,6 @@ async function fetchEnNameMapFromTCGCSV(setId) {
     'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
     'sv09':'24073','sv10':'24269',
     'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
-  };
-  // Known first productId for each set — enables direct card-number → productId lookup
-  // JP card N → productId = FIRST_PRODUCT_ID[setId] + (N - 1)
-  const FIRST_PRODUCT_ID = {
-    'me03': 674320,  // Perfect Order: card 001 = product 674320 (confirmed from TCGplayer/The Hobby Bin)
-    'me04': null,    // Chaos Rising: TBD once TCGplayer lists cards
   };
   const groupId = GROUP_ID_MAP[setId];
   if (!groupId) return {};
