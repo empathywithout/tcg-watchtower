@@ -159,6 +159,58 @@ async function cacheToR2InBackground(setId, cards, phase) {
   }
 }
 
+// Fetch EN name map for a JP set — tries Scrydex EN then TCGdex
+// Returns a map of { localId: englishName } or empty object if unavailable
+async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
+  // Try Scrydex EN first
+  if (scrydexEnId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+    try {
+      let allCards = [];
+      let page     = 1;
+      let total    = null;
+      while (true) {
+        const res = await fetch(
+          `${SCRYDEX_BASE}/expansions/${scrydexEnId}/cards?select=id,name&pageSize=100&page=${page}`,
+          { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(8000) }
+        );
+        if (!res.ok) break;
+        const data      = await res.json();
+        const pageCards = data.data || [];
+        if (total === null) total = data.totalCount || pageCards.length;
+        allCards = allCards.concat(pageCards);
+        if (pageCards.length < 100 || allCards.length >= total) break;
+        page++;
+      }
+      if (allCards.length > 0) {
+        const map = {};
+        allCards.forEach(c => {
+          const localId = c.id ? c.id.split('-').slice(1).join('-') : '';
+          if (localId && c.name) map[localId] = c.name;
+        });
+        console.log(`[api/cards] EN name map from Scrydex: ${Object.keys(map).length} names`);
+        return map;
+      }
+    } catch (e) {
+      console.warn(`[api/cards] Scrydex EN name map failed:`, e.message);
+    }
+  }
+  // Try TCGdex EN as fallback
+  try {
+    const res = await fetch(`https://api.tcgdex.net/v2/en/sets/${tcgdexId}`, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) {
+      const data  = await res.json();
+      const cards = data.cards || [];
+      const map   = {};
+      cards.forEach(c => { if (c.localId && c.name) map[c.localId] = c.name; });
+      console.log(`[api/cards] EN name map from TCGdex: ${Object.keys(map).length} names`);
+      return map;
+    }
+  } catch (e) {
+    console.warn(`[api/cards] TCGdex EN name map failed:`, e.message);
+  }
+  return {};
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -246,15 +298,22 @@ export default async function handler(req, res) {
           }
 
           if (allCards.length > 0) {
+            // For JP phase, fetch EN names to display instead of Japanese names
+            let enNameMap = {};
+            if (phase === 'jp') {
+              const enScrydexId = SCRYDEX_EN_ID_MAP[setId] || null;
+              enNameMap = await fetchEnNameMap(setId, enScrydexId, tcgdexId);
+            }
+
             cards = allCards.map(c => {
               const localId      = c.id ? c.id.split('-').slice(1).join('-') : '';
               const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
-              // JP sets: use Scrydex image directly (not in R2 yet)
-              // EN new sets: use Scrydex image until sync-images runs and populates R2
               const image = phase === 'en'
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                 : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
-              return { localId, name: c.name || '', rarity: normalizeRarity(c.rarity || ''), image, source: 'scrydex', phase };
+              // Use EN name if available, otherwise keep JP name as fallback
+              const name = (phase === 'jp' && enNameMap[localId]) ? enNameMap[localId] : (c.name || '');
+              return { localId, name, rarity: normalizeRarity(c.rarity || ''), image, source: 'scrydex', phase };
             });
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
             // Fire-and-forget: cache metadata + images to R2 so next request is free

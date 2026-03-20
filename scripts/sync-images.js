@@ -148,11 +148,35 @@ async function main() {
   if (FORCE_RESYNC)   console.log(`   ⚠️  Force resync — all images re-downloaded`);
 
   // Step 1 — Fetch card list
-  // For JP: always Scrydex
+  // For JP: always Scrydex, then translate names to English
   // For EN: try Scrydex first (more complete, faster after release), fall back to TCGdex
   let cards = [];
   if (PHASE === 'jp') {
     cards = await fetchCardsFromScrydex(JP_SCRYDEX_ID);
+
+    // Translate JP names to English using TCGdex EN
+    console.log(`\n🔤 Fetching EN names for JP cards…`);
+    try {
+      const enRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_ID}`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (enRes.ok) {
+        const enData  = await enRes.json();
+        const enCards = enData.cards || [];
+        const enMap   = {};
+        enCards.forEach(c => { if (c.localId && c.name) enMap[c.localId] = c.name; });
+        let translated = 0;
+        cards = cards.map(c => {
+          if (enMap[c.localId]) { translated++; return { ...c, name: enMap[c.localId] }; }
+          return c;
+        });
+        console.log(`✅ Translated ${translated}/${cards.length} card names to English`);
+      } else {
+        console.warn(`⚠️  TCGdex EN not available yet — keeping JP names as fallback`);
+      }
+    } catch (e) {
+      console.warn(`⚠️  EN name fetch failed: ${e.message} — keeping JP names`);
+    }
   } else {
     // Try Scrydex EN first if we have credentials and a mapped ID
     const SCRYDEX_EN_ID_MAP = {
