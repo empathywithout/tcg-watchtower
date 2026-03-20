@@ -87,6 +87,10 @@ on:
         description: 'Force re-download all images even if they exist in R2 (true/false)'
         required: false
         default: 'false'
+      skip_sync:
+        description: 'Skip image sync — only regenerate the HTML page (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
   sync-and-generate:
@@ -107,6 +111,7 @@ jobs:
         run: npm install @aws-sdk/client-s3 sharp
 
       - name: Sync card images to R2
+        if: ${{ github.event.inputs.skip_sync != 'true' }}
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
           PHASE: ${{ github.event.inputs.phase || 'en' }}
