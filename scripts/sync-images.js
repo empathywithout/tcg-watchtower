@@ -88,16 +88,17 @@ async function fetchWithRetry(url, opts = {}, attempts = 3) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// ── JP phase: fetch cards from Scrydex ───────────────────────────────────────
-async function fetchCardsFromScrydex(scrydexId) {
-  console.log(`📋 Fetching JP card list from Scrydex (${scrydexId})…`);
-  const headers = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
-  let allCards  = [];
-  let page      = 1;
-  let total     = null;
+// ── Fetch cards from Scrydex (JP or EN) ─────────────────────────────────────
+async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
+  console.log(`📋 Fetching ${language} card list from Scrydex (${scrydexId})…`);
+  const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
+  const langParam = language === 'JA' ? '&languageCode=JA' : '';
+  let allCards    = [];
+  let page        = 1;
+  let total       = null;
 
   while (true) {
-    const url  = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100&languageCode=JA&page=${page}`;
+    const url  = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100${langParam}&page=${page}`;
     const data = await fetchWithRetry(url, { headers });
     const pageCards = data.data || [];
     if (total === null) total = data.totalCount || pageCards.length;
@@ -106,12 +107,11 @@ async function fetchCardsFromScrydex(scrydexId) {
     page++;
   }
 
-  console.log(`✅ Scrydex returned ${allCards.length} JP cards`);
+  console.log(`✅ Scrydex returned ${allCards.length} ${language} cards`);
   return allCards.map(c => ({
     localId: c.id ? c.id.split('-').slice(1).join('-') : '',
     name:    c.name    || '',
     rarity:  c.rarity  || null,
-    // Prefer large image, fall back to medium/small
     image:   c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
   }));
 }
@@ -148,9 +148,39 @@ async function main() {
   if (FORCE_RESYNC)   console.log(`   ⚠️  Force resync — all images re-downloaded`);
 
   // Step 1 — Fetch card list
-  const cards = PHASE === 'jp'
-    ? await fetchCardsFromScrydex(JP_SCRYDEX_ID)
-    : await fetchCardsFromTCGdex();
+  // For JP: always Scrydex
+  // For EN: try Scrydex first (more complete, faster after release), fall back to TCGdex
+  let cards = [];
+  if (PHASE === 'jp') {
+    cards = await fetchCardsFromScrydex(JP_SCRYDEX_ID);
+  } else {
+    // Try Scrydex EN first if we have credentials and a mapped ID
+    const SCRYDEX_EN_ID_MAP = {
+      'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
+      'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
+      'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
+      'sv09':'sv09','sv10':'sv10',
+      'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
+    };
+    const scrydexEnId = SCRYDEX_EN_ID_MAP[SET_ID];
+    if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && scrydexEnId) {
+      console.log(`📋 Trying Scrydex EN first for ${SET_ID} (${scrydexEnId})…`);
+      try {
+        cards = await fetchCardsFromScrydex(scrydexEnId, 'EN');
+        if (cards.length > 0) {
+          console.log(`✅ Scrydex EN returned ${cards.length} cards`);
+        } else {
+          console.warn(`⚠️  Scrydex EN returned 0 cards — falling back to TCGdex`);
+          cards = await fetchCardsFromTCGdex();
+        }
+      } catch (e) {
+        console.warn(`⚠️  Scrydex EN failed: ${e.message} — falling back to TCGdex`);
+        cards = await fetchCardsFromTCGdex();
+      }
+    } else {
+      cards = await fetchCardsFromTCGdex();
+    }
+  }
 
   if (!cards.length) { console.error('❌ No cards returned'); process.exit(1); }
 

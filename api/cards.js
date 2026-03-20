@@ -53,8 +53,36 @@ function tcgdexSeriesPrefix(setId) {
   return (setId.match(/^([a-z]+)/i) || ['','sv'])[1].toLowerCase();
 }
 
+// Japanese rarity name → English rarity name
+const JP_RARITY_MAP = {
+  // Common variants
+  'コモン':                          'Common',
+  'アンコモン':                       'Uncommon',
+  'レア':                            'Rare',
+  // Rare variants
+  'スーパーレア':                     'Double Rare',
+  'Uレア':                           'Ultra Rare',
+  'ウルトラレア':                     'Ultra Rare',
+  // Illustration rares
+  'イラストレア':                     'Illustration Rare',
+  'スペシャルイラストレア':            'Special Illustration Rare',
+  // Hyper rares
+  'ハイパーレア':                     'Hyper Rare',
+  'メガハイパーレア':                 'Mega Hyper Rare',
+  // Promo / other
+  'プロモ':                           'Promo',
+  // ACE SPEC / trainer gallery etc
+  'ACEスペック':                      'ACE SPEC Rare',
+  // Shiny variants
+  'シャイニー':                       'Shiny Rare',
+  'シャイニースーパーレア':            'Shiny Ultra Rare',
+};
+
 function normalizeRarity(r) {
   if (!r) return '';
+  // Check JP translation first
+  if (JP_RARITY_MAP[r.trim()]) return JP_RARITY_MAP[r.trim()];
+  // Title-case English rarity
   return r.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
 }
 
