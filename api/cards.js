@@ -193,26 +193,50 @@ async function cacheToR2InBackground(setId, cards, phase) {
   }
 }
 
-// Fetch EN name map for a JP set — tries Scrydex EN then TCGdex
-// Returns a map of { localId: englishName } or empty object if unavailable
+// Fetch EN name map for a JP set — tries TCGCSV first (most reliable), then Scrydex EN, then TCGdex
 async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
-  // Try Scrydex EN first
+  // Try TCGCSV first — guaranteed to have all cards once EN releases
+  const groupId = SET_TO_GROUP[setId];
+  if (groupId) {
+    try {
+      const res      = await fetch(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`, { signal: AbortSignal.timeout(8000) });
+      if (res.ok) {
+        const data     = await res.json();
+        const products = data.results || [];
+        const map      = {};
+        products.forEach(p => {
+          const ext      = p.extendedData || [];
+          const numEntry = ext.find(e => e.name === 'Number');
+          if (!numEntry || !p.name) return;
+          const num = numEntry.value.split('/')[0].trim();
+          map[num.padStart(3, '0')]          = p.name;
+          map[String(parseInt(num, 10))]     = p.name;
+        });
+        if (Object.keys(map).length > 0) {
+          console.log(`[api/cards] EN name map from TCGCSV: ${Object.keys(map).length} names`);
+          return map;
+        }
+      }
+    } catch (e) {
+      console.warn(`[api/cards] TCGCSV name map failed:`, e.message);
+    }
+  }
+  // Try Scrydex EN
   if (scrydexEnId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
     try {
-      let allCards = [];
-      let page     = 1;
-      let total    = null;
+      let allCards = [], page = 1, total = null;
       while (true) {
         const res = await fetch(
           `${SCRYDEX_BASE}/expansions/${scrydexEnId}/cards?select=id,name&pageSize=100&page=${page}`,
           { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(8000) }
         );
         if (!res.ok) break;
-        const data      = await res.json();
+        const data = await res.json();
         const pageCards = data.data || [];
-        if (total === null) total = data.totalCount || pageCards.length;
+        if (total === null) total = data.totalCount || data.total || null;
         allCards = allCards.concat(pageCards);
-        if (pageCards.length < 100 || allCards.length >= total) break;
+        if (pageCards.length === 0 || pageCards.length < 100) break;
+        if (total !== null && allCards.length >= total) break;
         page++;
       }
       if (allCards.length > 0) {
@@ -228,14 +252,13 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
       console.warn(`[api/cards] Scrydex EN name map failed:`, e.message);
     }
   }
-  // Try TCGdex EN as fallback
+  // TCGdex last resort
   try {
     const res = await fetch(`https://api.tcgdex.net/v2/en/sets/${tcgdexId}`, { signal: AbortSignal.timeout(8000) });
     if (res.ok) {
       const data  = await res.json();
-      const cards = data.cards || [];
       const map   = {};
-      cards.forEach(c => { if (c.localId && c.name) map[c.localId] = c.name; });
+      (data.cards || []).forEach(c => { if (c.localId && c.name) map[c.localId] = c.name; });
       console.log(`[api/cards] EN name map from TCGdex: ${Object.keys(map).length} names`);
       return map;
     }
@@ -325,9 +348,11 @@ export default async function handler(req, res) {
 
             const data      = await scrydexRes.json();
             const pageCards = data.data || [];
-            if (totalCount === null) totalCount = data.totalCount || pageCards.length;
+            if (totalCount === null) totalCount = data.totalCount || data.total || null;
             allCards = allCards.concat(pageCards);
-            if (pageCards.length < 100 || allCards.length >= totalCount) break;
+            if (pageCards.length === 0) break;
+            if (pageCards.length < 100) break;
+            if (totalCount !== null && allCards.length >= totalCount) break;
             page++;
           }
 

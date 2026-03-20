@@ -513,24 +513,25 @@ if (process.env.CF_R2_ENDPOINT) {
 
 // ── Update sets.json ───────────────────────────────────────────────────────────
 const ALL_KNOWN_SETS = [
-  { slug: 'scarlet-violet-base-set-card-list', name: 'Scarlet & Violet Base Set (SV1)', series: 'Scarlet & Violet', short: 'SV1',  setId: 'sv01'   },
-  { slug: 'paldea-evolved-card-list',          name: 'Paldea Evolved (SV2)',            series: 'Scarlet & Violet', short: 'SV2',  setId: 'sv02'   },
-  { slug: 'obsidian-flames-card-list',         name: 'Obsidian Flames (SV3)',           series: 'Scarlet & Violet', short: 'SV3',  setId: 'sv03'   },
-  { slug: 'paradox-rift-card-list',            name: 'Paradox Rift (SV4)',              series: 'Scarlet & Violet', short: 'SV4',  setId: 'sv04'   },
-  { slug: 'scarlet-violet-151-card-list',      name: 'Scarlet & Violet 151',            series: 'Scarlet & Violet', short: 'MEW',  setId: 'sv3pt5' },
-  { slug: 'paldean-fates-card-list',           name: 'Paldean Fates',                  series: 'Scarlet & Violet', short: 'PAF',  setId: 'sv4pt5' },
-  { slug: 'temporal-forces-card-list',         name: 'Temporal Forces (SV5)',           series: 'Scarlet & Violet', short: 'SV5',  setId: 'sv05'   },
-  { slug: 'twilight-masquerade-card-list',     name: 'Twilight Masquerade (SV6)',       series: 'Scarlet & Violet', short: 'SV6',  setId: 'sv06'   },
-  { slug: 'shrouded-fable-card-list',          name: 'Shrouded Fable',                 series: 'Scarlet & Violet', short: 'SFA',  setId: 'sv6pt5' },
-  { slug: 'stellar-crown-card-list',           name: 'Stellar Crown (SV7)',             series: 'Scarlet & Violet', short: 'SV7',  setId: 'sv07'   },
-  { slug: 'surging-sparks-card-list',          name: 'Surging Sparks (SV8)',            series: 'Scarlet & Violet', short: 'SV8',  setId: 'sv08'   },
-  { slug: 'prismatic-evolutions-card-list',    name: 'Prismatic Evolutions',            series: 'Scarlet & Violet', short: 'PRE',  setId: 'sv8pt5' },
-  { slug: 'journey-together-card-list',        name: 'Journey Together (SV9)',          series: 'Scarlet & Violet', short: 'SV9',  setId: 'sv09'   },
-  { slug: 'destined-rivals-card-list',         name: 'Destined Rivals (SV10)',          series: 'Scarlet & Violet', short: 'SV10', setId: 'sv10'   },
-  { slug: 'mega-evolution-base-set-card-list', name: 'Mega Evolution',                  series: 'Mega Evolution',   short: 'MEG',  setId: 'me01'   },
-  { slug: 'phantasmal-flames-card-list',       name: 'Phantasmal Flames',               series: 'Mega Evolution',   short: 'PFL',  setId: 'me02'   },
-  { slug: 'ascended-heroes-card-list',         name: 'Ascended Heroes',                 series: 'Mega Evolution',   short: 'ASC',  setId: 'me02.5' },
-  { slug: 'perfect-order-card-list',           name: 'Perfect Order',                   series: 'Mega Evolution',   short: 'ME3',  setId: 'me03'   },
+  { slug: 'scarlet-violet-base-set-card-list', name: 'Scarlet & Violet Base Set (SV1)', series: 'Scarlet & Violet', short: 'SV1',  setId: 'sv01'    },
+  { slug: 'paldea-evolved-card-list',          name: 'Paldea Evolved (SV2)',            series: 'Scarlet & Violet', short: 'SV2',  setId: 'sv02'    },
+  { slug: 'obsidian-flames-card-list',         name: 'Obsidian Flames (SV3)',           series: 'Scarlet & Violet', short: 'SV3',  setId: 'sv03'    },
+  { slug: 'paradox-rift-card-list',            name: 'Paradox Rift (SV4)',              series: 'Scarlet & Violet', short: 'SV4',  setId: 'sv04'    },
+  { slug: 'scarlet-violet-151-card-list',      name: 'Scarlet & Violet 151',            series: 'Scarlet & Violet', short: 'MEW',  setId: 'sv3pt5'  },
+  { slug: 'paldean-fates-card-list',           name: 'Paldean Fates',                   series: 'Scarlet & Violet', short: 'PAF',  setId: 'sv4pt5'  },
+  { slug: 'temporal-forces-card-list',         name: 'Temporal Forces (SV5)',           series: 'Scarlet & Violet', short: 'SV5',  setId: 'sv05'    },
+  { slug: 'twilight-masquerade-card-list',     name: 'Twilight Masquerade (SV6)',       series: 'Scarlet & Violet', short: 'SV6',  setId: 'sv06'    },
+  { slug: 'shrouded-fable-card-list',          name: 'Shrouded Fable',                  series: 'Scarlet & Violet', short: 'SFA',  setId: 'sv6pt5'  },
+  { slug: 'stellar-crown-card-list',           name: 'Stellar Crown (SV7)',             series: 'Scarlet & Violet', short: 'SV7',  setId: 'sv07'    },
+  { slug: 'surging-sparks-card-list',          name: 'Surging Sparks (SV8)',            series: 'Scarlet & Violet', short: 'SV8',  setId: 'sv08'    },
+  { slug: 'prismatic-evolutions-card-list',    name: 'Prismatic Evolutions',            series: 'Scarlet & Violet', short: 'PRE',  setId: 'sv8pt5'  },
+  { slug: 'journey-together-card-list',        name: 'Journey Together (SV9)',          series: 'Scarlet & Violet', short: 'SV9',  setId: 'sv09'    },
+  { slug: 'destined-rivals-card-list',         name: 'Destined Rivals (SV10)',          series: 'Scarlet & Violet', short: 'SV10', setId: 'sv10'    },
+  { slug: 'pokemon/sets/mega-evolution/base-set/cards',      name: 'Mega Evolution (ME1)', series: 'Mega Evolution', short: 'ME01', setId: 'me01'    },
+  { slug: 'phantasmal-flames-card-list',       name: 'Phantasmal Flames',               series: 'Mega Evolution',   short: 'PFL',  setId: 'me02'    },
+  { slug: 'pokemon/sets/mega-evolution/ascended-heroes/cards', name: 'Ascended Heroes',  series: 'Mega Evolution',   short: 'ASC',  setId: 'me02pt5' },
+  { slug: 'perfect-order-card-list',           name: 'Perfect Order (ME3)',             series: 'Mega Evolution',   short: 'ME3',  setId: 'me03'    },
+  { slug: 'chaos-rising-card-list',            name: 'Chaos Rising (ME4)',              series: 'Mega Evolution',   short: 'ME4',  setId: 'me04'    },
 ];
 
 const setsPath = 'sets.json';
@@ -538,9 +539,11 @@ const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'u
 
 const mergedSets = ALL_KNOWN_SETS.map(known => {
   const existing = existingSets.find(s => s.slug === known.slug);
+  const isCurrentSet = known.slug === SET_SLUG;
   return {
     ...known,
-    live: known.slug === SET_SLUG ? true : (existing?.live ?? false),
+    phase: isCurrentSet ? PHASE : (existing?.phase ?? 'en'),
+    live:  isCurrentSet ? true  : (existing?.live  ?? false),
   };
 });
 

@@ -101,9 +101,14 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
     const url  = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100${langParam}&page=${page}`;
     const data = await fetchWithRetry(url, { headers });
     const pageCards = data.data || [];
-    if (total === null) total = data.totalCount || pageCards.length;
+    // Always read totalCount from first page
+    if (total === null) total = data.totalCount || data.total || null;
     allCards = allCards.concat(pageCards);
-    if (pageCards.length < 100 || allCards.length >= total) break;
+    console.log(`  Page ${page}: got ${pageCards.length} cards (total so far: ${allCards.length}${total ? ` / ${total}` : ''})`);
+    // Stop if: got fewer than pageSize, OR we've hit the total, OR got 0
+    if (pageCards.length === 0) break;
+    if (pageCards.length < 100) break;
+    if (total !== null && allCards.length >= total) break;
     page++;
   }
 
@@ -114,6 +119,41 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
     rarity:  c.rarity  || null,
     image:   c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
   }));
+}
+
+// ── Fetch EN name map from TCGCSV (most reliable source post-release) ────────
+async function fetchEnNameMapFromTCGCSV(setId) {
+  const GROUP_ID_MAP = {
+    'sv01':'22873','sv02':'23120','sv03':'23228','sv3pt5':'23237',
+    'sv04':'23286','sv4pt5':'23353','sv05':'23381','sv06':'23473',
+    'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
+    'sv09':'24073','sv10':'24269',
+    'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
+  };
+  const groupId = GROUP_ID_MAP[setId];
+  if (!groupId) return {};
+  try {
+    const res  = await fetchWithRetry(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`);
+    const products = res.results || [];
+    const map  = {};
+    products.forEach(p => {
+      const ext = p.extendedData || [];
+      const numEntry = ext.find(e => e.name === 'Number');
+      if (!numEntry) return;
+      const num = numEntry.value.split('/')[0].trim();
+      // Pad to 3 digits to match Scrydex localId format
+      const localId = num.padStart(3, '0');
+      if (p.name) {
+        map[localId]            = p.name;
+        map[String(parseInt(num, 10))] = p.name; // also store without padding
+      }
+    });
+    console.log(`✅ EN name map from TCGCSV: ${Object.keys(map).length} names`);
+    return map;
+  } catch (e) {
+    console.warn(`⚠️  TCGCSV name map failed: ${e.message}`);
+    return {};
+  }
 }
 
 // ── EN phase: fetch cards from TCGdex ────────────────────────────────────────
@@ -154,28 +194,19 @@ async function main() {
   if (PHASE === 'jp') {
     cards = await fetchCardsFromScrydex(JP_SCRYDEX_ID);
 
-    // Translate JP names to English using TCGdex EN
-    console.log(`\n🔤 Fetching EN names for JP cards…`);
-    try {
-      const enRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_ID}`, {
-        headers: { Accept: 'application/json' },
+    // Translate JP names → EN using TCGCSV (most reliable, has all cards post-release)
+    console.log(`\n🔤 Fetching EN names from TCGCSV…`);
+    const enMap = await fetchEnNameMapFromTCGCSV(SET_ID);
+    if (Object.keys(enMap).length > 0) {
+      let translated = 0;
+      cards = cards.map(c => {
+        const enName = enMap[c.localId] || enMap[String(parseInt(c.localId, 10))] || null;
+        if (enName) { translated++; return { ...c, name: enName }; }
+        return c;
       });
-      if (enRes.ok) {
-        const enData  = await enRes.json();
-        const enCards = enData.cards || [];
-        const enMap   = {};
-        enCards.forEach(c => { if (c.localId && c.name) enMap[c.localId] = c.name; });
-        let translated = 0;
-        cards = cards.map(c => {
-          if (enMap[c.localId]) { translated++; return { ...c, name: enMap[c.localId] }; }
-          return c;
-        });
-        console.log(`✅ Translated ${translated}/${cards.length} card names to English`);
-      } else {
-        console.warn(`⚠️  TCGdex EN not available yet — keeping JP names as fallback`);
-      }
-    } catch (e) {
-      console.warn(`⚠️  EN name fetch failed: ${e.message} — keeping JP names`);
+      console.log(`✅ Translated ${translated}/${cards.length} card names to English`);
+    } else {
+      console.warn(`⚠️  No EN names available yet — keeping JP names as fallback`);
     }
   } else {
     // Try Scrydex EN first if we have credentials and a mapped ID
@@ -218,34 +249,48 @@ async function main() {
     try {
       const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
       const expansion = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${JP_SCRYDEX_ID}`, { headers });
-      const logoUrl   = expansion.logo || expansion.images?.logo || null;
+      console.log(`  Scrydex expansion fields: ${Object.keys(expansion).join(', ')}`);
+      const logoUrl = expansion.logo
+        || expansion.images?.logo
+        || expansion.images?.symbol
+        || expansion.logoUrl
+        || null;
       if (logoUrl) {
         const buf = await downloadImage(logoUrl);
         await uploadToR2(logoR2Key, buf, 'image/png');
-        console.log(`✅ JP logo uploaded`);
+        console.log(`✅ JP logo uploaded from ${logoUrl}`);
         logoUploaded = true;
+      } else {
+        console.warn(`⚠️  No logo URL found in Scrydex expansion response`);
       }
     } catch (e) { console.warn(`⚠️  JP logo failed: ${e.message}`); }
   } else if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
     // Scrydex EN logo — try this first, more reliable than TCGdex for new sets
-    const SCRYDEX_EN_ID_MAP = {
+    const SCRYDEX_EN_ID_MAP_LOGO = {
       'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
       'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
       'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
       'sv09':'sv09','sv10':'sv10',
       'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
     };
-    const scrydexEnId = SCRYDEX_EN_ID_MAP[SET_ID];
+    const scrydexEnId = SCRYDEX_EN_ID_MAP_LOGO[SET_ID];
     if (scrydexEnId) {
       try {
         const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
         const expansion = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexEnId}`, { headers });
-        const logoUrl   = expansion.logo || expansion.images?.logo || null;
+        console.log(`  Scrydex expansion fields: ${Object.keys(expansion).join(', ')}`);
+        const logoUrl = expansion.logo
+          || expansion.images?.logo
+          || expansion.images?.symbol
+          || expansion.logoUrl
+          || null;
         if (logoUrl) {
           const buf = await downloadImage(logoUrl);
           await uploadToR2(logoR2Key, buf, 'image/png');
-          console.log(`✅ EN logo uploaded from Scrydex`);
+          console.log(`✅ EN logo uploaded from Scrydex: ${logoUrl}`);
           logoUploaded = true;
+        } else {
+          console.warn(`⚠️  No logo URL found in Scrydex EN expansion response`);
         }
       } catch (e) { console.warn(`⚠️  Scrydex EN logo failed: ${e.message}`); }
     }
