@@ -28,7 +28,7 @@
 <meta name="description" content="Complete Destined Rivals (SV10) guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs and sealed product. Updated May 2025.">
 <meta name="keywords" content="Destined Rivals (SV10), SV10 card list, SV10 chase cards, SV10 booster box, pokemon SV10, Scarlet & Violet cards">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/card-list">
+<link rel="canonical" href="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/cards">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
 
 <!-- ===== OPEN GRAPH (Facebook, Discord, iMessage previews) ===== -->
@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="TCG Watchtower">
 <meta property="og:title" content="Destined Rivals (SV10) Complete Guide — Card List & Chase Cards">
 <meta property="og:description" content="Full Destined Rivals (SV10) card list with rarity filter, top chase cards, booster box prices and restock alerts. The complete collector's guide.">
-<meta property="og:url" content="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/card-list">
+<meta property="og:url" content="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/cards">
 <meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -55,14 +55,14 @@
   "@type": "CollectionPage",
   "name": "Destined Rivals (SV10) Complete Guide",
   "description": "Complete guide to Destined Rivals (SV10) — full card list, chase cards, and where to buy sealed product.",
-  "url": "https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/card-list",
+  "url": "https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/cards",
   "datePublished": "May 2025",
   "publisher": {
     "@type": "Organization",
     "name": "TCG Watchtower",
     "url": "https://tcgwatchtower.com"
   },
-    "breadcrumb": {
+  "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -87,7 +87,12 @@
         "@type": "ListItem",
         "position": 4,
         "name": "Destined Rivals (SV10)",
-        "item": "https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/card-list"
+        "item": "https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/cards"
+      }
+    ]
+  }
+}",
+        "item": "https://tcgwatchtower.com/destined-rivals-card-list"
       }
     ]
   }
@@ -149,8 +154,34 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-/* ===== NAV ===== */
-nav {
+/* ===== JP PREVIEW BANNER ===== */
+.jp-banner {
+  background: linear-gradient(90deg, rgba(234,179,8,0.15), rgba(234,179,8,0.05));
+  border: 1px solid rgba(234,179,8,0.4);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: #fde68a;
+  position: relative;
+  z-index: 1;
+}
+.jp-banner strong { color: #fbbf24; }
+.jp-banner a { color: #fbbf24; text-decoration: underline; }
+.jp-banner-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #fbbf24;
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0.7;
+  padding: 0 4px;
+}
+.jp-banner-dismiss:hover { opacity: 1; }
   padding: 24px 0;
   display: flex;
   justify-content: space-between;
@@ -290,9 +321,10 @@ nav {
 .hero-visual { position:relative; display:flex; justify-content:center; align-items:center; min-height:400px; }
 .card-stack { position:relative; width:260px; height:360px; }
 .card-stack img {
-  position:absolute; width:180px; border-radius:12px;
+  position:absolute; width:180px; height:auto; border-radius:12px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   transition: transform 0.3s;
+  object-fit: contain;
 }
 .card-stack img:nth-child(1) { left:80px; top:20px; z-index:3; transform:rotate(3deg); }
 .card-stack img:nth-child(2) { left:40px; top:40px; z-index:2; transform:rotate(-4deg); }
@@ -874,7 +906,6 @@ footer {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   padding: 0;
-  /* overflow must NOT be set here — it would clip position:fixed children */
 }
 .section-nav-inner {
   max-width: 1400px;
@@ -1058,17 +1089,17 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="sv10" data-id="001" alt="Card 1" loading="lazy">
-          <img data-set="sv10" data-id="002" alt="Card 2" loading="lazy">
-          <img data-set="sv10" data-id="003" alt="Card 3" loading="lazy">
+          <img data-set="sv10" data-id="231" alt="Team Rocket's Mewtwo ex - 231/182" width="245" height="337" fetchpriority="high">
+          <img data-set="sv10" data-id="232" alt="Cynthia's Garchomp ex - 232/182" width="245" height="337" loading="lazy">
+          <img data-set="sv10" data-id="230" alt="Ethan's Ho-Oh ex - 230/182" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== SECTION NAV ===== -->
-<nav class="section-nav" id="section-nav">
+<!-- ===== JP PREVIEW BANNER (only shown when SET_PHASE=jp) ===== -->
+
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
     <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
@@ -1144,7 +1175,6 @@ footer {
       <button class="filter-btn" data-filter="box">Booster Box</button>
       <button class="filter-btn" data-filter="etb">Elite Trainer Box</button>
       <button class="filter-btn" data-filter="bundle">Bundle</button>
-      <button class="filter-btn" data-filter="sleeves">Sleeved Booster</button>
       <button class="filter-btn" data-filter="collection">Collection</button>
       <button class="filter-btn" data-filter="case">Case</button>
       <button class="filter-btn" data-filter="battle">Build &amp; Battle</button>
@@ -1238,6 +1268,7 @@ footer {
 // ===== SET CONFIG — change these for each set =====
 const SET_ID = 'sv10';
 const SET_OFFICIAL_COUNT = 182;
+const SET_PHASE = 'en';  // 'en' | 'jp'
 // ===================================================
 
 const CONFIG = {
@@ -1247,12 +1278,21 @@ const CONFIG = {
   r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
+// ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────
+// e.g. "sv1" → "sv", "sv8pt5" → "sv", "me1" → "me", "me2" → "me"
+function tcgdexSeriesId(setId) {
+  return (setId.match(/^([a-z]+)/i) || ['', 'sv'])[1].toLowerCase();
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
   if (CONFIG.r2) {
     return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
-  return `https://assets.tcgdex.net/en/sv/${setId}/${localId}/high.webp`;
+  // FIX 1: was hardcoded "/sv/" — now derives series from setId
+  const series = tcgdexSeriesId(setId);
+  return `https://assets.tcgdex.net/en/${series}/${setId}/${localId}/high.webp`;
 }
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
@@ -1260,8 +1300,10 @@ function setLogoUrl(setId) {
   if (CONFIG.r2) {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
-  const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05'}[setId] || setId;
-  return `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`;
+  const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05','me02pt5':'me02.5'}[setId] || setId;
+  // FIX 2: was hardcoded "/sv/" — now derives series from the resolved tcgdexId
+  const series = tcgdexSeriesId(tcgdexId);
+  return `https://assets.tcgdex.net/en/${series}/${tcgdexId}/logo.png`;
 }
 
 // Wire up hero stack images
@@ -1290,13 +1332,12 @@ function ebayLinkNew(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&LH_ItemCondition=1000&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
 function tcgplayerLink(query) {
-  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/destined-rivals?productLineName=pokemon&q=' + query + '&view=grid')}`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/destined-rivals?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
 }
 function tcgplayerAffiliate(directUrl) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
 }
 function tcgplayerCardLink(name, number, setSlug) {
-  // Precise card search: "Kirlia 212/198" finds the exact card
   const q = encodeURIComponent(`${name} ${number}`);
   const url = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1`;
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(url)}`;
@@ -1382,7 +1423,7 @@ function renderChaseCardsHTML(grid) {
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + '131', 'sv10-destined-rivals')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/182', 'destined-rivals')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1390,7 +1431,7 @@ function renderChaseCardsHTML(grid) {
 }
 
 /* ===== PRODUCTS ===== */
-const PRODUCT_META = {"624676":{"tcgpId":"624676","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Destined Rivals Elite Trainer Box","q":"Pokemon Destined Rivals Elite Trainer Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/624676.jpg"},"624678":{"tcgpId":"624678","type":"Booster Box Case","filterKey":"case","badgeClass":"badge-case","name":"Destined Rivals Booster Box Case (6 Boxes)","q":"Pokemon Destined Rivals Booster Box Case SV10","noAmazon":true,"image":"https://product-images.tcgplayer.com/fit-in/437x437/624678.jpg"},"624679":{"tcgpId":"624679","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Destined Rivals Booster Box (36 Packs)","q":"Pokemon Destined Rivals Booster Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/624679.jpg"},"625670":{"tcgpId":"625670","type":"Booster Bundle","filterKey":"bundle","badgeClass":"badge-bundle","name":"Destined Rivals Booster Bundle","q":"Pokemon Destined Rivals Booster Bundle SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/625670.jpg"},"625677":{"tcgpId":"625677","type":"Build & Battle Box","filterKey":"battle","badgeClass":"badge-battle","name":"Destined Rivals Build & Battle Box","q":"Pokemon Destined Rivals Build Battle Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/625677.jpg"},"624684":{"tcgpId":"624684","type":"Sleeved Booster","filterKey":"sleeves","badgeClass":"badge-collection","name":"Destined Rivals Sleeved Booster Pack","q":"Pokemon Destined Rivals Sleeved Booster Pack SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/624684.jpg","asin":"B0F77H6XC5"}};
+const PRODUCT_META = {"624676":{"tcgpId":"624676","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Destined Rivals Elite Trainer Box","q":"Pokemon Destined Rivals Elite Trainer Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/624676.jpg"},"624678":{"tcgpId":"624678","type":"Booster Box Case","filterKey":"case","badgeClass":"badge-case","name":"Destined Rivals Booster Box Case (6 Boxes)","q":"Pokemon Destined Rivals Booster Box Case SV10","noAmazon":true,"image":"https://product-images.tcgplayer.com/fit-in/437x437/624678.jpg"},"624679":{"tcgpId":"624679","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Destined Rivals Booster Box (36 Packs)","q":"Pokemon Destined Rivals Booster Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/624679.jpg"},"625670":{"tcgpId":"625670","type":"Booster Bundle","filterKey":"bundle","badgeClass":"badge-bundle","name":"Destined Rivals Booster Bundle","q":"Pokemon Destined Rivals Booster Bundle SV9","image":"https://product-images.tcgplayer.com/fit-in/437x437/625670.jpg"},"625677":{"tcgpId":"625677","type":"Build & Battle Box","filterKey":"battle","badgeClass":"badge-battle","name":"Destined Rivals Build & Battle Box","q":"Pokemon Destined Rivals Build Battle Box SV10","image":"https://product-images.tcgplayer.com/fit-in/437x437/625677.jpg"}};
 
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
@@ -1421,15 +1462,12 @@ function renderProductCard(p) {
 }
 
 function productImgUrl(q) {
-  // Proxy through our own domain — fetches from eBay so ad blockers can't block it
   return `/api/product-image?q=${encodeURIComponent(q)}`;
 }
 
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
-    // Use pre-fetched image URL if available (set at generation time via R2)
-    // Fall back to proxy for pages generated without R2 credentials
     const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/sv10/${asin}.jpg` : null);
     const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent(p.q)}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
@@ -1457,10 +1495,8 @@ let displayedCount = 0;
 const PAGE_SIZE = 60;
 
 // ── TCGplayer price system ───────────────────────────────────────────────────
-// One fetch per page load via TCGCSV (free TCGplayer mirror, daily updated)
-// groupId is set per-page — template placeholder replaced by generator
 const TCGP_GROUP_ID = '24269';
-const priceCache = {};  // localId → { price, url } | null (null = confirmed no price)
+const priceCache = {};
 let _pricesFetchPromise = null;
 
 function loadTCGPlayerPrices() {
@@ -1474,7 +1510,6 @@ function loadTCGPlayerPrices() {
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
 
-      // Store prices
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
@@ -1483,7 +1518,6 @@ function loadTCGPlayerPrices() {
         priceCache[withZeros]    = entry;
         priceCache[withoutZeros] = entry;
       });
-      // Also store URLs for cards that have a URL but no price entry
       Object.entries(urls).forEach(([num, url]) => {
         const withZeros    = num.padStart(3, '0');
         const withoutZeros = String(parseInt(num, 10));
@@ -1508,7 +1542,6 @@ function loadTCGPlayerPrices() {
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
 
-      // Update sealed product prices
       const sealedPrices = data.sealedPrices || {};
       document.querySelectorAll('[data-tcgp-id]').forEach(el => {
         const tid = el.dataset.tcgpId;
@@ -1518,7 +1551,6 @@ function loadTCGPlayerPrices() {
         }
       });
 
-      // Update hero stack with top 3 chase cards by price
       if (currentChaseList.length) {
         const top3 = [...currentChaseList]
           .map(c => ({ ...c, price: priceCache[c.id]?.price ?? -1 }))
@@ -1529,7 +1561,6 @@ function loadTCGPlayerPrices() {
         });
       }
 
-      // Only re-render via applyFilters if price sort is active (targeted DOM updates above handle the rest)
       if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
         applyFilters();
       }
@@ -1556,7 +1587,7 @@ async function loadCards() {
       }
     } catch(e) {}
 
-    // Fall back to TCGdex directly — fetch cards with rarity in parallel batches
+    // Fall back to TCGdex directly
     if (!data) {
       const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/sv10');
       if (!setRes.ok) throw new Error('TCGdex failed');
@@ -1575,7 +1606,8 @@ async function loadCards() {
           fullCards.push({
             localId: basic.localId,
             name: basic.name,
-            image: `https://assets.tcgdex.net/en/sv/sv10/${basic.localId}/high.webp`,
+            // FIX 3: was hardcoded "/sv/" — now derives series from SET_ID at runtime
+            image: cardImg('sv10', basic.localId),
             rarity: detail.rarity || ''
           });
         });
@@ -1617,7 +1649,6 @@ async function loadCards() {
 
     renderChaseCards(allCards);
     filteredCards = allCards;
-    // Defer card list rendering to avoid blocking main thread after chase cards paint
     setTimeout(() => {
       renderCards(true);
       loadTCGPlayerPrices();
@@ -1639,14 +1670,13 @@ function renderCards(reset) {
     el.dataset.localId = card.localId;
     el.dataset.name = card.name;
 
-    // Show cached price immediately if we already have it
     const cached = priceCache[card.localId];
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${card.localId} Destined Rivals (SV10) Pokemon Card" loading="lazy"
-           onerror="this.style.background=\'#1e293b\'" width="245" height="342">
+      <img src="${imgUrl}" alt="${card.name} ${card.localId} Destined Rivals (SV10) Pokemon Card" width="245" height="337" loading="lazy"
+           onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
         <div class="card-item-num">#${card.localId}</div>
@@ -1677,11 +1707,10 @@ function applyFilters() {
   });
 
   if (sort === 'price') {
-    // Sort by known prices descending; unpriced cards go to the end
     cards = [...cards].sort((a, b) => {
       const pa = priceCache[a.localId]?.price ?? -1;
       const pb = priceCache[b.localId]?.price ?? -1;
-      return pb - pa; // cards with no price (-1) sort to bottom
+      return pb - pa;
     });
   }
 
@@ -1700,7 +1729,6 @@ function toCardSlug(name, localId) {
   return name.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + localId;
 }
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
-  // If directUrl not passed yet, try priceCache again at open time
   if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
   if (!imgUrl) imgUrl = cardImg('sv10', localId);
   const inner = document.getElementById('modal-inner');
@@ -1711,11 +1739,10 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
       <div class="modal-meta">#${localId} / Destined Rivals (SV10)</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
-
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/131', 'sv10-destined-rivals')}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/182', 'destined-rivals')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/scarlet-violet/destined-rivals/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
@@ -1737,7 +1764,7 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 /* ===== INIT ===== */
 renderChaseCards();
 renderProducts();
-loadCards(); // loadTCGPlayerPrices() is called inside loadCards() after cards are rendered
+loadCards();
 
 /* ===== HASH SCROLL ===== */
 if (window.location.hash) {
@@ -1765,7 +1792,6 @@ if (window.location.hash) {
   let allSets = [];
   let currentFilter = 'all';
   
-  // Toggle hamburger menu
   function toggleHamburgerMenu() {
     const isOpen = hamburgerMenu.classList.contains('open');
     if (isOpen) {
@@ -1794,18 +1820,15 @@ if (window.location.hash) {
     hamburgerMenu.classList.add('open');
   }
   
-  // Event listeners
   hamburger.addEventListener('click', toggleHamburgerMenu);
   hamburgerOverlay.addEventListener('click', closeAllMenus);
   pokemonMenuItem.addEventListener('click', showPokemonSets);
   backToMenu.addEventListener('click', backToMainMenu);
   
-  // Close menu when clicking internal links
   hamburgerMenu.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(link => {
     link.addEventListener('click', closeAllMenus);
   });
   
-  // Filter tabs
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       filterTabs.forEach(t => t.classList.remove('active'));
@@ -1815,7 +1838,6 @@ if (window.location.hash) {
     });
   });
   
-  // Fetch and render sets
   async function fetchSets() {
     try {
       const res = await fetch('/sets.json');
@@ -1836,12 +1858,10 @@ if (window.location.hash) {
       return;
     }
     
-    // Filter sets
     let filteredSets = allSets;
     if (currentFilter === 'live') {
       filteredSets = allSets.filter(set => set.live);
     } else if (currentFilter !== 'all') {
-      // Normalize both the filter and series name for comparison
       const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
       filteredSets = allSets.filter(set => {
         const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1849,7 +1869,6 @@ if (window.location.hash) {
       });
     }
     
-    // Group by series
     const groupedSets = {};
     filteredSets.forEach(set => {
       if (!groupedSets[set.series]) {
@@ -1858,7 +1877,6 @@ if (window.location.hash) {
       groupedSets[set.series].push(set);
     });
     
-    // Render grouped sets
     let html = '';
     Object.keys(groupedSets).forEach(series => {
       html += `<div class="series-label">${series}</div>`;
@@ -1867,8 +1885,6 @@ if (window.location.hash) {
         const isDisabled = !set.live;
         const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
         const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-        
-        // Get logo URL (R2 or TCGdex fallback)
         const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
         
         html += `
@@ -1898,7 +1914,6 @@ if (window.location.hash) {
     setsGridContainer.innerHTML = html;
   }
   
-  // Initialize
   await fetchSets();
 })();
 
@@ -1907,7 +1922,6 @@ if (window.location.hash) {
   const btns = document.querySelectorAll('.section-nav-btn');
   const sections = ['section-chase','section-cards','section-products']
     .map(id => document.getElementById(id)).filter(Boolean);
-  // Set initial active button based on current URL
   const currentPath = window.location.pathname;
   btns.forEach(btn => {
     if (btn.dataset.url && currentPath === btn.dataset.url) {
@@ -1995,8 +2009,8 @@ if (window.location.hash) {
         seriesSets.forEach(s => {
           const isCurrent = currentPath === s.slug;
           const isDisabled = !s.live;
-          const tcgdexSetId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'}[s.setId] || s.setId;
-          const logoUrl = s.setId ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/${s.setId}.png` : '';
+          // FIX: setLogoUrl already handles series derivation correctly
+          const logoUrl = s.setId ? setLogoUrl(s.setId) : '';
           const cls = [isCurrent ? 'current' : '', isDisabled ? 'disabled' : ''].filter(Boolean).join(' ');
           html += `<a href="${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set ${cls}">
             ${logoUrl ? `<img src="${logoUrl}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
