@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /**
  * fix-me03-r2.mjs
- * Directly fixes data/me03.json in R2 with correct EN card names.
- * Run via GitHub Actions workflow or locally.
+ * Uses productId offset to map JP card numbers to EN names.
+ * JP card N → productId = 674320 + (N - 1) → EN name from TCGCSV
  */
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-const SET_ID       = 'me03';
-const JP_ID        = 'm3_ja';
-const TCGCSV_GROUP = '24587';
+const SET_ID        = 'me03';
+const JP_ID         = 'm3_ja';
+const TCGCSV_GROUP  = '24587';
+const FIRST_PID     = 674320; // card 001 = product 674320 (confirmed from The Hobby Bin)
 
 const s3 = new S3Client({
   region: 'auto',
@@ -29,20 +30,21 @@ async function upload(key, body, contentType) {
   console.log(`✅ Uploaded ${key}`);
 }
 
-async function fetchEnNames() {
-  console.log('📋 Fetching EN names from TCGCSV...');
+async function fetchEnNamesByProductId() {
+  console.log('📋 Fetching EN names from TCGCSV (by productId)...');
   const res = await fetch(`https://tcgcsv.com/tcgplayer/3/${TCGCSV_GROUP}/products`);
   const { results = [] } = await res.json();
+  // Map productId → clean name
   const map = {};
   for (const p of results) {
-    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
     const name = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
-    if (numEntry && name) {
-      const n = parseInt(numEntry.value.split('/')[0]);
-      map[n] = name;
-    }
+    if (name) map[p.productId] = name;
   }
-  console.log(`✅ Got ${Object.keys(map).length} EN names from TCGCSV`);
+  console.log(`✅ Got ${Object.keys(map).length} products from TCGCSV`);
+  // Show a few to verify
+  [674320, 674321, 674430, 674431, 674432].forEach(pid => {
+    if (map[pid]) console.log(`  pid ${pid}: ${map[pid]}`);
+  });
   return map;
 }
 
@@ -71,46 +73,33 @@ async function fetchJPCards() {
 
 async function fetchLogo() {
   console.log('🎨 Fetching set logo...');
-  // Try Scrydex expansion for logo first
   try {
-    const headers = {
-      'X-Api-Key': process.env.SCRYDEX_API_KEY,
-      'X-Team-ID': process.env.SCRYDEX_TEAM_ID,
-    };
+    const headers = { 'X-Api-Key': process.env.SCRYDEX_API_KEY, 'X-Team-ID': process.env.SCRYDEX_TEAM_ID };
     const res = await fetch(`https://api.scrydex.com/pokemon/v1/expansions/${JP_ID}`, { headers });
     const raw = await res.json();
     const exp = raw.data || raw;
     const logoUrl = exp.logo || exp.images?.logo || exp.images?.symbol || exp.logoUrl || null;
     if (logoUrl) {
-      console.log(`  Logo URL from Scrydex: ${logoUrl}`);
       const imgRes = await fetch(logoUrl);
       if (imgRes.ok) {
         const buf = Buffer.from(await imgRes.arrayBuffer());
         await upload(`logos/${SET_ID}.png`, buf, 'image/png');
-        return true;
+        return;
       }
     }
-    console.log(`  Scrydex fields: ${Object.keys(exp).join(', ')}`);
-  } catch (e) {
-    console.warn(`  Scrydex logo failed: ${e.message}`);
-  }
+  } catch (e) { console.warn(`  Scrydex logo failed: ${e.message}`); }
 
-  // Fallback: The Hobby Bin has the EN logo
+  // Fallback: The Hobby Bin EN logo
   try {
-    const fallbackUrl = 'https://thehobbybin.com/cdn/shop/files/Perfect-Order-Pokemon-TCG-Set-Logo.png';
-    console.log(`  Trying fallback logo: ${fallbackUrl}`);
-    const imgRes = await fetch(fallbackUrl);
+    const url = 'https://thehobbybin.com/cdn/shop/files/Perfect-Order-Pokemon-TCG-Set-Logo.png';
+    const imgRes = await fetch(url);
     if (imgRes.ok) {
       const buf = Buffer.from(await imgRes.arrayBuffer());
       await upload(`logos/${SET_ID}.png`, buf, 'image/png');
-      return true;
+      return;
     }
-  } catch (e) {
-    console.warn(`  Fallback logo failed: ${e.message}`);
-  }
-
-  console.warn('⚠️  Could not fetch logo — skipping');
-  return false;
+  } catch (e) { console.warn(`  Fallback logo failed: ${e.message}`); }
+  console.warn('⚠️  Logo skipped');
 }
 
 const RARITY_MAP = {
@@ -119,7 +108,7 @@ const RARITY_MAP = {
   'R':'Rare','レア':'Rare',
   'RR':'Double Rare','スーパーレア':'Double Rare','ダブルレア':'Double Rare',
   'SR':'Ultra Rare','ウルトラレア':'Ultra Rare',
-  'IR':'Illustration Rare','アートレア':'Illustration Rare','イラストレア':'Illustration Rare',
+  'IR':'Illustration Rare','アートレア':'Illustration Rare',
   'SAR':'Special Illustration Rare','スペシャルアートレア':'Special Illustration Rare',
   'HR':'Hyper Rare','ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare',
   'MHR':'Mega Hyper Rare','メガハイパーレア':'Mega Hyper Rare','超ウルトラレア':'Mega Hyper Rare',
@@ -127,38 +116,34 @@ const RARITY_MAP = {
 function norm(r) { return RARITY_MAP[r?.trim()] || r || ''; }
 
 async function main() {
-  console.log(`\n🔧 fix-me03-r2 — fixing data/${SET_ID}.json and logos/${SET_ID}.png in R2\n`);
+  console.log(`\n🔧 fix-me03-r2 — fixing data/${SET_ID}.json and logo in R2\n`);
 
-  const [enNames, jpCards] = await Promise.all([fetchEnNames(), fetchJPCards()]);
+  const [pidToName, jpCards] = await Promise.all([fetchEnNamesByProductId(), fetchJPCards()]);
 
   const cards = jpCards.map(c => {
     const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
     const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
     const cardNum = parseInt(localId, 10);
-    const name    = enNames[cardNum]
+    // productId = FIRST_PID + (cardNum - 1)
+    const pid     = FIRST_PID + (cardNum - 1);
+    const name    = pidToName[pid]
                  || (c.name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim();
     const rarity  = norm(c.rarity);
     return { localId, name, rarity };
   });
 
-  console.log('\nSample mappings (verify these look correct):');
+  console.log('\nSample mappings (verify):');
   [1, 21, 97, 111, 112, 113, 114, 115, 116].forEach(n => {
     const c = cards.find(x => parseInt(x.localId) === n);
-    if (c) console.log(`  #${String(c.localId).padStart(3,'0')}: ${c.name} (${c.rarity})`);
+    if (c) console.log(`  #${String(n).padStart(3,'0')}: ${c.name} (${c.rarity})`);
   });
 
-  const metadata = {
-    setId: SET_ID,
-    phase: 'jp',
-    cardCount: { official: 88 },
-    cards,
-  };
-
+  const metadata = { setId: SET_ID, phase: 'jp', cardCount: { official: 88 }, cards };
   await upload(`data/${SET_ID}.json`, JSON.stringify(metadata), 'application/json');
   await fetchLogo();
 
   console.log(`\n🎉 Done! ${cards.length} cards written to R2.`);
-  console.log('   Redeploy Vercel to flush the 1-hour in-memory cache.');
+  console.log('   Trigger a Vercel redeploy to flush the in-memory cache.');
 }
 
 main().catch(e => { console.error('❌ Fatal:', e); process.exit(1); });
