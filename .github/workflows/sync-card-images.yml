@@ -4,13 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       set_id:
-        description: 'TCGdex Set ID (sv01, me01, me02pt5...)'
+        description: 'Set ID (sv01, me01, me02pt5, sv11...)'
         required: true
         default: 'sv01'
       set_full_name:
-        description: 'Full set name e.g. "Mega Evolution" or "Stellar Crown (SV7)"'
+        description: 'Full set name e.g. "Chaos Rising" or "Stellar Crown (SV7)"'
         required: true
         default: 'Scarlet & Violet Base Set (SV1)'
+      phase:
+        description: 'Phase: en (default) or jp (Japanese preview)'
+        required: false
+        default: 'en'
+      jp_scrydex_id:
+        description: 'Scrydex JP expansion ID e.g. sv9b — required when phase=jp'
+        required: false
+        default: ''
       set_series:
         description: 'Series display name e.g. "Mega Evolution" or "Scarlet & Violet"'
         required: false
@@ -20,35 +28,35 @@ on:
         required: false
         default: 'scarlet-violet'
       set_slug:
-        description: 'HTML filename slug e.g. mega-evolution-base-set-card-list or stellar-crown-card-list'
+        description: 'HTML filename slug e.g. chaos-rising-card-list or stellar-crown-card-list'
         required: true
         default: 'scarlet-violet-base-set-card-list'
       set_url_slug:
-        description: 'URL path slug e.g. base-set or stellar-crown (leave blank to auto-derive; sv01/me01 always get base-set)'
+        description: 'URL path slug e.g. chaos-rising (leave blank to auto-derive)'
         required: false
         default: ''
       set_short_name:
-        description: 'Short badge code e.g. SV1, MEG, PFL'
+        description: 'Short badge code e.g. SV11, CR'
         required: false
         default: 'SV1'
       tcgp_group_id:
-        description: 'TCGplayer groupId for pricing — leave blank to use script map (find at tcgcsv.com/tcgplayer/3/groups)'
+        description: 'TCGplayer groupId — leave blank for JP phase, required for EN phase'
         required: false
         default: ''
       set_release_date:
-        description: 'Release date e.g. "Mar 2023" — leave blank to auto-detect from TCGdex'
+        description: 'Release date e.g. "Mar 2023" — leave blank to auto-detect'
         required: false
         default: ''
       set_subtitle:
-        description: 'Short title for hero heading — leave blank to auto-derive from full name'
+        description: 'Short title for hero heading — leave blank to auto-derive'
         required: false
         default: ''
       set_search_name:
-        description: 'Name appended to card search queries — leave blank to use subtitle'
+        description: 'Name for card search queries — leave blank to use subtitle'
         required: false
         default: ''
       set_tcgp_slug:
-        description: 'TCGplayer URL slug e.g. me01-mega-evolution — leave blank to auto-derive'
+        description: 'TCGplayer URL slug — leave blank to auto-derive'
         required: false
         default: ''
       set_description:
@@ -56,25 +64,29 @@ on:
         required: false
         default: ''
       hero_card_1:
-        description: 'Hero card 1 localId — leave blank to auto-fetch from top prices'
+        description: 'Hero card 1 localId — leave blank to auto-fetch'
         required: false
         default: ''
       hero_card_2:
-        description: 'Hero card 2 localId — leave blank to auto-fetch from top prices'
+        description: 'Hero card 2 localId — leave blank to auto-fetch'
         required: false
         default: ''
       hero_card_3:
-        description: 'Hero card 3 localId — leave blank to auto-fetch from top prices'
+        description: 'Hero card 3 localId — leave blank to auto-fetch'
         required: false
         default: ''
       product_meta_json:
-        description: 'JSON object of sealed products keyed by TCGplayer product ID — leave blank to use script map'
+        description: 'JSON object of sealed products — leave blank to use script map'
         required: false
         default: ''
       chase_cards_json:
-        description: 'JSON array of fallback chase cards — leave blank to auto-detect from rarity'
+        description: 'JSON array of fallback chase cards — leave blank to auto-detect'
         required: false
         default: ''
+      force_resync:
+        description: 'Force re-download all images even if they exist in R2 (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
   sync-and-generate:
@@ -97,6 +109,11 @@ jobs:
       - name: Sync card images to R2
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
+          PHASE: ${{ github.event.inputs.phase || 'en' }}
+          JP_SCRYDEX_ID: ${{ github.event.inputs.jp_scrydex_id }}
+          FORCE_RESYNC: ${{ github.event.inputs.force_resync || 'false' }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
@@ -108,6 +125,8 @@ jobs:
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
           SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
+          PHASE: ${{ github.event.inputs.phase || 'en' }}
+          JP_SCRYDEX_ID: ${{ github.event.inputs.jp_scrydex_id }}
           SET_SERIES: ${{ github.event.inputs.set_series }}
           SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug }}
           SET_SLUG: ${{ github.event.inputs.set_slug }}
@@ -124,6 +143,8 @@ jobs:
           HERO_CARD_3: ${{ github.event.inputs.hero_card_3 }}
           PRODUCT_META_JSON: ${{ github.event.inputs.product_meta_json }}
           CHASE_CARDS_JSON: ${{ github.event.inputs.chase_cards_json }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
@@ -139,7 +160,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ${{ github.event.inputs.set_slug }}.html sitemap.xml sets.json vercel.json
           git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Auto-generate ${{ github.event.inputs.set_slug }}.html"
+          git commit -m "[${{ github.event.inputs.phase || 'en' }}] Generate ${{ github.event.inputs.set_slug }}.html"
           git stash
           git pull --rebase origin main
           git stash pop || true
