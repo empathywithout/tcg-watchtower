@@ -162,10 +162,10 @@
     "live": true
   },
   {
-    "slug": "chaos-rising-card-list",
-    "name": "Chaos Rising (ME4)",
+    "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
+    "name": "Chaos Rising",
     "series": "Mega Evolution",
-    "short": "ME4",
+    "short": "ME04",
     "setId": "me04",
     "phase": "jp",
     "live": true
