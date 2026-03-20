@@ -64,15 +64,27 @@ function slugToName(slug) {
 }
 
 const RARITY_MAP = {
-  'C':'Common','コモン':'Common',
-  'U':'Uncommon','アンコモン':'Uncommon','非':'Uncommon',
-  'R':'Rare','レア':'Rare','希少':'Rare',
-  'RR':'Double Rare','スーパーレア':'Double Rare','ダブルレア':'Double Rare',
-  'SR':'Ultra Rare','ウルトラレア':'Ultra Rare',
-  'AR':'Illustration Rare','アートレア':'Illustration Rare',
-  'SAR':'Special Illustration Rare','スペシャルアートレア':'Special Illustration Rare',
-  'HR':'Hyper Rare','ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare',
-  'MUR':'Mega Ultra Rare','超ウルトラレア':'Mega Ultra Rare',
+  // Short codes
+  'C':'Common','U':'Uncommon','R':'Rare','RR':'Double Rare',
+  'SR':'Ultra Rare','AR':'Illustration Rare','SAR':'Special Illustration Rare',
+  'HR':'Hyper Rare','MUR':'Mega Ultra Rare',
+  // JP text
+  'コモン':'Common','通常':'Common',
+  'アンコモン':'Uncommon','非':'Uncommon',
+  'レア':'Rare','希少':'Rare',
+  'スーパーレア':'Double Rare','ダブルレア':'Double Rare',
+  'ウルトラレア':'Ultra Rare',
+  'アートレア':'Illustration Rare',
+  'スペシャルアートレア':'Special Illustration Rare',
+  'ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare',
+  '超ウルトラレア':'Mega Ultra Rare',
+  // Scrydex EN full strings (translation.en.rarity)
+  'Common':'Common','Uncommon':'Uncommon','Rare':'Rare',
+  'Double Rare':'Double Rare','Ultra Rare':'Ultra Rare',
+  'Art Rare':'Illustration Rare','Illustration Rare':'Illustration Rare',
+  'Special Art Rare':'Special Illustration Rare','Special Illustration Rare':'Special Illustration Rare',
+  'Super Rare':'Ultra Rare',
+  'Hyper Rare':'Hyper Rare','Mega Ultra Rare':'Mega Ultra Rare',
 };
 function norm(r) { return RARITY_MAP[r?.trim()] || r || ''; }
 

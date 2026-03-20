@@ -132,6 +132,7 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
       // Never use .total (that's DB count) — use printedTotal or cardCount
       officialCount = setData.printedTotal || setData.cardCount || setData.total || 0;
       console.log(`✅  Scrydex JP: ${setData.name || '(jp name)'} — ${officialCount} official cards`);
+      setData.name = null; // Never use JP name — always use SET_FULL_NAME
     } else {
       console.warn(`⚠️  Scrydex ${scrydexRes.status} — falling back to manual values`);
     }

@@ -22,6 +22,25 @@ const SCRYDEX_API_KEY  = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID  = process.env.SCRYDEX_TEAM_ID || '';
 const SCRYDEX_BASE     = 'https://api.scrydex.com/pokemon/v1';
 
+// Normalize rarity strings from Scrydex (JP codes, JP text, or EN full strings)
+const RARITY_NORM = {
+  'C':'Common','U':'Uncommon','R':'Rare','RR':'Double Rare',
+  'SR':'Ultra Rare','AR':'Illustration Rare','SAR':'Special Illustration Rare',
+  'HR':'Hyper Rare','MUR':'Mega Ultra Rare',
+  'コモン':'Common','通常':'Common','アンコモン':'Uncommon','非':'Uncommon',
+  'レア':'Rare','希少':'Rare','スーパーレア':'Double Rare','ダブルレア':'Double Rare',
+  'ウルトラレア':'Ultra Rare','アートレア':'Illustration Rare',
+  'スペシャルアートレア':'Special Illustration Rare',
+  'ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare','超ウルトラレア':'Mega Ultra Rare',
+  // Scrydex EN full strings
+  'Common':'Common','Uncommon':'Uncommon','Rare':'Rare',
+  'Double Rare':'Double Rare','Ultra Rare':'Ultra Rare',
+  'Art Rare':'Illustration Rare','Illustration Rare':'Illustration Rare',
+  'Special Art Rare':'Special Illustration Rare','Special Illustration Rare':'Special Illustration Rare',
+  'Super Rare':'Ultra Rare','Hyper Rare':'Hyper Rare','Mega Ultra Rare':'Mega Ultra Rare',
+};
+function normalizeRarity(r) { return RARITY_NORM[r?.trim()] || r || null; }
+
 if (!SET_ID) { console.error('❌ SET_ID required'); process.exit(1); }
 if (PHASE === 'jp' && !JP_SCRYDEX_ID) { console.error('❌ JP_SCRYDEX_ID required when PHASE=jp'); process.exit(1); }
 if (PHASE === 'jp' && (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID)) { console.error('❌ SCRYDEX_API_KEY and SCRYDEX_TEAM_ID required when PHASE=jp'); process.exit(1); }
@@ -124,7 +143,7 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
     return {
       localId,
       name,
-      rarity: language === 'JA' ? (c.translation?.en?.rarity || c.rarity || null) : (c.rarity || null),
+      rarity: language === 'JA' ? normalizeRarity(c.translation?.en?.rarity || c.rarity) : normalizeRarity(c.rarity),
       image:  c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
     };
   });
