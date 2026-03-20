@@ -32,47 +32,6 @@ function extractLocalId(id) {
   return raw.includes('/') ? raw.split('/')[0].trim() : raw;
 }
 
-async function probeEnExpansion() {
-  // Try different possible EN expansion IDs for Perfect Order
-  const candidates = ['me03', 'm3', 'm3_en', 'perfect-order', 'nullifying-zero'];
-  for (const id of candidates) {
-    try {
-      const res = await fetch(
-        `https://api.scrydex.com/pokemon/v1/expansions/${id}/cards?pageSize=3&page=1`,
-        { headers: HEADERS }
-      );
-      if (!res.ok) { console.log(`  ${id}: HTTP ${res.status}`); continue; }
-      const data = await res.json();
-      const cards = data.data || [];
-      if (cards.length > 0) {
-        console.log(`  ✅ ${id}: ${cards.length} cards, first name: "${cards[0].name}", id: "${cards[0].id}"`);
-        return id;
-      } else {
-        console.log(`  ${id}: 0 cards returned`);
-      }
-    } catch(e) {
-      console.log(`  ${id}: error - ${e.message}`);
-    }
-  }
-  return null;
-}
-
-async function fetchAllCards(expansionId, language) {
-  let page = 1, all = [];
-  while (true) {
-    const url = language
-      ? `https://api.scrydex.com/pokemon/v1/expansions/${expansionId}/cards?select=id,name,rarity,images&pageSize=100&language=${language}&page=${page}`
-      : `https://api.scrydex.com/pokemon/v1/expansions/${expansionId}/cards?select=id,name,rarity,images&pageSize=100&page=${page}`;
-    const res = await fetch(url, { headers: HEADERS });
-    const data = await res.json();
-    const cards = data.data || [];
-    all = all.concat(cards);
-    if (cards.length < 100) break;
-    page++;
-  }
-  return all;
-}
-
 const RARITY_MAP = {
   'C':'Common','コモン':'Common','通常':'Common',
   'U':'Uncommon','アンコモン':'Uncommon','非':'Uncommon',
@@ -86,74 +45,102 @@ const RARITY_MAP = {
 };
 function norm(r) { return RARITY_MAP[r?.trim()] || r || ''; }
 function isJapanese(s) { return /[\u3000-\u9fff\uff00-\uffef]/.test(s || ''); }
-function stripSuffix(name) {
-  return (name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').replace(/\s*\(.*?\)\s*$/, '').trim();
+
+async function fetchCards(language) {
+  // Try different field combinations to get English names
+  const selects = [
+    'id,name,nameEn,localName,rarity,images',
+    'id,name,rarity,images',
+  ];
+  
+  let all = [];
+  for (const select of selects) {
+    let page = 1;
+    all = [];
+    while (true) {
+      // Try with and without language param
+      const langParam = language ? `&language=${language}` : '';
+      const url = `https://api.scrydex.com/pokemon/v1/expansions/${JP_ID}/cards?select=${select}&pageSize=100${langParam}&page=${page}`;
+      const res = await fetch(url, { headers: HEADERS });
+      const data = await res.json();
+      const cards = data.data || [];
+      all = all.concat(cards);
+      if (cards.length < 100) break;
+      page++;
+    }
+    
+    // Check if we got English names
+    const sample = all[0];
+    if (sample) {
+      const fields = Object.keys(sample);
+      console.log(`  select="${select}" lang="${language||'none'}" → fields: ${fields.join(', ')}`);
+      console.log(`  sample card: name="${sample.name}" nameEn="${sample.nameEn}" localName="${sample.localName}"`);
+      // If any field has English, use this
+      const hasEn = all.some(c => !isJapanese(c.nameEn || c.localName || ''));
+      if (hasEn) {
+        console.log(`  ✅ Found English names!`);
+        return all;
+      }
+    }
+  }
+  return all;
 }
 
 async function main() {
   console.log(`\n🔧 fix-me03-r2\n`);
 
-  // Step 1: probe for EN expansion ID
-  console.log('🔍 Probing Scrydex for EN expansion...');
-  const enId = await probeEnExpansion();
-  console.log(enId ? `\n✅ EN expansion found: ${enId}` : '\n⚠️  No EN expansion found — will use JP names stripped of suffix');
-
-  // Step 2: fetch JP cards
-  console.log('\n📋 Fetching JP cards (JA)...');
-  const jpCards = await fetchAllCards(JP_ID, 'JA');
-  console.log(`✅ ${jpCards.length} JP cards`);
-
-  // Step 3: fetch EN names if found
-  const enByLocalId = {};
-  if (enId) {
-    console.log(`\n📋 Fetching EN cards from ${enId}...`);
-    const enCards = await fetchAllCards(enId, null); // no language param - use default
-    console.log(`✅ ${enCards.length} EN cards`);
-    // Log first 3 to verify names are English
-    enCards.slice(0,3).forEach(c => console.log(`  sample: id="${c.id}" name="${c.name}"`));
-
-    for (const c of enCards) {
-      const localId = extractLocalId(c.id);
-      if (localId && c.name && !isJapanese(c.name)) {
-        enByLocalId[localId] = stripSuffix(c.name);
-      }
+  // Try different language params
+  let bestCards = [];
+  for (const lang of ['EN', 'JA', null]) {
+    console.log(`\n📋 Trying language=${lang||'none'}...`);
+    const cards = await fetchCards(lang);
+    if (cards.length > 0) {
+      bestCards = cards;
+      const sample = cards[0];
+      // Check all name fields
+      const nameFields = ['name','nameEn','localName','title','nameJa'];
+      console.log('  Name fields on first card:');
+      nameFields.forEach(f => { if (sample[f]) console.log(`    ${f}: "${sample[f]}"`); });
+      break;
     }
-    console.log(`✅ ${Object.keys(enByLocalId).length} EN names mapped`);
   }
 
-  // Step 4: build card list
-  const cards = jpCards.map(c => {
+  console.log(`\n✅ Got ${bestCards.length} cards total`);
+
+  // Build card list — find the best English name field
+  const sample = bestCards[0] || {};
+  const enField = ['nameEn','localName'].find(f => sample[f] && !isJapanese(sample[f])) || 'name';
+  console.log(`Using name field: "${enField}"`);
+
+  const cards = bestCards.map(c => {
     const localId = extractLocalId(c.id);
-    const name    = enByLocalId[localId] || stripSuffix(c.name);
+    const rawName = c[enField] || c.name || '';
+    const name    = rawName.replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').replace(/\s*\(.*?\)\s*$/, '').trim();
     return { localId, name, rarity: norm(c.rarity) };
   });
 
   console.log('\nSample:');
-  [1, 21, 23, 24, 111, 112, 113].forEach(n => {
+  [1, 21, 23, 111, 112, 113].forEach(n => {
     const c = cards.find(x => parseInt(x.localId) === n);
     if (c) console.log(`  #${String(n).padStart(3,'0')}: ${c.name} (${c.rarity})`);
   });
 
-  // Step 5: upload
   await upload(`data/${SET_ID}.json`, JSON.stringify({
     setId: SET_ID, phase: 'jp', cardCount: { official: 88 }, cards
   }), 'application/json');
 
-  // Step 6: logo
+  // Logo
   try {
     const res = await fetch(`https://api.scrydex.com/pokemon/v1/expansions/${JP_ID}`, { headers: HEADERS });
     const exp = ((await res.json()).data) || {};
     const logoUrl = exp.logo || exp.images?.logo || null;
     if (logoUrl) {
       const img = await fetch(logoUrl);
-      if (img.ok) { await upload(`logos/${SET_ID}.png`, Buffer.from(await img.arrayBuffer()), 'image/png'); }
-    } else {
-      throw new Error('no logo url');
+      if (img.ok) { await upload(`logos/${SET_ID}.png`, Buffer.from(await img.arrayBuffer()), 'image/png'); return; }
     }
-  } catch(e) {
-    const img = await fetch('https://thehobbybin.com/cdn/shop/files/Perfect-Order-Pokemon-TCG-Set-Logo.png');
-    if (img.ok) await upload(`logos/${SET_ID}.png`, Buffer.from(await img.arrayBuffer()), 'image/png');
-  }
+  } catch(e) {}
+  const img = await fetch('https://thehobbybin.com/cdn/shop/files/Perfect-Order-Pokemon-TCG-Set-Logo.png');
+  if (img.ok) await upload(`logos/${SET_ID}.png`, Buffer.from(await img.arrayBuffer()), 'image/png');
 
   console.log(`\n🎉 Done! ${cards.length} cards written.`);
 }
