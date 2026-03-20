@@ -98,6 +98,7 @@ const GROUP_ID_MAP = {
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
   'me01': '24380', 'me02': '24448', 'me02.5': '24541', 'me03': '24587',
+  'me04': '24655',
 };
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID && process.env.TCGP_GROUP_ID !== '0')
   ? process.env.TCGP_GROUP_ID

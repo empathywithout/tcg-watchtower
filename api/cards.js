@@ -25,7 +25,7 @@ const SET_TO_GROUP = {
   'sv04':'23286','sv4pt5':'23353','sv05':'23381','sv06':'23473',
   'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
   'sv09':'24073','sv10':'24269',
-  'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587',
+  'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -34,7 +34,7 @@ const SCRYDEX_EN_ID_MAP = {
   'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
   'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
   'sv09':'sv09','sv10':'sv10',
-  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03',
+  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
 };
 
 // Our internal setId → Scrydex JP expansion ID
@@ -55,26 +55,51 @@ function tcgdexSeriesPrefix(setId) {
 
 // Japanese rarity name → English rarity name
 const JP_RARITY_MAP = {
-  // Common variants
+  // Common
+  'C':                              'Common',
   'コモン':                          'Common',
+  '通常':                            'Common',
+  // Uncommon
+  'U':                              'Uncommon',
   'アンコモン':                       'Uncommon',
+  '非':                              'Uncommon',
+  // Rare
+  'R':                              'Rare',
   'レア':                            'Rare',
-  // Rare variants
+  '希少':                            'Rare',
+  // Double Rare
+  'RR':                             'Double Rare',
   'スーパーレア':                     'Double Rare',
+  'ダブルレア':                       'Double Rare',
+  // Ultra Rare
+  'SR':                             'Ultra Rare',
   'Uレア':                           'Ultra Rare',
   'ウルトラレア':                     'Ultra Rare',
-  // Illustration rares
+  // Illustration Rare
+  'IR':                             'Illustration Rare',
   'イラストレア':                     'Illustration Rare',
+  'アートレア':                       'Illustration Rare',
+  // Special Illustration Rare
+  'SAR':                            'Special Illustration Rare',
   'スペシャルイラストレア':            'Special Illustration Rare',
-  // Hyper rares
+  'スペシャルアートレア':              'Special Illustration Rare',
+  // Hyper Rare
+  'HR':                             'Hyper Rare',
   'ハイパーレア':                     'Hyper Rare',
+  'ゴールデンレア':                   'Hyper Rare',
+  // Mega Hyper Rare
+  'MHR':                            'Mega Hyper Rare',
   'メガハイパーレア':                 'Mega Hyper Rare',
-  // Promo / other
+  // Promo
+  'PR':                             'Promo',
   'プロモ':                           'Promo',
-  // ACE SPEC / trainer gallery etc
+  // ACE SPEC
+  'ACE':                            'ACE SPEC Rare',
   'ACEスペック':                      'ACE SPEC Rare',
-  // Shiny variants
+  // Shiny
+  'S':                              'Shiny Rare',
   'シャイニー':                       'Shiny Rare',
+  'SSR':                            'Shiny Ultra Rare',
   'シャイニースーパーレア':            'Shiny Ultra Rare',
 };
 
@@ -105,7 +130,16 @@ async function cacheToR2InBackground(setId, cards, phase) {
   const accessKey = process.env.CF_R2_ACCESS_KEY;
   const secretKey = process.env.CF_R2_SECRET_KEY;
   const bucket    = process.env.CF_R2_BUCKET;
-  if (!endpoint || !accessKey || !secretKey || !bucket) return; // R2 not configured
+  if (!endpoint || !accessKey || !secretKey || !bucket) return;
+
+  // Don't cache if we got suspiciously few cards — likely a partial Scrydex response
+  // Most sets have 100+ cards; only cache if we got at least 80 or it's a known small set
+  const KNOWN_SMALL_SETS = ['sv3pt5', 'sv4pt5', 'sv6pt5', 'sv8pt5', 'me02pt5'];
+  const minExpected = KNOWN_SMALL_SETS.includes(setId) ? 20 : 80;
+  if (cards.length < minExpected) {
+    console.warn(`[r2-cache] Skipping cache for ${setId} — only ${cards.length} cards (min ${minExpected}), likely partial`);
+    return;
+  } // R2 not configured
 
   try {
     const { S3Client, PutObjectCommand, HeadObjectCommand } = await import('@aws-sdk/client-s3');
@@ -390,6 +424,8 @@ export default async function handler(req, res) {
     }
 
     const responseData = { cards, cardCount: { total: cards.length }, phase };
+    // Only cache to in-memory if we got a reasonable card count
+    // Avoid caching suspiciously small results that might be partial
     cache.set(setId, { ts: Date.now(), data: responseData });
     res.setHeader('X-Cache', 'MISS');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
