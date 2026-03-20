@@ -127,13 +127,11 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
     });
     if (scrydexRes.ok) {
       const raw     = await scrydexRes.json();
-      setData       = raw.data || raw;  // Scrydex wraps response in { data: ... }
-      // Scrydex uses different field names — try all known variants
-      const scrydexName = setData.name || setData.nameEn || setData.localName
-                       || setData.title || setData.expansionName || null;
-      officialCount = setData.total || setData.printedTotal || setData.cardCount || 0;
-      console.log(`✅  Scrydex JP: ${scrydexName || '(no name field)'} — ${officialCount} cards`);
-      if (!setData.name && scrydexName) setData.name = scrydexName;
+      setData       = raw.data || raw;
+      // For JP phase: printedTotal is the official card count (e.g. 088), total includes secret rares
+      // Never use .total (that's DB count) — use printedTotal or cardCount
+      officialCount = setData.printedTotal || setData.cardCount || setData.total || 0;
+      console.log(`✅  Scrydex JP: ${setData.name || '(jp name)'} — ${officialCount} official cards`);
     } else {
       console.warn(`⚠️  Scrydex ${scrydexRes.status} — falling back to manual values`);
     }
@@ -157,7 +155,8 @@ const releaseDate = SET_RELEASE_DATE
       ? new Date(setData.releaseDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
       : '???');
 
-const SET_SUBTITLE    = process.env.SET_SUBTITLE    || setData.name || SET_FULL_NAME;
+// For JP phase, always use SET_FULL_NAME — never the JP name from Scrydex
+const SET_SUBTITLE    = process.env.SET_SUBTITLE    || (PHASE === 'jp' ? SET_FULL_NAME : (setData.name || SET_FULL_NAME));
 const SET_SEARCH_NAME = process.env.SET_SEARCH_NAME || SET_SUBTITLE;
 const SET_TCGP_SLUG   = process.env.SET_TCGP_SLUG
   || SET_SUBTITLE.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
