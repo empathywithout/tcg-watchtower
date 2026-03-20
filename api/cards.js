@@ -385,6 +385,16 @@ export default async function handler(req, res) {
               ? Object.values(enNameMap).filter(v => typeof v === 'object' && v.productId).sort((a, b) => a.productId - b.productId)
               : [];
 
+            // Build card-number → EN name lookup from TCGCSV
+            const jpNameByLocalId = {};
+            if (hasNumbers) {
+              for (const [k, v] of Object.entries(enNameMap)) {
+                if (/^\d{3}$/.test(k) && typeof v === 'string') {
+                  jpNameByLocalId[String(parseInt(k, 10))] = v;  // "097" → "Mega Zygarde ex"
+                }
+              }
+            }
+
             cards = allCards.map((c, i) => {
               // Scrydex card IDs look like "m3_ja-111/088" or "sv10-001"
               // localId should be just the card number: "111" or "001"
@@ -400,9 +410,9 @@ export default async function handler(req, res) {
               let name = (c.name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim();
 
               if (phase === 'jp') {
-                const paddedId = localId.padStart(3, '0');
                 if (hasNumbers) {
-                  name = enNameMap[paddedId] || enNameMap[localId] || enNameMap[String(parseInt(localId, 10))] || name;
+                  const enName = jpNameByLocalId[String(parseInt(localId, 10))];
+                  if (enName) name = enName;
                 } else if (pidEntries[i]) {
                   name = pidEntries[i].name;
                 }

@@ -137,6 +137,12 @@ async function fetchEnNameMapFromTCGCSV(setId) {
     'sv09':'24073','sv10':'24269',
     'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   };
+  // Known first productId for each set — enables direct card-number → productId lookup
+  // JP card N → productId = FIRST_PRODUCT_ID[setId] + (N - 1)
+  const FIRST_PRODUCT_ID = {
+    'me03': 674320,  // Perfect Order: card 001 = product 674320 (confirmed from TCGplayer/The Hobby Bin)
+    'me04': null,    // Chaos Rising: TBD once TCGplayer lists cards
+  };
   const groupId = GROUP_ID_MAP[setId];
   if (!groupId) return {};
   try {
@@ -218,14 +224,37 @@ async function main() {
     const numberedEntries = Object.keys(enMap).filter(k => !k.startsWith('pid_'));
 
     if (numberedEntries.length > 0) {
-      // TCGCSV has card numbers — match by localId
+      // Build num→name lookup from TCGCSV numbered entries
+      const numToName = {};
+      for (const k of numberedEntries) {
+        if (/^\d{3}$/.test(k)) numToName[parseInt(k, 10)] = enMap[k];
+      }
+
       let translated = 0;
-      cards = cards.map(c => {
-        const enName = enMap[c.localId] || enMap[String(parseInt(c.localId, 10))] || null;
-        if (enName) { translated++; return { ...c, name: enName }; }
-        return c;
-      });
-      console.log(`✅ Translated ${translated}/${cards.length} card names to English (by number)`);
+      const firstPid = FIRST_PRODUCT_ID[SET_ID];
+
+      if (firstPid || Object.keys(numToName).length > 0) {
+        // Direct match: JP localId is card number (1-based), EN name is at that same number in TCGCSV
+        cards = cards.map(c => {
+          const cardNum = parseInt(c.localId, 10);
+          if (!cardNum) return c;
+          const name = numToName[cardNum];
+          if (name) { translated++; return { ...c, name }; }
+          return c;
+        });
+        console.log(`\u2705 Translated ${translated}/${cards.length} card names to English (by card number)`);
+
+        // If direct match got less than half, fall back to sorted-position
+        if (translated < cards.length / 2) {
+          console.warn('\u26A0\uFE0F  Direct match got few hits — trying sorted-position fallback');
+          const sortedTcgcsv = Object.entries(numToName).sort((a,b) => a[0]-b[0]).map(([,n])=>n);
+          const sortedJP = [...cards].sort((a,b) => parseInt(a.localId)-parseInt(b.localId));
+          const byId = {};
+          sortedJP.forEach((c,i) => { if (sortedTcgcsv[i]) { byId[c.localId]=sortedTcgcsv[i]; translated++; } });
+          cards = cards.map(c => byId[c.localId] ? {...c, name: byId[c.localId]} : c);
+          console.log(`\u2705 Sorted-position fallback: ${Object.keys(byId).length} names mapped`);
+        }
+      }
     } else if (Object.keys(enMap).length > 0) {
       // Pre-release: no numbers yet — match by position order
       const pidEntries = Object.values(enMap)
