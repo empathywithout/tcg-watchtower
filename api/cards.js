@@ -204,18 +204,30 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
         const data     = await res.json();
         const products = data.results || [];
         const map      = {};
+        let hasNumbers = false;
+
         products.forEach(p => {
-          const ext      = p.extendedData || [];
-          const numEntry = ext.find(e => e.name === 'Number');
-          if (!numEntry || !p.name) return;
-          const num       = numEntry.value.split('/')[0].trim();
-          const cleanName = p.name.replace(/\s*\(.*?\)\s*$/, '').trim();
-          map[num.padStart(3, '0')]      = cleanName;
-          map[String(parseInt(num, 10))] = cleanName;
-          map[num]                       = cleanName;
+          const ext       = p.extendedData || [];
+          const numEntry  = ext.find(e => e.name === 'Number');
+          const cleanName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+          if (!cleanName) return;
+          if (numEntry) {
+            hasNumbers = true;
+            const num = numEntry.value.split('/')[0].trim();
+            map[num.padStart(3, '0')]      = cleanName;
+            map[String(parseInt(num, 10))] = cleanName;
+            map[num]                       = cleanName;
+          } else {
+            map[`pid_${p.productId}`] = { name: cleanName, productId: p.productId };
+          }
         });
-        if (Object.keys(map).length > 0) {
-          console.log(`[api/cards] EN name map from TCGCSV: ${Object.keys(map).length} names`);
+
+        const count = hasNumbers
+          ? Object.keys(map).filter(k => !k.startsWith('pid_')).length
+          : Object.keys(map).length;
+
+        if (count > 0) {
+          console.log(`[api/cards] EN name map from TCGCSV: ${count} entries (numbered=${hasNumbers})`);
           return map;
         }
       }
@@ -366,14 +378,27 @@ export default async function handler(req, res) {
               enNameMap = await fetchEnNameMap(setId, enScrydexId, tcgdexId);
             }
 
-            cards = allCards.map(c => {
+            const hasNumbers = Object.keys(enNameMap).some(k => !k.startsWith('pid_'));
+            const pidEntries = !hasNumbers
+              ? Object.values(enNameMap).filter(v => typeof v === 'object' && v.productId).sort((a, b) => a.productId - b.productId)
+              : [];
+
+            cards = allCards.map((c, i) => {
               const localId      = c.id ? c.id.split('-').slice(1).join('-') : '';
               const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
               const image = phase === 'en'
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                 : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
-              // Use EN name if available, otherwise keep JP name as fallback
-              const name = (phase === 'jp' && enNameMap[localId]) ? enNameMap[localId] : (c.name || '');
+
+              let name = c.name || '';
+              if (phase === 'jp') {
+                if (hasNumbers) {
+                  name = enNameMap[localId] || enNameMap[String(parseInt(localId, 10))] || name;
+                } else if (pidEntries[i]) {
+                  name = pidEntries[i].name;
+                }
+              }
+
               return { localId, name, rarity: normalizeRarity(c.rarity || ''), image, source: 'scrydex', phase };
             });
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);

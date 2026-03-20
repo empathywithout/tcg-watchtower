@@ -133,24 +133,33 @@ async function fetchEnNameMapFromTCGCSV(setId) {
   const groupId = GROUP_ID_MAP[setId];
   if (!groupId) return {};
   try {
-    const res  = await fetchWithRetry(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`);
+    const res      = await fetchWithRetry(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`);
     const products = res.results || [];
-    const map  = {};
-    products.forEach(p => {
-      const ext = p.extendedData || [];
+    const map      = {};
+
+    for (const p of products) {
+      const ext      = p.extendedData || [];
       const numEntry = ext.find(e => e.name === 'Number');
-      if (!numEntry) return;
-      const num = numEntry.value.split('/')[0].trim();
-      const localId = num.padStart(3, '0');
-      // Strip TCGplayer name suffix e.g. "Mega Zygarde ex (Perfect Order 82)" → "Mega Zygarde ex"
       const cleanName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
-      if (cleanName) {
-        map[localId]                       = cleanName;
-        map[String(parseInt(num, 10))]     = cleanName;
-        map[num]                           = cleanName; // raw string too
+      if (!cleanName) continue;
+
+      if (numEntry) {
+        // Has card number — use it for precise matching
+        const num = numEntry.value.split('/')[0].trim();
+        map[num.padStart(3, '0')]      = cleanName;
+        map[String(parseInt(num, 10))] = cleanName;
+        map[num]                       = cleanName;
+      } else {
+        // Pre-release set — no Number in extendedData yet
+        // Store by productId so we can try matching later
+        map[`pid_${p.productId}`] = { name: cleanName, productId: p.productId };
       }
-    });
-    console.log(`✅ EN name map from TCGCSV: ${Object.keys(map).length} names`);
+    }
+
+    // If no numbered entries found, TCGplayer hasn't assigned numbers yet
+    // Fall back to ordered matching by product name only
+    const numberedCount = Object.keys(map).filter(k => !k.startsWith('pid_')).length;
+    console.log(`✅ EN name map from TCGCSV: ${numberedCount} numbered cards, ${products.length} total products`);
     return map;
   } catch (e) {
     console.warn(`⚠️  TCGCSV name map failed: ${e.message}`);
@@ -196,17 +205,36 @@ async function main() {
   if (PHASE === 'jp') {
     cards = await fetchCardsFromScrydex(JP_SCRYDEX_ID);
 
-    // Translate JP names → EN using TCGCSV (most reliable, has all cards post-release)
+    // Translate JP names → EN using TCGCSV
     console.log(`\n🔤 Fetching EN names from TCGCSV…`);
     const enMap = await fetchEnNameMapFromTCGCSV(SET_ID);
-    if (Object.keys(enMap).length > 0) {
+    const numberedEntries = Object.keys(enMap).filter(k => !k.startsWith('pid_'));
+
+    if (numberedEntries.length > 0) {
+      // TCGCSV has card numbers — match by localId
       let translated = 0;
       cards = cards.map(c => {
         const enName = enMap[c.localId] || enMap[String(parseInt(c.localId, 10))] || null;
         if (enName) { translated++; return { ...c, name: enName }; }
         return c;
       });
-      console.log(`✅ Translated ${translated}/${cards.length} card names to English`);
+      console.log(`✅ Translated ${translated}/${cards.length} card names to English (by number)`);
+    } else if (Object.keys(enMap).length > 0) {
+      // Pre-release: no numbers yet — match by position order
+      const pidEntries = Object.values(enMap)
+        .filter(v => typeof v === 'object' && v.productId)
+        .sort((a, b) => a.productId - b.productId);
+
+      if (pidEntries.length > 0) {
+        let translated = 0;
+        cards = cards.map((c, i) => {
+          if (pidEntries[i]) { translated++; return { ...c, name: pidEntries[i].name }; }
+          return c;
+        });
+        console.log(`✅ Translated ${translated}/${cards.length} card names to English (by position)`);
+      } else {
+        console.warn(`⚠️  No EN names could be mapped — keeping JP names`);
+      }
     } else {
       console.warn(`⚠️  No EN names available yet — keeping JP names as fallback`);
     }
@@ -309,12 +337,12 @@ async function main() {
       try {
         const buf = await downloadImage(url);
         await uploadToR2(logoR2Key, buf, 'image/png');
-        console.log(`✅ EN logo uploaded from ${url}`);
+        console.log(`✅ EN logo uploaded from TCGdex: ${url}`);
         logoUploaded = true;
         break;
       } catch (e) { console.warn(`  ⚠️  Logo failed at ${url}: ${e.message}`); }
     }
-    if (!logoUploaded) console.warn(`⚠️  Logo upload failed — will use fallback`);
+    if (!logoUploaded) console.warn(`⚠️  All logo sources failed — page will show no logo`);
   }
 
   // Step 3 — Upload metadata JSON
