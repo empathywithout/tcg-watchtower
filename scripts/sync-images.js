@@ -91,21 +91,22 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // ── Fetch cards from Scrydex (JP or EN) ─────────────────────────────────────
 async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   console.log(`📋 Fetching ${language} card list from Scrydex (${scrydexId})…`);
-  const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
-  const langParam = language === 'JA' ? '&languageCode=JA' : '';
-  let allCards    = [];
-  let page        = 1;
-  let total       = null;
+  const headers = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
+  // Use /ja/ URL prefix for JP — enables translation.en.name field
+  const base    = language === 'JA'
+    ? `${SCRYDEX_BASE}/ja/expansions/${scrydexId}/cards?select=id,name,translation,rarity,images&pageSize=100`
+    : `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100`;
+  let allCards  = [];
+  let page      = 1;
+  let total     = null;
 
   while (true) {
-    const url  = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100${langParam}&page=${page}`;
+    const url  = `${base}&page=${page}`;
     const data = await fetchWithRetry(url, { headers });
     const pageCards = data.data || [];
-    // Always read totalCount from first page
     if (total === null) total = data.totalCount || data.total || null;
     allCards = allCards.concat(pageCards);
     console.log(`  Page ${page}: got ${pageCards.length} cards (total so far: ${allCards.length}${total ? ` / ${total}` : ''})`);
-    // Stop if: got fewer than pageSize, OR we've hit the total, OR got 0
     if (pageCards.length === 0) break;
     if (pageCards.length < 100) break;
     if (total !== null && allCards.length >= total) break;
@@ -114,15 +115,16 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
 
   console.log(`✅ Scrydex returned ${allCards.length} ${language} cards`);
   return allCards.map(c => {
-    // Scrydex IDs look like "m3_ja-111/088" → localId "111", or "sv10-001" → "001"
     const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
     const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
-    // Strip trailing number suffix like " – 111/088" from JP card names
-    const name    = (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
+    // For JP: use translation.en.name, fall back to stripped JP name
+    const name = language === 'JA'
+      ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
+      : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
     return {
       localId,
       name,
-      rarity: c.rarity || null,
+      rarity: language === 'JA' ? (c.translation?.en?.rarity || c.rarity || null) : (c.rarity || null),
       image:  c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
     };
   });

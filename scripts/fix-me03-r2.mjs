@@ -84,7 +84,7 @@ async function main() {
   let page = 1, all = [];
   while (true) {
     const res = await fetch(
-      `https://api.scrydex.com/pokemon/v1/expansions/${JP_ID}/cards?select=id,name,translations,rarity,images&pageSize=100&language=JA&page=${page}`,
+      `https://api.scrydex.com/pokemon/v1/expansions/${JP_ID}/cards?pageSize=100&language=JA&page=${page}`,
       { headers: HEADERS }
     );
     const data = await res.json();
@@ -93,7 +93,10 @@ async function main() {
     const sample = cards[0];
     console.log(`  Page ${page}: ${cards.length} cards`);
     if (sample) console.log(`  First card fields: ${Object.keys(sample).join(', ')}`);
-    if (sample) console.log(`  First card: id="${sample.id}" name="${sample.name}" slug="${sample.slug}"`);
+    if (sample) {
+      console.log(`  First card: id="${sample.id}" name="${sample.name}"`);
+      console.log(`  All fields: ${JSON.stringify(Object.fromEntries(Object.entries(sample).filter(([k]) => k !== 'images')))}`);
+    }
     if (cards.length < 100) break;
     page++;
   }
@@ -102,7 +105,7 @@ async function main() {
   const cards = all.map(c => {
     const localId = extractLocalId(c.id);
     // Use EN translation
-    const name = c.translations?.en || c.name || '';
+    const name = c.translation?.en?.name || c.name || '';
     return { localId, name, rarity: norm(c.rarity) };
   });
 
