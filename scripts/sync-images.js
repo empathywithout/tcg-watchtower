@@ -315,8 +315,8 @@ async function main() {
     // Scrydex JP logo
     try {
       const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
-      const expansion = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${JP_SCRYDEX_ID}`, { headers });
-      console.log(`  Scrydex expansion fields: ${Object.keys(expansion).join(', ')}`);
+      const raw1 = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${JP_SCRYDEX_ID}`, { headers });
+      const expansion = raw1.data || raw1;
       const logoUrl = expansion.logo
         || expansion.images?.logo
         || expansion.images?.symbol
@@ -344,7 +344,8 @@ async function main() {
     if (scrydexEnId) {
       try {
         const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
-        const expansion = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexEnId}`, { headers });
+        const raw2 = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexEnId}`, { headers });
+        const expansion = raw2.data || raw2;
         console.log(`  Scrydex expansion fields: ${Object.keys(expansion).join(', ')}`);
         const logoUrl = expansion.logo
           || expansion.images?.logo

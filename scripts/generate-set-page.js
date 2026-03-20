@@ -126,14 +126,13 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
       headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
     });
     if (scrydexRes.ok) {
-      setData       = await scrydexRes.json();
+      const raw     = await scrydexRes.json();
+      setData       = raw.data || raw;  // Scrydex wraps response in { data: ... }
       // Scrydex uses different field names — try all known variants
       const scrydexName = setData.name || setData.nameEn || setData.localName
                        || setData.title || setData.expansionName || null;
       officialCount = setData.total || setData.printedTotal || setData.cardCount || 0;
       console.log(`✅  Scrydex JP: ${scrydexName || '(no name field)'} — ${officialCount} cards`);
-      console.log(`   Scrydex fields: ${Object.keys(setData).join(', ')}`);
-      // Patch name so SET_SUBTITLE fallback works
       if (!setData.name && scrydexName) setData.name = scrydexName;
     } else {
       console.warn(`⚠️  Scrydex ${scrydexRes.status} — falling back to manual values`);
