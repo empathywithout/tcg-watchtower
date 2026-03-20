@@ -70,6 +70,15 @@ const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;
 const SET_DESCRIPTION  = process.env.SET_DESCRIPTION  || null;
 
+// ── JP/EN phase support ───────────────────────────────────────────────────────
+// PHASE=jp  → page uses Japanese cards from Scrydex, no TCGplayer prices yet
+// PHASE=en  → normal EN flow (default)
+const PHASE           = (process.env.PHASE          || 'en').trim();
+const JP_SCRYDEX_ID   = (process.env.JP_SCRYDEX_ID  || '').trim();  // e.g. 'sv9b'
+const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
+const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Hero cards — auto-fetched from TCGCSV top prices if not provided
 let HERO_CARD_1 = process.env.HERO_CARD_1 || '';
 let HERO_CARD_2 = process.env.HERO_CARD_2 || '';
@@ -105,16 +114,39 @@ if (TCGP_GROUP_ID === '0') {
   console.log(`✅  Using groupId ${TCGP_GROUP_ID} for ${SET_ID}`);
 }
 
-// ── Fetch set metadata from TCGdex ──────────────────────────────────────────────
-console.log(`📋 Fetching set metadata for ${SET_ID}…`);
-const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
-if (!tcgRes.ok) {
-  console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
-  process.exit(1);
+// ── Fetch set metadata (Scrydex for JP phase, TCGdex for EN phase) ────────────
+let setData      = {};
+let officialCount = 0;
+
+if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
+  console.log(`📋 Fetching JP set metadata from Scrydex (${JP_SCRYDEX_ID})…`);
+  try {
+    const scrydexRes = await fetch(`https://api.scrydex.com/pokemon/v1/expansions/${JP_SCRYDEX_ID}`, {
+      headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+    });
+    if (scrydexRes.ok) {
+      setData       = await scrydexRes.json();
+      officialCount = setData.total || setData.printedTotal || 0;
+      console.log(`✅  Scrydex JP: ${setData.name} — ${officialCount} cards`);
+    } else {
+      console.warn(`⚠️  Scrydex ${scrydexRes.status} — falling back to manual values`);
+    }
+  } catch (e) {
+    console.warn(`⚠️  Scrydex metadata failed: ${e.message}`);
+  }
+} else {
+  console.log(`📋 Fetching set metadata from TCGdex for ${SET_ID}…`);
+  const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
+  if (!tcgRes.ok) {
+    console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
+    process.exit(1);
+  }
+  setData       = await tcgRes.json();
+  officialCount = setData.cardCount?.official || setData.cards?.length || 0;
+  console.log(`✅  TCGdex: ${setData.name} — ${officialCount} official cards`);
 }
-const setData = await tcgRes.json();
-const officialCount = setData.cardCount?.official || setData.cards?.length || 0;
-const releaseDate   = SET_RELEASE_DATE
+
+const releaseDate = SET_RELEASE_DATE
   || (setData.releaseDate
       ? new Date(setData.releaseDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
       : '???');
@@ -124,7 +156,7 @@ const SET_SEARCH_NAME = process.env.SET_SEARCH_NAME || SET_SUBTITLE;
 const SET_TCGP_SLUG   = process.env.SET_TCGP_SLUG
   || SET_SUBTITLE.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-console.log(`✅  ${setData.name} — ${officialCount} official cards, released ${releaseDate}`);
+console.log(`✅  ${SET_SUBTITLE} — ${officialCount} cards, released ${releaseDate}`);
 console.log(`    subtitle="${SET_SUBTITLE}", search="${SET_SEARCH_NAME}", tcgp="${SET_TCGP_SLUG}"`);
 console.log(`    url slug="${SET_URL_SLUG}", file slug="${SET_SLUG}"`);
 
@@ -405,6 +437,7 @@ const vars = {
   '{{SET_SEARCH_NAME}}':    SET_SEARCH_NAME,
   '{{SET_TCGP_SLUG}}':      SET_TCGP_SLUG,
   '{{TCGP_GROUP_ID}}':      TCGP_GROUP_ID,
+  '{{SET_PHASE}}':          PHASE,
   '{{SET_SLUG}}':           SET_SLUG,
   '{{HERO_CARD_1}}':        HERO_CARD_1,
   '{{HERO_CARD_2}}':        HERO_CARD_2,
@@ -418,6 +451,25 @@ const vars = {
 
 for (const [placeholder, value] of Object.entries(vars)) {
   html = html.replaceAll(placeholder, value);
+}
+
+// ── Handle JP phase conditional blocks ────────────────────────────────────────
+// {{#IF_JP_PHASE}}...{{/IF_JP_PHASE}} blocks are shown only when PHASE=jp
+if (PHASE === 'jp') {
+  html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
+
+  // Auto-patch api/cards.js SCRYDEX_JP_ID_MAP with the new JP set ID
+  if (JP_SCRYDEX_ID) {
+    try {
+      const { execSync } = await import('child_process');
+      execSync(`SET_ID=${SET_ID} JP_SCRYDEX_ID=${JP_SCRYDEX_ID} node scripts/patch-jp-id-map.js`, { stdio: 'inherit' });
+    } catch(e) {
+      console.warn(`⚠️  Could not auto-patch SCRYDEX_JP_ID_MAP: ${e.message}`);
+      console.warn(`   Manually add '${SET_ID}': '${JP_SCRYDEX_ID}' to api/cards.js SCRYDEX_JP_ID_MAP`);
+    }
+  }
+} else {
+  html = html.replace(/\{\{#IF_JP_PHASE\}\}[\s\S]*?\{\{\/IF_JP_PHASE\}\}/g, '');
 }
 
 const r2Url = R2_PUBLIC_URL;

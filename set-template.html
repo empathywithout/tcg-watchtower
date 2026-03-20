@@ -154,8 +154,34 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-/* ===== NAV ===== */
-nav {
+/* ===== JP PREVIEW BANNER ===== */
+.jp-banner {
+  background: linear-gradient(90deg, rgba(234,179,8,0.15), rgba(234,179,8,0.05));
+  border: 1px solid rgba(234,179,8,0.4);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: #fde68a;
+  position: relative;
+  z-index: 1;
+}
+.jp-banner strong { color: #fbbf24; }
+.jp-banner a { color: #fbbf24; text-decoration: underline; }
+.jp-banner-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #fbbf24;
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0.7;
+  padding: 0 4px;
+}
+.jp-banner-dismiss:hover { opacity: 1; }
   padding: 24px 0;
   display: flex;
   justify-content: space-between;
@@ -1072,8 +1098,16 @@ footer {
   </div>
 </section>
 
-<!-- ===== SECTION NAV ===== -->
-<nav class="section-nav" id="section-nav">
+<!-- ===== JP PREVIEW BANNER (only shown when SET_PHASE=jp) ===== -->
+{{#IF_JP_PHASE}}
+<div class="container" style="padding-top:20px;position:relative;z-index:1;">
+  <div class="jp-banner" id="jp-banner">
+    <span>🇯🇵</span>
+    <span><strong>Japanese Set Preview</strong> — Showing Japanese cards for <strong>{{SET_FULL_NAME}}</strong> before the English release. Card names and images are from the JP set. Prices will load automatically once the English version releases on TCGplayer.</span>
+    <button class="jp-banner-dismiss" onclick="document.getElementById('jp-banner').style.display='none'" aria-label="Dismiss">✕</button>
+  </div>
+</div>
+{{/IF_JP_PHASE}}
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
     <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/{{SET_SERIES_SLUG}}/{{SET_URL_SLUG}}/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
@@ -1242,6 +1276,7 @@ footer {
 // ===== SET CONFIG — change these for each set =====
 const SET_ID = '{{SET_ID}}';
 const SET_OFFICIAL_COUNT = {{SET_OFFICIAL_COUNT}};
+const SET_PHASE = '{{SET_PHASE}}';  // 'en' | 'jp'
 // ===================================================
 
 const CONFIG = {
