@@ -34,7 +34,7 @@ async function fetchEnNames() {
   let minPid = Infinity, maxPid = 0;
 
   for (const p of results) {
-    const name = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+    const name = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').replace(/\s*[-\u2013]\s*\d+\/\d+\s*$/, '').trim();
     if (!name) continue;
     byPid[p.productId] = name;
     if (p.productId < minPid) minPid = p.productId;
@@ -154,7 +154,7 @@ async function main() {
     fallbacks++;
     return {
       localId,
-      name: (c.name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim(),
+      name: (c.name || '').replace(/\s*\(.*?\)\s*$/, '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim(),
       rarity: norm(c.rarity),
     };
   });
