@@ -41,7 +41,13 @@ const SCRYDEX_EN_ID_MAP = {
 // Add entries here when registering new JP-phase sets in sets.json
 // e.g. 'sv11': 'sv9b'  (Ninja Spinner / Chaos Rising)
 // This map is auto-populated by generate-set-page.js when PHASE=jp
-const SCRYDEX_JP_ID_MAP = {};
+const SCRYDEX_JP_ID_MAP = {
+  'me01': 'me01',
+  'me02': 'me02',
+  'me02pt5': 'me02.5',
+  'me03': 'm3_ja',
+  'me04': 'm4_ja',
+};
 
 // TCGdex dot-notation map for special sets
 const TCGDEX_ID_MAP = {
@@ -345,8 +351,10 @@ export default async function handler(req, res) {
           : SCRYDEX_EN_ID_MAP[setId];
 
         if (scrydexId) {
-          const langParam  = phase === 'jp' ? '&languageCode=JA' : '';
-          const baseUrl    = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100${langParam}`;
+          // Use /ja/ URL prefix for JP — enables translation.en fields
+          const baseUrl = phase === 'jp'
+            ? `${SCRYDEX_BASE}/ja/expansions/${scrydexId}/cards?select=id,name,translation,rarity,images&pageSize=100`
+            : `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100`;
           let allCards     = [];
           let page         = 1;
           let totalCount   = null;
@@ -373,31 +381,7 @@ export default async function handler(req, res) {
           }
 
           if (allCards.length > 0) {
-            // For JP phase, fetch EN names to display instead of Japanese names
-            let enNameMap = {};
-            if (phase === 'jp') {
-              const enScrydexId = SCRYDEX_EN_ID_MAP[setId] || null;
-              enNameMap = await fetchEnNameMap(setId, enScrydexId, tcgdexId);
-            }
-
-            const hasNumbers = Object.keys(enNameMap).some(k => !k.startsWith('pid_'));
-            const pidEntries = !hasNumbers
-              ? Object.values(enNameMap).filter(v => typeof v === 'object' && v.productId).sort((a, b) => a.productId - b.productId)
-              : [];
-
-            // Build card-number → EN name lookup from TCGCSV
-            const jpNameByLocalId = {};
-            if (hasNumbers) {
-              for (const [k, v] of Object.entries(enNameMap)) {
-                if (/^\d{3}$/.test(k) && typeof v === 'string') {
-                  jpNameByLocalId[String(parseInt(k, 10))] = v;  // "097" → "Mega Zygarde ex"
-                }
-              }
-            }
-
-            cards = allCards.map((c, i) => {
-              // Scrydex card IDs look like "m3_ja-111/088" or "sv10-001"
-              // localId should be just the card number: "111" or "001"
+            cards = allCards.map((c) => {
               const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
               const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
@@ -406,19 +390,16 @@ export default async function handler(req, res) {
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                 : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
 
-              // Strip JP name suffix like " – 111/088" that Scrydex sometimes includes
-              let name = (c.name || '').replace(/\s*[-–—]\s*\d+\/\d+\s*$/, '').trim();
+              // JP: use translation.en.name; EN: use name directly
+              const name = phase === 'jp'
+                ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
+                : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
 
-              if (phase === 'jp') {
-                if (hasNumbers) {
-                  const enName = jpNameByLocalId[String(parseInt(localId, 10))];
-                  if (enName) name = enName;
-                } else if (pidEntries[i]) {
-                  name = pidEntries[i].name;
-                }
-              }
+              const rarity = normalizeRarity(
+                phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
+              );
 
-              return { localId, name, rarity: normalizeRarity(c.rarity || ''), image, source: 'scrydex', phase };
+              return { localId, name, rarity, image, source: 'scrydex', phase };
             });
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
             // Fire-and-forget: cache metadata + images to R2 so next request is free

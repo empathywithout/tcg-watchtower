@@ -153,23 +153,21 @@
     "live": true
   },
   {
-    "slug": "pokemon/sets/mega-evolution/perfect-order/cards",
+    "slug": "perfect-order-card-list",
     "name": "Perfect Order (ME3)",
     "series": "Mega Evolution",
     "short": "ME3",
     "setId": "me03",
     "phase": "jp",
-    "live": true,
-    "releaseDate": "Mar 2026"
+    "live": true
   },
   {
-    "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
-    "name": "Chaos Rising",
+    "slug": "chaos-rising-card-list",
+    "name": "Chaos Rising (ME4)",
     "series": "Mega Evolution",
     "short": "ME4",
     "setId": "me04",
     "phase": "jp",
-    "live": true,
-    "releaseDate": "May 2026"
+    "live": true
   }
 ]
