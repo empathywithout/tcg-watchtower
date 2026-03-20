@@ -202,6 +202,29 @@ async function main() {
         logoUploaded = true;
       }
     } catch (e) { console.warn(`⚠️  JP logo failed: ${e.message}`); }
+  } else if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+    // Scrydex EN logo — try this first, more reliable than TCGdex for new sets
+    const SCRYDEX_EN_ID_MAP = {
+      'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
+      'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
+      'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
+      'sv09':'sv09','sv10':'sv10',
+      'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
+    };
+    const scrydexEnId = SCRYDEX_EN_ID_MAP[SET_ID];
+    if (scrydexEnId) {
+      try {
+        const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
+        const expansion = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexEnId}`, { headers });
+        const logoUrl   = expansion.logo || expansion.images?.logo || null;
+        if (logoUrl) {
+          const buf = await downloadImage(logoUrl);
+          await uploadToR2(logoR2Key, buf, 'image/png');
+          console.log(`✅ EN logo uploaded from Scrydex`);
+          logoUploaded = true;
+        }
+      } catch (e) { console.warn(`⚠️  Scrydex EN logo failed: ${e.message}`); }
+    }
   }
 
   if (!logoUploaded) {
