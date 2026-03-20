@@ -1067,7 +1067,7 @@ footer {
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
-          <span class="gradient-text">Mega Evolution</span><br>Perfect Order (ME3)
+          <span class="gradient-text">Mega Evolution</span><br>ムニキスゼロ
         </h1>
         <p class="set-desc">
           Complete guide to Perfect Order (ME3) — full card list, chase cards ranked by market price, and where to buy sealed product.
@@ -1278,7 +1278,7 @@ footer {
 /* ===== CONFIG ===== */
 // ===== SET CONFIG — change these for each set =====
 const SET_ID = 'me03';
-const SET_OFFICIAL_COUNT = 0;
+const SET_OFFICIAL_COUNT = 117;
 const SET_PHASE = 'jp';  // 'en' | 'jp'
 // ===================================================
 
@@ -1343,7 +1343,7 @@ function ebayLinkNew(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&LH_ItemCondition=1000&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
 function tcgplayerLink(query) {
-  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/perfect-order-me3?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
 }
 function tcgplayerAffiliate(directUrl) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
@@ -1384,7 +1384,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/0 Perfect Order (ME3) Pokemon Card`,
+          searchName: `${c.name} ${c.localId}/117 Perfect Order (ME3) Pokemon Card`,
           img: c.image || cardImg('me03', c.localId),
         };
       });
@@ -1429,12 +1429,12 @@ function renderChaseCardsHTML(grid) {
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/0</div>
+        <div class="chase-card-number">#${c.id}/117</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/0', 'perfect-order-me3')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/117', '')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1694,7 +1694,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/0 Perfect Order (ME3) Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/117 Perfect Order (ME3) Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
@@ -1753,7 +1753,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/0', 'perfect-order-me3')}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/117', '')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/perfect-order/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
