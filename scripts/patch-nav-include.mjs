@@ -238,6 +238,20 @@ for (const file of files) {
     '.section { padding: 80px 0; scroll-margin-top: 60px; }'
   );
 
+  // 3d. Fix populateNavSets to exclude One Piece sets
+  content = content.replace(
+    `const sets = await res.json();
+      const grouped = {};
+      sets.forEach(s => {`,
+    `const allSetsData = await res.json();
+      const sets = allSetsData.filter(s => {
+        const id = (s.setId || '').toLowerCase();
+        return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';
+      });
+      const grouped = {};
+      sets.forEach(s => {`
+  );
+
   // 3. Replace initNav JS block
   const before3 = content;
   content = content.replace(
