@@ -972,52 +972,18 @@ footer {
 <div class="orb orb-3"></div>
 
 <!-- ===== NAV ===== -->
-<nav class="container">
-  <a href="/" class="nav-logo">
-            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
-            <span>TCG Watchtower</span>
-          </a>
-  <div class="nav-links">
-    <a href="/#features">Features</a>
-    <a href="/#how-it-works">How It Works</a>
-    <a href="/#faq">FAQ</a>
-    <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
-  </div>
-</nav>
-
-<!-- Hamburger Menu Overlay -->
-<div class="hamburger-overlay" id="hamburger-overlay"></div>
-
-<!-- Pokemon Menu (triggered by hamburger) -->
-<div class="hamburger-menu" id="hamburger-menu">
-  <div class="hamburger-menu-item" id="pokemon-menu-item">
-    Pokémon
-    <span>›</span>
-  </div>
-</div>
-
-<!-- Pokemon Sets View -->
-<div class="pokemon-sets-view" id="pokemon-sets-view">
-  <div class="pokemon-sets-header">
-    <button class="back-button" id="back-to-menu">← Back</button>
-    <div class="pokemon-sets-title">Pokémon TCG Sets</div>
-  </div>
-  
-  <div class="sets-filter-tabs" id="sets-filter-tabs">
-    <div class="filter-tab active" data-filter="all">All Sets</div>
-    <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
-    <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
-    <div class="filter-tab" data-filter="megaevolution">Mega Evolution</div>
-    <div class="filter-tab" data-filter="live">Live Only</div>
-  </div>
-  
-  <div id="sets-grid-container">
-    <!-- Sets will be dynamically loaded here -->
-  </div>
-</div>
+<div id="site-nav"></div>
+<script>
+fetch('/nav.html').then(r => r.text()).then(html => {
+  const placeholder = document.getElementById('site-nav');
+  if (!placeholder) return;
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
+  placeholder.remove();
+  if (typeof initNav === 'function') initNav();
+});
+</script>
 
 <!-- ===== HERO ===== -->
 <section class="set-hero">
@@ -1751,6 +1717,7 @@ if (window.location.hash) {
 }
 
 /* ===== HAMBURGER MENU ===== */
+function initNav() {
 (async function() {
   const hamburger = document.getElementById('hamburger');
   const hamburgerOverlay = document.getElementById('hamburger-overlay');
@@ -1900,6 +1867,7 @@ if (window.location.hash) {
   // Initialize
   await fetchSets();
 })();
+} // end initNav
 
 /* ===== SECTION NAV ACTIVE STATE ===== */
 (function() {
