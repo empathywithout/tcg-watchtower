@@ -379,6 +379,50 @@
     {
       "source": "/one-piece/sets/:slug/sealed-product",
       "destination": "/:slug-card-list.html"
+    },
+    {
+      "source": "/chaos-rising-card-list",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/perfect-order-card-list",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/ascended-heroes-card-list",
+      "destination": "/ascended-heroes-card-list.html"
+    },
+    {
+      "source": "/mega-evolution-base-set-card-list",
+      "destination": "/mega-evolution-base-set-card-list.html"
+    },
+    {
+      "source": "/phantasmal-flames-card-list",
+      "destination": "/phantasmal-flames-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "destination": "/perfect-order-card-list.html"
     }
   ],
   "redirects": [

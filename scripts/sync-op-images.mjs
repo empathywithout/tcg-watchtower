@@ -53,9 +53,12 @@ const SCRYDEX_ID_MAP = {
 const RARITY_MAP = {
   'C':'Common','UC':'Uncommon','R':'Rare','SR':'Super Rare',
   'SEC':'Secret Rare','L':'Leader','TR':'Treasure Rare',
+  'SP':'Special','MR':'Manga Rare','ALT':'Alternate Art',
   'Common':'Common','Uncommon':'Uncommon','Rare':'Rare',
   'Super Rare':'Super Rare','Secret Rare':'Secret Rare',
   'Leader':'Leader','Treasure Rare':'Treasure Rare',
+  'Special':'Special','Manga Rare':'Manga Rare',
+  'Alternate Art':'Alternate Art','Special Rare':'Special',
 };
 function normalizeRarity(r) { return RARITY_MAP[r?.trim()] || r || ''; }
 
