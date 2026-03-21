@@ -1509,6 +1509,19 @@ nav.container {
   <div id="sets-grid-container"></div>
 </div>
 
+<!-- One Piece Sets View -->
+<div class="pokemon-sets-view" id="onepiece-sets-view">
+  <div class="pokemon-sets-header">
+    <button class="back-button" id="back-to-menu-op">← Back</button>
+    <div class="pokemon-sets-title" style="background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One Piece TCG Sets</div>
+  </div>
+  <div class="sets-filter-tabs" id="sets-filter-tabs-op">
+    <div class="filter-tab active" data-filter="all">All Sets</div>
+    <div class="filter-tab" data-filter="live">Live Only</div>
+  </div>
+  <div id="sets-grid-container-op"></div>
+</div>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
@@ -2062,7 +2075,7 @@ nav.container {
         const backToMenuOp = document.getElementById('back-to-menu-op');
         // OP elements queried at call time since nav.html loads async
         const setsGridContainer = document.getElementById('sets-grid-container');
-        const filterTabs = document.querySelectorAll('.filter-tab');
+        const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
         
         // R2 Configuration
         const R2_PUBLIC_URL = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
@@ -2132,13 +2145,22 @@ nav.container {
         backToMenu.addEventListener('click', backToMainMenu);
         if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
         
-        // Filter tabs
+        // Pokemon filter tabs
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 filterTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentFilter = tab.dataset.filter;
                 renderSets();
+            });
+        });
+
+        // One Piece filter tabs
+        document.querySelectorAll('#sets-filter-tabs-op .filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#sets-filter-tabs-op .filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderOnePieceSets();
             });
         });
         
@@ -2239,17 +2261,19 @@ nav.container {
         
         function renderOnePieceSets() {
             const setsGridContainerOp = document.getElementById('sets-grid-container-op');
-            if (!setsGridContainerOp) return;
+            if (!setsGridContainerOp) { console.log('OP container not found'); return; }
+            const activeFilter = document.querySelector('#sets-filter-tabs-op .filter-tab.active')?.dataset?.filter || 'all';
             const opSets = allSets.filter(s => {
                 const id = (s.setId || '').toLowerCase();
                 return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
             });
-            const filtered = opSets;
+            const filtered = activeFilter === 'live' ? opSets.filter(s => s.live) : opSets;
+            console.log('OP sets found:', filtered.length);
             if (!filtered.length) {
                 setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
                 return;
             }
-            const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+            const r2 = R2_PUBLIC_URL;
             let html = '<div class="sets-grid">';
             filtered.forEach(set => {
                 const disabled = !set.live;
@@ -2260,7 +2284,7 @@ nav.container {
                     </div>
                     <div class="set-card-content">
                         <div class="set-card-name">${set.name}</div>
-                        <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+                        <div class="set-card-info">${set.short || ''} • One Piece TCG</div>
                         ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
                     </div></a>`;
             });
