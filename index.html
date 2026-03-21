@@ -29,7 +29,6 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
         
     <style>
         * {
@@ -128,21 +127,56 @@
         }
 
         /* Navigation */
-.nav-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        }
+
+        .logo { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  text-decoration:none; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.4);
 }
-nav.container {
-  padding: 24px 0;
+.logo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+}
+.logo-icon {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+}
+.logo-icon img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.05);
+}
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem; font-weight: bold;
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; -webkit-text-fill-color:#f1f5f9; background:none; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; }
 
         .nav-links {
             display: flex;
@@ -1470,9 +1504,9 @@ nav.container {
     <div class="orb orb-3"></div>
 
     <!-- Navigation -->
-    <div class="nav-wrapper"><nav class="container">
+    <nav class="container">
         <a href="/" class="nav-logo">
-            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
             <span>TCG Watchtower</span>
           </a>
         <div class="nav-links">
@@ -1486,7 +1520,7 @@ nav.container {
                 Join Discord
             </a>
         </div>
-    </nav></div>
+    </nav>
     
     <!-- Hamburger Menu Overlay -->
     <div class="hamburger-overlay" id="hamburger-overlay"></div>
