@@ -277,22 +277,6 @@
       "destination": "/pokemon/sets/scarlet-violet/journey-together/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
-      "destination": "/destined-rivals-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
-      "destination": "/destined-rivals-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable",
-      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards",
-      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution/phantasmal-flames/cards",
       "destination": "/phantasmal-flames-card-list.html"
     },
@@ -357,10 +341,6 @@
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/one-piece",
       "destination": "/sets.html"
     },
@@ -423,6 +403,26 @@
     {
       "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
       "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
+      "destination": "/destined-rivals-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
+      "destination": "/destined-rivals-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
   ],
   "redirects": [
