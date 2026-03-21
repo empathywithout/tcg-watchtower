@@ -298,15 +298,76 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const setId = (req.query.set || '').trim();
+  const game  = (req.query.game || '').trim().toLowerCase(); // 'onepiece' or 'pokemon' (default)
   if (!setId || !/^[a-z0-9]+$/.test(setId)) {
     return res.status(400).json({ error: 'Missing or invalid ?set= parameter' });
   }
 
-  const cached = cache.get(setId);
+  // Detect One Piece sets by prefix or explicit game param
+  const isOnePiece = game === 'onepiece'
+    || /^(op|eb|st)\d+/.test(setId);
+
+  const cacheKey = `${isOnePiece ? 'op:' : ''}${setId}`;
+  const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(cached.data);
+  }
+
+  // ── One Piece: read from R2 data/op/{setId}.json ─────────────────────────
+  if (isOnePiece) {
+    try {
+      const r2Url = `${R2_BASE}/data/op/${setId}.json`;
+      const r2Res = await fetch(r2Url, { signal: AbortSignal.timeout(5000) });
+      if (r2Res.ok) {
+        const json = await r2Res.json();
+        const cards = (json.cards || []).map(c => ({
+          ...c,
+          image: c.image || `${R2_BASE}/cards/op/${setId}/${c.localId}.webp`,
+          source: 'r2',
+        }));
+        const data = { cards, cardCount: json.cardCount || { total: cards.length }, phase: json.phase || 'en', game: 'onepiece' };
+        cache.set(cacheKey, { ts: Date.now(), data });
+        res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+        return res.status(200).json(data);
+      }
+    } catch(e) {
+      console.warn(`[api/cards] One Piece R2 failed for ${setId}:`, e.message);
+    }
+
+    // Fallback: fetch from Scrydex One Piece API
+    try {
+      const scrydexId = setId.toUpperCase(); // op01 → OP01
+      const url = `https://api.scrydex.com/onepiece/v1/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100&page=1`;
+      const scrydexRes = await fetch(url, {
+        headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (scrydexRes.ok) {
+        const json = await scrydexRes.json();
+        const cards = (json.data || []).map(c => {
+          const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
+          const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+          return {
+            localId,
+            name: (c.name || '').trim(),
+            rarity: c.rarity || '',
+            image: c.images?.[0]?.large || c.images?.[0]?.medium || `${R2_BASE}/cards/op/${setId}/${localId}.webp`,
+            source: 'scrydex',
+            phase: 'en',
+          };
+        });
+        const data = { cards, cardCount: { total: cards.length }, phase: 'en', game: 'onepiece' };
+        cache.set(cacheKey, { ts: Date.now(), data });
+        res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+        return res.status(200).json(data);
+      }
+    } catch(e) {
+      console.warn(`[api/cards] One Piece Scrydex failed for ${setId}:`, e.message);
+    }
+
+    return res.status(404).json({ error: `No data found for One Piece set: ${setId}` });
   }
 
   const phase        = await getSetPhase(setId);
@@ -478,7 +539,7 @@ export default async function handler(req, res) {
     const responseData = { cards, cardCount: { total: cards.length }, phase };
     // Only cache to in-memory if we got a reasonable card count
     // Avoid caching suspiciously small results that might be partial
-    cache.set(setId, { ts: Date.now(), data: responseData });
+    cache.set(cacheKey, { ts: Date.now(), data: responseData });
     res.setHeader('X-Cache', 'MISS');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(responseData);

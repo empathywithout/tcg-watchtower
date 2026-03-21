@@ -424,6 +424,40 @@ try { JSON.parse(chaseCardsJson); } catch(e) {
   chaseCardsJson = '[]';
 }
 
+// ── Per-set SEO data ───────────────────────────────────────────────────────────
+const SEO_DATA = {
+  'me01': {
+    metaTitle: 'Mega Evolution Card List and Prices | TCG Watchtower',
+    metaDesc: 'Complete Mega Evolution card list with rarity filter and daily TCGplayer prices. Find every MEG card, chase pulls, and sealed product values.',
+    intro: 'The Pokemon TCG Mega Evolution set launched the new Mega Evolution series in 2025, introducing Mega Evolution Pokemon ex for the first time in the modern card game era. The set features 88 main set cards plus secret rares, headlined by Mega Lucario ex and Mega Gardevoir ex as the most sought-after pulls. Collectors tracking the Mega Evolution card list will find multiple tiers of rare cards including Ultra Rares, Special Illustration Rares, and the coveted Mega Hyper Rare at the top of the pull sheet. Prices for the top chase cards have remained strong since release. This complete MEG card list includes every card numbered in the set, rarity filters, and daily updated market prices sourced from TCGplayer.',
+  },
+  'me02': {
+    metaTitle: 'Phantasmal Flames Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Phantasmal Flames card list with rarity filter and live TCGplayer prices. Every ME2 card, chase pulls, and booster box values in one place.',
+    intro: 'Phantasmal Flames is the second set in the Pokemon TCG Mega Evolution series, released in late 2025. Built around Mega Gengar ex as its flagship card, the set quickly developed a reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block. The ME2 card list spans 88 main set cards plus over 30 secret rares across multiple rarity tiers. Phantasmal Flames booster box prices have held firm among collectors due to the strong hit rate on premium rares. This page covers the full Phantasmal Flames card list with real-time prices from TCGplayer, rarity filters, and links to individual card pages so you can find exactly what you pulled or what you are chasing.',
+  },
+  'me02pt5': {
+    metaTitle: 'Ascended Heroes Card List and Prices | TCG Watchtower',
+    metaDesc: 'Complete Ascended Heroes ME2.5 card list with live TCGplayer prices. Every card, rare pull, and sealed product value for the Mega Evolution subset.',
+    intro: 'Ascended Heroes is the ME2.5 subset expansion in the Pokemon TCG Mega Evolution series, released in early 2026. As a smaller set, Ascended Heroes focuses on a tight selection of Mega Evolution Pokemon ex with a high concentration of premium rarities relative to set size, making it a popular target for collectors focused on pulling Special Illustration Rares. The ME2.5 card list contains fewer common filler cards than a standard main set, which has contributed to strong secondary market prices on its top pulls. This page provides the complete Ascended Heroes card list with rarity filters, live pricing from TCGplayer, and direct links to individual card pages for every card in the set.',
+  },
+  'me03': {
+    metaTitle: 'Perfect Order Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Perfect Order ME3 card list with live TCGplayer prices. Every card, Special Illustration Rare, Mega Ultra Rare, and booster box value updated daily.',
+    intro: 'Perfect Order is the third main set in the Pokemon TCG Mega Evolution series, released in March 2026. The ME3 set contains 117 cards and is built around Mega Starmie ex, Mega Zygarde ex, and Mega Clefable ex as its headline Pokemon. The top chase cards include multiple Special Illustration Rares and a Mega Ultra Rare in Mega Zygarde ex at number 117, which sits at the apex of the pull sheet. Rosa\'s Encouragement has emerged as a standout Supporter card driving collector demand. This complete Perfect Order card list includes all ME3 cards with rarity labels, daily updated prices from TCGplayer, and rarity filters so you can quickly locate any card in the set whether you are tracking a recent pull or researching values before buying.',
+  },
+  'me04': {
+    metaTitle: 'Chaos Rising Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Chaos Rising ME4 card list with live prices. Every card, Mega Greninja ex chase pulls, Special Illustration Rares, and booster box values updated daily.',
+    intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and real-time secondary market prices from TCGplayer that update daily.',
+  },
+};
+
+const seoData   = SEO_DATA[SET_ID] || {};
+const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
+const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs. Updated ${releaseDate}.`;
+const SEO_INTRO      = seoData.intro     || '';
+
 // ── Fill template ──────────────────────────────────────────────────────────────
 let html = readFileSync('set-template.html', 'utf8');
 
@@ -454,6 +488,9 @@ const vars = {
   '{{HERO_ALT_3}}':         HERO_ALT_3,
   '{{PRODUCT_META_JSON}}':  productMetaJson,
   '{{CHASE_CARDS_JSON}}':   chaseCardsJson,
+  '{{SEO_META_TITLE}}':     SEO_META_TITLE,
+  '{{SEO_META_DESC}}':      SEO_META_DESC,
+  '{{SEO_INTRO}}':          SEO_INTRO,
 };
 
 for (const [placeholder, value] of Object.entries(vars)) {
@@ -485,6 +522,13 @@ if (r2Url) {
     `CONFIG.r2 && CONFIG.r2 !== '${r2Url}'`,
     'CONFIG.r2'
   );
+}
+
+// Handle SEO intro conditional block
+if (SEO_INTRO) {
+  html = html.replace(/\{\{#IF_SEO_INTRO\}\}([\s\S]*?)\{\{\/IF_SEO_INTRO\}\}/g, '$1');
+} else {
+  html = html.replace(/\{\{#IF_SEO_INTRO\}\}[\s\S]*?\{\{\/IF_SEO_INTRO\}\}/g, '');
 }
 
 const remaining = [...html.matchAll(/\{\{[A-Z_]+\}\}/g)].map(m => m[0]);

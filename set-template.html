@@ -24,8 +24,8 @@
 <link rel="shortcut icon" href="/favicon.ico">
 
 <!-- ===== PRIMARY SEO ===== -->
-<title>{{SET_FULL_NAME}} Card List, Chase Cards & Price Guide | TCG Watchtower</title>
-<meta name="description" content="Complete {{SET_FULL_NAME}} guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs and sealed product. Updated {{SET_RELEASE_DATE}}.">
+<title>{{SEO_META_TITLE}}</title>
+<meta name="description" content="{{SEO_META_DESC}}">
 <meta name="keywords" content="{{SET_FULL_NAME}}, {{SET_SHORT_NAME}} card list, {{SET_SHORT_NAME}} chase cards, {{SET_SHORT_NAME}} booster box, pokemon {{SET_SHORT_NAME}}, {{SET_SERIES}} cards">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/{{SET_SEO_PATH}}">
@@ -1073,6 +1073,7 @@ footer {
         <p class="set-desc">
           {{SET_DESCRIPTION}}
         </p>
+        {{#IF_SEO_INTRO}}<p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">{{SEO_INTRO}}</p>{{/IF_SEO_INTRO}}
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="{{SET_FULL_NAME}} Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">

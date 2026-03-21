@@ -1,0 +1,651 @@
+/**
+ * generate-op-page.js
+ * Generates a One Piece TCG set guide HTML page
+ *
+ * Required env vars:
+ *   SET_ID          e.g. op01
+ *   SET_FULL_NAME   e.g. "Romance Dawn"
+ */
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+
+const SET_ID        = (process.env.SET_ID || '').trim();
+const SET_FULL_NAME = (process.env.SET_FULL_NAME || '').trim();
+const SET_SHORT_NAME = (process.env.SET_SHORT_NAME || SET_ID.toUpperCase()).trim();
+const PHASE         = (process.env.PHASE || 'en').trim();
+const SET_SERIES    = (process.env.SET_SERIES || 'One Piece').trim();
+const SET_SERIES_SLUG = 'one-piece';
+const R2_PUBLIC_URL = (process.env.CF_R2_PUBLIC_URL || '').trim();
+
+const rawUrlSlug = (process.env.SET_URL_SLUG || '').trim();
+const SET_URL_SLUG = rawUrlSlug || SET_FULL_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const SET_SLUG     = `${SET_URL_SLUG}-card-list`;
+const SET_SEO_PATH = `one-piece/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards`;
+
+const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID || '').trim();
+
+const RELEASE_DATE_MAP = {
+  'op01': 'Jul 2023', 'op02': 'Sep 2023', 'op03': 'Nov 2023',
+  'op04': 'Feb 2024', 'op05': 'Apr 2024', 'op06': 'Aug 2024',
+  'op07': 'Nov 2024', 'op08': 'Jan 2025', 'op09': 'Apr 2025',
+  'op10': 'Jul 2025', 'op11': 'Sep 2025', 'op12': 'Nov 2025',
+  'op13': 'Jan 2026', 'op14': 'Apr 2026', 'op15': 'Jul 2026',
+  'eb01': 'Sep 2023', 'eb02': 'Nov 2024', 'eb03': 'Jun 2025', 'eb04': 'Apr 2026',
+};
+const releaseDate = (process.env.SET_RELEASE_DATE || '').trim() || RELEASE_DATE_MAP[SET_ID] || '';
+
+const TCGP_GROUP_MAP = {
+  'op01': '22745', 'op02': '22958', 'op03': '23142',
+  'op04': '23349', 'op05': '23480', 'op06': '23682',
+  'op07': '23876', 'op08': '24098', 'op09': '24310',
+  'op10': '24512', 'op11': '24720', 'op12': '24890',
+  'op13': '25050', 'op14': '25200',
+  'eb01': '23010', 'eb02': '23950', 'eb03': '24550', 'eb04': '25180',
+};
+const tcgpGroupId = TCGP_GROUP_ID || TCGP_GROUP_MAP[SET_ID] || '0';
+
+const HERO_CARD_1 = (process.env.HERO_CARD_1 || '').trim() || '001';
+const HERO_CARD_2 = (process.env.HERO_CARD_2 || '').trim() || '002';
+const HERO_CARD_3 = (process.env.HERO_CARD_3 || '').trim() || '003';
+
+// SEO data per set
+const SEO_DATA = {
+  'op01': {
+    metaTitle: 'Romance Dawn Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Romance Dawn OP01 card list with live TCGplayer prices. Every card, Secret Rare, and booster box value for the One Piece TCG base set.',
+    intro: 'Romance Dawn is the first set in the English One Piece Card Game, released in July 2023. As the base set for the game, it introduced the core mechanics and features Monkey D. Luffy as the flagship Leader card. The OP01 card list contains 154 cards including multiple rarities from Common through Secret Rare, with the Monkey D. Luffy Secret Rare being the most valuable pull. This complete Romance Dawn card list includes every card with rarity filters and daily updated market prices from TCGplayer.',
+  },
+  'op02': {
+    metaTitle: 'Paramount War Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Paramount War OP02 card list with live TCGplayer prices. Every card, Secret Rare, Treasure Rare, and booster box value for One Piece TCG.',
+    intro: 'Paramount War is the second set in the English One Piece Card Game, released in September 2023. The OP02 card list focuses on the Whitebeard War arc and introduced Treasure Rares for the first time in the English game. With 154 cards and Portgas D. Ace as a key chase card, Paramount War remains one of the most popular sets for collectors. This page tracks the full OP02 card list with live prices from TCGplayer.',
+  },
+  'op03': {
+    metaTitle: 'Pillars of Strength Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Pillars of Strength OP03 card list with live TCGplayer prices. Every card, Secret Rare, and sealed product value for One Piece TCG OP03.',
+    intro: 'Pillars of Strength is the third set in the English One Piece Card Game, released in November 2023. The OP03 set introduces powerful new Leader cards and features characters from the Whole Cake Island arc including Charlotte Katakuri. The OP03 card list contains 154 cards with multiple Secret Rares among the top chase pulls. This page provides the complete Pillars of Strength card list with rarity filters and live TCGplayer market prices.',
+  },
+  'op04': {
+    metaTitle: 'Kingdoms of Intrigue Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Kingdoms of Intrigue OP04 card list with live TCGplayer prices. Every card, Secret Rare, and booster box value for One Piece TCG OP04.',
+    intro: 'Kingdoms of Intrigue is the fourth set in the English One Piece Card Game, released in February 2024. The OP04 set focuses on political power and features Doflamingo and characters from the Dressrosa arc. The OP04 card list contains 149 cards including high-demand Secret Rares. This page tracks the complete Kingdoms of Intrigue card list with live prices updated daily from TCGplayer.',
+  },
+  'op05': {
+    metaTitle: 'Awakening of the New Era Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Awakening of the New Era OP05 card list with prices. Every card, Secret Rare, and Luffy OP05-119 Treasure Rare value for One Piece TCG.',
+    intro: 'Awakening of the New Era is the fifth set in the English One Piece Card Game, released in April 2024. The OP05 set is notable for containing one of the most valuable cards in the entire game — the Monkey D. Luffy OP05-119 Treasure Rare, which commands premium prices on the secondary market. The full OP05 card list contains 154 cards with this iconic pull at the top of the rarity ladder. This page tracks all Awakening of the New Era cards with live TCGplayer prices.',
+  },
+  'op06': {
+    metaTitle: 'Wings of the Captain Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Wings of the Captain OP06 card list with live prices. Every card, Nami SP Alternate Art, Secret Rare, and booster box value for One Piece TCG.',
+    intro: 'Wings of the Captain is the sixth set in the English One Piece Card Game, released in August 2024. The OP06 set introduced Special Parallel alternate art cards, with the O-Nami SP alternate art becoming one of the most discussed chase cards in the game. The OP06 card list contains 151 cards with a range of rarities from Common through Treasure Rare. This page provides the complete Wings of the Captain card list with live prices from TCGplayer.',
+  },
+  'op07': {
+    metaTitle: '500 Years in the Future Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full 500 Years in the Future OP07 card list with live prices. Every card, Luffy Treasure Rare, and booster box value for One Piece TCG OP07.',
+    intro: '500 Years in the Future is the seventh set in the English One Piece Card Game, released in November 2024. The OP07 set features Egghead Island characters and the highly sought Monkey D. Luffy OP07-109 Treasure Rare as its top chase pull. The OP07 card list contains 151 cards and has generated strong collector interest. This page tracks the full 500 Years in the Future card list with rarity filters and live prices from TCGplayer.',
+  },
+  'op08': {
+    metaTitle: 'Two Legends Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Two Legends OP08 card list with live TCGplayer prices. Every card, Shanks and Gecko Moria Secret Rares, and booster box value for One Piece TCG.',
+    intro: 'Two Legends is the eighth set in the English One Piece Card Game, released in January 2025. The OP08 set focuses on legendary characters with both Shanks and Gol D. Roger featured among the top pulls. Gecko Moria has emerged as a standout Secret Rare with strong secondary market demand. The OP08 card list contains 151 cards. This page provides the complete Two Legends card list with live prices updated daily from TCGplayer.',
+  },
+  'op09': {
+    metaTitle: 'Emperors in the New World Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Emperors in the New World OP09 card list with prices. Every card, Buggy Alternate Art, Nico Robin, and booster box value for One Piece TCG.',
+    intro: 'Emperors in the New World is the ninth set in the English One Piece Card Game, released in April 2025. The OP09 set features the Four Emperors and has produced some of the most valuable alternate art cards in the game, with Buggy and Nico Robin alternate arts commanding premium prices. The OP09 card list contains 159 cards. This page tracks the complete Emperors in the New World card list with live TCGplayer prices.',
+  },
+  'eb01': {
+    metaTitle: 'Memorial Collection Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Memorial Collection EB01 card list with live TCGplayer prices. Every card, Secret Rare, and booster box value for One Piece TCG Extra Booster.',
+    intro: 'Memorial Collection is the first Extra Booster set in the English One Piece Card Game, released in September 2023. As a celebration set with 80 cards, it features popular characters in anniversary artwork and has maintained collector appeal. This page provides the complete Memorial Collection card list with rarity filters and live prices from TCGplayer.',
+  },
+};
+
+const seoData      = SEO_DATA[SET_ID] || {};
+const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
+const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} card list with live TCGplayer prices. Every card, rarity, and booster box value for One Piece TCG ${SET_SHORT_NAME}.`;
+const SEO_INTRO      = seoData.intro     || '';
+const SET_DESCRIPTION = `Complete guide to ${SET_FULL_NAME} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
+
+if (!SET_ID || !SET_FULL_NAME) {
+  console.error('❌ SET_ID and SET_FULL_NAME required');
+  process.exit(1);
+}
+
+// Update sets.json
+const ALL_OP_SETS = [
+  { slug: 'romance-dawn-card-list',             name: 'Romance Dawn (OP01)',             series: 'One Piece', short: 'OP01', setId: 'op01', game: 'onepiece' },
+  { slug: 'paramount-war-card-list',            name: 'Paramount War (OP02)',             series: 'One Piece', short: 'OP02', setId: 'op02', game: 'onepiece' },
+  { slug: 'pillars-of-strength-card-list',      name: 'Pillars of Strength (OP03)',       series: 'One Piece', short: 'OP03', setId: 'op03', game: 'onepiece' },
+  { slug: 'kingdoms-of-intrigue-card-list',     name: 'Kingdoms of Intrigue (OP04)',      series: 'One Piece', short: 'OP04', setId: 'op04', game: 'onepiece' },
+  { slug: 'awakening-of-the-new-era-card-list', name: 'Awakening of the New Era (OP05)', series: 'One Piece', short: 'OP05', setId: 'op05', game: 'onepiece' },
+  { slug: 'wings-of-the-captain-card-list',     name: 'Wings of the Captain (OP06)',      series: 'One Piece', short: 'OP06', setId: 'op06', game: 'onepiece' },
+  { slug: '500-years-in-the-future-card-list',  name: '500 Years in the Future (OP07)',   series: 'One Piece', short: 'OP07', setId: 'op07', game: 'onepiece' },
+  { slug: 'two-legends-card-list',              name: 'Two Legends (OP08)',               series: 'One Piece', short: 'OP08', setId: 'op08', game: 'onepiece' },
+  { slug: 'emperors-in-the-new-world-card-list',name: 'Emperors in the New World (OP09)',series: 'One Piece', short: 'OP09', setId: 'op09', game: 'onepiece' },
+  { slug: 'royal-blood-card-list',              name: 'Royal Blood (OP10)',               series: 'One Piece', short: 'OP10', setId: 'op10', game: 'onepiece' },
+  { slug: 'a-fist-of-divine-speed-card-list',   name: 'A Fist of Divine Speed (OP11)',    series: 'One Piece', short: 'OP11', setId: 'op11', game: 'onepiece' },
+  { slug: 'legacy-of-the-master-card-list',     name: 'Legacy of the Master (OP12)',      series: 'One Piece', short: 'OP12', setId: 'op12', game: 'onepiece' },
+  { slug: 'carrying-on-his-will-card-list',     name: 'Carrying On His Will (OP13)',      series: 'One Piece', short: 'OP13', setId: 'op13', game: 'onepiece' },
+  { slug: 'the-azure-seas-seven-card-list',     name: "The Azure Sea's Seven (OP14)",     series: 'One Piece', short: 'OP14', setId: 'op14', game: 'onepiece' },
+  { slug: 'memorial-collection-card-list',      name: 'Memorial Collection (EB01)',       series: 'One Piece', short: 'EB01', setId: 'eb01', game: 'onepiece' },
+  { slug: 'anime-25th-collection-card-list',    name: 'Anime 25th Collection (EB02)',     series: 'One Piece', short: 'EB02', setId: 'eb02', game: 'onepiece' },
+  { slug: 'heroines-edition-card-list',         name: 'Heroines Edition (EB03)',          series: 'One Piece', short: 'EB03', setId: 'eb03', game: 'onepiece' },
+  { slug: 'egghead-crisis-card-list',           name: 'Egghead Crisis (EB04)',            series: 'One Piece', short: 'EB04', setId: 'eb04', game: 'onepiece' },
+];
+
+const setsPath = 'sets.json';
+const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
+const thisSlug = `${SET_URL_SLUG}-card-list`;
+
+// Merge: preserve existing sets, add/update OP sets
+const allKnownSlugs = new Set(ALL_OP_SETS.map(s => s.slug));
+const merged = [
+  ...existingSets.filter(s => !allKnownSlugs.has(s.slug)),
+  ...ALL_OP_SETS.map(known => {
+    const existing = existingSets.find(s => s.slug === known.slug);
+    return { ...known, live: known.slug === thisSlug ? true : (existing?.live ?? false) };
+  }),
+];
+writeFileSync(setsPath, JSON.stringify(merged, null, 2));
+console.log(`✅ sets.json updated — ${thisSlug} is now live`);
+
+// Generate HTML page
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${SEO_META_TITLE}</title>
+<meta name="description" content="${SEO_META_DESC}">
+<meta name="keywords" content="${SET_FULL_NAME}, ${SET_SHORT_NAME} card list, ${SET_SHORT_NAME} prices, One Piece TCG ${SET_SHORT_NAME}, ${SET_FULL_NAME} secret rare">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tcgwatchtower.com/${SET_SEO_PATH}">
+<meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="TCG Watchtower">
+<meta property="og:title" content="${SEO_META_TITLE}">
+<meta property="og:description" content="${SEO_META_DESC}">
+<meta property="og:url" content="https://tcgwatchtower.com/${SET_SEO_PATH}">
+<meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${SEO_META_TITLE}">
+<meta name="twitter:description" content="${SEO_META_DESC}">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "${SET_FULL_NAME} Card List and Prices",
+  "description": "${SEO_META_DESC}",
+  "url": "https://tcgwatchtower.com/${SET_SEO_PATH}",
+  "datePublished": "${releaseDate}",
+  "publisher": { "@type": "Organization", "name": "TCG Watchtower", "url": "https://tcgwatchtower.com" },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tcgwatchtower.com" },
+      { "@type": "ListItem", "position": 2, "name": "One Piece TCG", "item": "https://tcgwatchtower.com/one-piece" },
+      { "@type": "ListItem", "position": 3, "name": "${SET_FULL_NAME}", "item": "https://tcgwatchtower.com/${SET_SEO_PATH}" }
+    ]
+  }
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
+<script>window._epn = {campaign: 5339145069};</script>
+<script src="https://epnt.ebay.com/static/epn-smart-tools.js" defer></script>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#3b82f6;--purple:#a855f7;--amber:#fbbf24;--green:#4ade80;--red:#ef4444;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right,#0f0a1a,#1a0a2e,#0a1520);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,rgba(239,68,68,0.08) 1px,transparent 1px),linear-gradient(to bottom,rgba(239,68,68,0.08) 1px,transparent 1px);background-size:60px 60px;opacity:0.3;pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(60px);opacity:0.2;pointer-events:none;z-index:0}
+.orb-1{top:10%;left:10%;width:400px;height:400px;background:var(--red);animation:float 8s ease-in-out infinite}
+.orb-2{bottom:10%;right:10%;width:350px;height:350px;background:#f97316;animation:float 10s ease-in-out infinite 2s}
+.orb-3{top:50%;right:25%;width:250px;height:250px;background:var(--amber);animation:float 12s ease-in-out infinite 4s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+nav.container{padding-top:24px;padding-bottom:24px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{color:var(--text);text-decoration:none;font-weight:500;transition:color .3s}
+.nav-links a:hover{color:white}
+.btn-primary{background:linear-gradient(135deg,var(--red),#f97316);color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-flex;align-items:center;gap:8px;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(239,68,68,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(239,68,68,0.5)}
+.section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08)}
+.section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
+.section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
+.section-nav-btn:hover{color:var(--text)}
+.section-nav-btn.active{color:var(--red);border-bottom-color:var(--red)}
+.set-hero{padding:60px 0 80px;position:relative}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--muted);margin-bottom:32px}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--text)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(249,115,22,0.2));border:1px solid rgba(239,68,68,0.3);border-radius:999px;font-size:.875rem;margin-bottom:24px;animation:fadeInUp .8s ease-out backwards}
+.set-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1.05;margin-bottom:16px;animation:fadeInUp .8s ease-out .15s backwards}
+.gradient-text{background:linear-gradient(90deg,#f87171,#fb923c,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.set-desc{font-size:1.05rem;color:rgba(226,232,240,.85);margin-bottom:32px;animation:fadeInUp .8s ease-out .3s backwards}
+.set-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;animation:fadeInUp .8s ease-out .45s backwards}
+.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
+.stat-card-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:bold;color:white}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:400px}
+.card-stack{position:relative;width:260px;height:360px}
+.card-stack img{position:absolute;width:180px;height:auto;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6);transition:transform .3s;object-fit:contain}
+.card-stack img:nth-child(1){left:80px;top:20px;z-index:3;transform:rotate(3deg)}
+.card-stack img:nth-child(2){left:40px;top:40px;z-index:2;transform:rotate(-4deg)}
+.card-stack img:nth-child(3){left:10px;top:60px;z-index:1;transform:rotate(-10deg)}
+.card-stack img:hover{transform:rotate(0) scale(1.05) !important;z-index:10}
+.section{padding:80px 0}
+.section-header{text-align:center;margin-bottom:48px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:12px}
+.section-sub{color:var(--muted);font-size:1rem}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(239,68,68,0.4),rgba(249,115,22,0.4),transparent);margin:0}
+.chase-slider{display:flex;gap:20px;overflow-x:auto;padding:8px 4px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(239,68,68,.8) rgba(255,255,255,.08)}
+.chase-slider::-webkit-scrollbar{height:6px}
+.chase-slider::-webkit-scrollbar-thumb{background:rgba(239,68,68,.8);border-radius:3px}
+.chase-card{flex:0 0 200px;scroll-snap-align:start;background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer;display:flex;flex-direction:column;height:500px}
+.chase-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(239,68,68,.3)}
+.chase-card-img{width:100%;aspect-ratio:245/337;object-fit:contain;background:rgba(15,23,42,.5);display:block;flex-shrink:0}
+.chase-card-info{padding:16px;display:flex;flex-direction:column;flex:1}
+.chase-card-name{font-weight:700;font-size:.95rem;margin-bottom:4px;height:2.6rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.chase-card-number{font-size:.8rem;color:var(--muted);margin-bottom:8px;font-family:'Space Mono',monospace}
+.chase-card-rarity-wrap{min-height:2rem;display:flex;align-items:center;margin-bottom:4px}
+.chase-card-price-wrap{min-height:2.5rem;display:flex;align-items:center;justify-content:center;border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px}
+.price-value{font-size:1.15rem;font-weight:700;color:#22c55e;font-family:'Space Mono',monospace}
+.rarity-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.rarity-sec{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(239,68,68,.2));border:1px solid rgba(251,191,36,.4);color:#fbbf24}
+.rarity-tr{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(249,115,22,.2));border:1px solid rgba(251,191,36,.4);color:#fb923c}
+.rarity-sr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(251,191,36,.2));border:1px solid rgba(239,68,68,.4);color:#f87171}
+.rarity-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-links{display:flex;gap:6px;margin-top:auto;padding-top:12px;flex-wrap:wrap;justify-content:center}
+.buy-link{padding:5px 12px;border-radius:6px;font-size:.75rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:28px}
+.filter-input{flex:1;min-width:200px;background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 16px;color:white;font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none}
+.filter-input:focus{border-color:rgba(239,68,68,.5)}
+.filter-input::placeholder{color:var(--muted)}
+.filter-select{background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 16px;color:white;font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer}
+.filter-select option{background:#1e293b}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.card-item{background:rgba(15,23,42,.85);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card-item:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.5);border-color:rgba(239,68,68,.3)}
+.card-item img{width:100%;aspect-ratio:245/337;display:block;object-fit:contain;background:rgba(15,23,42,.85)}
+.card-item-info{padding:8px}
+.card-item-name{font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-item-num{font-size:.65rem;color:var(--muted);font-family:'Space Mono',monospace}
+.card-item-price{font-size:.7rem;font-weight:700;color:#22c55e;font-family:'Space Mono',monospace;margin-top:2px}
+.card-item-price.loading{color:var(--muted);font-weight:400;font-style:italic}
+.card-count{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+#load-more-btn{display:block;margin:32px auto 0;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:12px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:linear-gradient(135deg,#1e293b,#162032);border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:820px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fadeInUp .3s ease-out}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.08);border:none;border-radius:8px;color:white;width:32px;height:32px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:10}
+.modal-inner{display:grid;grid-template-columns:380px 1fr;gap:32px;padding:36px;align-items:start}
+.modal-img{width:100%;aspect-ratio:2.5/3.5;object-fit:contain;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.modal-name{font-size:1.3rem;font-weight:700;margin-bottom:6px}
+.modal-meta{font-size:.85rem;color:var(--muted);margin-bottom:4px;font-family:'Space Mono',monospace}
+.modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
+.pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
+.pl-tcgp{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:var(--green)}
+footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);padding:64px 0 32px}
+.footer-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:48px;margin-bottom:48px}
+.footer-section h3{font-size:1.25rem;margin-bottom:16px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:12px}
+.footer-links a{color:var(--muted);text-decoration:none;transition:color .3s}
+.footer-links a:hover{color:var(--text)}
+.footer-disclaimer p{color:rgba(148,163,184,.6);font-size:.75rem;line-height:1.6;margin-bottom:10px}
+.footer-bottom{text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);color:var(--muted)}
+.chase-slider-wrap{position:relative}
+.chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
+.chase-arrow:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.9);opacity:1}
+.chase-arrow.hidden{opacity:0;pointer-events:none}
+.chase-arrow-left{left:-22px}
+.chase-arrow-right{right:-22px}
+@media(max-width:768px){.hero-grid{grid-template-columns:1fr}.hero-visual{display:none}.set-title{font-size:2.5rem}.set-stats{grid-template-columns:repeat(2,1fr)}.modal-inner{grid-template-columns:1fr}.card-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav class="container">
+  <a href="/" class="nav-logo">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/#faq">FAQ</a>
+    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
+  </div>
+</nav>
+
+<nav class="section-nav" id="section-nav">
+  <div class="section-nav-inner">
+    <a href="/" class="section-nav-btn" style="text-decoration:none">🏠 Home</a>
+    <button class="section-nav-btn" data-target="section-chase">🔥 Chase Cards</button>
+    <button class="section-nav-btn active" data-target="section-cards">📋 Card List</button>
+  </div>
+</nav>
+
+<section class="set-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>›</span>
+      <a href="/one-piece">One Piece TCG</a><span>›</span>
+      <span style="color:var(--text)">${SET_FULL_NAME}</span>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">
+          <span style="color:var(--amber)">★</span>
+          <span>Complete Set Guide</span>
+        </div>
+        <h1 class="set-title">
+          <span class="gradient-text">One Piece TCG</span><br>${SET_FULL_NAME}
+        </h1>
+        <p class="set-desc">${SET_DESCRIPTION}${SEO_INTRO ? '<br><br>' + SEO_INTRO : ''}</p>
+        <div class="set-stats">
+          <div class="stat-card stat-card-logo">
+            <img id="set-logo-hero" alt="${SET_FULL_NAME} Logo" width="120" height="50" style="width:100%;max-width:120px;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
+            <div class="stat-label">${SET_SHORT_NAME}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-count">…</div>
+            <div class="stat-label">Total Cards</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${releaseDate}</div>
+            <div class="stat-label">Release Date</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="card-stack" id="hero-stack">
+          <img data-id="${HERO_CARD_1}" alt="Card 1" width="245" height="337" fetchpriority="high">
+          <img data-id="${HERO_CARD_2}" alt="Card 2" width="245" height="337" loading="lazy">
+          <img data-id="${HERO_CARD_3}" alt="Card 3" width="245" height="337" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="section" id="section-chase">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">🔥 ${SET_FULL_NAME} <span class="gradient-text">Chase Cards</span></h2>
+      <p class="section-sub">The highest-value pulls — ranked by market price</p>
+    </div>
+    <div class="chase-slider-wrap">
+      <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left">&#8249;</button>
+      <div class="chase-slider" id="chase-grid"></div>
+      <button class="chase-arrow chase-arrow-right" id="chase-arrow-right">&#8250;</button>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="section" id="section-cards">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">📋 ${SET_FULL_NAME} <span class="gradient-text">Card List</span></h2>
+      <p class="section-sub" id="card-list-sub">Complete ${SET_SHORT_NAME} card list — search and filter by rarity</p>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
+      <select class="filter-select" id="rarity-filter"><option value="">All Rarities</option></select>
+      <select class="filter-select" id="sort-select">
+        <option value="number">Sort: # Order</option>
+        <option value="price">Sort: Price ↓</option>
+      </select>
+    </div>
+    <p class="card-count" id="card-count">Loading cards…</p>
+    <div class="card-grid" id="card-grid"></div>
+    <button id="load-more-btn" style="display:none">Load More Cards</button>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section class="section">
+  <div class="container" style="text-align:center">
+    <h2 class="section-title">Get <span class="gradient-text">Restock Alerts</span></h2>
+    <p style="color:var(--muted);max-width:560px;margin:0 auto 36px">Join collectors on Discord for instant notifications when ${SET_FULL_NAME} product goes live.</p>
+    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord — Free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section"><h3>TCG Watchtower</h3><p style="color:var(--muted);margin-top:12px">Your trusted hub for Pokemon and One Piece TCG restock alerts.</p></div>
+      <div class="footer-section"><h3>Quick Links</h3><ul class="footer-links"><li><a href="/#features">Features</a></li><li><a href="/#faq">FAQ</a></li><li><a href="https://discord.gg/cZxJV9YRyb">Join Discord</a></li></ul></div>
+      <div class="footer-section"><h3>Legal</h3><ul class="footer-links"><li><a href="/privacy-policy.html">Privacy Policy</a></li><li><a href="/terms-of-service.html">Terms of Service</a></li><li><a href="/disclaimer.html">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><p>TCG Watchtower is not affiliated with or endorsed by One Piece, Bandai, or any trading card game companies. All trademarks remain the property of their respective owners.</p><p>TCG Watchtower participates in affiliate programs including Amazon Associates, eBay Partner Network, and TCGplayer. We may earn a commission on qualifying purchases.</p></div>
+    <div class="footer-bottom"><p>© 2026 TCG Watchtower. All rights reserved.</p></div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-inner" id="modal-inner"></div>
+  </div>
+</div>
+
+<script>
+const SET_ID = '${SET_ID}';
+const R2 = '${R2_BASE}';
+const TCGP_GROUP_ID = '${tcgpGroupId}';
+const EBAY_CAMP = 5339145069;
+const EBAY_MKRID = '711-53200-19255-0';
+const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
+
+function cardImg(id) { return R2 ? \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\` : ''; }
+function setLogoUrl() { return R2 ? \`\${R2}/logos/op/\${SET_ID}.png\` : ''; }
+
+document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
+const logoEl = document.getElementById('set-logo-hero');
+if (logoEl) logoEl.src = setLogoUrl();
+
+function ebayLink(q) { return \`https://www.ebay.com/sch/i.html?_nkw=\${encodeURIComponent(q)}&mkcid=1&mkrid=\${EBAY_MKRID}&siteid=0&campid=\${EBAY_CAMP}&toolid=10001&mkevt=1\`; }
+function tcgpLink(name, num) {
+  const q = encodeURIComponent(\`\${name} \${num} One Piece Card\`);
+  const url = \`https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=\${q}&view=grid\`;
+  return \`\${TCGP_BASE}?u=\${encodeURIComponent(url)}\`;
+}
+
+const CHASE_RARITIES = ['Secret Rare','Treasure Rare','Super Rare','Rare'];
+const RARITY_TIER = {'Secret Rare':0,'Treasure Rare':1,'Super Rare':2,'Rare':3};
+const RARITY_LABEL = {'Secret Rare':'SEC','Treasure Rare':'TR','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
+const RARITY_CLASS = {'Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Super Rare':'rarity-sr','Rare':'rarity-r'};
+
+let currentChaseList = [], allCards = [], filteredCards = [], displayedCount = 0;
+const PAGE_SIZE = 60, priceCache = {};
+
+async function loadCards() {
+  try {
+    const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
+    if (!res.ok) throw new Error('API failed');
+    const json = await res.json();
+    allCards = json.cards || [];
+    if (!allCards.length) throw new Error('No cards');
+  } catch(e) {
+    console.warn('API failed, trying R2 direct:', e.message);
+    try {
+      const res = await fetch(\`\${R2}/data/op/\${SET_ID}.json\`);
+      const json = await res.json();
+      allCards = json.cards || [];
+    } catch(e2) {
+      document.getElementById('card-count').textContent = '⚠️ Could not load cards';
+      return;
+    }
+  }
+
+  document.getElementById('stat-total-count').textContent = allCards.length;
+  document.getElementById('card-list-sub').textContent = \`All \${allCards.length} cards — search and filter by rarity\`;
+
+  const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Secret Rare','Treasure Rare'];
+  const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
+  const sel = document.getElementById('rarity-filter');
+  RARITY_ORDER.forEach(r => { if (raritySet.has(r)) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
+  raritySet.forEach(r => { if (!RARITY_ORDER.includes(r)) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
+
+  renderChaseCards(allCards);
+  filteredCards = allCards;
+  setTimeout(() => { renderCards(true); loadTCGPlayerPrices(); }, 0);
+}
+
+function renderChaseCards(cards) {
+  currentChaseList = cards
+    .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
+    .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
+    .map(c => ({ id: c.localId, name: c.name, rarity: c.rarity || '', rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r', label: RARITY_LABEL[c.rarity] || c.rarity, img: c.image || cardImg(c.localId) }));
+  renderChaseHTML();
+}
+
+function renderChaseHTML() {
+  const pricesKnown = Object.keys(priceCache).length > 0;
+  const sorted = [...currentChaseList]
+    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null }))
+    .sort((a, b) => pricesKnown ? (b.price ?? -1) - (a.price ?? -1) : (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99));
+
+  document.getElementById('chase-grid').innerHTML = sorted.map(c => {
+    const priceHTML = c.price ? \`<div class="chase-card-price-wrap"><span class="price-value">$\${c.price.toFixed(2)}</span></div>\` : \`<div class="chase-card-price-wrap" style="color:var(--muted);font-size:.75rem;font-style:italic">—</div>\`;
+    return \`<div class="chase-card" onclick="openModal('\${c.id}','\${c.name.replace(/'/g,"\\\\'")}','\${c.rarity}','\${c.img}')">
+      <img class="chase-card-img" src="\${c.img}" alt="\${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
+      <div class="chase-card-info">
+        <div class="chase-card-name">\${c.name}</div>
+        <div class="chase-card-number">\${c.id}</div>
+        <div class="chase-card-rarity-wrap"><span class="rarity-badge \${c.rarityClass}">\${c.label}</span></div>
+        \${priceHTML}
+        <div class="buy-links">
+          <a class="buy-link buy-ebay" href="\${ebayLink(c.name + ' ' + c.id + ' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
+          <a class="buy-link buy-tcgp" href="\${tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+        </div>
+      </div>
+    </div>\`;
+  }).join('');
+}
+
+function renderCards(reset) {
+  const grid = document.getElementById('card-grid');
+  if (reset) { grid.innerHTML = ''; displayedCount = 0; }
+  filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE).forEach(card => {
+    const imgUrl = card.image || cardImg(card.localId);
+    const el = document.createElement('div');
+    el.className = 'card-item';
+    el.dataset.localId = card.localId;
+    const cached = priceCache[card.localId];
+    const priceText = cached?.price ? \`$\${cached.price.toFixed(2)}\` : '';
+    const priceClass = cached === undefined ? 'loading' : '';
+    el.innerHTML = \`<img src="\${imgUrl}" alt="\${card.name}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337"><div class="card-item-info"><div class="card-item-name">\${card.name}</div><div class="card-item-num">\${card.localId}</div><div class="card-item-price \${priceClass}">\${priceText}</div></div>\`;
+    el.addEventListener('click', () => openModal(card.localId, card.name, card.rarity || '', imgUrl));
+    grid.appendChild(el);
+  });
+  displayedCount += Math.min(filteredCards.length - displayedCount, PAGE_SIZE);
+  document.getElementById('card-count').textContent = \`Showing \${Math.min(displayedCount, filteredCards.length)} of \${filteredCards.length} cards\`;
+  document.getElementById('load-more-btn').style.display = displayedCount < filteredCards.length ? 'block' : 'none';
+}
+
+function applyFilters() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const rarity = document.getElementById('rarity-filter').value;
+  const sort   = document.getElementById('sort-select').value;
+  let cards = allCards.filter(c => (!search || c.name.toLowerCase().includes(search)) && (!rarity || c.rarity === rarity));
+  if (sort === 'price') cards = [...cards].sort((a, b) => (priceCache[b.localId]?.price ?? -1) - (priceCache[a.localId]?.price ?? -1));
+  filteredCards = cards;
+  renderCards(true);
+}
+
+document.getElementById('search-input').addEventListener('input', applyFilters);
+document.getElementById('rarity-filter').addEventListener('change', applyFilters);
+document.getElementById('sort-select').addEventListener('change', applyFilters);
+document.getElementById('load-more-btn').addEventListener('click', () => renderCards(false));
+
+let _priceFetch = null;
+function loadTCGPlayerPrices() {
+  if (!TCGP_GROUP_ID || TCGP_GROUP_ID === '0') return;
+  if (_priceFetch) return _priceFetch;
+  _priceFetch = (async () => {
+    try {
+      const res = await fetch(\`/api/tcgplayer-prices?groupId=\${TCGP_GROUP_ID}\`);
+      if (!res.ok) return;
+      const { prices = {}, tcgpUrls = {} } = await res.json();
+      Object.entries(prices).forEach(([num, price]) => {
+        const id = num.includes('-') ? num : num;
+        if (price != null) priceCache[id] = { price, url: tcgpUrls[num] || null };
+      });
+      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+        const cached = priceCache[el.dataset.localId];
+        const priceEl = el.querySelector('.card-item-price');
+        if (priceEl) { priceEl.textContent = cached?.price ? \`$\${cached.price.toFixed(2)}\` : ''; priceEl.classList.remove('loading'); }
+      });
+      renderChaseHTML();
+    } catch(e) { console.warn('Prices unavailable:', e.message); }
+  })();
+}
+
+function openModal(localId, name, rarity, imgUrl) {
+  if (!imgUrl) imgUrl = cardImg(localId);
+  document.getElementById('modal-inner').innerHTML = \`
+    <img class="modal-img" src="\${imgUrl}" alt="\${name}" loading="lazy">
+    <div>
+      <div class="modal-name">\${name}</div>
+      <div class="modal-meta">\${localId} / \${SET_FULL_NAME}</div>
+      \${rarity ? \`<div class="modal-meta" style="color:var(--amber)">\${rarity}</div>\` : ''}
+      <div class="modal-links">
+        <a class="modal-buy-link pl-ebay" href="\${ebayLink(name + ' ' + localId + ' One Piece Card')}" target="_blank" rel="noopener"><span>Find on eBay</span><span>→</span></a>
+        <a class="modal-buy-link pl-tcgp" href="\${tcgpLink(name, localId)}" target="_blank" rel="noopener"><span>Find on TCGplayer</span><span>→</span></a>
+      </div>
+    </div>\`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal-overlay').classList.remove('open'));
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open'); });
+
+(function() {
+  const slider = document.getElementById('chase-grid');
+  const btnL = document.getElementById('chase-arrow-left');
+  const btnR = document.getElementById('chase-arrow-right');
+  function upd() { btnL.classList.toggle('hidden', slider.scrollLeft <= 0); btnR.classList.toggle('hidden', slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 4); }
+  btnL.addEventListener('click', () => slider.scrollBy({ left: -440, behavior: 'smooth' }));
+  btnR.addEventListener('click', () => slider.scrollBy({ left: 440, behavior: 'smooth' }));
+  slider.addEventListener('scroll', upd, { passive: true });
+  new MutationObserver(upd).observe(slider, { childList: true });
+  upd();
+})();
+
+loadCards();
+</script>
+<script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
+</body>
+</html>`;
+
+writeFileSync(`${SET_SLUG}.html`, html);
+console.log(`\n✅ Generated ${SET_SLUG}.html`);
+console.log(`   URL: https://tcgwatchtower.com/${SET_SEO_PATH}`);
