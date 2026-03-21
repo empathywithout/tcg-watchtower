@@ -169,5 +169,167 @@
     "setId": "me04",
     "phase": "jp",
     "live": true
+  },
+  {
+    "slug": "romance-dawn-card-list",
+    "name": "Romance Dawn (OP01)",
+    "series": "One Piece",
+    "short": "OP01",
+    "setId": "op01",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "paramount-war-card-list",
+    "name": "Paramount War (OP02)",
+    "series": "One Piece",
+    "short": "OP02",
+    "setId": "op02",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "pillars-of-strength-card-list",
+    "name": "Pillars of Strength (OP03)",
+    "series": "One Piece",
+    "short": "OP03",
+    "setId": "op03",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "kingdoms-of-intrigue-card-list",
+    "name": "Kingdoms of Intrigue (OP04)",
+    "series": "One Piece",
+    "short": "OP04",
+    "setId": "op04",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "awakening-of-the-new-era-card-list",
+    "name": "Awakening of the New Era (OP05)",
+    "series": "One Piece",
+    "short": "OP05",
+    "setId": "op05",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "wings-of-the-captain-card-list",
+    "name": "Wings of the Captain (OP06)",
+    "series": "One Piece",
+    "short": "OP06",
+    "setId": "op06",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "500-years-in-the-future-card-list",
+    "name": "500 Years in the Future (OP07)",
+    "series": "One Piece",
+    "short": "OP07",
+    "setId": "op07",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "two-legends-card-list",
+    "name": "Two Legends (OP08)",
+    "series": "One Piece",
+    "short": "OP08",
+    "setId": "op08",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "emperors-in-the-new-world-card-list",
+    "name": "Emperors in the New World (OP09)",
+    "series": "One Piece",
+    "short": "OP09",
+    "setId": "op09",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "royal-blood-card-list",
+    "name": "Royal Blood (OP10)",
+    "series": "One Piece",
+    "short": "OP10",
+    "setId": "op10",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "a-fist-of-divine-speed-card-list",
+    "name": "A Fist of Divine Speed (OP11)",
+    "series": "One Piece",
+    "short": "OP11",
+    "setId": "op11",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "legacy-of-the-master-card-list",
+    "name": "Legacy of the Master (OP12)",
+    "series": "One Piece",
+    "short": "OP12",
+    "setId": "op12",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "carrying-on-his-will-card-list",
+    "name": "Carrying On His Will (OP13)",
+    "series": "One Piece",
+    "short": "OP13",
+    "setId": "op13",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "the-azure-seas-seven-card-list",
+    "name": "The Azure Sea's Seven (OP14)",
+    "series": "One Piece",
+    "short": "OP14",
+    "setId": "op14",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "memorial-collection-card-list",
+    "name": "Memorial Collection (EB01)",
+    "series": "One Piece",
+    "short": "EB01",
+    "setId": "eb01",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "anime-25th-collection-card-list",
+    "name": "Anime 25th Collection (EB02)",
+    "series": "One Piece",
+    "short": "EB02",
+    "setId": "eb02",
+    "game": "onepiece",
+    "live": false
+  },
+  {
+    "slug": "heroines-edition-card-list",
+    "name": "Heroines Edition (EB03)",
+    "series": "One Piece",
+    "short": "EB03",
+    "setId": "eb03",
+    "game": "onepiece",
+    "live": true
+  },
+  {
+    "slug": "egghead-crisis-card-list",
+    "name": "Egghead Crisis (EB04)",
+    "series": "One Piece",
+    "short": "EB04",
+    "setId": "eb04",
+    "game": "onepiece",
+    "live": false
   }
 ]
