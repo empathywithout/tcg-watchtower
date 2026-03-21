@@ -43,6 +43,7 @@ const CORRECT_SECTION_NAV_INNER = `.section-nav-inner {
   gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }`;
 
 const NEW_INIT_NAV = `/* ===== HAMBURGER MENU ===== */
@@ -223,10 +224,22 @@ for (const file of files) {
   content = content.replace(/^nav\s*\{[^}]+\}/ms, CORRECT_NAV_CSS);
   if (content !== before1) { changed = true; cssFixed++; }
 
-  // 2. Fix section-nav-inner (remove justify-content:center)
+  // 2. Fix section-nav-inner — replace entire block regardless of content
   content = content.replace(
-    /\.section-nav-inner\s*\{[^}]*justify-content\s*:\s*center[^}]*\}/gs,
+    /\.section-nav-inner\s*\{[^}]+\}/gs,
     CORRECT_SECTION_NAV_INNER
+  );
+
+  // 3b. Fix section-nav-sets — add margin-left auto
+  content = content.replace(
+    /\.section-nav-sets\s*\{[^}]+\}/g,
+    '.section-nav-sets { position: relative; flex-shrink: 0; }'
+  );
+
+  // 3c. Fix scroll-margin-top on sections
+  content = content.replace(
+    '.section { padding: 80px 0; }',
+    '.section { padding: 80px 0; scroll-margin-top: 60px; }'
   );
 
   // 3. Replace initNav JS block
