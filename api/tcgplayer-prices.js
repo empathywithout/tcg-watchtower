@@ -7,7 +7,8 @@
 // Returns: { prices: { "001": 0.50, "199": 59.99, ... }, tcgpUrls: {...} }
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
-const POKEMON_CATEGORY = 3;
+const POKEMON_CATEGORY    = 3;
+const ONE_PIECE_CATEGORY  = 62;
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -20,6 +21,9 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const groupId = req.query.groupId;
+  const game    = (req.query.game || 'pokemon').toLowerCase();
+  const category = game === 'onepiece' ? ONE_PIECE_CATEGORY : POKEMON_CATEGORY;
+
   if (!groupId || !/^\d+$/.test(groupId)) {
     return res.status(400).json({ error: 'Missing or invalid ?groupId= parameter' });
   }
@@ -38,10 +42,10 @@ export default async function handler(req, res) {
 
   try {
     const [productsRes, pricesRes] = await Promise.all([
-      fetch(`${TCGCSV_BASE}/${POKEMON_CATEGORY}/${groupId}/products`, {
+      fetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
         signal: AbortSignal.timeout(10000)
       }),
-      fetch(`${TCGCSV_BASE}/${POKEMON_CATEGORY}/${groupId}/prices`, {
+      fetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
         signal: AbortSignal.timeout(10000)
       })
     ]);

@@ -458,7 +458,7 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 
 <script>
 const SET_ID = '${SET_ID}';
-const R2 = '${R2_BASE}';
+const R2 = '${R2_PUBLIC_URL}';
 const TCGP_GROUP_ID = '${tcgpGroupId}';
 const EBAY_CAMP = 5339145069;
 const EBAY_MKRID = '711-53200-19255-0';
@@ -530,7 +530,10 @@ function renderChaseCards(cards) {
 function renderChaseHTML() {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
-    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null }))
+    .map(c => {
+      const cached = priceCache[c.id] || priceCache[\`\${SET_ID.toUpperCase()}-\${c.id}\`];
+      return { ...c, price: cached?.price ?? null, priceUrl: cached?.url || null };
+    })
     .sort((a, b) => pricesKnown ? (b.price ?? -1) - (a.price ?? -1) : (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99));
 
   document.getElementById('chase-grid').innerHTML = sorted.map(c => {
@@ -592,15 +595,28 @@ function loadTCGPlayerPrices() {
   if (_priceFetch) return _priceFetch;
   _priceFetch = (async () => {
     try {
-      const res = await fetch(\`/api/tcgplayer-prices?groupId=\${TCGP_GROUP_ID}\`);
+      const res = await fetch(\`/api/tcgplayer-prices?groupId=\${TCGP_GROUP_ID}&game=onepiece\`);
       if (!res.ok) return;
       const { prices = {}, tcgpUrls = {} } = await res.json();
+      // One Piece card numbers in TCGCSV are like "OP14-114" or just "114"
+      // Store both full ID and numeric-only so we can match either
       Object.entries(prices).forEach(([num, price]) => {
-        const id = num.includes('-') ? num : num;
-        if (price != null) priceCache[id] = { price, url: tcgpUrls[num] || null };
+        if (price == null) return;
+        const entry = { price, url: tcgpUrls[num] || null };
+        priceCache[num] = entry;                          // e.g. "OP14-114"
+        const parts = num.split('-');
+        if (parts.length > 1) priceCache[parts[parts.length - 1]] = entry; // e.g. "114"
+      });
+      Object.entries(tcgpUrls).forEach(([num, url]) => {
+        if (!priceCache[num]) priceCache[num] = { price: null, url };
+        const parts = num.split('-');
+        if (parts.length > 1 && !priceCache[parts[parts.length - 1]]) {
+          priceCache[parts[parts.length - 1]] = { price: null, url };
+        }
       });
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
-        const cached = priceCache[el.dataset.localId];
+        const id = el.dataset.localId;
+        const cached = priceCache[id] || priceCache[\`\${SET_ID.toUpperCase()}-\${id}\`];
         const priceEl = el.querySelector('.card-item-price');
         if (priceEl) { priceEl.textContent = cached?.price ? \`$\${cached.price.toFixed(2)}\` : ''; priceEl.classList.remove('loading'); }
       });
