@@ -2004,7 +2004,11 @@ function initNav() {
   async function populateNavSets() {
     try {
       const res = await fetch('/sets.json');
-      const sets = await res.json();
+      const allSetsData = await res.json();
+      const sets = allSetsData.filter(s => {
+        const id = (s.setId || '').toLowerCase();
+        return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';
+      });
       const grouped = {};
       sets.forEach(s => {
         if (!grouped[s.series]) grouped[s.series] = [];
