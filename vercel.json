@@ -393,18 +393,6 @@
       "destination": "/chaos-rising-card-list.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/cards",
       "destination": "/destined-rivals-card-list.html"
     },
@@ -419,6 +407,22 @@
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards",
       "destination": "/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
@@ -619,6 +623,11 @@
     {
       "source": "/ascended-heroes-card-list",
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/cards",
+      "permanent": true
+    },
+    {
+      "source": "/perfect-order-card-list",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/cards",
       "permanent": true
     }
   ],
