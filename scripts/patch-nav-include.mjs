@@ -20,7 +20,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   temp.innerHTML = html;
   while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
   placeholder.remove();
-  if (typeof initNav === 'function') initNav();
+  requestAnimationFrame(() => {
+    if (typeof initNav === 'function') initNav();
+  });
 });
 </script>`;
 
