@@ -44,9 +44,16 @@ for (const file of files) {
   const path = join(ROOT, file);
   let content = readFileSync(path, 'utf8');
 
-  // Already patched?
+  // Fix nav CSS regardless (idempotent)
+  content = content.replace(
+    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: relative;\n  z-index: 10;\n}',
+    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: sticky;\n  top: 0;\n  z-index: 1000;\n  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);\n}'
+  );
+
+  // Already patched for nav HTML?
   if (content.includes('<div id="site-nav"></div>')) {
-    console.log(`  SKIP (already patched): ${file}`);
+    writeFileSync(path, content, 'utf8');
+    console.log(`  CSS-FIXED (already patched): ${file}`);
     skipped++;
     continue;
   }
@@ -92,12 +99,6 @@ for (const file of files) {
       '  await fetchSets();\n})();\n} // end initNav\n\n/* ===== SECTION NAV ACTIVE STATE ===== */'
     );
   }
-
-  // Also fix nav CSS to sticky
-  content = content.replace(
-    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: relative;\n  z-index: 10;\n}',
-    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: sticky;\n  top: 0;\n  z-index: 1000;\n  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);\n}'
-  );
 
   writeFileSync(path, content, 'utf8');
   console.log(`  PATCHED: ${file}`);
