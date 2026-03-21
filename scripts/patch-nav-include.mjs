@@ -26,7 +26,7 @@ const CORRECT_CSS = `nav:not(.section-nav) {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87);
+  background: transparent;
 }
 nav.container {
   padding: 24px 0;
