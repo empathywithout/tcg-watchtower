@@ -1491,6 +1491,7 @@ nav.container {
 <!-- Pokemon Menu -->
 <div class="hamburger-menu" id="hamburger-menu">
   <div class="hamburger-menu-item" id="pokemon-menu-item">Pokémon<span>›</span></div>
+  <div class="hamburger-menu-item" id="onepiece-menu-item">One Piece<span>›</span></div>
 </div>
 <!-- Pokemon Sets View -->
 <div class="pokemon-sets-view" id="pokemon-sets-view">
@@ -2054,8 +2055,13 @@ nav.container {
         const hamburgerOverlay = document.getElementById('hamburger-overlay');
         const hamburgerMenu = document.getElementById('hamburger-menu');
         const pokemonMenuItem = document.getElementById('pokemon-menu-item');
+        const onepieceMenuItem = document.getElementById('onepiece-menu-item');
         const pokemonSetsView = document.getElementById('pokemon-sets-view');
+        const onepieceSetsView = document.getElementById('onepiece-sets-view');
         const backToMenu = document.getElementById('back-to-menu');
+        const backToMenuOp = document.getElementById('back-to-menu-op');
+        const setsGridContainerOp = document.getElementById('sets-grid-container-op');
+        const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
         const setsGridContainer = document.getElementById('sets-grid-container');
         const filterTabs = document.querySelectorAll('.filter-tab');
         
@@ -2095,6 +2101,7 @@ nav.container {
         function closeAllMenus() {
             hamburgerMenu.classList.remove('open');
             pokemonSetsView.classList.remove('open');
+            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
             hamburgerOverlay.classList.remove('open');
             hamburger.classList.remove('open');
         }
@@ -2103,9 +2110,15 @@ nav.container {
             hamburgerMenu.classList.remove('open');
             pokemonSetsView.classList.add('open');
         }
+
+        function showOnePieceSets() {
+            hamburgerMenu.classList.remove('open');
+            if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
+        }
         
         function backToMainMenu() {
             pokemonSetsView.classList.remove('open');
+            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
             hamburgerMenu.classList.add('open');
         }
         
@@ -2113,7 +2126,9 @@ nav.container {
         hamburger.addEventListener('click', toggleHamburgerMenu);
         hamburgerOverlay.addEventListener('click', closeAllMenus);
         pokemonMenuItem.addEventListener('click', showPokemonSets);
+        if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
         backToMenu.addEventListener('click', backToMainMenu);
+        if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
         
         // Filter tabs
         filterTabs.forEach(tab => {
@@ -2220,6 +2235,36 @@ nav.container {
             setsGridContainer.innerHTML = html;
         }
         
+        function renderOnePieceSets() {
+            if (!setsGridContainerOp) return;
+            const opSets = allSets.filter(s => {
+                const id = (s.setId || '').toLowerCase();
+                return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
+            });
+            const filtered = opSets;
+            if (!filtered.length) {
+                setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
+                return;
+            }
+            const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+            let html = '<div class="sets-grid">';
+            filtered.forEach(set => {
+                const disabled = !set.live;
+                const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
+                html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
+                    <div class="set-card-image">
+                        ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🃏</div>'}
+                    </div>
+                    <div class="set-card-content">
+                        <div class="set-card-name">${set.name}</div>
+                        <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+                        ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+                    </div></a>`;
+            });
+            html += '</div>';
+            setsGridContainerOp.innerHTML = html;
+        }
+
         // Initialize
         await fetchSets();
     })();
