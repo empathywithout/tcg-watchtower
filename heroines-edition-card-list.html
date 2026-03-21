@@ -77,6 +77,12 @@ nav:not(.section-nav) {
   z-index: 1000;
   background: transparent;
 }
+nav:not(.section-nav) {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: transparent;
+}
 nav.container {
   padding: 24px 0;
   display: flex;
@@ -92,7 +98,15 @@ nav.container {
 .btn-primary{background:linear-gradient(135deg,var(--red),#f97316);color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-flex;align-items:center;gap:8px;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(239,68,68,0.4)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(239,68,68,0.5)}
 .section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08)}
-.section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
+.section-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-btn:hover{color:var(--text)}
 .section-nav-btn.active{color:var(--red);border-bottom-color:var(--red)}

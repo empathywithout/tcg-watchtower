@@ -168,6 +168,12 @@ nav:not(.section-nav) {
   z-index: 1000;
   background: transparent;
 }
+nav:not(.section-nav) {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: transparent;
+}
 nav.container {
   padding: 24px 0;
   display: flex;
@@ -1829,7 +1835,7 @@ function initNav() {
   function renderSets() {
     if (!setsGridContainer) return;
     const pokemonSets = allSets.filter(s => {
-      const id = (s.setId || s.slug || '').toLowerCase();
+      const id = (s.setId || '').toLowerCase();
       return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
     });
     let filtered = pokemonSets;
@@ -1841,36 +1847,33 @@ function initNav() {
     const grouped = {};
     filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
     let html = '';
-    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     Object.keys(grouped).forEach(series => {
       html += `<div class="series-label">${series}</div><div class="sets-grid">`;
       grouped[series].forEach(set => {
-        const isDisabled = !set.live;
-        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
-        html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+        const disabled = !set.live;
+        const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
+        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
           <div class="set-card-image">
-            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>` : `<div style="font-size:3rem">🎴</div>`}
+            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>` : `<div style="font-size:3rem">🎴</div>`}
           </div>
           <div class="set-card-content">
             <div class="set-card-name">${set.name}</div>
             <div class="set-card-info">${set.short} • ${set.series}</div>
-            ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-          </div>
-        </a>`;
+            ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div></a>`;
       });
       html += '</div>';
     });
-    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets found</div>';
+    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
   }
 
   function renderOnePieceSets() {
     if (!setsGridContainerOp) return;
     const opSets = allSets.filter(s => {
-      const id = (s.setId || s.slug || '').toLowerCase();
+      const id = (s.setId || '').toLowerCase();
       return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
     });
-    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
     if (!filtered.length) {
       setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
       return;
@@ -1878,19 +1881,17 @@ function initNav() {
     const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     let html = '<div class="sets-grid">';
     filtered.forEach(set => {
-      const isDisabled = !set.live;
-      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+      const disabled = !set.live;
       const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
-      html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+      html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
         <div class="set-card-image">
           ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem">🃏</div>`}
         </div>
         <div class="set-card-content">
           <div class="set-card-name">${set.name}</div>
           <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
-          ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-        </div>
-      </a>`;
+          ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+        </div></a>`;
     });
     html += '</div>';
     setsGridContainerOp.innerHTML = html;
