@@ -240,10 +240,12 @@ for (const file of files) {
 
   // 3d. Fix populateNavSets to exclude One Piece sets
   if (content.includes("async function populateNavSets()") && !content.includes("allSetsData")) {
+    const before3d = content;
     content = content.replace(
       "      const sets = await res.json();\n      const grouped = {};\n      sets.forEach(s => {\n        if (!grouped[s.series]) grouped[s.series] = [];\n        grouped[s.series].push(s);\n      });",
       "      const allSetsData = await res.json();\n      const sets = allSetsData.filter(s => {\n        const id = (s.setId || '').toLowerCase();\n        return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';\n      });\n      const grouped = {};\n      sets.forEach(s => {\n        if (!grouped[s.series]) grouped[s.series] = [];\n        grouped[s.series].push(s);\n      });"
     );
+    if (content !== before3d) { changed = true; }
   }
 
   // 3. Replace initNav JS block
