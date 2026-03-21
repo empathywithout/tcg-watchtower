@@ -22,7 +22,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 const NAV_START = '<!-- ===== NAV ===== -->';
 const NAV_END_MARKERS = ['<!-- ===== HERO ===== -->', '<!-- Hamburger Menu Overlay -->'];
 
-const CORRECT_CSS = `nav:not(.section-nav) {
+const CORRECT_NAV_CSS = `nav:not(.section-nav) {
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -35,8 +35,18 @@ nav.container {
   align-items: center;
 }`;
 
-// The new initNav with One Piece support
-const NEW_INIT_NAV = `function initNav() {
+const CORRECT_SECTION_NAV_INNER = `.section-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}`;
+
+const NEW_INIT_NAV = `/* ===== HAMBURGER MENU ===== */
+function initNav() {
 (async function() {
   const hamburger = document.getElementById('hamburger');
   const hamburgerOverlay = document.getElementById('hamburger-overlay');
@@ -131,7 +141,7 @@ const NEW_INIT_NAV = `function initNav() {
   function renderSets() {
     if (!setsGridContainer) return;
     const pokemonSets = allSets.filter(s => {
-      const id = (s.setId || s.slug || '').toLowerCase();
+      const id = (s.setId || '').toLowerCase();
       return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
     });
     let filtered = pokemonSets;
@@ -143,36 +153,33 @@ const NEW_INIT_NAV = `function initNav() {
     const grouped = {};
     filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
     let html = '';
-    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     Object.keys(grouped).forEach(series => {
       html += \`<div class="series-label">\${series}</div><div class="sets-grid">\`;
       grouped[series].forEach(set => {
-        const isDisabled = !set.live;
-        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-        const logoUrl = set.setId ? \`\${r2}/logos/\${set.setId}.png\` : null;
-        html += \`<a href="\${link}" class="\${isDisabled ? 'set-card disabled' : 'set-card'}">
+        const disabled = !set.live;
+        const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
+        html += \`<a href="\${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card\${disabled ? ' disabled' : ''}">
           <div class="set-card-image">
-            \${logoUrl ? \`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>\` : \`<div style="font-size:3rem">🎴</div>\`}
+            \${logoUrl ? \`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>\` : \`<div style="font-size:3rem">🎴</div>\`}
           </div>
           <div class="set-card-content">
             <div class="set-card-name">\${set.name}</div>
             <div class="set-card-info">\${set.short} • \${set.series}</div>
-            \${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-          </div>
-        </a>\`;
+            \${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div></a>\`;
       });
       html += '</div>';
     });
-    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets found</div>';
+    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
   }
 
   function renderOnePieceSets() {
     if (!setsGridContainerOp) return;
     const opSets = allSets.filter(s => {
-      const id = (s.setId || s.slug || '').toLowerCase();
+      const id = (s.setId || '').toLowerCase();
       return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
     });
-    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
     if (!filtered.length) {
       setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
       return;
@@ -180,19 +187,17 @@ const NEW_INIT_NAV = `function initNav() {
     const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     let html = '<div class="sets-grid">';
     filtered.forEach(set => {
-      const isDisabled = !set.live;
-      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+      const disabled = !set.live;
       const logoUrl = set.setId ? \`\${r2}/logos/op/\${set.setId}.png\` : null;
-      html += \`<a href="\${link}" class="\${isDisabled ? 'set-card disabled' : 'set-card'}">
+      html += \`<a href="\${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card\${disabled ? ' disabled' : ''}">
         <div class="set-card-image">
           \${logoUrl ? \`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\` : \`<div style="font-size:3rem">🃏</div>\`}
         </div>
         <div class="set-card-content">
           <div class="set-card-name">\${set.name}</div>
           <div class="set-card-info">\${set.short || ''} • \${set.series || 'One Piece TCG'}</div>
-          \${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-        </div>
-      </a>\`;
+          \${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+        </div></a>\`;
     });
     html += '</div>';
     setsGridContainerOp.innerHTML = html;
@@ -205,7 +210,7 @@ const NEW_INIT_NAV = `function initNav() {
 const files = readdirSync(ROOT).filter(f => f.endsWith('-card-list.html'));
 console.log(`Found ${files.length} card-list HTML files`);
 
-let patched = 0, cssFixed = 0, navJsFixed = 0, skipped = 0;
+let patched = 0, cssFixed = 0, jsFixed = 0, skipped = 0;
 
 for (const file of files) {
   const path = join(ROOT, file);
@@ -213,39 +218,50 @@ for (const file of files) {
   let changed = false;
 
   // 1. Fix nav CSS
-  const cssBefore = content;
-  content = content.replace(/nav\.container\s*\{[^}]+\}/gs, CORRECT_CSS);
-  if (content === cssBefore) content = content.replace(/^nav\s*\{[^}]+\}/ms, CORRECT_CSS);
-  if (content !== cssBefore) { changed = true; cssFixed++; }
+  const before1 = content;
+  content = content.replace(/nav\.container\s*\{[^}]+\}/gs, CORRECT_NAV_CSS);
+  content = content.replace(/^nav\s*\{[^}]+\}/ms, CORRECT_NAV_CSS);
+  if (content !== before1) { changed = true; cssFixed++; }
 
-  // 2. Fix nav HTML -> fetch
+  // 2. Fix section-nav-inner (remove justify-content:center)
+  content = content.replace(
+    /\.section-nav-inner\s*\{[^}]*justify-content\s*:\s*center[^}]*\}/gs,
+    CORRECT_SECTION_NAV_INNER
+  );
+
+  // 3. Replace initNav JS block
+  const before3 = content;
+  content = content.replace(
+    /\/\* ===== HAMBURGER MENU ===== \*\/\nfunction initNav\(\) \{[\s\S]*?\} \/\/ end initNav/,
+    NEW_INIT_NAV
+  );
+  if (content !== before3) { changed = true; jsFixed++; }
+
+  // 4. Replace inline nav HTML if not already using fetch
   if (!content.includes('<div id="site-nav"></div>')) {
     const navStart = content.indexOf(NAV_START);
-    if (navStart === -1) { console.log(`  SKIP (no nav marker): ${file}`); if (changed) writeFileSync(path, content, 'utf8'); skipped++; continue; }
+    if (navStart === -1) { console.log(`  SKIP (no nav): ${file}`); if (changed) writeFileSync(path, content, 'utf8'); skipped++; continue; }
     let navEnd = -1;
     for (const marker of NAV_END_MARKERS) {
       const idx = content.indexOf(marker, navStart + NAV_START.length);
       if (idx !== -1) { navEnd = idx; break; }
     }
-    if (navEnd === -1) { console.log(`  SKIP (no nav end): ${file}`); if (changed) writeFileSync(path, content, 'utf8'); skipped++; continue; }
+    if (navEnd === -1) { console.log(`  SKIP (no end): ${file}`); if (changed) writeFileSync(path, content, 'utf8'); skipped++; continue; }
     content = content.slice(0, navStart) + NAV_FETCH + '\n\n' + content.slice(navEnd);
     changed = true;
+    if (content.includes('/* ===== HAMBURGER MENU ===== */\n(async function()') && !content.includes('function initNav()')) {
+      content = content
+        .replace('/* ===== HAMBURGER MENU ===== */\n(async function() {', '/* ===== HAMBURGER MENU ===== */\nfunction initNav() {\n(async function() {')
+        .replace('  await fetchSets();\n})();\n\n/* ===== SECTION NAV ACTIVE STATE ===== */', '  await fetchSets();\n})();\n} // end initNav\n\n/* ===== SECTION NAV ACTIVE STATE ===== */');
+    }
     patched++;
-  }
-
-  // 3. Always replace initNav with One Piece version
-  const jsBefore = content;
-  // Replace from "function initNav() {" to "} // end initNav"
-  content = content.replace(/function initNav\(\) \{[\s\S]*?\} \/\/ end initNav/, NEW_INIT_NAV);
-  if (content !== jsBefore) { changed = true; navJsFixed++; }
-
-  if (changed) {
-    writeFileSync(path, content, 'utf8');
-    console.log(`  UPDATED: ${file}`);
+    console.log(`  PATCHED: ${file}`);
   } else {
-    console.log(`  SKIP (up to date): ${file}`);
-    skipped++;
+    if (changed) console.log(`  UPDATED: ${file}`);
+    else { console.log(`  SKIP (up to date): ${file}`); skipped++; continue; }
   }
+
+  writeFileSync(path, content, 'utf8');
 }
 
-console.log(`\nDone — ${patched} nav-patched, ${cssFixed} css-fixed, ${navJsFixed} js-fixed, ${skipped} skipped`);
+console.log(`\nDone — ${patched} patched, ${cssFixed} css-fixed, ${jsFixed} js-fixed, ${skipped} skipped`);
