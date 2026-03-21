@@ -248,12 +248,14 @@ for (const file of files) {
     if (content !== before3d) { changed = true; }
   }
 
-  // 3. Replace initNav JS block
+  // 3. Replace initNav JS block — always replace if One Piece support missing
   const before3 = content;
-  content = content.replace(
-    /\/\* ===== HAMBURGER MENU ===== \*\/\nfunction initNav\(\) \{[\s\S]*?\} \/\/ end initNav/,
-    NEW_INIT_NAV
-  );
+  if (content.includes('function initNav()') && !content.includes('onepieceMenuItem')) {
+    content = content.replace(
+      /\/\* ===== HAMBURGER MENU ===== \*\/\nfunction initNav\(\) \{[\s\S]*?\} \/\/ end initNav/,
+      NEW_INIT_NAV
+    );
+  }
   if (content !== before3) { changed = true; jsFixed++; }
 
   // 4. Replace inline nav HTML if not already using fetch
