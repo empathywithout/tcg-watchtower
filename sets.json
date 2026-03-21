@@ -169,5 +169,23 @@
     "setId": "me04",
     "phase": "jp",
     "live": true
+  },
+  {
+    "slug": "heroines-edition-card-list",
+    "name": "Heroines Edition",
+    "series": "One Piece TCG",
+    "short": "EB03",
+    "setId": "eb03",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "the-azure-seas-seven-card-list",
+    "name": "The Azure Sea's Seven",
+    "series": "One Piece TCG",
+    "short": "OP14",
+    "setId": "op14",
+    "phase": "en",
+    "live": false
   }
 ]
