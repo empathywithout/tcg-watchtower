@@ -22,17 +22,13 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 const NAV_START = '<!-- ===== NAV ===== -->';
 const NAV_END_MARKERS = ['<!-- ===== HERO ===== -->', '<!-- Hamburger Menu Overlay -->'];
 
-const CORRECT_NAV_CSS = `nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: transparent;
-}
-nav.container {
+const CORRECT_NAV_CSS = `nav.container {
   padding: 24px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 10;
 }`;
 
 const CORRECT_SECTION_NAV_INNER = `.section-nav-inner {
