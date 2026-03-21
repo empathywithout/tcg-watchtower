@@ -127,15 +127,17 @@
         }
 
         /* Navigation */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+}
 nav.container {
   padding: 24px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
@@ -1469,7 +1471,7 @@ nav.container {
     <!-- Navigation -->
     <nav class="container">
         <a href="/" class="nav-logo">
-            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
             <span>TCG Watchtower</span>
           </a>
         <div class="nav-links">
