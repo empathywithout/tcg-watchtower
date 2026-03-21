@@ -306,17 +306,21 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
 
-<nav class="top-nav container">
-  <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
-    <span>TCG Watchtower</span>
-  </a>
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/one-piece">One Piece</a>
-    <a href="https://discord.gg/cZxJV9YRyb" class="btn-discord">Join Discord</a>
-  </div>
-</nav>
+<!-- ===== NAV ===== -->
+<div id="site-nav"></div>
+<script>
+fetch('/nav.html').then(r => r.text()).then(html => {
+  const placeholder = document.getElementById('site-nav');
+  if (!placeholder) return;
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
+  placeholder.remove();
+  requestAnimationFrame(() => {
+    if (typeof initNav === 'function') initNav();
+  });
+});
+</script>
 
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
@@ -667,6 +671,135 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 })();
 
 loadCards();
+
+/* ===== HAMBURGER MENU ===== */
+function initNav() {
+(async function() {
+  const hamburger = document.getElementById('hamburger');
+  const hamburgerOverlay = document.getElementById('hamburger-overlay');
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const pokemonMenuItem = document.getElementById('pokemon-menu-item');
+  const onepieceMenuItem = document.getElementById('onepiece-menu-item');
+  const pokemonSetsView = document.getElementById('pokemon-sets-view');
+  const backToMenu = document.getElementById('back-to-menu');
+  const backToMenuOp = document.getElementById('back-to-menu-op');
+  const setsGridContainer = document.getElementById('sets-grid-container');
+
+  let allSets = [], currentFilter = 'all';
+
+  function toggleHamburgerMenu() {
+    const isOpen = hamburgerMenu.classList.contains('open');
+    if (isOpen) { closeAllMenus(); }
+    else { hamburgerMenu.classList.add('open'); hamburgerOverlay.classList.add('open'); hamburger.classList.add('open'); }
+  }
+  function closeAllMenus() {
+    hamburgerMenu.classList.remove('open');
+    if (pokemonSetsView) pokemonSetsView.classList.remove('open');
+    const opView = document.getElementById('onepiece-sets-view');
+    if (opView) opView.classList.remove('open');
+    hamburgerOverlay.classList.remove('open');
+    hamburger.classList.remove('open');
+  }
+  function showPokemonSets() {
+    hamburgerMenu.classList.remove('open');
+    if (pokemonSetsView) pokemonSetsView.classList.add('open');
+  }
+  function showOnePieceSets() {
+    hamburgerMenu.classList.remove('open');
+    const opView = document.getElementById('onepiece-sets-view');
+    if (opView) { opView.classList.add('open'); renderOnePieceSets(); }
+  }
+  function backToMainMenu() {
+    if (pokemonSetsView) pokemonSetsView.classList.remove('open');
+    const opView = document.getElementById('onepiece-sets-view');
+    if (opView) opView.classList.remove('open');
+    hamburgerMenu.classList.add('open');
+  }
+
+  if (hamburger) hamburger.addEventListener('click', toggleHamburgerMenu);
+  if (hamburgerOverlay) hamburgerOverlay.addEventListener('click', closeAllMenus);
+  if (pokemonMenuItem) pokemonMenuItem.addEventListener('click', showPokemonSets);
+  if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
+  if (backToMenu) backToMenu.addEventListener('click', backToMainMenu);
+  if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
+
+  const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      renderSets();
+    });
+  });
+
+  const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+  filterTabsOp.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabsOp.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderOnePieceSets();
+    });
+  });
+
+  async function fetchSets() {
+    try {
+      const res = await fetch('/sets.json');
+      if (!res.ok) return;
+      allSets = await res.json();
+      renderSets();
+    } catch(e) {}
+  }
+
+  function renderSets() {
+    if (!setsGridContainer) return;
+    const pokemonSets = allSets.filter(s => {
+      const id = (s.setId || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
+    });
+    let filtered = currentFilter === 'live' ? pokemonSets.filter(s => s.live) : pokemonSets;
+    const grouped = {};
+    filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
+    let html = '';
+    Object.keys(grouped).forEach(series => {
+      html += \`<div class="series-label">\${series}</div><div class="sets-grid">\`;
+      grouped[series].forEach(set => {
+        const disabled = !set.live;
+        const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+        const logoUrl = set.setId ? \`\${r2}/logos/\${set.setId}.png\` : null;
+        html += \`<a href="\${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card\${disabled ? ' disabled' : ''}">
+          <div class="set-card-image">\${logoUrl ? \`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>\` : '<div style="font-size:3rem">🎴</div>'}</div>
+          <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short} • \${set.series}</div>\${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>\`;
+      });
+      html += '</div>';
+    });
+    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
+  }
+
+  function renderOnePieceSets() {
+    const container = document.getElementById('sets-grid-container-op');
+    if (!container) return;
+    const opSets = allSets.filter(s => {
+      const id = (s.setId || '').toLowerCase();
+      return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
+    });
+    if (!opSets.length) { container.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>'; return; }
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html = '<div class="sets-grid">';
+    opSets.forEach(set => {
+      const disabled = !set.live;
+      const logoUrl = set.setId ? \`\${r2}/logos/op/\${set.setId}.png\` : null;
+      html += \`<a href="\${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card\${disabled ? ' disabled' : ''}">
+        <div class="set-card-image">\${logoUrl ? \`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\` : '<div style="font-size:3rem">🃏</div>'}</div>
+        <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short || ''} • \${set.series || 'One Piece TCG'}</div>\${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>\`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  await fetchSets();
+})();
+} // end initNav
 </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
