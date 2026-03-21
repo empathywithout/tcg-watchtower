@@ -1,0 +1,116 @@
+name: Sync One Piece Card Images to R2
+
+on:
+  workflow_dispatch:
+    inputs:
+      set_id:
+        description: 'Set ID (op01, op02, eb01, st01...)'
+        required: true
+        default: 'op01'
+      set_full_name:
+        description: 'Full set name e.g. "Romance Dawn"'
+        required: true
+        default: 'Romance Dawn'
+      set_short_name:
+        description: 'Short badge e.g. OP01'
+        required: false
+        default: 'OP01'
+      phase:
+        description: 'Phase: en or jp'
+        required: false
+        default: 'en'
+      set_series:
+        description: 'Series e.g. "One Piece"'
+        required: false
+        default: 'One Piece'
+      set_url_slug:
+        description: 'URL slug e.g. romance-dawn'
+        required: false
+        default: ''
+      set_release_date:
+        description: 'Release date e.g. "Jul 2023"'
+        required: false
+        default: ''
+      tcgp_group_id:
+        description: 'TCGplayer groupId'
+        required: false
+        default: ''
+      hero_card_1:
+        description: 'Hero card 1 localId'
+        required: false
+        default: ''
+      hero_card_2:
+        description: 'Hero card 2 localId'
+        required: false
+        default: ''
+      hero_card_3:
+        description: 'Hero card 3 localId'
+        required: false
+        default: ''
+      force_resync:
+        description: 'Force re-download all images (true/false)'
+        required: false
+        default: 'false'
+      skip_images:
+        description: 'Skip images — only update JSON and page (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  sync-and-generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @aws-sdk/client-s3 sharp
+
+      - name: Sync One Piece card images to R2
+        env:
+          SET_ID:           ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME:    ${{ github.event.inputs.set_full_name }}
+          PHASE:            ${{ github.event.inputs.phase || 'en' }}
+          FORCE_RESYNC:     ${{ github.event.inputs.force_resync || 'false' }}
+          SKIP_IMAGES:      ${{ github.event.inputs.skip_images || 'false' }}
+          SCRYDEX_API_KEY:  ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID:  ${{ secrets.SCRYDEX_TEAM_ID }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:     ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_ENDPOINT:   ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+        run: node scripts/sync-op-images.mjs
+
+      - name: Generate One Piece set page
+        env:
+          SET_ID:           ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME:    ${{ github.event.inputs.set_full_name }}
+          SET_SHORT_NAME:   ${{ github.event.inputs.set_short_name }}
+          PHASE:            ${{ github.event.inputs.phase || 'en' }}
+          SET_SERIES:       ${{ github.event.inputs.set_series || 'One Piece' }}
+          SET_URL_SLUG:     ${{ github.event.inputs.set_url_slug }}
+          SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
+          TCGP_GROUP_ID:    ${{ github.event.inputs.tcgp_group_id }}
+          HERO_CARD_1:      ${{ github.event.inputs.hero_card_1 }}
+          HERO_CARD_2:      ${{ github.event.inputs.hero_card_2 }}
+          HERO_CARD_3:      ${{ github.event.inputs.hero_card_3 }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:     ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_ENDPOINT:   ${{ secrets.CF_R2_ENDPOINT }}
+        run: node scripts/generate-op-page.js
+
+      - name: Commit generated page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "Generate One Piece ${{ github.event.inputs.set_id }} set page"
+          git push
