@@ -19,7 +19,7 @@ const R2_PUBLIC_URL = (process.env.CF_R2_PUBLIC_URL || '').trim();
 const rawUrlSlug = (process.env.SET_URL_SLUG || '').trim();
 const SET_URL_SLUG = rawUrlSlug || SET_FULL_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const SET_SLUG     = `${SET_URL_SLUG}-card-list`;
-const SET_SEO_PATH = `one-piece/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards`;
+const SET_SEO_PATH = `one-piece/sets/${SET_URL_SLUG}/cards`;
 
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID || '').trim();
 
