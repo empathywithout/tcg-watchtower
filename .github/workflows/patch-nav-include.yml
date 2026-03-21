@@ -1,0 +1,25 @@
+name: Patch Nav Include
+
+on:
+  workflow_dispatch:
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Patch all card-list pages
+        run: node scripts/patch-nav-include.mjs
+
+      - name: Commit patched files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add *-card-list.html
+          git diff --cached --quiet || git commit -m "chore: patch all pages to use nav.html include"
+          git push
