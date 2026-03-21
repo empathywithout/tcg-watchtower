@@ -265,6 +265,7 @@ nav.container {
 .set-hero {
   padding: 60px 0 80px;
   position: relative;
+  scroll-margin-top: 60px;
 }
 .breadcrumb {
   display: flex; align-items: center; gap: 8px;
@@ -337,7 +338,7 @@ nav.container {
 .card-stack img:hover { transform:rotate(0) scale(1.05) !important; z-index:10; }
 
 /* ===== SECTIONS ===== */
-.section { padding: 80px 0; }
+.section { padding: 80px 0; scroll-margin-top: 60px; }
 .section-header { text-align:center; margin-bottom:48px; }
 .section-title { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; margin-bottom:12px; }
 .section-sub { color:var(--text-muted); font-size:1rem; }
@@ -920,6 +921,7 @@ footer {
   gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
 .nav-short { display: none; }
