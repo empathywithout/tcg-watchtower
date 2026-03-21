@@ -156,6 +156,12 @@ nav:not(.section-nav) {
   z-index: 1000;
   background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
 }
+nav:not(.section-nav) {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87);
+}
 nav.container {
   padding: 24px 0;
   display: flex;
@@ -1728,55 +1734,65 @@ function initNav() {
   const hamburgerOverlay = document.getElementById('hamburger-overlay');
   const hamburgerMenu = document.getElementById('hamburger-menu');
   const pokemonMenuItem = document.getElementById('pokemon-menu-item');
+  const onepieceMenuItem = document.getElementById('onepiece-menu-item');
   const pokemonSetsView = document.getElementById('pokemon-sets-view');
+  const onepieceSetsView = document.getElementById('onepiece-sets-view');
   const backToMenu = document.getElementById('back-to-menu');
+  const backToMenuOp = document.getElementById('back-to-menu-op');
   const setsGridContainer = document.getElementById('sets-grid-container');
-  const filterTabs = document.querySelectorAll('.filter-tab');
-  
+  const setsGridContainerOp = document.getElementById('sets-grid-container-op');
+  const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
+  const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+
   let allSets = [];
   let currentFilter = 'all';
-  
-  // Toggle hamburger menu
+  let currentFilterOp = 'all';
+
   function toggleHamburgerMenu() {
     const isOpen = hamburgerMenu.classList.contains('open');
-    if (isOpen) {
-      closeAllMenus();
-    } else {
+    if (isOpen) { closeAllMenus(); }
+    else {
       hamburgerMenu.classList.add('open');
       hamburgerOverlay.classList.add('open');
       hamburger.classList.add('open');
     }
   }
-  
+
   function closeAllMenus() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.remove('open');
+    if (onepieceSetsView) onepieceSetsView.classList.remove('open');
     hamburgerOverlay.classList.remove('open');
     hamburger.classList.remove('open');
   }
-  
+
   function showPokemonSets() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.add('open');
   }
-  
+
+  function showOnePieceSets() {
+    hamburgerMenu.classList.remove('open');
+    if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
+  }
+
   function backToMainMenu() {
     pokemonSetsView.classList.remove('open');
+    if (onepieceSetsView) onepieceSetsView.classList.remove('open');
     hamburgerMenu.classList.add('open');
   }
-  
-  // Event listeners
+
   hamburger.addEventListener('click', toggleHamburgerMenu);
   hamburgerOverlay.addEventListener('click', closeAllMenus);
   pokemonMenuItem.addEventListener('click', showPokemonSets);
+  if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
   backToMenu.addEventListener('click', backToMainMenu);
-  
-  // Close menu when clicking internal links
+  if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
+
   hamburgerMenu.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(link => {
     link.addEventListener('click', closeAllMenus);
   });
-  
-  // Filter tabs
+
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       filterTabs.forEach(t => t.classList.remove('active'));
@@ -1785,91 +1801,95 @@ function initNav() {
       renderSets();
     });
   });
-  
-  // Fetch and render sets
+
+  filterTabsOp.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabsOp.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilterOp = tab.dataset.filter;
+      renderOnePieceSets();
+    });
+  });
+
   async function fetchSets() {
     try {
       const res = await fetch('/sets.json');
-      if (!res.ok) {
-        console.error('Failed to fetch sets');
-        return;
-      }
+      if (!res.ok) return;
       allSets = await res.json();
       renderSets();
-    } catch(e) {
-      console.error('Error fetching sets:', e);
-    }
+    } catch(e) { console.error('Error fetching sets:', e); }
   }
-  
+
   function renderSets() {
-    if (!allSets || allSets.length === 0) {
-      setsGridContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Loading sets...</div>';
-      return;
-    }
-    
-    // Filter sets
-    let filteredSets = allSets;
-    if (currentFilter === 'live') {
-      filteredSets = allSets.filter(set => set.live);
-    } else if (currentFilter !== 'all') {
-      // Normalize both the filter and series name for comparison
-      const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
-      filteredSets = allSets.filter(set => {
-        const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
-        return normalizedSeries === normalizedFilter;
-      });
-    }
-    
-    // Group by series
-    const groupedSets = {};
-    filteredSets.forEach(set => {
-      if (!groupedSets[set.series]) {
-        groupedSets[set.series] = [];
-      }
-      groupedSets[set.series].push(set);
+    if (!setsGridContainer) return;
+    const pokemonSets = allSets.filter(s => {
+      const id = (s.setId || s.slug || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
     });
-    
-    // Render grouped sets
+    let filtered = pokemonSets;
+    if (currentFilter === 'live') filtered = pokemonSets.filter(s => s.live);
+    else if (currentFilter !== 'all') {
+      const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,'');
+      filtered = pokemonSets.filter(s => s.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf);
+    }
+    const grouped = {};
+    filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
     let html = '';
-    Object.keys(groupedSets).forEach(series => {
-      html += `<div class="series-label">${series}</div>`;
-      html += '<div class="sets-grid">';
-      groupedSets[series].forEach(set => {
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    Object.keys(grouped).forEach(series => {
+      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
+      grouped[series].forEach(set => {
         const isDisabled = !set.live;
-        const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
         const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-        
-        // Get logo URL (R2 or TCGdex fallback)
-        const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
-        
-        html += `
-          <a href="${link}" class="${cardClass}">
-            <div class="set-card-image">
-              ${logoUrl ? `
-                <img src="${logoUrl}" 
-                     alt="${set.name}" 
-                     style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="font-size: 3rem; display: none;">🎴</div>
-              ` : `
-                <div style="font-size: 3rem;">🎴</div>
-              `}
-            </div>
-            <div class="set-card-content">
-              <div class="set-card-name">${set.name}</div>
-              <div class="set-card-info">${set.short} • ${set.series}</div>
-              ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-            </div>
-          </a>
-        `;
+        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
+        html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+          <div class="set-card-image">
+            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>` : `<div style="font-size:3rem">🎴</div>`}
+          </div>
+          <div class="set-card-content">
+            <div class="set-card-name">${set.name}</div>
+            <div class="set-card-info">${set.short} • ${set.series}</div>
+            ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div>
+        </a>`;
       });
       html += '</div>';
     });
-    
-    setsGridContainer.innerHTML = html;
+    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets found</div>';
   }
-  
-  // Initialize
+
+  function renderOnePieceSets() {
+    if (!setsGridContainerOp) return;
+    const opSets = allSets.filter(s => {
+      const id = (s.setId || s.slug || '').toLowerCase();
+      return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
+    });
+    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    if (!filtered.length) {
+      setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
+      return;
+    }
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html = '<div class="sets-grid">';
+    filtered.forEach(set => {
+      const isDisabled = !set.live;
+      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+      const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
+      html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+        <div class="set-card-image">
+          ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem">🃏</div>`}
+        </div>
+        <div class="set-card-content">
+          <div class="set-card-name">${set.name}</div>
+          <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+          ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+        </div>
+      </a>`;
+    });
+    html += '</div>';
+    setsGridContainerOp.innerHTML = html;
+  }
+
   await fetchSets();
 })();
 } // end initNav
