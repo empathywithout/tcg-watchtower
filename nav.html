@@ -8,7 +8,7 @@
     <a href="/#features">Features</a>
     <a href="/#how-it-works">How It Works</a>
     <a href="/#faq">FAQ</a>
-    <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
+    <button class="hamburger" id="hamburger" aria-label="TCG Sets Menu">
       <span></span><span></span><span></span>
     </button>
     <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
@@ -18,10 +18,14 @@
 <!-- Hamburger Menu Overlay -->
 <div class="hamburger-overlay" id="hamburger-overlay"></div>
 
-<!-- Pokemon Menu (triggered by hamburger) -->
+<!-- Main Menu -->
 <div class="hamburger-menu" id="hamburger-menu">
   <div class="hamburger-menu-item" id="pokemon-menu-item">
     Pokémon
+    <span>›</span>
+  </div>
+  <div class="hamburger-menu-item" id="onepiece-menu-item">
+    One Piece
     <span>›</span>
   </div>
 </div>
@@ -36,8 +40,21 @@
     <div class="filter-tab active" data-filter="all">All Sets</div>
     <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
     <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
-    <div class="filter-tab" data-filter="megaevolution">Mega Evolution</div>
+    <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
     <div class="filter-tab" data-filter="live">Live Only</div>
   </div>
   <div id="sets-grid-container"></div>
+</div>
+
+<!-- One Piece Sets View -->
+<div class="pokemon-sets-view" id="onepiece-sets-view">
+  <div class="pokemon-sets-header">
+    <button class="back-button" id="back-to-menu-op">← Back</button>
+    <div class="pokemon-sets-title" style="background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One Piece TCG Sets</div>
+  </div>
+  <div class="sets-filter-tabs" id="sets-filter-tabs-op">
+    <div class="filter-tab active" data-filter="all">All Sets</div>
+    <div class="filter-tab" data-filter="live">Live Only</div>
+  </div>
+  <div id="sets-grid-container-op"></div>
 </div>
