@@ -93,6 +93,12 @@ for (const file of files) {
     );
   }
 
+  // Also fix nav CSS to sticky
+  content = content.replace(
+    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: relative;\n  z-index: 10;\n}',
+    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: sticky;\n  top: 0;\n  z-index: 1000;\n  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);\n}'
+  );
+
   writeFileSync(path, content, 'utf8');
   console.log(`  PATCHED: ${file}`);
   patched++;
