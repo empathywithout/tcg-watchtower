@@ -423,6 +423,22 @@
     {
       "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
       "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/heroines-edition-card-list",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/cards",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/sealed-product",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
+      "destination": "/heroines-edition-card-list.html"
     }
   ],
   "redirects": [
