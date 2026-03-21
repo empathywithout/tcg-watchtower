@@ -17,15 +17,15 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
 
-<title>Pokémon TCG Set Guides | TCG Watchtower</title>
-<meta name="description" content="Complete visual card list guides for every Pokémon TCG set — chase cards ranked by price, full card lists, and where to buy sealed product.">
+<title>TCG Set Guides | TCG Watchtower</title>
+<meta name="description" content="Complete card list guides for every Pokémon and One Piece TCG set — chase cards ranked by price, full card lists, and where to buy sealed product.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/sets">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TCG Watchtower">
-<meta property="og:title" content="Pokémon TCG Set Guides | TCG Watchtower">
-<meta property="og:description" content="Complete visual card list guides for every Pokémon TCG set — chase cards, prices, and where to buy.">
+<meta property="og:title" content="TCG Set Guides | TCG Watchtower">
+<meta property="og:description" content="Complete card list guides for every Pokémon and One Piece TCG set.">
 <meta property="og:url" content="https://tcgwatchtower.com/sets">
 <meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
 
@@ -40,6 +40,8 @@
   --primary-purple:#a855f7;
   --accent-amber:#fbbf24;
   --accent-green:#4ade80;
+  --op-orange:#f97316;
+  --op-red:#ef4444;
   --dark-bg:#0f172a;
   --dark-card:#1e293b;
   --text-light:#e2e8f0;
@@ -74,7 +76,7 @@ nav {
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--text-primary); letter-spacing:0.05em; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--text-primary); letter-spacing:0.05em; -webkit-text-fill-color:var(--text-primary); background:none; }
 .nav-links { display:flex; align-items:center; gap:20px; }
 .nav-links a { color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:500; transition:color 0.2s; }
 .nav-links a:hover, .nav-links a.active { color:var(--text-primary); }
@@ -88,7 +90,7 @@ nav {
 /* HERO */
 .hero {
   position:relative; z-index:1;
-  padding:80px 24px 60px;
+  padding:80px 24px 48px;
   text-align:center;
   max-width:900px; margin:0 auto;
 }
@@ -107,7 +109,34 @@ nav {
 .hero h1 span { color:var(--primary-blue); }
 .hero p { color:var(--text-muted); font-size:1.1rem; max-width:600px; margin:0 auto; }
 
-/* FILTER TABS */
+/* PRODUCT LINE SWITCHER */
+.product-line-bar {
+  position:relative; z-index:1;
+  display:flex; justify-content:center; gap:12px;
+  padding:0 24px 24px;
+}
+.product-line-btn {
+  display:flex; align-items:center; gap:8px;
+  padding:12px 28px; border-radius:12px;
+  font-size:0.9rem; font-weight:700; cursor:pointer;
+  transition:all 0.2s; font-family:inherit;
+  border:2px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);
+  color:var(--text-muted);
+}
+.product-line-btn:hover { border-color:rgba(255,255,255,0.2); color:var(--text-primary); }
+.product-line-btn.active.pokemon {
+  background:rgba(59,130,246,0.15);
+  border-color:rgba(59,130,246,0.5);
+  color:var(--primary-blue);
+}
+.product-line-btn.active.onepiece {
+  background:rgba(249,115,22,0.15);
+  border-color:rgba(249,115,22,0.5);
+  color:var(--op-orange);
+}
+
+/* SERIES FILTER TABS */
 .filter-bar {
   position:relative; z-index:1;
   display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
@@ -124,6 +153,10 @@ nav {
 .filter-tab.active {
   background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.5);
   color:var(--primary-blue);
+}
+.filter-tab.active.op-tab {
+  background:rgba(249,115,22,0.2); border-color:rgba(249,115,22,0.5);
+  color:var(--op-orange);
 }
 
 /* SETS GRID */
@@ -159,6 +192,10 @@ nav {
   box-shadow:0 16px 40px rgba(59,130,246,0.2);
   border-color:rgba(59,130,246,0.3);
 }
+.set-card.op-card:hover {
+  box-shadow:0 16px 40px rgba(249,115,22,0.2);
+  border-color:rgba(249,115,22,0.3);
+}
 .set-card.coming-soon { opacity:0.5; pointer-events:none; cursor:default; }
 .set-card-logo {
   background:rgba(15,23,42,0.6);
@@ -174,6 +211,7 @@ nav {
   text-transform:uppercase; letter-spacing:0.06em;
 }
 .badge-live { background:rgba(74,222,128,0.15); color:#4ade80; border:1px solid rgba(74,222,128,0.3); }
+.badge-live-op { background:rgba(249,115,22,0.15); color:var(--op-orange); border:1px solid rgba(249,115,22,0.3); }
 .badge-soon { background:rgba(148,163,184,0.1); color:var(--text-muted); border:1px solid rgba(148,163,184,0.2); }
 .set-card-date { font-size:0.75rem; color:var(--text-muted); }
 .set-card-cta {
@@ -181,6 +219,7 @@ nav {
   display:flex; align-items:center; justify-content:space-between;
   font-size:0.8rem; font-weight:700; color:var(--primary-blue);
 }
+.set-card-cta.op-cta { color:var(--op-orange); }
 .set-card-cta .arrow { transition:transform 0.2s; }
 .set-card:hover .set-card-cta .arrow { transform:translateX(4px); }
 .coming-soon-tag {
@@ -200,12 +239,12 @@ footer {
 }
 footer a { color:var(--text-muted); text-decoration:none; }
 footer a:hover { color:var(--text-primary); }
-
 .empty-state { text-align:center; padding:80px 24px; color:var(--text-muted); }
 
 @media (max-width:640px) {
   .sets-grid { grid-template-columns:1fr 1fr; gap:12px; }
   .hero { padding:60px 24px 40px; }
+  .product-line-btn { padding:10px 18px; font-size:0.8rem; }
 }
 </style>
 </head>
@@ -228,14 +267,20 @@ footer a:hover { color:var(--text-primary); }
 
 <div class="hero">
   <div class="hero-label">📋 Set Guides</div>
-  <h1>Pokémon TCG<br><span>Set Guides</span></h1>
-  <p>Complete card lists, chase cards ranked by market price, and sealed product guides for every set.</p>
+  <h1 id="hero-title">TCG<br><span id="hero-subtitle">Set Guides</span></h1>
+  <p id="hero-desc">Complete card lists, chase cards ranked by market price, and sealed product guides for every set.</p>
 </div>
 
+<!-- Product Line Switcher -->
+<div class="product-line-bar">
+  <button class="product-line-btn pokemon active" data-game="pokemon">🎴 Pokémon TCG</button>
+  <button class="product-line-btn onepiece" data-game="onepiece">🏴‍☠️ One Piece TCG</button>
+</div>
+
+<!-- Series Filter Tabs -->
 <div class="filter-bar" id="filter-bar">
   <button class="filter-tab active" data-filter="all">All Sets</button>
   <button class="filter-tab" data-filter="live">Live Only</button>
-  <!-- Series tabs injected by JS -->
 </div>
 
 <div class="sets-section" id="sets-section">
@@ -243,53 +288,43 @@ footer a:hover { color:var(--text-primary); }
 </div>
 
 <footer>
-  <p>© 2025 TCG Watchtower · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a> · <a href="/disclaimer">Disclaimer</a></p>
+  <p>© 2026 TCG Watchtower · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a> · <a href="/disclaimer">Disclaimer</a></p>
 </footer>
 
 <script>
 let allSets = [];
+let currentGame = 'pokemon';
 let currentFilter = 'all';
 
 const R2_BASE = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
-// Legacy SV sets that still use the old root-level slug URLs e.g. /stellar-crown-card-list
 const LEGACY_SLUGS = new Set([
-  'scarlet-violet-base-set-card-list',
-  'paldea-evolved-card-list',
-  'obsidian-flames-card-list',
-  'paradox-rift-card-list',
-  'scarlet-violet-151-card-list',
-  'paldean-fates-card-list',
-  'temporal-forces-card-list',
-  'twilight-masquerade-card-list',
-  'shrouded-fable-card-list',
-  'stellar-crown-card-list',
-  'surging-sparks-card-list',
-  'prismatic-evolutions-card-list',
-  'journey-together-card-list',
-  'destined-rivals-card-list',
+  'scarlet-violet-base-set-card-list','paldea-evolved-card-list','obsidian-flames-card-list',
+  'paradox-rift-card-list','scarlet-violet-151-card-list','paldean-fates-card-list',
+  'temporal-forces-card-list','twilight-masquerade-card-list','shrouded-fable-card-list',
+  'stellar-crown-card-list','surging-sparks-card-list','prismatic-evolutions-card-list',
+  'journey-together-card-list','destined-rivals-card-list',
 ]);
+
+function isOpSet(s) {
+  const id = (s.setId || '').toLowerCase();
+  return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
+}
 
 function setCardUrl(s) {
   if (!s.live) return null;
-  // Legacy sets: root-level slug
-  if (LEGACY_SLUGS.has(s.slug)) return '/' + s.slug;
-  // New sets: slug is already a full path
   return '/' + s.slug;
 }
 
-// TCGdex logo fallback map for SV sets
-const TCGDEX_ID_MAP = {
-  'sv3pt5': 'sv03.5',
-  'sv4pt5': 'sv04.5',
-  'sv6pt5': 'sv06.5',
-  'sv8pt5': 'sv08.5',
-};
+const TCGDEX_ID_MAP = { 'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5' };
 
 function logoHtml(s) {
-  const r2Url = `${R2_BASE}/logos/${s.setId}.png`;
+  const isOp = isOpSet(s);
+  const r2Url = isOp
+    ? `${R2_BASE}/logos/op/${s.setId}.png`
+    : `${R2_BASE}/logos/${s.setId}.png`;
   const tcgdexId = TCGDEX_ID_MAP[s.setId] || s.setId;
-  const fallback = s.setId && s.setId.startsWith('sv')
+  const fallback = (!isOp && s.setId && s.setId.startsWith('sv'))
     ? `https://assets.tcgdex.net/en/sv/${tcgdexId}/logo.png`
     : '';
   const fallbackAttr = fallback
@@ -298,73 +333,83 @@ function logoHtml(s) {
   return `<img src="${r2Url}" alt="${s.name}" loading="lazy"${fallbackAttr}>`;
 }
 
-async function loadSets() {
-  try {
-    const res = await fetch('/sets.json');
-    if (!res.ok) throw new Error('Failed to fetch sets.json: ' + res.status);
-    allSets = await res.json();
-
-    // Inject one tab per unique series in order of first appearance
-    const seen = new Set();
-    const bar = document.getElementById('filter-bar');
-    allSets.forEach(s => {
-      if (!seen.has(s.series)) {
-        seen.add(s.series);
-        const btn = document.createElement('button');
-        btn.className = 'filter-tab';
-        btn.dataset.filter = s.series;
-        btn.textContent = s.series;
-        bar.appendChild(btn);
-      }
-    });
-
-    renderSets();
-  } catch(e) {
-    console.error(e);
-    document.getElementById('sets-section').innerHTML =
-      '<div class="empty-state">Could not load sets. Please try again.</div>';
+function updateHero() {
+  const title = document.getElementById('hero-title');
+  const subtitle = document.getElementById('hero-subtitle');
+  const desc = document.getElementById('hero-desc');
+  if (currentGame === 'pokemon') {
+    title.innerHTML = 'Pokémon TCG<br><span id="hero-subtitle">Set Guides</span>';
+    desc.textContent = 'Complete card lists, chase cards ranked by market price, and sealed product guides for every Pokémon set.';
+  } else {
+    title.innerHTML = 'One Piece TCG<br><span id="hero-subtitle" style="color:#f97316">Set Guides</span>';
+    desc.textContent = 'Complete card lists, chase cards ranked by market price, and sealed product guides for every One Piece set.';
   }
+}
+
+function buildFilterTabs() {
+  const bar = document.getElementById('filter-bar');
+  // Remove series tabs (keep All Sets + Live Only)
+  Array.from(bar.querySelectorAll('.filter-tab[data-series]')).forEach(b => b.remove());
+
+  const gameSets = allSets.filter(s => currentGame === 'pokemon' ? !isOpSet(s) : isOpSet(s));
+  const seen = new Set();
+  gameSets.forEach(s => {
+    if (!seen.has(s.series)) {
+      seen.add(s.series);
+      const btn = document.createElement('button');
+      btn.className = 'filter-tab' + (currentGame === 'onepiece' ? '' : '');
+      btn.dataset.filter = s.series;
+      btn.dataset.series = '1';
+      btn.textContent = s.series;
+      bar.appendChild(btn);
+    }
+  });
+
+  // Reset filter
+  bar.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  bar.querySelector('[data-filter="all"]').classList.add('active');
+  currentFilter = 'all';
 }
 
 function renderSets() {
   const container = document.getElementById('sets-section');
+  const isOp = currentGame === 'onepiece';
 
-  let filtered = allSets;
-  if (currentFilter === 'live') {
-    filtered = allSets.filter(s => s.live);
-  } else if (currentFilter !== 'all') {
-    filtered = allSets.filter(s => s.series === currentFilter);
-  }
+  let sets = allSets.filter(s => isOp ? isOpSet(s) : !isOpSet(s));
+  if (currentFilter === 'live') sets = sets.filter(s => s.live);
+  else if (currentFilter !== 'all') sets = sets.filter(s => s.series === currentFilter);
 
-  if (!filtered.length) {
+  if (!sets.length) {
     container.innerHTML = '<div class="empty-state">No sets found.</div>';
     return;
   }
 
-  // Group by series preserving insertion order
   const grouped = {};
-  filtered.forEach(s => {
+  sets.forEach(s => {
     if (!grouped[s.series]) grouped[s.series] = [];
     grouped[s.series].push(s);
   });
 
   let html = '';
-  Object.entries(grouped).forEach(([series, sets]) => {
+  Object.entries(grouped).forEach(([series, seriesSets]) => {
     html += `<div class="series-label">${series}</div><div class="sets-grid">`;
-    sets.forEach(s => {
-      const href   = setCardUrl(s);
+    seriesSets.forEach(s => {
+      const href = setCardUrl(s);
       const isLive = s.live;
+      const opClass = isOp ? ' op-card' : '';
+      const badgeClass = isLive ? (isOp ? 'badge-live-op' : 'badge-live') : 'badge-soon';
+      const ctaClass = isOp ? 'set-card-cta op-cta' : 'set-card-cta';
       html += `
-        <a href="${href || 'javascript:void(0)'}" class="set-card${isLive ? '' : ' coming-soon'}">
+        <a href="${href || 'javascript:void(0)'}" class="set-card${opClass}${isLive ? '' : ' coming-soon'}">
           ${!isLive ? '<div class="coming-soon-tag">Coming Soon</div>' : ''}
           <div class="set-card-logo">${logoHtml(s)}</div>
           <div class="set-card-body">
             <div class="set-card-name">${s.name}</div>
             <div class="set-card-meta">
-              <span class="set-badge ${isLive ? 'badge-live' : 'badge-soon'}">${s.short || s.series}</span>
+              <span class="set-badge ${badgeClass}">${s.short || s.series}</span>
               ${s.releaseDate ? `<span class="set-card-date">${s.releaseDate}</span>` : ''}
             </div>
-            ${isLive ? `<div class="set-card-cta"><span>View Full Guide</span><span class="arrow">→</span></div>` : ''}
+            ${isLive ? `<div class="${ctaClass}"><span>View Full Guide</span><span class="arrow">→</span></div>` : ''}
           </div>
         </a>`;
     });
@@ -374,7 +419,32 @@ function renderSets() {
   container.innerHTML = html;
 }
 
-// Filter clicks
+async function loadSets() {
+  try {
+    const res = await fetch('/sets.json');
+    if (!res.ok) throw new Error('Failed to fetch sets.json');
+    allSets = await res.json();
+    buildFilterTabs();
+    renderSets();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('sets-section').innerHTML = '<div class="empty-state">Could not load sets. Please try again.</div>';
+  }
+}
+
+// Product line switcher
+document.querySelector('.product-line-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.product-line-btn');
+  if (!btn) return;
+  document.querySelectorAll('.product-line-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentGame = btn.dataset.game;
+  updateHero();
+  buildFilterTabs();
+  renderSets();
+});
+
+// Filter tabs
 document.getElementById('filter-bar').addEventListener('click', e => {
   const btn = e.target.closest('.filter-tab');
   if (!btn) return;
