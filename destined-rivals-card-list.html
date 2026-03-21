@@ -24,8 +24,8 @@
 <link rel="shortcut icon" href="/favicon.ico">
 
 <!-- ===== PRIMARY SEO ===== -->
-<title>Destined Rivals (SV10) Card List, Chase Cards & Price Guide | TCG Watchtower</title>
-<meta name="description" content="Complete Destined Rivals (SV10) guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs and sealed product. Updated May 2025.">
+<title>Destined Rivals (SV10) Card List and Prices | TCG Watchtower</title>
+<meta name="description" content="Complete Destined Rivals (SV10) guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs. Updated May 2025.">
 <meta name="keywords" content="Destined Rivals (SV10), SV10 card list, SV10 chase cards, SV10 booster box, pokemon SV10, Scarlet & Violet cards">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/cards">
@@ -915,6 +915,7 @@ footer {
   gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
 .nav-short { display: none; }
@@ -966,7 +967,7 @@ footer {
 .chase-arrow-right { right:-22px; }
 
 /* ===== SETS DROPDOWN IN SECTION NAV ===== */
-.section-nav-sets { position: relative; margin-left: auto; flex-shrink: 0; }
+.section-nav-sets { position: relative; flex-shrink: 0; }
 .section-nav-sets-btn {
   padding: 14px 20px; font-size: 0.8rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
@@ -977,7 +978,7 @@ footer {
 .section-nav-sets-btn:hover { color: var(--text-primary); }
 .section-nav-sets-btn.open { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
 .section-nav-dropdown {
-  display: none; position: absolute; right: 24px; top: 100%;
+  display: none; position: absolute; right: 0; top: 100%;
   width: 260px; background: rgba(10,15,30,0.98); backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px;
   z-index: 500; max-height: 400px; overflow-y: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
@@ -1072,6 +1073,7 @@ footer {
         <p class="set-desc">
           Complete guide to Destined Rivals (SV10) — full card list, chase cards ranked by market price, and where to buy sealed product.
         </p>
+        
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="Destined Rivals (SV10) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
@@ -1089,9 +1091,9 @@ footer {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="sv10" data-id="231" alt="Team Rocket's Mewtwo ex - 231/182" width="245" height="337" fetchpriority="high">
-          <img data-set="sv10" data-id="232" alt="Cynthia's Garchomp ex - 232/182" width="245" height="337" loading="lazy">
-          <img data-set="sv10" data-id="230" alt="Ethan's Ho-Oh ex - 230/182" width="245" height="337" loading="lazy">
+          <img data-set="sv10" data-id="231" alt="Team Rocket's Mewtwo ex" width="245" height="337" fetchpriority="high">
+          <img data-set="sv10" data-id="232" alt="Cynthia's Garchomp ex" width="245" height="337" loading="lazy">
+          <img data-set="sv10" data-id="230" alt="Ethan's Ho-Oh ex" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -1100,6 +1102,9 @@ footer {
 
 <!-- ===== JP PREVIEW BANNER (only shown when SET_PHASE=jp) ===== -->
 
+
+<!-- ===== SECTION NAV ===== -->
+<nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
     <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
@@ -1352,10 +1357,10 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
-  const RARITY_TIER = { 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-  const RARITY_LABEL = { 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-  const RARITY_CLASS = { 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
+  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
+  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
 
   if (cards && cards.length) {
     currentChaseList = cards
@@ -1626,7 +1631,7 @@ async function loadCards() {
 
     const RARITY_ORDER = [
       'Common', 'Uncommon', 'Rare', 'Double Rare',
-      'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare'
+      'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare'
     ];
 
     const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
@@ -1651,7 +1656,7 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      loadTCGPlayerPrices();
+      if (SET_PHASE === 'en') loadTCGPlayerPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
