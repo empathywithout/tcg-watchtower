@@ -1,11 +1,3 @@
-/**
- * patch-nav-include.mjs
- * Patches all *-card-list.html files to:
- * 1. Replace inline nav block with nav.html fetch include
- * 2. Fix nav CSS — sticky/background on a full-width wrapper, flex on container
- * Idempotent — safe to run multiple times.
- */
-
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
@@ -30,49 +22,55 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 const NAV_START = '<!-- ===== NAV ===== -->';
 const NAV_END_MARKERS = ['<!-- ===== HERO ===== -->', '<!-- Hamburger Menu Overlay -->'];
 
-// Correct nav CSS: full-width sticky wrapper, flex on container
-const CORRECT_NAV_CSS = `nav.container {
-  padding: 24px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const CORRECT_CSS = `nav:not(.section-nav) {
   position: sticky;
   top: 0;
   z-index: 1000;
   background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+}
+nav.container {
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }`;
 
 const files = readdirSync(ROOT).filter(f => f.endsWith('-card-list.html'));
 console.log(`Found ${files.length} card-list HTML files`);
 
-let patched = 0;
-let cssFixed = 0;
-let skipped = 0;
+let patched = 0, cssFixed = 0, skipped = 0;
 
 for (const file of files) {
   const path = join(ROOT, file);
   let content = readFileSync(path, 'utf8');
   let changed = false;
 
-  // 1. Fix nav CSS — replace any nav.container block that has position:relative or sticky
+  // Fix nav CSS — handles both "nav {" and "nav.container {" patterns
   const before = content;
+
+  // Pattern 1: nav.container with position
   content = content.replace(
-    /nav\.container\s*\{[^}]*\}/gs,
-    CORRECT_NAV_CSS
+    /nav\.container\s*\{[^}]+\}/gs,
+    CORRECT_CSS
   );
-  if (content !== before) {
-    changed = true;
-    cssFixed++;
+
+  // Pattern 2: bare "nav {" with position (old template style)
+  if (content === before) {
+    content = content.replace(
+      /^nav\s*\{[^}]+\}/ms,
+      CORRECT_CSS
+    );
   }
 
-  // 2. Replace inline nav HTML if not already using fetch
+  if (content !== before) { changed = true; cssFixed++; }
+
+  // Replace inline nav HTML if not already using fetch
   if (!content.includes('<div id="site-nav"></div>')) {
     const navStart = content.indexOf(NAV_START);
     if (navStart === -1) {
       console.log(`  SKIP (no nav marker): ${file}`);
       if (changed) writeFileSync(path, content, 'utf8');
-      skipped++;
-      continue;
+      skipped++; continue;
     }
     let navEnd = -1;
     for (const marker of NAV_END_MARKERS) {
@@ -82,13 +80,10 @@ for (const file of files) {
     if (navEnd === -1) {
       console.log(`  SKIP (no nav end): ${file}`);
       if (changed) writeFileSync(path, content, 'utf8');
-      skipped++;
-      continue;
+      skipped++; continue;
     }
     content = content.slice(0, navStart) + NAV_FETCH + '\n\n' + content.slice(navEnd);
     changed = true;
-
-    // Wrap hamburger IIFE in initNav
     if (content.includes('/* ===== HAMBURGER MENU ===== */\n(async function()') &&
         !content.includes('function initNav()')) {
       content = content.replace(
@@ -107,7 +102,7 @@ for (const file of files) {
     else { console.log(`  SKIP (up to date): ${file}`); skipped++; continue; }
   }
 
-  if (changed) writeFileSync(path, content, 'utf8');
+  writeFileSync(path, content, 'utf8');
 }
 
 console.log(`\nDone — ${patched} nav-patched, ${cssFixed} css-fixed, ${skipped} skipped`);
