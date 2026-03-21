@@ -2060,8 +2060,7 @@ nav.container {
         const onepieceSetsView = document.getElementById('onepiece-sets-view');
         const backToMenu = document.getElementById('back-to-menu');
         const backToMenuOp = document.getElementById('back-to-menu-op');
-        const setsGridContainerOp = document.getElementById('sets-grid-container-op');
-        const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+        // OP elements queried at call time since nav.html loads async
         const setsGridContainer = document.getElementById('sets-grid-container');
         const filterTabs = document.querySelectorAll('.filter-tab');
         
@@ -2101,7 +2100,8 @@ nav.container {
         function closeAllMenus() {
             hamburgerMenu.classList.remove('open');
             pokemonSetsView.classList.remove('open');
-            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+            const opView = document.getElementById('onepiece-sets-view');
+            if (opView) opView.classList.remove('open');
             hamburgerOverlay.classList.remove('open');
             hamburger.classList.remove('open');
         }
@@ -2113,12 +2113,14 @@ nav.container {
 
         function showOnePieceSets() {
             hamburgerMenu.classList.remove('open');
-            if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
+            const opView = document.getElementById('onepiece-sets-view');
+            if (opView) { opView.classList.add('open'); renderOnePieceSets(); }
         }
         
         function backToMainMenu() {
             pokemonSetsView.classList.remove('open');
-            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+            const opView = document.getElementById('onepiece-sets-view');
+            if (opView) opView.classList.remove('open');
             hamburgerMenu.classList.add('open');
         }
         
@@ -2236,6 +2238,7 @@ nav.container {
         }
         
         function renderOnePieceSets() {
+            const setsGridContainerOp = document.getElementById('sets-grid-container-op');
             if (!setsGridContainerOp) return;
             const opSets = allSets.filter(s => {
                 const id = (s.setId || '').toLowerCase();
