@@ -1006,11 +1006,6 @@ footer {
 
 <!-- ===== NAV ===== -->
 <div id="site-nav"></div>
-<script>
-  fetch('/nav.html').then(r => r.text()).then(html => {
-    document.getElementById('site-nav').outerHTML = html;
-  });
-</script>
 
 <!-- ===== HERO ===== -->
 <section class="set-hero">
@@ -1753,6 +1748,7 @@ if (window.location.hash) {
 }
 
 /* ===== HAMBURGER MENU ===== */
+function initNav() {
 (async function() {
   const hamburger = document.getElementById('hamburger');
   const hamburgerOverlay = document.getElementById('hamburger-overlay');
@@ -1890,6 +1886,17 @@ if (window.location.hash) {
   
   await fetchSets();
 })();
+} // end initNav
+
+/* ===== NAV LOADER ===== */
+fetch('/nav.html').then(r => r.text()).then(html => {
+  const placeholder = document.getElementById('site-nav');
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
+  placeholder.remove();
+  initNav();
+});
 
 /* ===== SECTION NAV ACTIVE STATE ===== */
 (function() {

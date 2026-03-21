@@ -29,7 +29,6 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
         
     <style>
         * {
@@ -128,21 +127,56 @@
         }
 
         /* Navigation */
-.nav-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        }
+
+        .logo { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  text-decoration:none; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.4);
 }
-nav.container {
-  padding: 24px 0;
+.logo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+}
+.logo-icon {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+}
+.logo-icon img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.05);
+}
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem; font-weight: bold;
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; -webkit-text-fill-color:#f1f5f9; background:none; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; }
 
         .nav-links {
             display: flex;
@@ -1470,8 +1504,54 @@ nav.container {
     <div class="orb orb-3"></div>
 
     <!-- Navigation -->
-<!-- ===== NAV ===== -->
-    <div id="site-nav"></div>
+    <nav class="container">
+        <a href="/" class="nav-logo">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower">
+            <span>TCG Watchtower</span>
+          </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#faq">FAQ</a>
+            <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
+                Join Discord
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Hamburger Menu Overlay -->
+    <div class="hamburger-overlay" id="hamburger-overlay"></div>
+    
+    <!-- Pokemon Menu (triggered by hamburger) -->
+    <div class="hamburger-menu" id="hamburger-menu">
+        <div class="hamburger-menu-item" id="pokemon-menu-item">
+            Pokémon
+            <span>›</span>
+        </div>
+    </div>
+    
+    <!-- Pokemon Sets View -->
+    <div class="pokemon-sets-view" id="pokemon-sets-view"><a id="pokemon"></a>
+        <div class="pokemon-sets-header">
+            <button class="back-button" id="back-to-menu">← Back</button>
+            <div class="pokemon-sets-title">Pokémon TCG Sets</div>
+        </div>
+        
+        <div class="sets-filter-tabs" id="sets-filter-tabs">
+            <div class="filter-tab active" data-filter="all">All Sets</div>
+            <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
+            <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
+            <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
+            <div class="filter-tab" data-filter="live">Live Only</div>
+        </div>
+        
+        <div id="sets-grid-container">
+            <!-- Sets will be dynamically loaded here -->
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -2014,7 +2094,6 @@ nav.container {
 
     <script>
     // Hamburger Menu and Pokemon Sets View
-    function initNav() {
     (async function() {
         const hamburger = document.getElementById('hamburger');
         const hamburgerOverlay = document.getElementById('hamburger-overlay');
@@ -2189,17 +2268,6 @@ nav.container {
         // Initialize
         await fetchSets();
     })();
-    } // end initNav
-
-    // Load nav then init
-    fetch('/nav.html').then(r => r.text()).then(html => {
-        const placeholder = document.getElementById('site-nav');
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
-        placeholder.remove();
-        initNav();
-    });
     </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
