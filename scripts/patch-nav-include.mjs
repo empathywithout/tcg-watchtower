@@ -1,7 +1,9 @@
 /**
  * patch-nav-include.mjs
- * Replaces the inline nav block in all generated *-card-list.html files
- * with the nav.html fetch include. Run once — idempotent.
+ * Patches all *-card-list.html files to:
+ * 1. Replace inline nav block with nav.html fetch include
+ * 2. Fix nav CSS — sticky/background on a full-width wrapper, flex on container
+ * Idempotent — safe to run multiple times.
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
@@ -9,8 +11,7 @@ import { join } from 'path';
 
 const ROOT = process.cwd();
 
-// The new nav placeholder + fetch loader to inject
-const NAV_PLACEHOLDER = `<!-- ===== NAV ===== -->
+const NAV_FETCH = `<!-- ===== NAV ===== -->
 <div id="site-nav"></div>
 <script>
 fetch('/nav.html').then(r => r.text()).then(html => {
@@ -26,83 +27,87 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 });
 </script>`;
 
-// Patterns that mark the start/end of the nav block in generated pages
 const NAV_START = '<!-- ===== NAV ===== -->';
-const NAV_END_MARKERS = [
-  '<!-- ===== HERO ===== -->',
-  '<!-- Hamburger Menu Overlay -->',  // fallback if no hero comment
-];
+const NAV_END_MARKERS = ['<!-- ===== HERO ===== -->', '<!-- Hamburger Menu Overlay -->'];
 
-// Find all *-card-list.html files
+// Correct nav CSS: full-width sticky wrapper, flex on container
+const CORRECT_NAV_CSS = `nav.container {
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+}`;
+
 const files = readdirSync(ROOT).filter(f => f.endsWith('-card-list.html'));
 console.log(`Found ${files.length} card-list HTML files`);
 
 let patched = 0;
+let cssFixed = 0;
 let skipped = 0;
 
 for (const file of files) {
   const path = join(ROOT, file);
   let content = readFileSync(path, 'utf8');
+  let changed = false;
 
-  // Fix nav CSS regardless (idempotent)
+  // 1. Fix nav CSS — replace any nav.container block that has position:relative or sticky
+  const before = content;
   content = content.replace(
-    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: relative;\n  z-index: 10;\n}',
-    'nav.container {\n  padding: 24px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  position: sticky;\n  top: 0;\n  z-index: 1000;\n  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);\n}'
+    /nav\.container\s*\{[^}]*\}/gs,
+    CORRECT_NAV_CSS
   );
-
-  // Already patched for nav HTML?
-  if (content.includes('<div id="site-nav"></div>')) {
-    writeFileSync(path, content, 'utf8');
-    console.log(`  CSS-FIXED (already patched): ${file}`);
-    skipped++;
-    continue;
+  if (content !== before) {
+    changed = true;
+    cssFixed++;
   }
 
-  const navStart = content.indexOf(NAV_START);
-  if (navStart === -1) {
-    console.log(`  SKIP (no nav marker): ${file}`);
-    skipped++;
-    continue;
-  }
-
-  // Find where the nav block ends
-  let navEnd = -1;
-  for (const marker of NAV_END_MARKERS) {
-    const idx = content.indexOf(marker, navStart + NAV_START.length);
-    if (idx !== -1) {
-      navEnd = idx;
-      break;
+  // 2. Replace inline nav HTML if not already using fetch
+  if (!content.includes('<div id="site-nav"></div>')) {
+    const navStart = content.indexOf(NAV_START);
+    if (navStart === -1) {
+      console.log(`  SKIP (no nav marker): ${file}`);
+      if (changed) writeFileSync(path, content, 'utf8');
+      skipped++;
+      continue;
     }
+    let navEnd = -1;
+    for (const marker of NAV_END_MARKERS) {
+      const idx = content.indexOf(marker, navStart + NAV_START.length);
+      if (idx !== -1) { navEnd = idx; break; }
+    }
+    if (navEnd === -1) {
+      console.log(`  SKIP (no nav end): ${file}`);
+      if (changed) writeFileSync(path, content, 'utf8');
+      skipped++;
+      continue;
+    }
+    content = content.slice(0, navStart) + NAV_FETCH + '\n\n' + content.slice(navEnd);
+    changed = true;
+
+    // Wrap hamburger IIFE in initNav
+    if (content.includes('/* ===== HAMBURGER MENU ===== */\n(async function()') &&
+        !content.includes('function initNav()')) {
+      content = content.replace(
+        '/* ===== HAMBURGER MENU ===== */\n(async function() {',
+        '/* ===== HAMBURGER MENU ===== */\nfunction initNav() {\n(async function() {'
+      );
+      content = content.replace(
+        '  await fetchSets();\n})();\n\n/* ===== SECTION NAV ACTIVE STATE ===== */',
+        '  await fetchSets();\n})();\n} // end initNav\n\n/* ===== SECTION NAV ACTIVE STATE ===== */'
+      );
+    }
+    patched++;
+    console.log(`  PATCHED: ${file}`);
+  } else {
+    if (changed) console.log(`  CSS-FIXED: ${file}`);
+    else { console.log(`  SKIP (up to date): ${file}`); skipped++; continue; }
   }
 
-  if (navEnd === -1) {
-    console.log(`  SKIP (no nav end found): ${file}`);
-    skipped++;
-    continue;
-  }
-
-  // Replace the nav block
-  const before = content.slice(0, navStart);
-  const after = content.slice(navEnd);
-  content = before + NAV_PLACEHOLDER + '\n\n' + after;
-
-  // Also wrap the hamburger IIFE in initNav() if not already done
-  if (content.includes('/* ===== HAMBURGER MENU ===== */\n(async function()') && 
-      !content.includes('function initNav()')) {
-    content = content.replace(
-      '/* ===== HAMBURGER MENU ===== */\n(async function() {',
-      '/* ===== HAMBURGER MENU ===== */\nfunction initNav() {\n(async function() {'
-    );
-    // Find the closing of the IIFE and add end of initNav
-    content = content.replace(
-      '  await fetchSets();\n})();\n\n/* ===== SECTION NAV ACTIVE STATE ===== */',
-      '  await fetchSets();\n})();\n} // end initNav\n\n/* ===== SECTION NAV ACTIVE STATE ===== */'
-    );
-  }
-
-  writeFileSync(path, content, 'utf8');
-  console.log(`  PATCHED: ${file}`);
-  patched++;
+  if (changed) writeFileSync(path, content, 'utf8');
 }
 
-console.log(`\nDone — ${patched} patched, ${skipped} skipped`);
+console.log(`\nDone — ${patched} nav-patched, ${cssFixed} css-fixed, ${skipped} skipped`);
