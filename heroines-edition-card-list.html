@@ -89,6 +89,12 @@ nav:not(.section-nav) {
   z-index: 1000;
   background: transparent;
 }
+nav:not(.section-nav) {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: transparent;
+}
 nav.container {
   padding: 24px 0;
   display: flex;
@@ -112,6 +118,7 @@ nav.container {
   gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-btn:hover{color:var(--text)}
