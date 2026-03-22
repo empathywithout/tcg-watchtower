@@ -109,7 +109,8 @@ export default async function handler(req, res) {
       // One Piece: number is "EB03-061" — extract just the numeric part "061" for our localId matching
       // Pokemon: number is "001", "199" etc
       const cardNumber = rawNumber;
-      const opLocalId = category === 68 ? rawNumber.split('-').pop() : null; // "EB03-061" -> "061"
+      // Extract numeric suffix and pad: "OP14-120" -> "120", "OP09-051" -> "051", "EB03-061" -> "061"
+      const opLocalId = category === 68 ? rawNumber.split('-').pop().padStart(3, '0') : null;
 
       const priceObj = priceByProductId[product.productId];
       if (!priceObj || priceObj.marketPrice == null) continue;
@@ -125,7 +126,9 @@ export default async function handler(req, res) {
         let suffix = ''; // base card
         if (nameLower.includes('manga')) {
           suffix = '_mangaaltart';
-        } else if (nameLower.includes('sp)') || nameLower.includes('special alt') || nameLower.includes('sp alt')) {
+        } else if (nameLower.includes('(sp) (gold)') || nameLower.includes('sp gold') || nameLower.includes('gold')) {
+          suffix = '_goldspecialaltart';
+        } else if (nameLower.includes('(sp)') || nameLower.includes('special alt') || nameLower.includes('sp alt')) {
           suffix = '_specialaltart';
         } else if (nameLower.includes('alternate art') || nameLower.includes('alt art') || nameLower.includes('(alt)')) {
           suffix = '_altart';
