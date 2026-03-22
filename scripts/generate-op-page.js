@@ -738,7 +738,7 @@ function renderChaseHTML() {
         \${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="\${ebayLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp" href="\${tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp" href="\${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKey(c.id)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>\`;
