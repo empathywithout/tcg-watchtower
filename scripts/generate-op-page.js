@@ -554,6 +554,13 @@ function formatVariantType(type) {
   return map[type] || type.replace(/([A-Z])/g, ' $1').trim();
 }
 
+// Clean variant name — strip any existing parenthetical suffix and add clean label
+function cleanVariantName(name, variantType) {
+  if (!variantType) return name;
+  const baseName = name.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  return baseName + ' (' + formatVariantType(variantType) + ')';
+}
+
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
 const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
@@ -612,7 +619,7 @@ function renderChaseCards(cards) {
     .map(c => ({
       id: c.baseLocalId || c.localId,
       name: c.variantType
-        ? c.name.replace(/\([^)]+\)$/, '').trim() + ' (' + formatVariantType(c.variantType) + ')'
+        ? cleanVariantName(c.name, c.variantType)
         : c.name,
       rarity: c.rarity || '',
       rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r',
@@ -669,7 +676,7 @@ function renderCards(reset) {
     const priceText = cached?.price ? \`$\${cached.price.toFixed(2)}\` : '';
     const priceClass = !cached ? 'loading' : '';
     const displayName = card.variantType
-      ? card.name.replace(/\([^)]+\)$/, '').trim() + ' (' + formatVariantType(card.variantType) + ')'
+      ? cleanVariantName(card.name, card.variantType)
       : card.name;
     const displayId = card.baseLocalId || card.localId;
     el.innerHTML = \`<img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
