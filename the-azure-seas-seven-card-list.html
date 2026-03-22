@@ -692,17 +692,16 @@ function loadTCGPlayerPrices() {
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}&game=onepiece`);
       if (!res.ok) return;
       const { prices = {}, tcgpUrls = {} } = await res.json();
-      Object.entries(prices).forEach(([num, price]) => {
+      // Store all price keys exactly as returned by API (name-based + number-based)
+      Object.entries(prices).forEach(([key, price]) => {
         if (price == null) return;
-        const entry = { price, url: tcgpUrls[num] || null };
-        const padded = num.padStart(3, '0');
-        priceCache[padded] = entry;
-        priceCache[num] = entry;
+        priceCache[key] = { price, url: tcgpUrls[key] || null };
       });
-      // Apply to all cards including variants (strip _suffix to get base number)
+      // Apply to all card items
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
         const localId = el.dataset.localId;
-        const cached = priceCache[priceKey(localId, card.name)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
+        const cardName = el.querySelector('.card-item-name')?.textContent || '';
+        const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
         const priceEl = el.querySelector('.card-item-price');
         if (priceEl) { priceEl.textContent = cached?.price ? `$${cached.price.toFixed(2)}` : ''; priceEl.classList.remove('loading'); }
       });
