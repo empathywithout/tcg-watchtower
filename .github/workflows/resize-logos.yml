@@ -1,0 +1,22 @@
+name: Resize R2 Logos
+
+on:
+  workflow_dispatch:
+
+jobs:
+  resize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install @aws-sdk/client-s3 sharp
+      - name: Resize and re-upload logos
+        env:
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:     ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_ENDPOINT:   ${{ secrets.CF_R2_ENDPOINT }}
+        run: node scripts/resize-logos.mjs
