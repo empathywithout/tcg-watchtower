@@ -458,7 +458,7 @@ function variantTypeFromId(localId) {
 function cleanVariantName(name, variantType, localId) {
   const vtype = variantType || variantTypeFromId(localId);
   if (!vtype) return name;
-  const baseName = name.replace(/s*([^)]*)s*$/, '').trim();
+  const baseName = name.replace(/[ ]*[(][^)]*[)][ ]*$/, '').trim();
   return baseName + ' (' + formatVariantType(vtype) + ')';
 }
 
