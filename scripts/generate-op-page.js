@@ -554,26 +554,28 @@ const PAGE_SIZE = 60;
 const priceCache = {};
 
 async function loadCards() {
+  const countEl = document.getElementById('card-count');
   try {
-    // Try R2 directly first — most reliable for OP sets
-    const r2Url = \`\${R2}/data/op/\${SET_ID}.json\`;
-    console.log('Fetching cards from:', r2Url);
-    const res = await fetch(r2Url);
-    if (!res.ok) throw new Error(\`R2 fetch failed: \${res.status} \${r2Url}\`);
+    // Try API first
+    countEl.textContent = 'Loading from API...';
+    const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
+    if (!res.ok) throw new Error(\`API \${res.status}\`);
     const json = await res.json();
     allCards = json.cards || [];
-    if (!allCards.length) throw new Error('No cards in JSON');
-    console.log(\`Loaded \${allCards.length} cards from R2\`);
+    if (!allCards.length) throw new Error('API returned 0 cards');
   } catch(e) {
-    console.error('Card load error:', e.message);
-    // Fallback to API
+    console.warn('API failed:', e.message, '— trying R2 direct...');
     try {
-      const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
-      if (!res.ok) throw new Error('API failed');
-      const json = await res.json();
-      allCards = json.cards || [];
+      // Direct R2 fallback with CORS headers
+      countEl.textContent = 'Loading from R2...';
+      const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+      const res2 = await fetch(\`\${r2}/data/op/\${SET_ID}.json\`);
+      if (!res2.ok) throw new Error(\`R2 \${res2.status}\`);
+      const json2 = await res2.json();
+      allCards = json2.cards || [];
+      if (!allCards.length) throw new Error('R2 returned 0 cards');
     } catch(e2) {
-      document.getElementById('card-count').textContent = \`⚠️ Could not load cards — \${e.message}\`;
+      countEl.textContent = \`⚠️ \${e.message} | \${e2.message}\`;
       return;
     }
   }
