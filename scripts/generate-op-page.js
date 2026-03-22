@@ -584,11 +584,17 @@ function normalizeName(name) {
 }
 
 function priceKey(localId, cardName) {
+  // Returns the number-based key (e.g. "061_mangaaltart") — matches API's authoritative numKey
   if (!localId) return localId;
   const suffix = localId.includes('_') ? '_' + localId.split('_').slice(1).join('_') : '';
-  if (cardName) { return normalizeName(cardName) + suffix; }
   const base = localId.includes('_') ? localId.split('_')[0].padStart(3,'0') : localId.padStart(3,'0');
   return base + suffix;
+}
+function priceKeyByName(localId, cardName) {
+  // Returns the name-based key (e.g. "uta_mangaaltart") — secondary lookup
+  if (!localId || !cardName) return priceKey(localId);
+  const suffix = localId.includes('_') ? '_' + localId.split('_').slice(1).join('_') : '';
+  return normalizeName(cardName) + suffix;
 }
 
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
@@ -658,7 +664,7 @@ function renderChaseHTML() {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
     .map(c => {
-      const cached = priceCache[priceKey(c.id, c.name)] || priceCache[(c.id.includes('_') ? c.id.split('_')[0] : c.id).padStart(3,'0')];
+      const cached = priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)] || priceCache[(c.id.includes('_') ? c.id.split('_')[0] : c.id).padStart(3,'0')];
       return { ...c, price: cached?.price ?? null };
     })
     .sort((a, b) => pricesKnown ? (b.price ?? -1) - (a.price ?? -1) : (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99));
@@ -676,7 +682,7 @@ function renderChaseHTML() {
         \${priceHTML}
         <div class="buy-links" style="width:100%">
           <a class="buy-link buy-ebay" href="\${ebayLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp" href="\${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKey(c.id)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp" href="\${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>\`;
@@ -697,7 +703,7 @@ function renderCards(reset) {
     el.dataset.cardName = card.name;
     // FIX: use name-based priceKey (matches how the OP price API stores keys) with number fallback
     const cached = priceCache[priceKey(card.localId, card.name)]
-      || priceCache[priceKey(card.localId)]
+      || priceCache[priceKeyByName(card.localId, card.name)]
       || priceCache[(card.localId.includes('_') ? card.localId.split('_')[0] : card.localId).padStart(3,'0')];
     const priceText = cached?.price ? \`\$\${cached.price.toFixed(2)}\` : '';
     const priceClass = !cached ? 'loading' : '';
@@ -718,7 +724,7 @@ function renderCards(reset) {
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>\`;
-    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')]; const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
+    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')]; const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
     grid.appendChild(el);
   });
   displayedCount += slice.length;
@@ -733,8 +739,8 @@ function applyFilters() {
   let cards = allCards.filter(c => (!search || c.name.toLowerCase().includes(search)) && (!rarity || c.rarity === rarity));
   if (sort === 'price') {
     cards = [...cards].sort((a, b) => {
-      const pa = (priceCache[priceKey(a.localId, a.name)] || priceCache[(a.localId.includes('_') ? a.localId.split('_')[0] : a.localId).padStart(3,'0')])?.price ?? -1;
-      const pb = (priceCache[priceKey(b.localId, b.name)] || priceCache[(b.localId.includes('_') ? b.localId.split('_')[0] : b.localId).padStart(3,'0')])?.price ?? -1;
+      const pa = (priceCache[priceKey(a.localId, a.name)] || priceCache[priceKeyByName(a.localId, a.name)] || priceCache[(a.localId.includes('_') ? a.localId.split('_')[0] : a.localId).padStart(3,'0')])?.price ?? -1;
+      const pb = (priceCache[priceKey(b.localId, b.name)] || priceCache[priceKeyByName(b.localId, b.name)] || priceCache[(b.localId.includes('_') ? b.localId.split('_')[0] : b.localId).padStart(3,'0')])?.price ?? -1;
       return pb - pa;
     });
   }
@@ -763,7 +769,7 @@ function loadTCGPlayerPrices() {
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
         const localId = el.dataset.localId;
         const cardName = el.querySelector('.card-item-name')?.textContent || '';
-        const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
+        const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
         const priceEl = el.querySelector('.card-item-price');
         if (priceEl) { priceEl.textContent = cached?.price ? \`\$\${cached.price.toFixed(2)}\` : ''; priceEl.classList.remove('loading'); }
         // FIX: upgrade TCGplayer buy button to direct product URL
@@ -779,7 +785,7 @@ function loadTCGPlayerPrices() {
 
 function openModal(localId, name, rarity, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg(localId);
-  const cached = priceCache[priceKey(localId, name)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
+  const cached = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
   const displayId = localId.includes('_') ? localId.split('_')[0] : localId;
   const tcgpUrl = directUrl || cached?.url || tcgpLink(name, displayId);
   document.getElementById('modal-inner').innerHTML = \`
@@ -790,7 +796,7 @@ function openModal(localId, name, rarity, imgUrl, directUrl) {
       \${rarity ? \`<div class="modal-meta" style="color:var(--amber)">\${rarity}</div>\` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-ebay" href="\${ebayLink(name + ' ' + localId + ' ' + SET_FULL_NAME + ' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
-        <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>🔍 Find on TCGplayer</span><span>→</span></a>
+        <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>\${directUrl ? '🛒 Buy on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span></a>
       </div>
     </div>\`;
   document.getElementById('modal-overlay').classList.add('open');
