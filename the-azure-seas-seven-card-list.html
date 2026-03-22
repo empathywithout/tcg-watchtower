@@ -507,9 +507,10 @@ function cleanVariantName(name, variantType, localId) {
 function normalizeName(name) {
   return (name || '')
     .replace(/[(][^)]*[)]/g, '') // strip (...)
+    .replace(/[^a-zA-Z0-9 ]/g, '') // remove special chars
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/  +/g, ' ')
     .trim();
 }
 
