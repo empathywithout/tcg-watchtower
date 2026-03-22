@@ -172,7 +172,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .container{max-width:1400px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 /* Nav */
 .nav-wrapper{position:sticky;top:0;z-index:2000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
-nav.container{display:flex;justify-content:space-between;align-items:center;height:64px}
+nav.container{display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;max-width:100%}
+.nav-wrapper nav{display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;max-width:1400px;margin:0 auto}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
 .nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
@@ -257,7 +258,7 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .rarity-sr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(251,191,36,.2));border:1px solid rgba(239,68,68,.4);color:#f87171}
 .rarity-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-links{display:flex;gap:6px;margin-top:auto;padding-top:10px;flex-wrap:nowrap}
-.buy-link{flex:1;padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.buy-link{flex:1;min-width:0;padding:5px 4px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
@@ -385,9 +386,13 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 fetch('/nav.html').then(r => r.text()).then(html => {
   const placeholder = document.getElementById('site-nav');
   if (!placeholder) return;
+  // Wrap injected nav in .nav-wrapper so sticky + background styles apply
+  const wrapper = document.createElement('div');
+  wrapper.className = 'nav-wrapper';
   const temp = document.createElement('div');
   temp.innerHTML = html;
-  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
+  while (temp.firstChild) wrapper.appendChild(temp.firstChild);
+  placeholder.parentNode.insertBefore(wrapper, placeholder);
   placeholder.remove();
   requestAnimationFrame(() => { if (typeof initNav === 'function') initNav(); });
 });
@@ -669,7 +674,7 @@ function renderChaseHTML() {
         <div class="chase-card-number">\${c.displayId || c.id}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge \${c.rarityClass}">\${c.label}</span></div>
         \${priceHTML}
-        <div class="buy-links">
+        <div class="buy-links" style="width:100%">
           <a class="buy-link buy-ebay" href="\${ebayLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" href="\${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKey(c.id)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -707,7 +712,7 @@ function renderCards(reset) {
         <div class="card-item-num">\${displayId}</div>
         <div class="card-item-price \${priceClass}">\${priceText}</div>
         \${card.rarity && RARITY_CLASS[card.rarity] ? \`<div style="margin-top:3px"><span class="rarity-badge \${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">\${RARITY_LABEL[card.rarity] || card.rarity}</span></div>\` : ''}
-        <div class="buy-links" style="margin-top:6px;justify-content:flex-start">
+        <div class="buy-links" style="margin-top:6px">
           <a class="buy-link buy-ebay" href="\${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -872,6 +877,17 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 })();
 
 loadCards();
+
+// Dynamically offset section-nav below the main nav wrapper
+(function() {
+  const mainNav = document.querySelector('.nav-wrapper');
+  const sectionNav = document.getElementById('section-nav');
+  if (mainNav && sectionNav) {
+    const setTop = () => { sectionNav.style.top = mainNav.offsetHeight + 'px'; };
+    setTop();
+    window.addEventListener('resize', setTop);
+  }
+})();
 
 /* ===== HAMBURGER MENU ===== */
 function initNav() {
