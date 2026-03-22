@@ -119,27 +119,48 @@ export default async function handler(req, res) {
       const setSlug = (product.groupName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
       if (category === 68) {
-        // One Piece variant detection from product name
-        // "Uta (061)" -> base, "Uta (061) (Alternate Art)" -> altart, "Uta (061) (Manga)" -> mangaaltart
-        // "Nami (053) (SP)" or "Nami (053) (Special)" -> specialaltart
+        // One Piece: match by card name + variant type since numbers can be from other sets (reprints)
+        // Product names: "Roronoa Zoro - PRB02-006 (SP)" or "Uta (061)" or "Uta (061) (Alternate Art)"
+        // Extract base card name by stripping trailing parentheticals and number tokens
         const nameLower = productName.toLowerCase();
+
+        // Detect variant suffix from product name
         let suffix = ''; // base card
         if (nameLower.includes('manga')) {
           suffix = '_mangaaltart';
-        } else if (nameLower.includes('(sp) (gold)') || nameLower.includes('sp gold') || nameLower.includes('gold')) {
+        } else if (nameLower.includes('(sp) (gold)') || nameLower.includes('gold)')) {
           suffix = '_goldspecialaltart';
         } else if (nameLower.includes('(sp)') || nameLower.includes('special alt') || nameLower.includes('sp alt')) {
           suffix = '_specialaltart';
         } else if (nameLower.includes('alternate art') || nameLower.includes('alt art') || nameLower.includes('(alt)')) {
           suffix = '_altart';
         }
-        const variantKey = `${opLocalId}${suffix}`;
-        if (bestProductId[variantKey] !== undefined && product.productId >= bestProductId[variantKey]) continue;
-        prices[variantKey] = priceObj.marketPrice;
-        if (!prices[opLocalId]) prices[opLocalId] = priceObj.marketPrice; // fallback
+
+        // Build name-based key: normalize card name for matching
+        // "Roronoa Zoro - PRB02-006 (SP)" -> "roronoa zoro"
+        // "Uta (061) (Alternate Art)" -> "uta"
+        const baseName = productName
+          .replace(/[-–]\s*[A-Z]{2,}\d+[-–]\d+/g, '') // strip " - PRB02-006"
+          .replace(/\s*[(][^)]*[)]\s*/g, '') // strip all (...) groups
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9 ]/g, '') // normalize
+          .trim();
+
+        // Store by name+suffix as primary key, number as fallback
+        const nameKey = baseName + suffix;
+        const numKey = opLocalId + suffix;
+
+        if (bestProductId[nameKey] !== undefined && product.productId >= bestProductId[nameKey]) continue;
+        prices[nameKey] = priceObj.marketPrice;
+        prices[numKey] = priceObj.marketPrice; // also store by number
+        if (!prices[opLocalId]) prices[opLocalId] = priceObj.marketPrice;
+
         const q = encodeURIComponent(productName);
-        tcgpUrls[variantKey] = `https://www.tcgplayer.com/search/one-piece-card-game/${setSlug}?productLineName=one-piece-card-game&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
-        bestProductId[variantKey] = product.productId;
+        const url = `https://www.tcgplayer.com/product/${product.productId}`;
+        tcgpUrls[nameKey] = url;
+        tcgpUrls[numKey] = url;
+        bestProductId[nameKey] = product.productId;
       } else {
         // Pokemon: keep lowest productId per card number
         if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
