@@ -161,10 +161,8 @@ export default async function handler(req, res) {
         prices[numKey] = priceObj.marketPrice; // also store by number
         if (!prices[opLocalId]) prices[opLocalId] = priceObj.marketPrice;
 
-        const q = encodeURIComponent(productName);
-        const url = `https://www.tcgplayer.com/product/${product.productId}`;
-        tcgpUrls[nameKey] = url;
-        tcgpUrls[numKey] = url;
+        tcgpUrls[nameKey] = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
+        tcgpUrls[numKey] = tcgpUrls[nameKey];
         bestProductId[nameKey] = product.productId;
       } else {
         // Pokemon: keep lowest productId per card number
