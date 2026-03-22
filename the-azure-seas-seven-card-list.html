@@ -59,14 +59,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-nav.container {
-  padding: 24px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-}
+nav.container{padding:24px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
 .nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em;-webkit-text-fill-color:#f1f5f9;background:none}
@@ -87,21 +80,12 @@ nav.container {
 /* nav styles via nav.container above */
 /* Section Nav */
 .section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08)}
-.section-nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: center;
-}
+.section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
 .section-nav-inner::-webkit-scrollbar{display:none}
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-btn:hover{color:var(--text)}
 .section-nav-btn.active{color:var(--red);border-bottom-color:var(--red)}
-.section-nav-sets { position: relative; flex-shrink: 0; }
+.section-nav-sets{position:relative;flex-shrink:0;margin-left:0}
 .section-nav-sets-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-sets-btn:hover,.section-nav-sets-btn.open{color:var(--text)}
 .section-nav-dropdown{display:none;position:fixed;background:#1a1040;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;z-index:9999;box-shadow:0 16px 48px rgba(0,0,0,.9);max-height:70vh;overflow-y:auto;min-width:220px}
@@ -218,16 +202,7 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
   nav.container .nav-links a:not(.btn-primary){display:none}
   nav.container .nav-links{gap:12px}
   /* Section nav — compress */
-  .section-nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: center;
-}
+  .section-nav-inner{padding:0 8px}
   .hero-grid{grid-template-columns:1fr}
   .hero-visual{display:none}
   .set-title{font-size:2.5rem}
@@ -247,18 +222,9 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
   .filter-select{font-size:.85rem;padding:8px 12px}
 }
 @media(max-width:640px){
-  .section-nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: center;
-}
+  .section-nav-inner{padding:0 4px;gap:0;flex-wrap:nowrap;justify-content:space-between;width:100%}
   .section-nav-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;flex:1;text-align:center;white-space:nowrap}
-  .section-nav-sets { position: relative; flex-shrink: 0; }
+  .section-nav-sets{flex:1}
   .section-nav-sets-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;width:100%;text-align:center;white-space:nowrap}
   .nav-full{display:none}
   .nav-short{display:inline}
