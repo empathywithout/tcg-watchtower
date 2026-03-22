@@ -492,7 +492,7 @@ async function loadCards() {
 
   const officialCount = json.cardCount?.official || allCards.filter(c => !c.isVariant).length;
   document.getElementById('stat-total-count').textContent = officialCount;
-  document.getElementById('card-list-sub').textContent = `All ${allCards.length} ${SET_FULL_NAME} cards (including variants) — search and filter by rarity. Click any card to find it.`;
+  document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards (including variants) — search and filter by rarity. Click any card to find it.\`;
   document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards — search and filter by rarity. Click any card to find it.\`;
 
   const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Special','Secret Rare','Treasure Rare','Manga Rare'];
