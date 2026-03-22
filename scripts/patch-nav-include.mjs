@@ -238,6 +238,14 @@ for (const file of files) {
     '.section { padding: 80px 0; scroll-margin-top: 60px; }'
   );
 
+  // 3f. Fix broken pathname regex in populateNavSets
+  const before3f = content;
+  content = content.replace(
+    "pathname.replace(/^//, '').replace(/.html$/, '')",
+    "pathname.replace(/^[/]/, '').replace(/[.]html$/, '')"
+  );
+  if (content !== before3f) { changed = true; }
+
   // 3e. Fix breadcrumb to include Pokemon TCG
   const before3e = content;
   content = content.replace(
