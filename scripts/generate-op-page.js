@@ -334,7 +334,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Home</a><span>›</span>
-      <a href="/one-piece">One Piece TCG</a><span>›</span>
+      <a href="/sets">One Piece TCG</a><span>›</span>
+      <a href="/sets">All Sets</a><span>›</span>
       <span style="color:var(--text)">${SET_FULL_NAME}</span>
     </div>
     <div class="hero-grid">
@@ -462,10 +463,10 @@ function tcgpLink(name, num) {
   return \`\${TCGP_BASE}?u=\${encodeURIComponent(url)}\`;
 }
 
-const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Special','Super Rare'];
-const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Special':3,'Super Rare':4,'Rare':5};
-const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
-const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
+const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
+const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
+const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
+const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Alternate Art':'rarity-sp','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
 
 let currentChaseList = [], allCards = [], filteredCards = [], displayedCount = 0;
 const PAGE_SIZE = 60;
@@ -489,7 +490,9 @@ async function loadCards() {
     }
   }
 
-  document.getElementById('stat-total-count').textContent = allCards.length;
+  const officialCount = json.cardCount?.official || allCards.filter(c => !c.isVariant).length;
+  document.getElementById('stat-total-count').textContent = officialCount;
+  document.getElementById('card-list-sub').textContent = `All ${allCards.length} ${SET_FULL_NAME} cards (including variants) — search and filter by rarity. Click any card to find it.`;
   document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards — search and filter by rarity. Click any card to find it.\`;
 
   const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Special','Secret Rare','Treasure Rare','Manga Rare'];

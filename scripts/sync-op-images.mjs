@@ -2,10 +2,8 @@
 /**
  * sync-op-images.mjs
  * Syncs One Piece TCG card images and metadata to R2
+ * Handles variants (Normal, Alt Art, Special Alt Art, Manga Alt Art)
  * Uses Scrydex API: https://api.scrydex.com/onepiece/v1/
- *
- * Usage (via GitHub Actions):
- *   SET_ID=op01 SET_FULL_NAME="Romance Dawn" node scripts/sync-op-images.mjs
  */
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -29,7 +27,6 @@ const s3 = new S3Client({
   },
 });
 const BUCKET     = process.env.CF_R2_BUCKET;
-const R2_BASE    = process.env.CF_R2_PUBLIC_URL;
 const CARD_WIDTH  = 400;
 const CARD_HEIGHT = 558;
 
@@ -38,8 +35,6 @@ const HEADERS = {
   'X-Team-ID': SCRYDEX_TEAM_ID,
 };
 
-// Scrydex expansion ID map — One Piece uses OP01, OP02 etc.
-// The Scrydex ID matches the set code directly for One Piece EN sets
 const SCRYDEX_ID_MAP = {
   'op01': 'OP01', 'op02': 'OP02', 'op03': 'OP03', 'op04': 'OP04',
   'op05': 'OP05', 'op06': 'OP06', 'op07': 'OP07', 'op08': 'OP08',
@@ -48,6 +43,15 @@ const SCRYDEX_ID_MAP = {
   'eb01': 'EB01', 'eb02': 'EB02', 'eb03': 'EB03', 'eb04': 'EB04',
   'st01': 'ST01', 'st02': 'ST02', 'st03': 'ST03', 'st04': 'ST04',
   'st10': 'ST10', 'st13': 'ST13',
+};
+
+// Variant type label -> rarity override
+// When a variant has a special type, treat it as its own rarity for display/filtering
+const VARIANT_RARITY_MAP = {
+  'Manga Alt Art':   'Manga Rare',
+  'Special Alt Art': 'Special',
+  'Alt Art':         'Alternate Art',
+  'Normal':          null, // use base card rarity
 };
 
 const RARITY_MAP = {
@@ -96,6 +100,12 @@ async function resizeImage(buffer) {
     .toBuffer();
 }
 
+function parseLocalId(rawId) {
+  if (!rawId) return '';
+  const stripped = rawId.split('-').slice(1).join('-');
+  return stripped.includes('/') ? stripped.split('/')[0].trim() : stripped;
+}
+
 async function main() {
   if (!SET_ID || !SET_FULL_NAME) {
     console.error('❌ SET_ID and SET_FULL_NAME are required');
@@ -105,39 +115,84 @@ async function main() {
   const scrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
   console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Scrydex ID: ${scrydexId}\n`);
 
-  // Fetch cards from Scrydex
-  console.log('📋 Fetching cards from Scrydex...');
-  let allCards = [], page = 1, total = null;
+  // Fetch all cards with variants
+  console.log('📋 Fetching cards from Scrydex (with variants)...');
+  let allRaw = [], page = 1, total = null;
   while (true) {
-    const url = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100&page=${page}`;
+    const url = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
     const data = await fetchWithRetry(url, { headers: HEADERS });
-    const cards = data.data || [];
+    const batch = data.data || [];
     if (total === null) total = data.totalCount || data.total || null;
-    allCards = allCards.concat(cards);
-    console.log(`  Page ${page}: ${cards.length} cards (${allCards.length}${total ? `/${total}` : ''})`);
-    if (cards.length === 0 || cards.length < 100) break;
-    if (total !== null && allCards.length >= total) break;
+    allRaw = allRaw.concat(batch);
+    console.log(`  Page ${page}: ${batch.length} cards (${allRaw.length}${total ? `/${total}` : ''})`);
+    if (batch.length === 0 || batch.length < 100) break;
+    if (total !== null && allRaw.length >= total) break;
     page++;
   }
-  console.log(`✅ ${allCards.length} cards fetched`);
+  console.log(`✅ ${allRaw.length} base cards fetched`);
 
-  const cards = allCards.map(c => {
-    const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
-    const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
-    return {
-      localId,
-      name:   (c.name || '').trim(),
-      rarity: normalizeRarity(c.rarity),
-      image:  c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null,
-    };
-  });
+  // Expand each base card into one entry per variant
+  // Each variant gets its own localId (e.g. EB03-026_alt), rarity, and image
+  const cards = [];
+  for (const c of allRaw) {
+    const baseLocalId = parseLocalId(c.id);
+    const baseRarity  = normalizeRarity(c.rarity);
+    const baseImage   = c.images?.[0]?.large || c.images?.[0]?.medium || c.images?.[0]?.small || null;
+
+    const variants = c.variants && c.variants.length > 0 ? c.variants : null;
+
+    if (!variants) {
+      // No variants — single entry
+      cards.push({ localId: baseLocalId, name: (c.name || '').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      continue;
+    }
+
+    // Always add the base card (Normal variant) first
+    const normalVariant = variants.find(v => (v.type || '').toLowerCase() === 'normal');
+    const normalImage = normalVariant?.images?.[0]?.large || normalVariant?.images?.[0]?.medium || baseImage;
+    cards.push({ localId: baseLocalId, name: (c.name || '').trim(), rarity: baseRarity, image: normalImage, isVariant: false });
+
+    // Add non-Normal variants as separate entries
+    for (const v of variants) {
+      const vType = (v.type || '').trim();
+      if (vType.toLowerCase() === 'normal') continue;
+
+      // Determine rarity for this variant
+      const variantRarityOverride = VARIANT_RARITY_MAP[vType];
+      const variantRarity = variantRarityOverride !== undefined
+        ? (variantRarityOverride || baseRarity)
+        : normalizeRarity(v.rarity || c.rarity);
+
+      const variantImage = v.images?.[0]?.large || v.images?.[0]?.medium || v.images?.[0]?.small || baseImage;
+
+      // Variant localId: baseId + suffix based on type
+      const suffix = vType.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const variantLocalId = `${baseLocalId}_${suffix}`;
+      const variantName = `${(c.name || '').trim()} (${vType})`;
+
+      cards.push({ localId: variantLocalId, name: variantName, rarity: variantRarity, image: variantImage, isVariant: true, variantType: vType, baseLocalId });
+    }
+  }
+
+  // Count by rarity for logging
+  const rarityCounts = {};
+  cards.forEach(c => { rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1; });
+  console.log(`✅ ${cards.length} total entries (base + variants):`);
+  Object.entries(rarityCounts).sort((a,b) => b[1]-a[1]).forEach(([r,n]) => console.log(`   ${r}: ${n}`));
 
   // Upload metadata JSON
   console.log('\n📦 Uploading metadata JSON...');
   await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
     setId: SET_ID, game: 'onepiece', phase: PHASE,
-    cardCount: { official: cards.length, total: cards.length },
-    cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+    cardCount: { official: allRaw.length, total: cards.length },
+    cards: cards.map(c => ({
+      localId: c.localId,
+      name: c.name,
+      rarity: c.rarity,
+      isVariant: c.isVariant || false,
+      variantType: c.variantType || null,
+      baseLocalId: c.baseLocalId || null,
+    })),
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
 
@@ -147,7 +202,7 @@ async function main() {
     return;
   }
 
-  // Sync card images
+  // Sync images
   console.log(`\n🖼️  Syncing ${cards.length} card images...`);
   let uploaded = 0, skipped = 0, failed = 0;
 
@@ -158,7 +213,7 @@ async function main() {
       skipped++;
       continue;
     }
-    if (!card.image) { failed++; continue; }
+    if (!card.image) { process.stdout.write('-'); failed++; continue; }
     try {
       const res = await fetch(card.image);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
