@@ -707,7 +707,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
       const grouped = {};
       sets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
       let html = '';
-      const currentPath = window.location.pathname.replace(/^//, '').replace(/.html$/, '');
+      const currentPath = window.location.pathname.replace(/^[/]/, '').replace(/[.]html$/, '');
       Object.entries(grouped).forEach(([series, seriesSets]) => {
         html += `<div class="nav-dropdown-series">${series}</div>`;
         seriesSets.forEach(s => {
