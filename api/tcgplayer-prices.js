@@ -8,7 +8,7 @@
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
-const ONE_PIECE_CATEGORY  = 62;
+const ONE_PIECE_CATEGORY  = 68;
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
