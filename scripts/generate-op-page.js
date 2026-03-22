@@ -98,17 +98,23 @@ const ALL_OP_SETS = [
 
 const setsPath = 'sets.json';
 const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
-const thisSlug = SET_SLUG;
-const allKnownSlugs = new Set(ALL_OP_SETS.map(s => s.slug));
-const merged = [
-  ...existingSets.filter(s => !allKnownSlugs.has(s.slug)),
-  ...ALL_OP_SETS.map(known => {
-    const existing = existingSets.find(s => s.slug === known.slug);
-    return { ...known, live: known.slug === thisSlug ? true : (existing?.live ?? false) };
-  }),
-];
+// Only update the current set's entry — add it if missing, set live:true
+const currentSlug = `one-piece/sets/${SET_URL_SLUG}/cards`;
+const hasEntry = existingSets.find(s => s.setId === SET_ID);
+let merged;
+if (hasEntry) {
+  // Update existing entry
+  merged = existingSets.map(s => s.setId === SET_ID ? { ...s, live: true, slug: currentSlug } : s);
+} else {
+  // Add new entry
+  const newEntry = {
+    slug: currentSlug, name: SET_FULL_NAME, series: 'One Piece TCG',
+    short: SET_SHORT_NAME, setId: SET_ID, phase: PHASE, live: true,
+  };
+  merged = [...existingSets, newEntry];
+}
 writeFileSync(setsPath, JSON.stringify(merged, null, 2));
-console.log(`✅ sets.json updated — ${thisSlug} is now live`);
+console.log(`✅ sets.json updated — ${currentSlug} is now live`);
 
 // ── Generate HTML ─────────────────────────────────────────────────────────────
 const html = `<!DOCTYPE html>
