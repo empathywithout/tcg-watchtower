@@ -454,7 +454,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 const SET_ID = 'op14';
 const SET_FULL_NAME = 'The Azure Sea\'s Seven';
 const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
-const TCGP_GROUP_ID = '25200';
+const TCGP_GROUP_ID = '24537';
 const EBAY_MKRID = '711-53200-19255-0';
 const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
@@ -501,6 +501,18 @@ function cleanVariantName(name, variantType, localId) {
   if (!vtype) return name;
   const baseName = name.replace(/[ ]*[(][^)]*[)][ ]*$/, '').trim();
   return baseName + ' (' + formatVariantType(vtype) + ')';
+}
+
+// Map localId to TCGplayer price cache key
+// "053_altart" -> "053_altart", "053_specialaltart" -> "053_specialaltart", "053" -> "053"
+function priceKey(localId) {
+  if (!localId) return localId;
+  const base = localId.includes('_') ? localId.split('_')[0].padStart(3,'0') : localId.padStart(3,'0');
+  if (!localId.includes('_')) return base;
+  const suffix = localId.split('_').slice(1).join('_');
+  // Map our suffix to TCGplayer naming
+  const map = { 'altart': 'altart', 'specialaltart': 'specialaltart', 'mangaaltart': 'mangaaltart' };
+  return map[suffix] ? (base + '_' + map[suffix]) : base;
 }
 
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
@@ -559,7 +571,8 @@ function renderChaseCards(cards) {
     .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
     .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
     .map(c => ({
-      id: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
+      id: c.localId,  // keep full localId (e.g. "061_mangaaltart") for price lookup
+      displayId: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
       name: (c.variantType || (c.localId && c.localId.includes('_')))
         ? cleanVariantName(c.name, c.variantType, c.localId)
         : c.name,
@@ -575,7 +588,7 @@ function renderChaseHTML() {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
     .map(c => {
-      const cached = priceCache[c.id] || priceCache[`${SET_ID.toUpperCase()}-${c.id}`];
+      const cached = priceCache[priceKey(c.id)] || priceCache[(c.id.includes('_') ? c.id.split('_')[0] : c.id).padStart(3,'0')];
       return { ...c, price: cached?.price ?? null };
     })
     .sort((a, b) => pricesKnown ? (b.price ?? -1) - (a.price ?? -1) : (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99));
@@ -584,11 +597,11 @@ function renderChaseHTML() {
     const priceHTML = c.price
       ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-wrap" style="color:var(--muted);font-size:.75rem;font-style:italic">—</div>`;
-    return `<div class="chase-card" onclick="openModal('${c.id}','${c.name.replace(/'/g,"\\'")}','${c.rarity}','${c.img}')">
+    return `<div class="chase-card" onclick="openModal('${c.displayId || c.id}','${c.name.replace(/'/g,"\\'")}','${c.rarity}','${c.img}')">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">${c.id}</div>
+        <div class="chase-card-number">${c.displayId || c.id}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
@@ -643,8 +656,8 @@ function applyFilters() {
   let cards = allCards.filter(c => (!search || c.name.toLowerCase().includes(search)) && (!rarity || c.rarity === rarity));
   if (sort === 'price') {
     cards = [...cards].sort((a, b) => {
-      const pa = (priceCache[a.localId] || priceCache[`${SET_ID.toUpperCase()}-${a.localId}`])?.price ?? -1;
-      const pb = (priceCache[b.localId] || priceCache[`${SET_ID.toUpperCase()}-${b.localId}`])?.price ?? -1;
+      const pa = (priceCache[priceKey(a.localId)] || priceCache[(a.localId.includes('_') ? a.localId.split('_')[0] : a.localId).padStart(3,'0')])?.price ?? -1;
+      const pb = (priceCache[priceKey(b.localId)] || priceCache[(b.localId.includes('_') ? b.localId.split('_')[0] : b.localId).padStart(3,'0')])?.price ?? -1;
       return pb - pa;
     });
   }
@@ -669,13 +682,14 @@ function loadTCGPlayerPrices() {
       Object.entries(prices).forEach(([num, price]) => {
         if (price == null) return;
         const entry = { price, url: tcgpUrls[num] || null };
+        const padded = num.padStart(3, '0');
+        priceCache[padded] = entry;
         priceCache[num] = entry;
-        const parts = num.split('-');
-        if (parts.length > 1) priceCache[parts[parts.length - 1]] = entry;
       });
+      // Apply to all cards including variants (strip _suffix to get base number)
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
-        const id = el.dataset.localId;
-        const cached = priceCache[id] || priceCache[`${SET_ID.toUpperCase()}-${id}`];
+        const localId = el.dataset.localId;
+        const cached = priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
         const priceEl = el.querySelector('.card-item-price');
         if (priceEl) { priceEl.textContent = cached?.price ? `$${cached.price.toFixed(2)}` : ''; priceEl.classList.remove('loading'); }
       });
