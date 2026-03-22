@@ -690,7 +690,8 @@ function renderChaseCards(cards) {
     .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
     .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
     .map(c => ({
-      id: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
+      id: c.localId,  // keep full localId (e.g. "061_mangaaltart") for price lookup
+      displayId: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
       name: (c.variantType || (c.localId && c.localId.includes('_')))
         ? cleanVariantName(c.name, c.variantType, c.localId)
         : c.name,
@@ -715,11 +716,11 @@ function renderChaseHTML() {
     const priceHTML = c.price
       ? \`<div class="chase-card-price-wrap"><span class="price-value">$\${c.price.toFixed(2)}</span></div>\`
       : \`<div class="chase-card-price-wrap" style="color:var(--muted);font-size:.75rem;font-style:italic">—</div>\`;
-    return \`<div class="chase-card" onclick="openModal('\${c.id}','\${c.name.replace(/'/g,"\\\\'")}','\${c.rarity}','\${c.img}')">
+    return \`<div class="chase-card" onclick="openModal('\${c.displayId || c.id}','\${c.name.replace(/'/g,"\\\\'")}','\${c.rarity}','\${c.img}')">
       <img class="chase-card-img" src="\${c.img}" alt="\${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="chase-card-info">
         <div class="chase-card-name">\${c.name}</div>
-        <div class="chase-card-number">\${c.id}</div>
+        <div class="chase-card-number">\${c.displayId || c.id}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge \${c.rarityClass}">\${c.label}</span></div>
         \${priceHTML}
         <div class="buy-links">
