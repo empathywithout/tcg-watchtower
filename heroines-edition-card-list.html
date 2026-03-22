@@ -59,9 +59,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .orb-3{width:300px;height:300px;background:rgba(59,130,246,.04);top:50%;left:50%}
 .container{max-width:1400px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 /* Nav */
-.nav-wrapper{position:sticky;top:0;z-index:2000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
 nav.container{display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;max-width:100%}
-.nav-wrapper nav{display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;max-width:1400px;margin:0 auto}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
 .nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
@@ -79,7 +77,7 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .hamburger-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2147483646;animation:fadeIn .2s}
 .hamburger-overlay.open{display:block}
 /* Section Nav */
-.section-nav{position:sticky;top:64px;z-index:1000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.section-nav{position:sticky;top:72px;z-index:1000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
 .section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
 .section-nav-inner::-webkit-scrollbar{display:none}
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
@@ -276,19 +274,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   if (!placeholder) return;
   const temp = document.createElement('div');
   temp.innerHTML = html;
-  // Wrap only the <nav> element in .nav-wrapper; insert other elements (overlays, menus) bare
-  const frag = document.createDocumentFragment();
-  temp.childNodes.forEach(node => {
-    if (node.nodeName === 'NAV') {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'nav-wrapper';
-      wrapper.appendChild(node.cloneNode(true));
-      frag.appendChild(wrapper);
-    } else {
-      frag.appendChild(node.cloneNode(true));
-    }
-  });
-  placeholder.parentNode.insertBefore(frag, placeholder);
+  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
   placeholder.remove();
   requestAnimationFrame(() => { if (typeof initNav === 'function') initNav(); });
 });
@@ -773,17 +759,6 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 })();
 
 loadCards();
-
-// Dynamically offset section-nav below the main nav wrapper
-(function() {
-  const mainNav = document.querySelector('.nav-wrapper');
-  const sectionNav = document.getElementById('section-nav');
-  if (mainNav && sectionNav) {
-    const setTop = () => { sectionNav.style.top = mainNav.offsetHeight + 'px'; };
-    setTop();
-    window.addEventListener('resize', setTop);
-  }
-})();
 
 /* ===== HAMBURGER MENU ===== */
 function initNav() {
