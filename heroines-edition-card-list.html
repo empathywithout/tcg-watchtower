@@ -548,7 +548,7 @@ function renderChaseHTML() {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
     .map(c => {
-      const cached = priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)] || priceCache[(c.id.includes('_') ? c.id.split('_')[0] : c.id).padStart(3,'0')];
+      const cached = priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)] || (!c.id.includes('_') ? priceCache[c.id.padStart(3,'0')] : null);
       return { ...c, price: cached?.price ?? null };
     })
     .sort((a, b) => pricesKnown ? (b.price ?? -1) - (a.price ?? -1) : (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99));
@@ -588,7 +588,7 @@ function renderCards(reset) {
     // FIX: use name-based priceKey (matches how the OP price API stores keys) with number fallback
     const cached = priceCache[priceKey(card.localId, card.name)]
       || priceCache[priceKeyByName(card.localId, card.name)]
-      || priceCache[(card.localId.includes('_') ? card.localId.split('_')[0] : card.localId).padStart(3,'0')];
+      || (!card.localId.includes('_') ? priceCache[card.localId.padStart(3,'0')] : null);
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = !cached ? 'loading' : '';
     const displayName = (card.variantType || (card.localId && card.localId.includes('_')))
@@ -608,7 +608,7 @@ function renderCards(reset) {
           <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>`;
-    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')]; const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
+    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null); const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
     grid.appendChild(el);
   });
   displayedCount += slice.length;
@@ -653,7 +653,7 @@ function loadTCGPlayerPrices() {
       document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
         const localId = el.dataset.localId;
         const cardName = el.querySelector('.card-item-name')?.textContent || '';
-        const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
+        const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null);
         const priceEl = el.querySelector('.card-item-price');
         if (priceEl) { priceEl.textContent = cached?.price ? `$${cached.price.toFixed(2)}` : ''; priceEl.classList.remove('loading'); }
         // FIX: upgrade TCGplayer buy button to direct product URL
@@ -669,7 +669,7 @@ function loadTCGPlayerPrices() {
 
 function openModal(localId, name, rarity, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg(localId);
-  const cached = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
+  const cached = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null);
   const displayId = localId.includes('_') ? localId.split('_')[0] : localId;
   const tcgpUrl = directUrl || cached?.url || tcgpLink(name, displayId);
   document.getElementById('modal-inner').innerHTML = `
