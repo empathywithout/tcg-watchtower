@@ -106,43 +106,46 @@ export default async function handler(req, res) {
       if (!numEntry) continue;
 
       const rawNumber = numEntry.value.split('/')[0].trim();
-      const cardNumber = category === 68 ? rawNumber.padStart(3, '0') : rawNumber;
-      const priceObj   = priceByProductId[product.productId];
+      // One Piece: number is "EB03-061" — extract just the numeric part "061" for our localId matching
+      // Pokemon: number is "001", "199" etc
+      const cardNumber = rawNumber;
+      const opLocalId = category === 68 ? rawNumber.split('-').pop() : null; // "EB03-061" -> "061"
+
+      const priceObj = priceByProductId[product.productId];
       if (!priceObj || priceObj.marketPrice == null) continue;
 
       const productName = (product.name || '').trim();
       const setSlug = (product.groupName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      const productLineName = category === 68 ? 'one-piece-card-game' : 'pokemon';
 
-      // Detect variant type from product name for One Piece
-      // e.g. "Nami (053) (Alternate Art)" -> altart key
-      // e.g. "Nami (053) (SP)" -> sp key
-      // e.g. "Nami (053)" -> base key
-      let variantKey = cardNumber; // default: base card
       if (category === 68) {
+        // One Piece variant detection from product name
+        // "Uta (061)" -> base, "Uta (061) (Alternate Art)" -> altart, "Uta (061) (Manga)" -> mangaaltart
+        // "Nami (053) (SP)" or "Nami (053) (Special)" -> specialaltart
         const nameLower = productName.toLowerCase();
-        if (nameLower.includes('manga rare') || nameLower.includes('manga alt')) {
-          variantKey = `${cardNumber}_mangaaltart`;
-        } else if (nameLower.includes('sp alt') || nameLower.includes('special alt') || nameLower.includes('(sp)')) {
-          variantKey = `${cardNumber}_specialaltart`;
+        let suffix = ''; // base card
+        if (nameLower.includes('manga')) {
+          suffix = '_mangaaltart';
+        } else if (nameLower.includes('sp)') || nameLower.includes('special alt') || nameLower.includes('sp alt')) {
+          suffix = '_specialaltart';
         } else if (nameLower.includes('alternate art') || nameLower.includes('alt art') || nameLower.includes('(alt)')) {
-          variantKey = `${cardNumber}_altart`;
-        } else if (nameLower.includes('secret rare') || nameLower.includes('(sec)')) {
-          variantKey = `${cardNumber}_sec`;
+          suffix = '_altart';
         }
+        const variantKey = `${opLocalId}${suffix}`;
+        if (bestProductId[variantKey] !== undefined && product.productId >= bestProductId[variantKey]) continue;
+        prices[variantKey] = priceObj.marketPrice;
+        if (!prices[opLocalId]) prices[opLocalId] = priceObj.marketPrice; // fallback
+        const q = encodeURIComponent(productName);
+        tcgpUrls[variantKey] = `https://www.tcgplayer.com/search/one-piece-card-game/${setSlug}?productLineName=one-piece-card-game&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
+        bestProductId[variantKey] = product.productId;
+      } else {
+        // Pokemon: keep lowest productId per card number
+        if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
+        prices[cardNumber] = priceObj.marketPrice;
+        const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+        const q = encodeURIComponent(`${cardName} ${cardNumber}`);
+        tcgpUrls[cardNumber] = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
+        bestProductId[cardNumber] = product.productId;
       }
-
-      // Keep lowest productId per variant key
-      if (bestProductId[variantKey] !== undefined && product.productId >= bestProductId[variantKey]) continue;
-
-      prices[variantKey] = priceObj.marketPrice;
-      // Also store base number price as fallback
-      if (!prices[cardNumber]) prices[cardNumber] = priceObj.marketPrice;
-
-      const q = encodeURIComponent(productName);
-      tcgpUrls[variantKey] = `https://www.tcgplayer.com/search/${productLineName}/${setSlug}?productLineName=${productLineName}&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
-      tcgpUrls[cardNumber] = tcgpUrls[variantKey];
-      bestProductId[variantKey] = product.productId;
     }
 
     // Build sealed product prices keyed by productId
