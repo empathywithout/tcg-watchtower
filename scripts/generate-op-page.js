@@ -717,7 +717,7 @@ function renderCards(reset) {
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>\`;
-    el.addEventListener('click', () => openModal(card.localId, card.name, card.rarity || '', imgUrl));
+    el.addEventListener('click', () => { const tb = el.querySelector('[data-tcgp-href]'); openModal(card.localId, card.name, card.rarity || '', imgUrl, tb?.href || null); });
     grid.appendChild(el);
   });
   displayedCount += slice.length;
@@ -776,10 +776,11 @@ function loadTCGPlayerPrices() {
   })();
 }
 
-function openModal(localId, name, rarity, imgUrl) {
+function openModal(localId, name, rarity, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg(localId);
   const cached = priceCache[priceKey(localId, name)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')];
-  const tcgpUrl = cached?.url || tcgpLink(name, localId);
+  const displayId = localId.includes('_') ? localId.split('_')[0] : localId;
+  const tcgpUrl = directUrl || cached?.url || tcgpLink(name, displayId);
   document.getElementById('modal-inner').innerHTML = \`
     <img class="modal-img" src="\${imgUrl}" alt="\${name}" loading="lazy">
     <div>
