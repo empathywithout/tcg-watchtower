@@ -85,10 +85,10 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-btn:hover{color:var(--text)}
 .section-nav-btn.active{color:var(--red);border-bottom-color:var(--red)}
-.section-nav-sets{position:relative;flex-shrink:0;margin-left:0}
+.section-nav-sets{position:relative;flex-shrink:0}
 .section-nav-sets-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-sets-btn:hover,.section-nav-sets-btn.open{color:var(--text)}
-.section-nav-dropdown{display:none;position:fixed;background:#1a1040;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;z-index:9999;box-shadow:0 16px 48px rgba(0,0,0,.9);max-height:70vh;overflow-y:auto;min-width:220px}
+.section-nav-dropdown{display:none;position:absolute;right:24px;top:100%;width:260px;background:rgba(10,15,30,0.98);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px;z-index:500;max-height:400px;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.5);margin-top:4px}
 .section-nav-dropdown.open{display:block}
 .nav-dropdown-series{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:8px 12px 4px}
 .nav-dropdown-set{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:.82rem;font-weight:500;transition:background .15s;white-space:nowrap}
@@ -745,11 +745,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     const isOpen = dropdown.classList.contains('open');
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
-    const navEl = document.getElementById('section-nav');
-    const navRect = navEl ? navEl.getBoundingClientRect() : setsBtn.getBoundingClientRect();
-    const rect = setsBtn.getBoundingClientRect();
-    dropdown.style.top = (navRect.bottom + 4) + 'px';
-    dropdown.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+
     if (!isOpen && !populated) await populateNavSets();
   });
 
