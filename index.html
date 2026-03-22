@@ -2173,7 +2173,13 @@ nav.container {
                     console.error('Failed to fetch sets:', res.status);
                     return;
                 }
-                allSets = await res.json();
+                const allData = await res.json();
+                // Only show Pokemon sets in the main hamburger
+                allSets = allData.filter(s => {
+                    const id = (s.setId || '').toLowerCase();
+                    return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';
+                });
+                window._allSetsData = allData; // store full data for One Piece
                 console.log('Sets loaded:', allSets);
                 renderSets();
             } catch(e) {
@@ -2263,7 +2269,8 @@ nav.container {
             const setsGridContainerOp = document.getElementById('sets-grid-container-op');
             if (!setsGridContainerOp) { console.log('OP container not found'); return; }
             const activeFilter = document.querySelector('#sets-filter-tabs-op .filter-tab.active')?.dataset?.filter || 'all';
-            const opSets = allSets.filter(s => {
+            const sourceData = window._allSetsData || allSets;
+            const opSets = sourceData.filter(s => {
                 const id = (s.setId || '').toLowerCase();
                 return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
             });
