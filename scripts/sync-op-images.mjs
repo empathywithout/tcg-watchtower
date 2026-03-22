@@ -201,8 +201,12 @@ async function main() {
       cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
     }
 
-    // Add non-Normal variants
+    // Add non-Normal variants — only those printed in THIS set
     for (const v of variants) {
+      // Filter: only include variant if it's printed in the current set
+      const vPrintings = (v.printings || []).map(p => p.toUpperCase());
+      if (vPrintings.length > 0 && !vPrintings.includes(scrydexId.toUpperCase())) continue;
+
       const vType = (v.name || '').trim(); // API uses 'name' field e.g. 'mangaAltArt', 'altArt'
       const normalizedVType = normalizeVariantName(vType);
       // Skip normal and foil — same card, just foil treatment, not a distinct collectible variant
