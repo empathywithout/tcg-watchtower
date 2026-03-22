@@ -173,14 +173,7 @@ async function main() {
   }
   console.log(`✅ ${allRaw.length} base cards fetched`);
 
-  // DEBUG: dump first card with variants to see raw API structure
-  const sampleWithVariants = allRaw.find(c => c.variants && c.variants.length > 0);
-  if (sampleWithVariants) {
-    console.log('\n🔍 RAW variant sample:');
-    console.log(JSON.stringify(sampleWithVariants.variants.slice(0, 3), null, 2));
-    console.log('Base card rarity:', sampleWithVariants.rarity);
-    console.log('Base card id:', sampleWithVariants.id);
-  }
+
 
   // Expand each base card + its variants printed in this set
   const cards = [];
@@ -211,7 +204,9 @@ async function main() {
     // Add non-Normal variants
     for (const v of variants) {
       const vType = (v.name || '').trim(); // API uses 'name' field e.g. 'mangaAltArt', 'altArt'
-      if (normalizeVariantName(vType) === 'normal') continue;
+      const normalizedVType = normalizeVariantName(vType);
+      // Skip normal and foil — same card, just foil treatment, not a distinct collectible variant
+      if (normalizedVType === 'normal' || normalizedVType === 'foil') continue;
 
       // Determine rarity: name-based mapping takes priority (most reliable for OP variants)
       const nameRarity = variantRarityFromName(vType);
