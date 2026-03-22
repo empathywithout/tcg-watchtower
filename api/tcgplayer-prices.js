@@ -152,28 +152,24 @@ export default async function handler(req, res) {
           .replace(/  +/g, ' ')                    // collapse spaces
           .trim();
 
-        // Store by name+suffix as primary key, number as fallback
+       // Store by both number+suffix (primary, unique per card) and name+suffix (for name-based lookup)
         const nameKey = baseName + suffix;
         const numKey = opLocalId + suffix;
 
-        if (bestProductId[nameKey] !== undefined && product.productId >= bestProductId[nameKey]) continue;
-        prices[nameKey] = priceObj.marketPrice;
-        prices[numKey] = priceObj.marketPrice; // also store by number
+        // Dedup by numKey — card number uniquely identifies a product within a set.
+        // Using nameKey caused collision: e.g. Uta (003) and Uta Manga Art (061) both
+        // normalized to "uta_mangaaltart", so the lower productId (wrong card) always won.
+        if (bestProductId[numKey] !== undefined) continue;
+        bestProductId[numKey] = product.productId;
+
+        const productUrl = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
+
+        prices[numKey]  = priceObj.marketPrice;
+        prices[nameKey] = priceObj.marketPrice; // name-based lookup (may be overwritten by later products — that's OK, numKey is the source of truth)
         if (!prices[opLocalId]) prices[opLocalId] = priceObj.marketPrice;
 
-        tcgpUrls[nameKey] = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
-        tcgpUrls[numKey] = tcgpUrls[nameKey];
-        bestProductId[nameKey] = product.productId;
-      } else {
-        // Pokemon: keep lowest productId per card number
-        if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
-        prices[cardNumber] = priceObj.marketPrice;
-        const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
-        const q = encodeURIComponent(`${cardName} ${cardNumber}`);
-        tcgpUrls[cardNumber] = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
-        bestProductId[cardNumber] = product.productId;
-      }
-    }
+        tcgpUrls[numKey]  = productUrl;
+        tcgpUrls[nameKey] = productUrl; // may be overwritten — frontend prefers numKey lookup anyway
 
     // Build sealed product prices keyed by productId
     // Sealed products have no 'Number' extendedData — identify by absence of Number field
