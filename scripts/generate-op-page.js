@@ -14,7 +14,7 @@ const SET_SHORT_NAME = (process.env.SET_SHORT_NAME || SET_ID.toUpperCase()).trim
 const PHASE         = (process.env.PHASE || 'en').trim();
 const SET_SERIES    = 'One Piece';
 const SET_SERIES_SLUG = 'one-piece';
-const R2_PUBLIC_URL = (process.env.CF_R2_PUBLIC_URL || '').trim();
+const R2_PUBLIC_URL = (process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev').trim();
 
 const rawUrlSlug = (process.env.SET_URL_SLUG || '').trim();
 const SET_URL_SLUG = rawUrlSlug || SET_FULL_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
