@@ -43,6 +43,23 @@ const SCRYDEX_ID_MAP = {
   'st01':'ST01','st02':'ST02','st03':'ST03','st04':'ST04','st10':'ST10','st13':'ST13',
 };
 
+// Manual card overrides — cards in the TCGplayer group but not in Scrydex
+// (cross-set SP reprints with non-standard set numbers)
+const SET_OVERRIDES = {
+  'op14': [
+    {
+      localId: 'prb02006_specialaltart',
+      name: 'Roronoa Zoro',
+      displayName: 'Roronoa Zoro (SP Alt Art)',
+      rarity: 'Special',
+      isVariant: true,
+      variantType: 'specialAltArt',
+      baseLocalId: 'prb02006',
+      scrydexId: 'PRB02-006', // used to fetch image from Scrydex
+    },
+  ],
+};
+
 const RARITY_MAP = {
   'C':'Common','UC':'Uncommon','R':'Rare','SR':'Super Rare',
   'SEC':'Secret Rare','L':'Leader','TR':'Treasure Rare',
@@ -269,6 +286,44 @@ async function main() {
     })),
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
+
+  // Apply set-specific overrides (cross-set reprints not in Scrydex expansion)
+  const overrides = SET_OVERRIDES[SET_ID.toLowerCase()] || [];
+  if (overrides.length > 0) {
+    console.log(`\n📎 Applying ${overrides.length} manual override(s)...`);
+    // Re-fetch JSON, append overrides, re-upload
+    const existingJson = JSON.parse(await (await fetch(`${R2_BASE}/data/op/${SET_ID}.json`)).text().catch(() => '{}'));
+    const existingCards = existingJson.cards || cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, isVariant: c.isVariant || false, variantType: c.variantType || null, baseLocalId: c.baseLocalId || null }));
+    for (const ov of overrides) {
+      if (!existingCards.find(c => c.localId === ov.localId)) {
+        existingCards.push({ localId: ov.localId, name: ov.displayName || ov.name, rarity: ov.rarity, isVariant: ov.isVariant || false, variantType: ov.variantType || null, baseLocalId: ov.baseLocalId || null });
+        console.log(`  Added: ${ov.localId} | ${ov.displayName || ov.name}`);
+        // Fetch and upload image if not skipping
+        if (!SKIP_IMAGES && ov.scrydexId) {
+          try {
+            const cardRes = await fetchWithRetry(`${SCRYDEX_BASE}/cards/${ov.scrydexId}`, { headers: HEADERS });
+            const imgUrl = cardRes?.data?.variants?.find(v => v.name === 'normal')?.images?.[0]?.large
+              || cardRes?.data?.images?.[0]?.large || null;
+            if (imgUrl) {
+              const img = await fetch(imgUrl);
+              if (img.ok) {
+                const buf = await resizeImage(Buffer.from(await img.arrayBuffer()));
+                await uploadToR2(`cards/op/${SET_ID}/${ov.localId}.webp`, buf, 'image/webp');
+                console.log(`  Image uploaded: ${ov.localId}`);
+              }
+            }
+          } catch(e) { console.warn(`  Image failed for ${ov.localId}:`, e.message); }
+        }
+      }
+    }
+    // Re-upload updated JSON
+    await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
+      setId: SET_ID, game: 'onepiece', phase: PHASE,
+      cardCount: { official: existingCards.filter(c => !c.isVariant).length, total: existingCards.length },
+      cards: existingCards,
+    }), 'application/json');
+    console.log(`✅ data/op/${SET_ID}.json re-uploaded with overrides`);
+  }
 
   if (SKIP_IMAGES) {
     console.log('\n⏭️  Skipping image sync');
