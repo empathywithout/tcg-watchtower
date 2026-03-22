@@ -172,15 +172,24 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-nav.top-nav{padding:20px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
+nav.container{padding:24px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em;-webkit-text-fill-color:#f1f5f9;background:none}
 .nav-links{display:flex;gap:24px;align-items:center}
 .nav-links a{color:var(--text);text-decoration:none;font-weight:500;font-size:0.9rem;transition:color .2s}
 .nav-links a:hover{color:white}
-.btn-discord{background:linear-gradient(135deg,var(--red),var(--orange));color:white;padding:9px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(239,68,68,0.4)}
-.btn-discord:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(239,68,68,0.5)}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--orange));color:white;padding:9px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(239,68,68,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(239,68,68,0.5)}
+.hamburger{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:8px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;transition:all .3s}
+.hamburger:hover{background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4)}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.hamburger-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2147483646;animation:fadeIn .2s}
+.hamburger-overlay.open{display:block}
+/* nav styles via nav.container above */
 /* Section Nav */
 .section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08)}
 .section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
@@ -188,6 +197,19 @@ nav.top-nav{padding:20px 0;display:flex;justify-content:space-between;align-item
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-btn:hover{color:var(--text)}
 .section-nav-btn.active{color:var(--red);border-bottom-color:var(--red)}
+.section-nav-sets{position:relative;flex-shrink:0;margin-left:0}
+.section-nav-sets-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
+.section-nav-sets-btn:hover,.section-nav-sets-btn.open{color:var(--text)}
+.section-nav-dropdown{display:none;position:fixed;background:#1a1040;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;z-index:9999;box-shadow:0 16px 48px rgba(0,0,0,.9);max-height:70vh;overflow-y:auto;min-width:220px}
+.section-nav-dropdown.open{display:block}
+.nav-dropdown-series{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:8px 12px 4px}
+.nav-dropdown-set{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:.82rem;font-weight:500;transition:background .15s;white-space:nowrap}
+.nav-dropdown-set:hover{background:rgba(239,68,68,.15)}
+.nav-dropdown-set.current{background:rgba(239,68,68,.2);color:#f87171;font-weight:700}
+.nav-dropdown-set.disabled{opacity:.4;pointer-events:none}
+.nav-dropdown-set img{width:40px;height:16px;object-fit:contain}
+.nav-short{display:none}
+@media(max-width:640px){.nav-full{display:none}.nav-short{display:inline}}
 /* Hero */
 .set-hero{padding:60px 0 80px;position:relative}
 .breadcrumb{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--muted);margin-bottom:32px}
@@ -374,14 +396,6 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 });
 </script>
 
-<nav class="section-nav" id="section-nav">
-  <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn" style="text-decoration:none">🏠 Home</a>
-    <button class="section-nav-btn" data-target="section-chase">🔥 Chase Cards</button>
-    <button class="section-nav-btn active" data-target="section-cards">📋 Card List</button>
-  </div>
-</nav>
-
 <section class="set-hero">
   <div class="container">
     <div class="breadcrumb">
@@ -425,6 +439,21 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     </div>
   </div>
 </section>
+
+<!-- ===== SECTION NAV ===== -->
+<nav class="section-nav" id="section-nav">
+  <div class="section-nav-inner">
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/${SET_URL_SLUG}/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/${SET_URL_SLUG}/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
+    <div class="section-nav-sets">
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">🏴‍☠️ Sets ▾</span><span class="nav-short">Sets ▾</span></button>
+    </div>
+  </div>
+  <div class="section-nav-dropdown" id="nav-sets-dropdown">
+    <div style="color:var(--muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
+  </div>
+</nav>
 
 <div class="section-divider"></div>
 
@@ -692,23 +721,92 @@ function openModal(localId, name, rarity, imgUrl) {
 document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal-overlay').classList.remove('open'));
 document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open'); });
 
-// Section nav
+// Section nav + Sets dropdown
 (function() {
   const btns = document.querySelectorAll('.section-nav-btn[data-target]');
   const sections = ['section-chase','section-cards'].map(id => document.getElementById(id)).filter(Boolean);
+  const currentPath = window.location.pathname;
+
+  // Set active based on URL
+  btns.forEach(btn => {
+    if (btn.dataset.url && currentPath === btn.dataset.url) {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  });
+
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
       btns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
+
   const navH = document.getElementById('section-nav')?.offsetHeight || 60;
   const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) btns.forEach(b => b.classList.toggle('active', b.dataset.target === e.target.id)); });
+    entries.forEach(e => {
+      if (e.isIntersecting) btns.forEach(b => b.classList.toggle('active', b.dataset.target === e.target.id));
+    });
   }, { rootMargin: \`-\${navH}px 0px -60% 0px\`, threshold: 0 });
   sections.forEach(s => obs.observe(s));
+
+  // Sets dropdown
+  const setsBtn = document.getElementById('nav-sets-btn');
+  const dropdown = document.getElementById('nav-sets-dropdown');
+  if (!setsBtn || !dropdown) return;
+  let populated = false;
+
+  setsBtn.addEventListener('click', async () => {
+    const isOpen = dropdown.classList.contains('open');
+    dropdown.classList.toggle('open', !isOpen);
+    setsBtn.classList.toggle('open', !isOpen);
+    const rect = setsBtn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+    if (!isOpen && !populated) await populateNavSets();
+  });
+
+  document.addEventListener('click', e => {
+    if (!setsBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+      setsBtn.classList.remove('open');
+    }
+  });
+
+  async function populateNavSets() {
+    try {
+      const res = await fetch('/sets.json');
+      const allSetsData = await res.json();
+      const sets = allSetsData.filter(s => {
+        const id = (s.setId || '').toLowerCase();
+        return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
+      });
+      const grouped = {};
+      sets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
+      let html = '';
+      const currentPath = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+      Object.entries(grouped).forEach(([series, seriesSets]) => {
+        html += \`<div class="nav-dropdown-series">\${series}</div>\`;
+        seriesSets.forEach(s => {
+          const isCurrent = currentPath.includes(s.setId) || ('/' + s.slug) === window.location.pathname;
+          const isDisabled = !s.live;
+          const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+          const logoUrl = \`\${r2}/logos/op/\${s.setId}.png\`;
+          html += \`<a href="\${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set\${isCurrent ? ' current' : ''}\${isDisabled ? ' disabled' : ''}">
+            <img src="\${logoUrl}" alt="\${s.name}" onerror="this.style.display='none'">
+            <span>\${s.name}\${isDisabled ? ' <span style="font-size:.7rem;opacity:.5">(coming soon)</span>' : ''}</span>
+          </a>\`;
+        });
+      });
+      dropdown.innerHTML = html || '<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">No sets available</div>';
+      populated = true;
+    } catch(e) {
+      dropdown.innerHTML = \`<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">Could not load sets</div>\`;
+    }
+  }
 })();
 
 // Chase arrows
