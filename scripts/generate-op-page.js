@@ -199,8 +199,9 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .section-nav-sets{position:relative;flex-shrink:0}
 .section-nav-sets-btn{padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-sets-btn:hover{color:var(--text)}
-.section-nav-dropdown{display:none;position:absolute;top:100%;right:0;background:#1e293b;border:1px solid rgba(255,255,255,.12);border-radius:12px;min-width:240px;max-height:400px;overflow-y:auto;z-index:2000;box-shadow:0 16px 48px rgba(0,0,0,.6);padding:8px}
+.section-nav-dropdown{display:none;position:fixed;top:auto;right:16px;background:#1e293b;border:1px solid rgba(255,255,255,.12);border-radius:12px;min-width:240px;max-height:60vh;overflow-y:auto;z-index:3000;box-shadow:0 16px 48px rgba(0,0,0,.8);padding:8px}
 .section-nav-dropdown.open{display:block}
+.nav-short{display:none}
 .nav-dropdown-series{padding:8px 12px 4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .nav-dropdown-set{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:.85rem;transition:background .2s}
 .nav-dropdown-set:hover{background:rgba(255,255,255,.08)}
@@ -255,8 +256,8 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .rarity-sp{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(59,130,246,.2));border:1px solid rgba(168,85,247,.4);color:#c084fc}
 .rarity-sr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(251,191,36,.2));border:1px solid rgba(239,68,68,.4);color:#f87171}
 .rarity-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
-.buy-links{display:flex;gap:6px;margin-top:auto;padding-top:12px;flex-wrap:wrap;justify-content:center}
-.buy-link{padding:5px 12px;border-radius:6px;font-size:.75rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center}
+.buy-links{display:flex;gap:6px;margin-top:auto;padding-top:10px;flex-wrap:nowrap}
+.buy-link{flex:1;padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
@@ -440,10 +441,10 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">🏴‍☠️ Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
-  <div class="section-nav-dropdown" id="nav-sets-dropdown">
-    <div style="color:var(--muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
-  </div>
 </nav>
+<div class="section-nav-dropdown" id="nav-sets-dropdown">
+  <div style="color:var(--muted);padding:12px;text-align:center;font-size:0.8rem">Loading sets...</div>
+</div>
 
 <div class="section-divider"></div>
 
@@ -818,6 +819,12 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   let populated = false;
   setsBtn.addEventListener('click', async () => {
     const isOpen = dropdown.classList.contains('open');
+    // Position dropdown under the button using fixed coords (escapes overflow:hidden parents)
+    if (!isOpen) {
+      const rect = setsBtn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 4) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+    }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
     if (!isOpen && !populated) await populateNavSets();
