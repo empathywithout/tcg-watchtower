@@ -209,7 +209,6 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .nav-dropdown-set.disabled{opacity:.4;pointer-events:none}
 .nav-dropdown-set img{width:40px;height:16px;object-fit:contain}
 .nav-short{display:none}
-@media(max-width:640px){.nav-full{display:none}.nav-short{display:inline}}
 /* Hero */
 .set-hero{padding:60px 0 80px;position:relative}
 .breadcrumb{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--muted);margin-bottom:32px}
@@ -337,9 +336,12 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 @media(max-width:640px){
   .section-nav-inner{padding:0 4px;gap:0;flex-wrap:nowrap;justify-content:space-between;width:100%}
   .section-nav-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;flex:1;text-align:center;white-space:nowrap}
+  .section-nav-sets{flex:1}
+  .section-nav-sets-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;width:100%;text-align:center;white-space:nowrap}
   .nav-full{display:none}
   .nav-short{display:inline}
-  .nav-home-btn{display:none}
+  .nav-home-btn .nav-short{display:inline}
+  .nav-home-btn .nav-full{display:none}
   .card-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
   .set-hero{padding:32px 0 48px}
   .breadcrumb{font-size:.75rem;flex-wrap:wrap}
