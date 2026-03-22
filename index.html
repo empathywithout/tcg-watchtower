@@ -2216,7 +2216,12 @@
                     console.error('Failed to fetch sets:', res.status);
                     return;
                 }
-                allSets = await res.json();
+                const allData = await res.json();
+                window._allSetsData = allData;
+                allSets = allData.filter(s => {
+                    const id = (s.setId || '').toLowerCase();
+                    return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && (s.series || '') !== 'One Piece TCG';
+                });
                 console.log('Sets loaded:', allSets);
                 renderSets();
             } catch(e) {
@@ -2303,10 +2308,12 @@
         }
         
         function renderOnePieceSets() {
+            const setsGridContainerOp = document.getElementById('sets-grid-container-op');
             if (!setsGridContainerOp) return;
-            const opSets = allSets.filter(s => {
+            const sourceData = window._allSetsData || [];
+            const opSets = sourceData.filter(s => {
                 const id = (s.setId || s.slug || '').toLowerCase();
-                return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
+                return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || (s.series || '') === 'One Piece TCG';
             });
             const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
             if (!filtered.length) {
