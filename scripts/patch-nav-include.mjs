@@ -238,6 +238,14 @@ for (const file of files) {
     '.section { padding: 80px 0; scroll-margin-top: 60px; }'
   );
 
+  // 3e. Fix breadcrumb to include Pokemon TCG
+  const before3e = content;
+  content = content.replace(
+    '<a href="/">Home</a>\n      <span>›</span>\n      <a href="/sets">All Sets</a>',
+    '<a href="/">Home</a>\n      <span>›</span>\n      <a href="/sets">Pokémon TCG</a>\n      <span>›</span>\n      <a href="/sets">All Sets</a>'
+  );
+  if (content !== before3e) { changed = true; }
+
   // 3d. Fix populateNavSets to exclude One Piece sets
   if (content.includes("async function populateNavSets()") && !content.includes("allSetsData")) {
     const before3d = content;
