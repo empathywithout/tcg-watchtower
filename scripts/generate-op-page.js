@@ -175,7 +175,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .orb-3{width:300px;height:300px;background:rgba(59,130,246,.04);top:50%;left:50%}
 .container{max-width:1400px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 /* Nav */
-nav.container{display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;max-width:100%}
+nav.container{padding:24px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
 .nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
@@ -193,7 +193,7 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .hamburger-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2147483646;animation:fadeIn .2s}
 .hamburger-overlay.open{display:block}
 /* Section Nav */
-.section-nav{position:sticky;top:72px;z-index:1000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
 .section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
 .section-nav-inner::-webkit-scrollbar{display:none}
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
@@ -313,6 +313,8 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 @media(max-width:768px){
   nav.container .nav-links a:not(.btn-primary){display:none}
   nav.container .nav-links{gap:12px}
+  nav.container{padding:16px 0}
+  nav.container{padding:16px 0}
   .section-nav-inner{padding:0 8px}
   .hero-grid{grid-template-columns:1fr}
   .hero-visual{display:none}
