@@ -274,13 +274,21 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 fetch('/nav.html').then(r => r.text()).then(html => {
   const placeholder = document.getElementById('site-nav');
   if (!placeholder) return;
-  // Wrap injected nav in .nav-wrapper so sticky + background styles apply
-  const wrapper = document.createElement('div');
-  wrapper.className = 'nav-wrapper';
   const temp = document.createElement('div');
   temp.innerHTML = html;
-  while (temp.firstChild) wrapper.appendChild(temp.firstChild);
-  placeholder.parentNode.insertBefore(wrapper, placeholder);
+  // Wrap only the <nav> element in .nav-wrapper; insert other elements (overlays, menus) bare
+  const frag = document.createDocumentFragment();
+  temp.childNodes.forEach(node => {
+    if (node.nodeName === 'NAV') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'nav-wrapper';
+      wrapper.appendChild(node.cloneNode(true));
+      frag.appendChild(wrapper);
+    } else {
+      frag.appendChild(node.cloneNode(true));
+    }
+  });
+  placeholder.parentNode.insertBefore(frag, placeholder);
   placeholder.remove();
   requestAnimationFrame(() => { if (typeof initNav === 'function') initNav(); });
 });
