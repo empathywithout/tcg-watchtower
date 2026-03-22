@@ -138,13 +138,18 @@ export default async function handler(req, res) {
 
         // Build name-based key: normalize card name for matching
         // "Roronoa Zoro - PRB02-006 (SP)" -> "roronoa zoro"
-        // "Uta (061) (Alternate Art)" -> "uta"
+        // "Dracule Mihawk - OP14-119 (Alternate Art)" -> "dracule mihawk"
+        // Strip set number token first, then strip remaining parentheticals
+        // Strip set number " - OP14-119" or " (061)" style tokens, then normalize
         const baseName = productName
-          .replace(/[-–]\s*[A-Z]{2,}\d+[-–]\d+/g, '') // strip " - PRB02-006"
-          .replace(/\s*[(][^)]*[)]\s*/g, '') // strip all (...) groups
+          .replace(/ - [A-Z0-9]+-[0-9]+/g, '')   // strip " - PRB02-006" or " - OP14-119"
+          .replace(/[(][A-Z0-9]+-[0-9]+[)]/g, '') // strip "(OP14-119)" style
+          .replace(/[(][0-9]+[)]/g, '')            // strip "(061)" card number tokens
+          .replace(/[(][^)]*[)]/g, '')             // strip remaining (...) groups
+          .replace(/[^a-zA-Z0-9 ]/g, '')          // remove special chars
           .trim()
           .toLowerCase()
-          .replace(/[^a-z0-9 ]/g, '') // normalize
+          .replace(/  +/g, ' ')                    // collapse spaces
           .trim();
 
         // Store by name+suffix as primary key, number as fallback
