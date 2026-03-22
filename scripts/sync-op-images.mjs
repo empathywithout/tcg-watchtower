@@ -106,7 +106,8 @@ function variantSuffix(name) {
 async function uploadToR2(key, body, contentType) {
   await s3.send(new PutObjectCommand({
     Bucket: BUCKET, Key: key, Body: body, ContentType: contentType,
-    CacheControl: 'public, max-age=86400',
+    CacheControl: 'public, max-age=2592000, immutable',
+    CacheControl: 'public, max-age=2592000, immutable',
   }));
 }
 
@@ -362,8 +363,16 @@ async function main() {
     if (logoUrl) {
       const img = await fetch(logoUrl);
       if (img.ok) {
-        await uploadToR2(`logos/op/${SET_ID}.png`, Buffer.from(await img.arrayBuffer()), 'image/png');
-        console.log(`✅ Logo uploaded`);
+        // Resize logo to max 300px wide to reduce file size
+        const rawBuf = Buffer.from(await img.arrayBuffer());
+        const resizedLogo = await sharp(rawBuf)
+          .resize(300, null, { fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer();
+        await uploadToR2(`logos/op/${SET_ID}.webp`, resizedLogo, 'image/webp');
+        // Also upload original as PNG fallback
+        await uploadToR2(`logos/op/${SET_ID}.png`, rawBuf, 'image/png');
+        console.log(`✅ Logo uploaded (WebP + PNG)`);
       }
     }
   } catch(e) { console.warn('⚠️ Logo failed:', e.message); }
