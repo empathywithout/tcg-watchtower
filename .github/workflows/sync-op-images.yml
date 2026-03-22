@@ -71,6 +71,13 @@ jobs:
       - name: Install dependencies
         run: npm install @aws-sdk/client-s3 sharp
 
+      - name: Remove node_modules from git tracking
+        run: |
+          git rm -r --cached node_modules/ 2>/dev/null || true
+
+      - name: Lookup One Piece TCGplayer group IDs (informational)
+        run: node scripts/lookup-op-groups.mjs || true
+
       - name: Sync One Piece card images to R2
         env:
           SET_ID:           ${{ github.event.inputs.set_id }}
