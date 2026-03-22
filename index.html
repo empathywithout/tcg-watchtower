@@ -26,12 +26,9 @@
     <meta name="google-site-verification" content="t_Mdm5sF1ofHVv5FGzN_Fb27fHsxUCWGeMOuarLRq7w">
     <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
     
-    <!-- Fonts - non-blocking -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
         
     <style>
         * {
@@ -1509,7 +1506,7 @@
     <!-- Navigation -->
     <nav class="container">
         <a href="/" class="nav-logo">
-            <picture><source srcset="/tcg-watchtower-logo-80.webp" type="image/webp"><img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="80" height="80" style="width:32px;height:32px;object-fit:cover"></picture>
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
             <span>TCG Watchtower</span>
           </a>
         <div class="nav-links">
@@ -1954,12 +1951,8 @@
                 ? `<a href="${alert.url}" target="_blank" rel="noopener" class="atc-btn">🛒 ATC</a>`
                 : `<span class="info-value atc">ATC</span>`;
 
-            // Optimize Target Scene7 images by requesting smaller size
-            const imgSrc = alert.image && alert.image.includes('scene7.com')
-                ? alert.image + '?wid=120&hei=120&fmt=webp&qlt=75'
-                : (alert.image || '');
-            const productImg = imgSrc
-                ? `<img src="${escHtml(imgSrc)}" alt="${escHtml(alert.title)}" width="60" height="60" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.05);" loading="lazy">`
+            const productImg = alert.image
+                ? `<img src="${escHtml(alert.image)}" alt="${escHtml(alert.title)}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.05);">`
                 : `<div style="font-size:2rem;">🎴</div>`;
 
             const stockBadge = alert.stock
