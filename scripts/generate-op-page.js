@@ -555,18 +555,25 @@ const priceCache = {};
 
 async function loadCards() {
   try {
-    const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
-    if (!res.ok) throw new Error('API failed');
+    // Try R2 directly first — most reliable for OP sets
+    const r2Url = \`\${R2}/data/op/\${SET_ID}.json\`;
+    console.log('Fetching cards from:', r2Url);
+    const res = await fetch(r2Url);
+    if (!res.ok) throw new Error(\`R2 fetch failed: \${res.status} \${r2Url}\`);
     const json = await res.json();
     allCards = json.cards || [];
-    if (!allCards.length) throw new Error('No cards');
+    if (!allCards.length) throw new Error('No cards in JSON');
+    console.log(\`Loaded \${allCards.length} cards from R2\`);
   } catch(e) {
+    console.error('Card load error:', e.message);
+    // Fallback to API
     try {
-      const res = await fetch(\`\${R2}/data/op/\${SET_ID}.json\`);
+      const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
+      if (!res.ok) throw new Error('API failed');
       const json = await res.json();
       allCards = json.cards || [];
     } catch(e2) {
-      document.getElementById('card-count').textContent = '⚠️ Could not load cards — try refreshing.';
+      document.getElementById('card-count').textContent = \`⚠️ Could not load cards — \${e.message}\`;
       return;
     }
   }
