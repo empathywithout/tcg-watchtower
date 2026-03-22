@@ -134,6 +134,24 @@ async function main() {
     if (total !== null && allRaw.length >= total) break;
     page++;
   }
+  let usedPrintingsFilter = allRaw.length > 0;
+
+  // If printings filter returned nothing, fall back to expansion endpoint
+  if (allRaw.length === 0) {
+    console.log('⚠️  printings filter returned 0 cards — trying expansion endpoint as fallback...');
+    page = 1; total = null;
+    while (true) {
+      const url = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
+      const data = await fetchWithRetry(url, { headers: HEADERS });
+      const batch = data.data || [];
+      if (total === null) total = data.totalCount || data.total || null;
+      allRaw = allRaw.concat(batch);
+      console.log(`  Fallback page ${page}: ${batch.length} cards (${allRaw.length}${total ? `/${total}` : ''})`);
+      if (batch.length === 0 || batch.length < 100) break;
+      if (total !== null && allRaw.length >= total) break;
+      page++;
+    }
+  }
   console.log(`✅ ${allRaw.length} base cards fetched`);
 
   // Expand each base card + its variants printed in this set
@@ -143,14 +161,8 @@ async function main() {
     const baseRarity  = normalizeRarity(c.rarity);
     const baseImage   = pickImage(c.images);
 
-    // Find variants that are printed in this set
-    const variants = (c.variants || []).filter(v => {
-      const printings = v.printings || [];
-      return printings.some(p => {
-        const pid = typeof p === 'string' ? p : (p.expansion_id || p.id || '');
-        return pid.toUpperCase() === scrydexId.toUpperCase();
-      });
-    });
+    // All variants of this card — card was already filtered to this set via printings:SETID
+    const variants = c.variants || [];
 
     if (!variants.length) {
       // No set-specific variants — just the base card
