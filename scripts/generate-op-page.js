@@ -311,6 +311,11 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
 .footer-disclaimer p{color:rgba(148,163,184,.6);font-size:.75rem;line-height:1.6;margin-bottom:8px}
 .footer-bottom{text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:.8rem}
 @media(max-width:768px){
+  /* Top nav — hide text links, keep hamburger + discord */
+  nav.container .nav-links a:not(.btn-primary){display:none}
+  nav.container .nav-links{gap:12px}
+  /* Section nav — compress */
+  .section-nav-inner{padding:0 8px}
   .hero-grid{grid-template-columns:1fr}
   .hero-visual{display:none}
   .set-title{font-size:2.5rem}
