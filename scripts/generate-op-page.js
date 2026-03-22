@@ -314,11 +314,32 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
   .hero-grid{grid-template-columns:1fr}
   .hero-visual{display:none}
   .set-title{font-size:2.5rem}
+  .section-title{font-size:2rem}
   .set-stats{grid-template-columns:repeat(2,1fr)}
+  .set-desc{font-size:.95rem}
   .modal-inner{grid-template-columns:1fr}
-  .modal-img{max-width:280px;margin:0 auto;display:block}
-  .card-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-  nav.top-nav .nav-links a:not(.btn-discord){display:none}
+  .modal-img{max-width:380px;margin:0 auto;display:block;aspect-ratio:2.5/3.5;object-fit:contain}
+  .card-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .chase-card{flex:0 0 160px}
+  .chase-arrow-left{left:-12px}
+  .chase-arrow-right{right:-12px}
+  .section{padding:48px 0}
+  .section-header{margin-bottom:28px}
+  .filter-bar{gap:8px}
+  .filter-input{min-width:100%;font-size:.85rem}
+  .filter-select{font-size:.85rem;padding:8px 12px}
+}
+@media(max-width:640px){
+  .section-nav-inner{padding:0 4px;gap:0;flex-wrap:nowrap;justify-content:space-between;width:100%}
+  .section-nav-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;flex:1;text-align:center;white-space:nowrap}
+  .nav-full{display:none}
+  .nav-short{display:inline}
+  .nav-home-btn{display:none}
+  .card-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+  .set-hero{padding:32px 0 48px}
+  .breadcrumb{font-size:.75rem;flex-wrap:wrap}
+  .stat-value{font-size:1.2rem}
+  .container{padding:0 16px}
 }
 
 /* ===== HAMBURGER MENU CSS ===== */
