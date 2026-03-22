@@ -578,6 +578,7 @@ function renderCards(reset) {
     const el = document.createElement('div');
     el.className = 'card-item';
     el.dataset.localId = card.localId;
+    el.dataset.cardName = card.name;
     // FIX: use name-based priceKey (matches how the OP price API stores keys) with number fallback
     const cached = priceCache[priceKey(card.localId, card.name)]
       || priceCache[priceKey(card.localId)]
@@ -601,7 +602,7 @@ function renderCards(reset) {
           <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>`;
-    el.addEventListener('click', () => { const tb = el.querySelector('[data-tcgp-href]'); openModal(card.localId, card.name, card.rarity || '', imgUrl, tb?.href || null); });
+    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKey(localId)] || priceCache[(localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0')]; const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
     grid.appendChild(el);
   });
   displayedCount += slice.length;
