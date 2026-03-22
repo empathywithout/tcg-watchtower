@@ -26,10 +26,12 @@
     <meta name="google-site-verification" content="t_Mdm5sF1ofHVv5FGzN_Fb27fHsxUCWGeMOuarLRq7w">
     <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
     
-    <!-- Fonts -->
+    <!-- Fonts - non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
         
     <style>
         * {
@@ -128,21 +130,56 @@
         }
 
         /* Navigation */
-.nav-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
+        }
+
+        .logo { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  text-decoration:none; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.4);
 }
-nav.container {
-  padding: 24px 0;
+.logo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+}
+.logo-icon {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+}
+.logo-icon img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.05);
+}
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem; font-weight: bold;
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; -webkit-text-fill-color:#f1f5f9; background:none; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; }
 
         .nav-links {
             display: flex;
@@ -1470,57 +1507,54 @@ nav.container {
     <div class="orb orb-3"></div>
 
     <!-- Navigation -->
-<!-- ===== NAV ===== -->
-<nav class="container">
-  <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
-    <span>TCG Watchtower</span>
-  </a>
-  <div class="nav-links">
-    <a href="/#features">Features</a>
-    <a href="/#how-it-works">How It Works</a>
-    <a href="/#faq">FAQ</a>
-    <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
-  </div>
-</nav>
-<!-- Hamburger Menu Overlay -->
-<div class="hamburger-overlay" id="hamburger-overlay"></div>
-<!-- Pokemon Menu -->
-<div class="hamburger-menu" id="hamburger-menu">
-  <div class="hamburger-menu-item" id="pokemon-menu-item">Pokémon<span>›</span></div>
-  <div class="hamburger-menu-item" id="onepiece-menu-item">One Piece<span>›</span></div>
-</div>
-<!-- Pokemon Sets View -->
-<div class="pokemon-sets-view" id="pokemon-sets-view">
-  <div class="pokemon-sets-header">
-    <button class="back-button" id="back-to-menu">← Back</button>
-    <div class="pokemon-sets-title">Pokémon TCG Sets</div>
-  </div>
-  <div class="sets-filter-tabs" id="sets-filter-tabs">
-    <div class="filter-tab active" data-filter="all">All Sets</div>
-    <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
-    <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
-    <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
-    <div class="filter-tab" data-filter="live">Live Only</div>
-  </div>
-  <div id="sets-grid-container"></div>
-</div>
-
-<!-- One Piece Sets View -->
-<div class="pokemon-sets-view" id="onepiece-sets-view">
-  <div class="pokemon-sets-header">
-    <button class="back-button" id="back-to-menu-op">← Back</button>
-    <div class="pokemon-sets-title" style="background:linear-gradient(90deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One Piece TCG Sets</div>
-  </div>
-  <div class="sets-filter-tabs" id="sets-filter-tabs-op">
-    <div class="filter-tab active" data-filter="all">All Sets</div>
-    <div class="filter-tab" data-filter="live">Live Only</div>
-  </div>
-  <div id="sets-grid-container-op"></div>
-</div>
+    <nav class="container">
+        <a href="/" class="nav-logo">
+            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32" style="width:32px;height:32px;object-fit:cover">
+            <span>TCG Watchtower</span>
+          </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#faq">FAQ</a>
+            <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
+                Join Discord
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Hamburger Menu Overlay -->
+    <div class="hamburger-overlay" id="hamburger-overlay"></div>
+    
+    <!-- Pokemon Menu (triggered by hamburger) -->
+    <div class="hamburger-menu" id="hamburger-menu">
+        <div class="hamburger-menu-item" id="pokemon-menu-item">
+            Pokémon
+            <span>›</span>
+        </div>
+    </div>
+    
+    <!-- Pokemon Sets View -->
+    <div class="pokemon-sets-view" id="pokemon-sets-view"><a id="pokemon"></a>
+        <div class="pokemon-sets-header">
+            <button class="back-button" id="back-to-menu">← Back</button>
+            <div class="pokemon-sets-title">Pokémon TCG Sets</div>
+        </div>
+        
+        <div class="sets-filter-tabs" id="sets-filter-tabs">
+            <div class="filter-tab active" data-filter="all">All Sets</div>
+            <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
+            <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
+            <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
+            <div class="filter-tab" data-filter="live">Live Only</div>
+        </div>
+        
+        <div id="sets-grid-container">
+            <!-- Sets will be dynamically loaded here -->
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -2068,14 +2102,10 @@ nav.container {
         const hamburgerOverlay = document.getElementById('hamburger-overlay');
         const hamburgerMenu = document.getElementById('hamburger-menu');
         const pokemonMenuItem = document.getElementById('pokemon-menu-item');
-        const onepieceMenuItem = document.getElementById('onepiece-menu-item');
         const pokemonSetsView = document.getElementById('pokemon-sets-view');
-        const onepieceSetsView = document.getElementById('onepiece-sets-view');
         const backToMenu = document.getElementById('back-to-menu');
-        const backToMenuOp = document.getElementById('back-to-menu-op');
-        // OP elements queried at call time since nav.html loads async
         const setsGridContainer = document.getElementById('sets-grid-container');
-        const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
+        const filterTabs = document.querySelectorAll('.filter-tab');
         
         // R2 Configuration
         const R2_PUBLIC_URL = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
@@ -2113,8 +2143,6 @@ nav.container {
         function closeAllMenus() {
             hamburgerMenu.classList.remove('open');
             pokemonSetsView.classList.remove('open');
-            const opView = document.getElementById('onepiece-sets-view');
-            if (opView) opView.classList.remove('open');
             hamburgerOverlay.classList.remove('open');
             hamburger.classList.remove('open');
         }
@@ -2123,17 +2151,9 @@ nav.container {
             hamburgerMenu.classList.remove('open');
             pokemonSetsView.classList.add('open');
         }
-
-        function showOnePieceSets() {
-            hamburgerMenu.classList.remove('open');
-            const opView = document.getElementById('onepiece-sets-view');
-            if (opView) { opView.classList.add('open'); renderOnePieceSets(); }
-        }
         
         function backToMainMenu() {
             pokemonSetsView.classList.remove('open');
-            const opView = document.getElementById('onepiece-sets-view');
-            if (opView) opView.classList.remove('open');
             hamburgerMenu.classList.add('open');
         }
         
@@ -2141,26 +2161,15 @@ nav.container {
         hamburger.addEventListener('click', toggleHamburgerMenu);
         hamburgerOverlay.addEventListener('click', closeAllMenus);
         pokemonMenuItem.addEventListener('click', showPokemonSets);
-        if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
         backToMenu.addEventListener('click', backToMainMenu);
-        if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
         
-        // Pokemon filter tabs
+        // Filter tabs
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 filterTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentFilter = tab.dataset.filter;
                 renderSets();
-            });
-        });
-
-        // One Piece filter tabs
-        document.querySelectorAll('#sets-filter-tabs-op .filter-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('#sets-filter-tabs-op .filter-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                renderOnePieceSets();
             });
         });
         
@@ -2173,13 +2182,7 @@ nav.container {
                     console.error('Failed to fetch sets:', res.status);
                     return;
                 }
-                const allData = await res.json();
-                // Only show Pokemon sets in the main hamburger
-                allSets = allData.filter(s => {
-                    const id = (s.setId || '').toLowerCase();
-                    return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';
-                });
-                window._allSetsData = allData; // store full data for One Piece
+                allSets = await res.json();
                 console.log('Sets loaded:', allSets);
                 renderSets();
             } catch(e) {
@@ -2265,40 +2268,6 @@ nav.container {
             setsGridContainer.innerHTML = html;
         }
         
-        function renderOnePieceSets() {
-            const setsGridContainerOp = document.getElementById('sets-grid-container-op');
-            if (!setsGridContainerOp) { console.log('OP container not found'); return; }
-            const activeFilter = document.querySelector('#sets-filter-tabs-op .filter-tab.active')?.dataset?.filter || 'all';
-            const sourceData = window._allSetsData || allSets;
-            const opSets = sourceData.filter(s => {
-                const id = (s.setId || '').toLowerCase();
-                return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
-            });
-            const filtered = activeFilter === 'live' ? opSets.filter(s => s.live) : opSets;
-            console.log('OP sets found:', filtered.length);
-            if (!filtered.length) {
-                setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
-                return;
-            }
-            const r2 = R2_PUBLIC_URL;
-            let html = '<div class="sets-grid">';
-            filtered.forEach(set => {
-                const disabled = !set.live;
-                const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
-                html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
-                    <div class="set-card-image">
-                        ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🃏</div>'}
-                    </div>
-                    <div class="set-card-content">
-                        <div class="set-card-name">${set.name}</div>
-                        <div class="set-card-info">${set.short || ''} • One Piece TCG</div>
-                        ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-                    </div></a>`;
-            });
-            html += '</div>';
-            setsGridContainerOp.innerHTML = html;
-        }
-
         // Initialize
         await fetchSets();
     })();
