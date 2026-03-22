@@ -864,8 +864,10 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     const isOpen = dropdown.classList.contains('open');
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
+    const navEl = document.getElementById('section-nav');
+    const navRect = navEl ? navEl.getBoundingClientRect() : setsBtn.getBoundingClientRect();
     const rect = setsBtn.getBoundingClientRect();
-    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.top = (navRect.bottom + 4) + 'px';
     dropdown.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
     if (!isOpen && !populated) await populateNavSets();
   });
