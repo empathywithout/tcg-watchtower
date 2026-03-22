@@ -431,6 +431,16 @@ function tcgpLink(name, num) {
   return `${TCGP_BASE}?u=${encodeURIComponent(url)}`;
 }
 
+// Format camelCase variant type to readable label
+function formatVariantType(type) {
+  const map = {
+    'altArt': 'Alt Art', 'specialAltArt': 'SP Alt Art',
+    'mangaAltArt': 'Manga Art', 'redMangaAltArt': 'Manga Art',
+    'parallel': 'Parallel', 'fullart': 'Full Art', 'promo': 'Promo',
+  };
+  return map[type] || type.replace(/([A-Z])/g, ' $1').trim();
+}
+
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
 const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
@@ -486,7 +496,16 @@ function renderChaseCards(cards) {
   currentChaseList = cards
     .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
     .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
-    .map(c => ({ id: c.localId, name: c.name, rarity: c.rarity || '', rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r', label: RARITY_LABEL[c.rarity] || c.rarity, img: c.image || cardImg(c.localId) }));
+    .map(c => ({
+      id: c.baseLocalId || c.localId,
+      name: c.variantType
+        ? c.name.replace(/([^)]+)$/, '').trim() + ' (' + formatVariantType(c.variantType) + ')'
+        : c.name,
+      rarity: c.rarity || '',
+      rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r',
+      label: RARITY_LABEL[c.rarity] || c.rarity,
+      img: c.image || cardImg(c.localId)
+    }));
   renderChaseHTML();
 }
 
@@ -536,11 +555,16 @@ function renderCards(reset) {
     const cached = priceCache[card.localId] || priceCache[`${SET_ID.toUpperCase()}-${card.localId}`];
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = !cached ? 'loading' : '';
-    el.innerHTML = `<img src="${imgUrl}" alt="${card.name} ${card.localId} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
+    const displayName = card.variantType
+      ? card.name.replace(/([^)]+)$/, '').trim() + ' (' + formatVariantType(card.variantType) + ')'
+      : card.name;
+    const displayId = card.baseLocalId || card.localId;
+    el.innerHTML = `<img src="${imgUrl}" alt="${card.name} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
-        <div class="card-item-name">${card.name}</div>
-        <div class="card-item-num">${card.localId}</div>
+        <div class="card-item-name">${displayName}</div>
+        <div class="card-item-num">${displayId}</div>
         <div class="card-item-price ${priceClass}">${priceText}</div>
+        ${card.rarity && RARITY_CLASS[card.rarity] ? `<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity] || card.rarity}</span></div>` : ''}
       </div>`;
     el.addEventListener('click', () => openModal(card.localId, card.name, card.rarity || '', imgUrl));
     grid.appendChild(el);
@@ -683,7 +707,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
       const grouped = {};
       sets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
       let html = '';
-      const currentPath = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+      const currentPath = window.location.pathname.replace(/^//, '').replace(/.html$/, '');
       Object.entries(grouped).forEach(([series, seriesSets]) => {
         html += `<div class="nav-dropdown-series">${series}</div>`;
         seriesSets.forEach(s => {
