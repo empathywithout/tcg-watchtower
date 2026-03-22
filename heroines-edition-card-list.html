@@ -441,11 +441,25 @@ function formatVariantType(type) {
   return map[type] || type.replace(/([A-Z])/g, ' $1').trim();
 }
 
+// Derive variant type from localId suffix e.g. "061_mangaaltart" -> "mangaAltArt"
+function variantTypeFromId(localId) {
+  if (!localId || !localId.includes('_')) return null;
+  const suffix = localId.split('_').slice(1).join('_');
+  // Convert back from slug to camelCase for lookup
+  const map = {
+    'altart': 'altArt', 'specialaltart': 'specialAltArt',
+    'mangaaltart': 'mangaAltArt', 'redmangaaltart': 'redMangaAltArt',
+    'parallel': 'parallel', 'fullart': 'fullart', 'promo': 'promo',
+  };
+  return map[suffix] || suffix;
+}
+
 // Clean variant name — strip any existing parenthetical suffix and add clean label
-function cleanVariantName(name, variantType) {
-  if (!variantType) return name;
+function cleanVariantName(name, variantType, localId) {
+  const vtype = variantType || variantTypeFromId(localId);
+  if (!vtype) return name;
   const baseName = name.replace(/s*([^)]*)s*$/, '').trim();
-  return baseName + ' (' + formatVariantType(variantType) + ')';
+  return baseName + ' (' + formatVariantType(vtype) + ')';
 }
 
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
@@ -504,9 +518,9 @@ function renderChaseCards(cards) {
     .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
     .sort((a, b) => (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99))
     .map(c => ({
-      id: c.baseLocalId || c.localId,
-      name: c.variantType
-        ? cleanVariantName(c.name, c.variantType)
+      id: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
+      name: (c.variantType || (c.localId && c.localId.includes('_')))
+        ? cleanVariantName(c.name, c.variantType, c.localId)
         : c.name,
       rarity: c.rarity || '',
       rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r',
@@ -562,10 +576,10 @@ function renderCards(reset) {
     const cached = priceCache[card.localId] || priceCache[`${SET_ID.toUpperCase()}-${card.localId}`];
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = !cached ? 'loading' : '';
-    const displayName = card.variantType
-      ? cleanVariantName(card.name, card.variantType)
+    const displayName = (card.variantType || (card.localId && card.localId.includes('_')))
+      ? cleanVariantName(card.name, card.variantType, card.localId)
       : card.name;
-    const displayId = card.baseLocalId || card.localId;
+    const displayId = card.baseLocalId || (card.localId.includes('_') ? card.localId.split('_')[0] : card.localId);
     el.innerHTML = `<img src="${imgUrl}" alt="${card.name} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${displayName}</div>
