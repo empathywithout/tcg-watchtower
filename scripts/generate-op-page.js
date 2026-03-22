@@ -257,7 +257,7 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .rarity-sp{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(59,130,246,.2));border:1px solid rgba(168,85,247,.4);color:#c084fc}
 .rarity-sr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(251,191,36,.2));border:1px solid rgba(239,68,68,.4);color:#f87171}
 .rarity-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
-.buy-links{display:flex;gap:6px;margin-top:auto;padding-top:10px;flex-wrap:nowrap}
+.buy-links{display:flex;gap:6px;margin-top:auto;padding-top:8px;flex-wrap:nowrap}
 .buy-link{flex:1;min-width:0;padding:5px 4px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
@@ -274,10 +274,10 @@ nav.container{display:flex;justify-content:space-between;align-items:center;heig
 .filter-select{background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 16px;color:white;font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .2s}
 .filter-select option{background:#1e293b}
 .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.card-item{background:rgba(15,23,42,.85);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card-item{background:rgba(15,23,42,.85);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column}
 .card-item:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.5);border-color:rgba(239,68,68,.3)}
 .card-item img{width:100%;aspect-ratio:245/337;display:block;object-fit:contain;background:rgba(15,23,42,.85)}
-.card-item-info{padding:8px}
+.card-item-info{padding:8px;display:flex;flex-direction:column;flex:1}
 .card-item-name{font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-item-num{font-size:.65rem;color:var(--muted);font-family:'Space Mono',monospace}
 .card-item-price{font-size:.7rem;font-weight:700;color:#22c55e;font-family:'Space Mono',monospace;margin-top:2px}
@@ -712,7 +712,7 @@ function renderCards(reset) {
         <div class="card-item-num">\${displayId}</div>
         <div class="card-item-price \${priceClass}">\${priceText}</div>
         \${card.rarity && RARITY_CLASS[card.rarity] ? \`<div style="margin-top:3px"><span class="rarity-badge \${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">\${RARITY_LABEL[card.rarity] || card.rarity}</span></div>\` : ''}
-        <div class="buy-links" style="margin-top:6px">
+        <div class="buy-links">
           <a class="buy-link buy-ebay" href="\${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
