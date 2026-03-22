@@ -185,6 +185,58 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
   .card-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
   nav.top-nav .nav-links a:not(.btn-discord){display:none}
 }
+
+/* ===== HAMBURGER MENU CSS ===== */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  background: #1a1040;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 8px;
+  position: fixed;
+  top: 80px;
+  left: auto;
+  right: 24px;
+  width: 200px;
+  z-index: 2147483647;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.9);
+  animation: slideDown 0.3s ease-out;
+}
+.hamburger-menu.open { display: flex; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+.hamburger-menu-item {
+  padding: 14px 16px; border-radius: 8px; color: #e2e8f0;
+  font-size: 1rem; font-weight: 500; transition: background 0.15s;
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+}
+.hamburger-menu-item:hover { background: rgba(239,68,68,0.15); color: white; }
+.pokemon-sets-view {
+  display: none; flex-direction: column;
+  background: #1a1040; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 20px;
+  position: fixed; top: 80px; left: 16px; right: 16px; bottom: 80px;
+  z-index: 2147483647; box-shadow: 0 16px 48px rgba(0,0,0,0.9);
+  animation: slideDown 0.3s ease-out; overflow-y: auto;
+}
+.pokemon-sets-view.open { display: flex; }
+.pokemon-sets-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-shrink: 0; }
+.back-button { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: background 0.15s; }
+.back-button:hover { background: rgba(255,255,255,0.15); }
+.pokemon-sets-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.05em; }
+.sets-filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; flex-shrink: 0; }
+.filter-tab { padding: 6px 14px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.06em; }
+.filter-tab.active { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.5); color: #f87171; }
+.series-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: #94a3b8; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.sets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.set-card { background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; text-decoration: none; color: #f1f5f9; display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s; cursor: pointer; }
+.set-card:hover { transform: translateY(-2px); border-color: rgba(239,68,68,0.3); }
+.set-card.disabled { opacity: 0.4; pointer-events: none; }
+.set-card-image { background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; padding: 12px; height: 80px; }
+.set-card-content { padding: 8px 10px; }
+.set-card-name { font-size: 0.72rem; font-weight: 700; line-height: 1.3; }
+.set-card-info { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; }
+.set-card-soon { display: inline-block; font-size: 0.6rem; background: rgba(148,163,184,0.1); color: #94a3b8; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -252,9 +304,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-id="001" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
-          <img data-id="002" alt="Top chase card 2" width="245" height="337" loading="lazy">
-          <img data-id="003" alt="Top chase card 3" width="245" height="337" loading="lazy">
+          <img data-id="EB03-061" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
+          <img data-id="EB03-026" alt="Top chase card 2" width="245" height="337" loading="lazy">
+          <img data-id="EB03-053" alt="Top chase card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
