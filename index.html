@@ -2321,7 +2321,7 @@
                 const logoUrl = set.setId ? r2 + '/logos/op/' + set.setId + '.png' : null;
                 html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '">' +
                     '<div class="set-card-image">' +
-                    (logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">' : '<div style="font-size:3rem;">🃏</div>') +
+                    (logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=&quot;none&quot;">' : '<div style="font-size:3rem;">🃏</div>') +
                     '</div><div class="set-card-content">' +
                     '<div class="set-card-name">' + set.name + '</div>' +
                     '<div class="set-card-info">' + (set.short || '') + ' • ' + (set.series || 'One Piece TCG') + '</div>' +
