@@ -439,6 +439,18 @@
     {
       "source": "/one-piece/sets/heroines-edition/top-chase-cards",
       "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/the-azure-seas-seven-card-list",
+      "destination": "/the-azure-seas-seven-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/the-azure-seas-seven/cards",
+      "destination": "/the-azure-seas-seven-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/the-azure-seas-seven/top-chase-cards",
+      "destination": "/the-azure-seas-seven-card-list.html"
     }
   ],
   "redirects": [

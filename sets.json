@@ -186,7 +186,7 @@
     "short": "OP14",
     "setId": "op14",
     "phase": "en",
-    "live": false
+    "live": true
   },
   {
     "slug": "romance-dawn-card-list",
@@ -306,7 +306,7 @@
     "live": false
   },
   {
-    "slug": "the-azure-seas-seven-card-list",
+    "slug": "one-piece/sets/the-azure-seas-seven/cards",
     "name": "The Azure Sea's Seven (OP14)",
     "series": "One Piece",
     "short": "OP14",
