@@ -565,7 +565,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 
 <script>
 const SET_ID = '${SET_ID}';
-const SET_FULL_NAME = '${SET_FULL_NAME}';
+const SET_FULL_NAME = '${SET_FULL_NAME.replace(/'/g, "\\'")}';
 const R2 = '${R2_PUBLIC_URL}';
 const TCGP_GROUP_ID = '${tcgpGroupId}';
 const EBAY_MKRID = '711-53200-19255-0';
