@@ -55,16 +55,35 @@ const RARITY_MAP = {
 };
 function normalizeRarity(r) { return RARITY_MAP[r?.trim()] || r?.trim() || ''; }
 
-// Variant type → rarity override
+// Variant name → rarity mapping (API uses camelCase names like "mangaAltArt", "altArt", "redMangaAltArt")
 const VARIANT_RARITY = {
-  'Manga Alt Art':   'Manga Rare',
-  'Special Alt Art': 'Special',
-  'Alt Art':         'Alternate Art',
-  'Normal':          null, // use base card rarity
+  'normal':          null,           // use base card rarity
+  'altart':          'Alternate Art',
+  'mangaaltart':     'Manga Rare',
+  'specialaltart':   'Special',
+  'parallel':        'Special',
+  'fullart':         'Alternate Art',
+  'promo':           'Special',
 };
 
-function variantSuffix(type) {
-  return type.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+function normalizeVariantName(name) {
+  // Strip color prefixes like "red", "blue", "black" from names like "redMangaAltArt"
+  return (name || '').toLowerCase().replace(/^(red|blue|green|black|purple|yellow|pink|white)/, '');
+}
+
+function variantRarityFromName(variantName) {
+  const normalized = normalizeVariantName(variantName);
+  // Try exact match first, then partial matches
+  if (VARIANT_RARITY[normalized] !== undefined) return VARIANT_RARITY[normalized];
+  if (normalized.includes('mangaalt') || normalized.includes('mangaart')) return 'Manga Rare';
+  if (normalized.includes('specialalt') || normalized.includes('specialart')) return 'Special';
+  if (normalized.includes('alt')) return 'Alternate Art';
+  if (normalized.includes('parallel') || normalized.includes('promo')) return 'Special';
+  return undefined; // unknown — use base rarity
+}
+
+function variantSuffix(name) {
+  return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 }
 
 async function uploadToR2(key, body, contentType) {
@@ -154,6 +173,15 @@ async function main() {
   }
   console.log(`✅ ${allRaw.length} base cards fetched`);
 
+  // DEBUG: dump first card with variants to see raw API structure
+  const sampleWithVariants = allRaw.find(c => c.variants && c.variants.length > 0);
+  if (sampleWithVariants) {
+    console.log('\n🔍 RAW variant sample:');
+    console.log(JSON.stringify(sampleWithVariants.variants.slice(0, 3), null, 2));
+    console.log('Base card rarity:', sampleWithVariants.rarity);
+    console.log('Base card id:', sampleWithVariants.id);
+  }
+
   // Expand each base card + its variants printed in this set
   const cards = [];
   for (const c of allRaw) {
@@ -171,7 +199,7 @@ async function main() {
     }
 
     // Check if Normal variant exists in this set
-    const normalV = variants.find(v => (v.type||'').toLowerCase() === 'normal');
+    const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
     if (normalV) {
       const img = pickImage(normalV.images) || baseImage;
       cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: img, isVariant: false });
@@ -182,13 +210,19 @@ async function main() {
 
     // Add non-Normal variants
     for (const v of variants) {
-      const vType = (v.type || '').trim();
-      if (vType.toLowerCase() === 'normal') continue;
+      const vType = (v.name || '').trim(); // API uses 'name' field e.g. 'mangaAltArt', 'altArt'
+      if (normalizeVariantName(vType) === 'normal') continue;
 
-      const rarityOverride = VARIANT_RARITY[vType];
-      const variantRarity = rarityOverride !== undefined
-        ? (rarityOverride || baseRarity)
-        : normalizeRarity(v.rarity || c.rarity);
+      // Determine rarity: name-based mapping takes priority (most reliable for OP variants)
+      const nameRarity = variantRarityFromName(vType);
+      let variantRarity;
+      if (nameRarity !== undefined) {
+        variantRarity = nameRarity || baseRarity; // null means use base rarity
+      } else if (v.rarity) {
+        variantRarity = normalizeRarity(v.rarity);
+      } else {
+        variantRarity = baseRarity;
+      }
 
       const variantImage = pickImage(v.images) || baseImage;
       const suffix = variantSuffix(vType);
@@ -205,6 +239,13 @@ async function main() {
         baseLocalId,
       });
     }
+  }
+
+  // Debug: show first few variants to verify structure
+  const sampleVariants = cards.filter(c => c.isVariant).slice(0, 5);
+  if (sampleVariants.length) {
+    console.log('\n🔍 Sample variants:');
+    sampleVariants.forEach(v => console.log(`   ${v.localId} | ${v.name} | rarity: ${v.rarity} | type: ${v.variantType}`));
   }
 
   // Log rarity breakdown
