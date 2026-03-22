@@ -55,7 +55,7 @@ const SET_OVERRIDES = {
       isVariant: true,
       variantType: 'specialAltArt',
       baseLocalId: 'prb02006',
-      scrydexId: 'PRB02-006', // used to fetch image from Scrydex
+      imageUrl: 'https://images.scrydex.com/onepiece/PRB02-006/large', // image for this card
     },
   ],
 };
@@ -291,38 +291,38 @@ async function main() {
   const overrides = SET_OVERRIDES[SET_ID.toLowerCase()] || [];
   if (overrides.length > 0) {
     console.log(`\n📎 Applying ${overrides.length} manual override(s)...`);
-    // Re-fetch JSON, append overrides, re-upload
-    const existingJson = JSON.parse(await (await fetch(`${R2_BASE}/data/op/${SET_ID}.json`)).text().catch(() => '{}'));
-    const existingCards = existingJson.cards || cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, isVariant: c.isVariant || false, variantType: c.variantType || null, baseLocalId: c.baseLocalId || null }));
+    // Get all card localIds already in the set
+    const allCards = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, isVariant: c.isVariant || false, variantType: c.variantType || null, baseLocalId: c.baseLocalId || null }));
+    const existingIds = new Set(allCards.map(c => c.localId));
+    let added = 0;
     for (const ov of overrides) {
-      if (!existingCards.find(c => c.localId === ov.localId)) {
-        existingCards.push({ localId: ov.localId, name: ov.displayName || ov.name, rarity: ov.rarity, isVariant: ov.isVariant || false, variantType: ov.variantType || null, baseLocalId: ov.baseLocalId || null });
+      if (!existingIds.has(ov.localId)) {
+        allCards.push({ localId: ov.localId, name: ov.displayName || ov.name, rarity: ov.rarity, isVariant: ov.isVariant || false, variantType: ov.variantType || null, baseLocalId: ov.baseLocalId || null });
+        existingIds.add(ov.localId);
         console.log(`  Added: ${ov.localId} | ${ov.displayName || ov.name}`);
+        added++;
         // Fetch and upload image if not skipping
-        if (!SKIP_IMAGES && ov.scrydexId) {
+        if (!SKIP_IMAGES && ov.imageUrl) {
           try {
-            const cardRes = await fetchWithRetry(`${SCRYDEX_BASE}/cards/${ov.scrydexId}`, { headers: HEADERS });
-            const imgUrl = cardRes?.data?.variants?.find(v => v.name === 'normal')?.images?.[0]?.large
-              || cardRes?.data?.images?.[0]?.large || null;
-            if (imgUrl) {
-              const img = await fetch(imgUrl);
-              if (img.ok) {
-                const buf = await resizeImage(Buffer.from(await img.arrayBuffer()));
-                await uploadToR2(`cards/op/${SET_ID}/${ov.localId}.webp`, buf, 'image/webp');
-                console.log(`  Image uploaded: ${ov.localId}`);
-              }
+            const img = await fetch(ov.imageUrl);
+            if (img.ok) {
+              const buf = await resizeImage(Buffer.from(await img.arrayBuffer()));
+              await uploadToR2(`cards/op/${SET_ID}/${ov.localId}.webp`, buf, 'image/webp');
+              console.log(`  Image uploaded: ${ov.localId}`);
             }
           } catch(e) { console.warn(`  Image failed for ${ov.localId}:`, e.message); }
         }
       }
     }
-    // Re-upload updated JSON
-    await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
-      setId: SET_ID, game: 'onepiece', phase: PHASE,
-      cardCount: { official: existingCards.filter(c => !c.isVariant).length, total: existingCards.length },
-      cards: existingCards,
-    }), 'application/json');
-    console.log(`✅ data/op/${SET_ID}.json re-uploaded with overrides`);
+    if (added > 0) {
+      // Re-upload updated JSON
+      await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
+        setId: SET_ID, game: 'onepiece', phase: PHASE,
+        cardCount: { official: allCards.filter(c => !c.isVariant).length, total: allCards.length },
+        cards: allCards,
+      }), 'application/json');
+      console.log(`✅ data/op/${SET_ID}.json re-uploaded with ${added} override(s)`);
+    }
   }
 
   if (SKIP_IMAGES) {
