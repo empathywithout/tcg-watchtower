@@ -631,7 +631,7 @@ function priceKey(localId) {
   const suffix = localId.split('_').slice(1).join('_');
   // Map our suffix to TCGplayer naming
   const map = { 'altart': 'altart', 'specialaltart': 'specialaltart', 'mangaaltart': 'mangaaltart' };
-  return map[suffix] ? `${base}_${map[suffix]}` : base;
+  return map[suffix] ? (base + '_' + map[suffix]) : base;
 }
 
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
