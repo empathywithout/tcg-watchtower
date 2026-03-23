@@ -729,6 +729,11 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   let populated = false;
   setsBtn.addEventListener('click', async () => {
     const isOpen = dropdown.classList.contains('open');
+    if (!isOpen) {
+      const rect = setsBtn.getBoundingClientRect();
+      const availableHeight = window.innerHeight - rect.bottom - 16;
+      dropdown.style.maxHeight = Math.min(400, availableHeight) + 'px';
+    }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
     if (!isOpen && !populated) await populateNavSets();
