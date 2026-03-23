@@ -202,7 +202,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .section-nav-sets{position:relative;flex-shrink:0}
 .section-nav-sets-btn{padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-sets-btn:hover{color:var(--text)}
-.section-nav-dropdown{display:none;position:fixed;top:auto;right:16px;background:#1e293b;border:1px solid rgba(255,255,255,.12);border-radius:12px;min-width:240px;max-height:60vh;overflow-y:auto;z-index:3000;box-shadow:0 16px 48px rgba(0,0,0,.8);padding:8px}
+.section-nav-dropdown{display:none;position:fixed;right:16px;background:#1e293b;border:1px solid rgba(255,255,255,.12);border-radius:12px;min-width:240px;max-height:60vh;overflow-y:auto;z-index:3000;box-shadow:0 16px 48px rgba(0,0,0,.8);padding:8px}
 .section-nav-dropdown.open{display:block}
 .nav-short{display:none}
 .nav-dropdown-series{padding:8px 12px 4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -847,8 +847,9 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     const isOpen = dropdown.classList.contains('open');
     // Position dropdown under the button using fixed coords (escapes overflow:hidden parents)
     if (!isOpen) {
-      const rect = setsBtn.getBoundingClientRect();
-      dropdown.style.top = (rect.bottom + 4) + 'px';
+      const navEl = document.getElementById('section-nav');
+      const navBottom = navEl ? navEl.getBoundingClientRect().bottom : setsBtn.getBoundingClientRect().bottom;
+      dropdown.style.top = navBottom + 'px';
       dropdown.style.right = '16px';
     }
     dropdown.classList.toggle('open', !isOpen);
