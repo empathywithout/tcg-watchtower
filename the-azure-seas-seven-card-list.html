@@ -482,6 +482,10 @@ function priceKeyByName(localId, cardName) {
   return normalizeName(cardName) + suffix;
 }
 
+const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
+function normalizeRarity(r) { return RARITY_NORMALIZE[r] || r || ''; }
+const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
+function normalizeRarity(r) { return RARITY_NORMALIZE[r] || r || ''; }
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
 const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
@@ -538,7 +542,7 @@ function renderChaseCards(cards) {
       displayId: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
       name: (c.variantType || (c.localId && c.localId.includes('_'))) ? cleanVariantName(c.name, c.variantType, c.localId) : c.name,
       rawName: c.name,
-      rarity: c.rarity || '',
+      rarity: normalizeRarity(c.rarity || ''),
       rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r',
       label: RARITY_LABEL[c.rarity] || c.rarity,
       img: c.image || cardImg(c.localId)
@@ -593,6 +597,7 @@ function renderCards(reset) {
       || (!card.localId.includes('_') ? priceCache[card.localId.padStart(3,'0')] : null);
     const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
     const priceClass = !cached ? 'loading' : '';
+    card.rarity = normalizeRarity(card.rarity || '');
     const displayName = (card.variantType || (card.localId && card.localId.includes('_')))
       ? cleanVariantName(card.name, card.variantType, card.localId)
       : card.name;
