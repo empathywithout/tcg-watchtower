@@ -600,8 +600,6 @@ function priceKeyByName(localId, cardName) {
 
 const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
 function normalizeRarity(r) { return RARITY_NORMALIZE[r] || r || ''; }
-const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
-function normalizeRarity(r) { return RARITY_NORMALIZE[r] || r || ''; }
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
 const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
@@ -644,6 +642,8 @@ async function loadCards() {
   RARITY_ORDER.forEach(r => { if (raritySet.has(r)) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
   raritySet.forEach(r => { if (!RARITY_ORDER.includes(r) && r) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
 
+  // Normalize rarity strings once (TR -> Treasure Rare, SEC -> Secret Rare, etc.)
+  allCards.forEach(c => { c.rarity = normalizeRarity(c.rarity || ''); });
   renderChaseCards(allCards);
   filteredCards = allCards;
   setTimeout(() => { renderCards(true); loadTCGPlayerPrices(); }, 0);
@@ -713,7 +713,6 @@ function renderCards(reset) {
       || (!card.localId.includes('_') ? priceCache[card.localId.padStart(3,'0')] : null);
     const priceText = cached?.price ? \`\$\${cached.price.toFixed(2)}\` : '';
     const priceClass = !cached ? 'loading' : '';
-    card.rarity = normalizeRarity(card.rarity || '');
     const displayName = (card.variantType || (card.localId && card.localId.includes('_')))
       ? cleanVariantName(card.name, card.variantType, card.localId)
       : card.name;
