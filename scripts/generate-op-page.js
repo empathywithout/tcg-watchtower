@@ -847,8 +847,17 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     const isOpen = dropdown.classList.contains('open');
     if (!isOpen) {
       const rect = setsBtn.getBoundingClientRect();
-      const availableHeight = window.innerHeight - rect.bottom - 16;
-      dropdown.style.maxHeight = Math.min(400, availableHeight) + 'px';
+      const spaceBelow = window.innerHeight - rect.bottom - 8;
+      const spaceAbove = rect.top - 8;
+      if (spaceBelow >= 200 || spaceBelow >= spaceAbove) {
+        dropdown.style.top = '100%';
+        dropdown.style.bottom = 'auto';
+        dropdown.style.maxHeight = Math.min(400, spaceBelow) + 'px';
+      } else {
+        dropdown.style.bottom = '100%';
+        dropdown.style.top = 'auto';
+        dropdown.style.maxHeight = Math.min(400, spaceAbove) + 'px';
+      }
     }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
