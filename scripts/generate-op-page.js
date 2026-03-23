@@ -193,7 +193,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .hamburger-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:2147483646;animation:fadeIn .2s}
 .hamburger-overlay.open{display:block}
 /* Section Nav */
-.section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.section-nav{position:sticky;top:0;z-index:1000;background:rgba(10,5,20,.98);border-bottom:1px solid rgba(255,255,255,.08)}
 .section-nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
 .section-nav-inner::-webkit-scrollbar{display:none}
 .section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
@@ -842,6 +842,8 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   const setsBtn = document.getElementById('nav-sets-btn');
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!setsBtn || !dropdown) return;
+  // Move dropdown to body so no ancestor backdrop-filter/transform breaks position:fixed
+  document.body.appendChild(dropdown);
   let populated = false;
   setsBtn.addEventListener('click', async () => {
     const isOpen = dropdown.classList.contains('open');
