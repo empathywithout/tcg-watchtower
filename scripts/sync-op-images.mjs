@@ -52,7 +52,7 @@ const SET_OVERRIDES = {
       name: 'Donquixote Rosinante',
       rarity: 'Treasure Rare',
       isVariant: false,
-      imageUrl: 'https://images.scrydex.com/onepiece/OP12-108/large',
+      // No imageUrl — image already correctly in R2 from previous sync
     },
     {
       localId: 'prb02006_specialaltart',
