@@ -667,6 +667,24 @@ function loadTCGPlayerPrices() {
   })();
 }
 
+function handleChaseClick(el) {
+  const localId = el.dataset.localid;
+  const name    = el.dataset.name;
+  const rarity  = el.dataset.rarity;
+  const imgUrl  = el.dataset.img;
+  const cached  = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)];
+  openModal(localId, name, rarity, imgUrl, cached?.url || null);
+}
+
+function handleChaseClick(el) {
+  const localId = el.dataset.localid;
+  const name    = el.dataset.name;
+  const rarity  = el.dataset.rarity;
+  const imgUrl  = el.dataset.img;
+  const cached  = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)];
+  openModal(localId, name, rarity, imgUrl, cached?.url || null);
+}
+
 function openModal(localId, name, rarity, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg(localId);
   const cached = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null);
