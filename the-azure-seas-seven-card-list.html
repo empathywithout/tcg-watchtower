@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Azure Sea's Seven Card List and Prices | TCG Watchtower</title>
 <meta name="description" content="Full Azure Sea's Seven OP14 card list with live prices. Mihawk, Crocodile Secret Rares, Treasure Rare, and booster box values for One Piece TCG.">
-<meta name="keywords" content="The Azure Sea's Seven, OP01 card list, OP01 prices, One Piece TCG OP01, The Azure Sea's Seven secret rare, one piece card game">
+<meta name="keywords" content="The Azure Sea's Seven, OP14 card list, OP14 prices, One Piece TCG OP14, The Azure Sea's Seven secret rare, one piece card game">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/one-piece/sets/the-azure-seas-seven/cards">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
@@ -299,7 +299,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="The Azure Sea's Seven" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
-            <div class="stat-label">OP01</div>
+            <div class="stat-label">OP14</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-total-count">…</div>
@@ -358,7 +358,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">📋 The Azure Sea's Seven <span class="gradient-text">Card List</span></h2>
-      <p class="section-sub" id="card-list-sub">Complete OP01 card list — search and filter by rarity</p>
+      <p class="section-sub" id="card-list-sub">Complete OP14 card list — search and filter by rarity</p>
     </div>
     <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
@@ -520,14 +520,14 @@ async function loadCards() {
   document.getElementById('stat-total-count').textContent = officialCount;
   document.getElementById('card-list-sub').textContent = `All ${allCards.length} ${SET_FULL_NAME} cards — search and filter by rarity. Click any card to find it.`;
 
+  // Normalize rarity strings FIRST so dropdown and all lookups use full names
+  allCards.forEach(c => { c.rarity = normalizeRarity(c.rarity || ''); });
+
   const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Special','Secret Rare','Treasure Rare','Manga Rare'];
   const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
   const sel = document.getElementById('rarity-filter');
   RARITY_ORDER.forEach(r => { if (raritySet.has(r)) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
   raritySet.forEach(r => { if (!RARITY_ORDER.includes(r) && r) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
-
-  // Normalize rarity strings once (TR -> Treasure Rare, SEC -> Secret Rare, etc.)
-  allCards.forEach(c => { c.rarity = normalizeRarity(c.rarity || ''); });
   renderChaseCards(allCards);
   filteredCards = allCards;
   setTimeout(() => { renderCards(true); loadTCGPlayerPrices(); }, 0);
