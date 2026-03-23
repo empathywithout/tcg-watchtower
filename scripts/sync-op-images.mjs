@@ -290,12 +290,13 @@ async function main() {
     const existingIds = new Set(allCards.map(c => c.localId));
     let added = 0;
     for (const ov of overrides) {
-      if (!existingIds.has(ov.localId)) {
+      const existingIdx = allCards.findIndex(c => c.localId === ov.localId);
+      if (existingIdx === -1) {
+        // Card doesn't exist — add it
         allCards.push({ localId: ov.localId, name: ov.displayName || ov.name, rarity: ov.rarity, isVariant: ov.isVariant || false, variantType: ov.variantType || null, baseLocalId: ov.baseLocalId || null });
         existingIds.add(ov.localId);
         console.log(`  Added: ${ov.localId} | ${ov.displayName || ov.name}`);
         added++;
-        // Fetch and upload image if not skipping
         if (!SKIP_IMAGES && ov.imageUrl) {
           try {
             const img = await fetch(ov.imageUrl);
@@ -307,7 +308,16 @@ async function main() {
           } catch(e) { console.warn(`  Image failed for ${ov.localId}:`, e.message); }
         }
       } else {
-        console.log(`  Skipped (already exists): ${ov.localId} | ${ov.displayName || ov.name}`);
+        // Card exists — force-update name and rarity from override
+        const existing = allCards[existingIdx];
+        const changed = existing.rarity !== ov.rarity || existing.name !== (ov.displayName || ov.name);
+        if (changed) {
+          allCards[existingIdx] = { ...existing, name: ov.displayName || ov.name, rarity: ov.rarity };
+          console.log(`  Updated: ${ov.localId} | rarity: ${existing.rarity} → ${ov.rarity}`);
+          added++;
+        } else {
+          console.log(`  Skipped (already correct): ${ov.localId} | ${ov.displayName || ov.name}`);
+        }
       }
     }
     if (added > 0) {
