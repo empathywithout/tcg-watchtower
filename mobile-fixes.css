@@ -1,0 +1,72 @@
+/* ===== MOBILE FIXES — loaded via nav.html, applies to all pages ===== */
+
+@media (max-width: 768px) {
+  /* Stat boxes — keep 3-column so all fit in one row */
+  .set-stats {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+  .stat-card {
+    padding: 8px !important;
+    height: 72px !important;
+    border-radius: 8px !important;
+    cursor: default !important;
+  }
+  .stat-value {
+    font-size: 0.85rem !important;
+  }
+  .stat-label {
+    font-size: 0.6rem !important;
+  }
+  .stat-card img {
+    max-height: 28px !important;
+  }
+
+  /* Scroll hint — nudge users toward section nav */
+  .scroll-hint {
+    display: block !important;
+  }
+}
+
+/* Scroll hint — hidden on desktop, shown on mobile via above */
+.scroll-hint {
+  display: none;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  background: linear-gradient(to bottom, transparent, rgba(239, 68, 68, 0.06));
+  animation: mobileHintPulse 2.5s ease-in-out infinite;
+  user-select: none;
+}
+.scroll-hint.hidden { display: none !important; }
+
+@keyframes mobileHintPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1;   }
+}
+
+/* ===== JS to inject scroll hint — paste into nav.html ===== */
+/*
+Add this script at the bottom of nav.html:
+
+<link rel="stylesheet" href="/mobile-fixes.css">
+<script>
+// Inject mobile scroll hint above section nav
+document.addEventListener('DOMContentLoaded', function() {
+  const sectionNav = document.getElementById('section-nav');
+  if (!sectionNav || window.innerWidth > 768) return;
+  const hint = document.createElement('div');
+  hint.className = 'scroll-hint';
+  hint.id = 'scroll-hint';
+  hint.innerHTML = '▼ Chase &nbsp;·&nbsp; Cards &nbsp;·&nbsp; Sets';
+  hint.addEventListener('click', function() {
+    hint.classList.add('hidden');
+    sectionNav.scrollIntoView({ behavior: 'smooth' });
+  });
+  sectionNav.parentNode.insertBefore(hint, sectionNav);
+});
+</script>
+*/
