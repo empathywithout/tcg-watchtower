@@ -1,3 +1,14 @@
+/* ===== CLS FIX — reserve space for nav injection to prevent layout shift ===== */
+#site-nav {
+  min-height: 80px;
+  display: block;
+}
+
+/* Reserve space for section nav so sticky position doesn't cause shift */
+.section-nav {
+  min-height: 46px;
+}
+
 /* ===== MOBILE FIXES — loaded via nav.html, applies to all pages ===== */
 
 @media (max-width: 768px) {
