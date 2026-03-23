@@ -1,3 +1,8 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"></noscript>
+
 <link rel="stylesheet" href="/mobile-fixes.css">
 
 <!-- ===== NAV ===== -->
@@ -86,6 +91,22 @@
   }
 })();
 
+// Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
+(function() {
+  document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
+    link.media = 'print';
+    link.onload = function() { this.media = 'all'; };
+  });
+})();
+
+// Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
+(function() {
+  document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
+    link.media = 'print';
+    link.onload = function() { this.media = 'all'; };
+  });
+})();
+
 // On mobile, fix JS-positioned dropdowns to open upward from bottom nav
 (function() {
   if (window.innerWidth > 768) return;
@@ -106,6 +127,14 @@
         }
       }, 0);
     }
+  });
+})();
+
+// Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
+(function() {
+  document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
+    link.media = 'print';
+    link.onload = function() { this.media = 'all'; };
   });
 })();
 
