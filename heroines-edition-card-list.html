@@ -733,7 +733,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     if (!isOpen) {
       const rect = setsBtn.getBoundingClientRect();
       dropdown.style.top = (rect.bottom + 4) + 'px';
-      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.style.right = '16px';
     }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
