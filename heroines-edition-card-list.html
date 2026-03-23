@@ -536,6 +536,7 @@ function renderChaseCards(cards) {
       id: c.localId,
       displayId: c.baseLocalId || (c.localId.includes('_') ? c.localId.split('_')[0] : c.localId),
       name: (c.variantType || (c.localId && c.localId.includes('_'))) ? cleanVariantName(c.name, c.variantType, c.localId) : c.name,
+      rawName: c.name,
       rarity: c.rarity || '',
       rarityClass: RARITY_CLASS[c.rarity] || 'rarity-r',
       label: RARITY_LABEL[c.rarity] || c.rarity,
@@ -557,7 +558,7 @@ function renderChaseHTML() {
     const priceHTML = c.price
       ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-wrap" style="color:var(--muted);font-size:.75rem;font-style:italic">—</div>`;
-    return `<div class="chase-card" onclick="openModal('${c.displayId || c.id}','${c.name.replace(/'/g,"\\'")}','${c.rarity}','${c.img}')">
+    return `<div class="chase-card" data-localid="${c.id}" data-rawname="${(c.rawName||c.name).replace(/"/g,'&quot;')}" data-name="${c.name.replace(/"/g,'&quot;')}" data-rarity="${c.rarity}" data-img="${c.img}" onclick="handleChaseClick(this)">
       <img class="chase-card-img" src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -669,19 +670,13 @@ function loadTCGPlayerPrices() {
 
 function handleChaseClick(el) {
   const localId = el.dataset.localid;
+  const rawName = el.dataset.rawname || el.dataset.name;
   const name    = el.dataset.name;
   const rarity  = el.dataset.rarity;
   const imgUrl  = el.dataset.img;
-  const cached  = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)];
-  openModal(localId, name, rarity, imgUrl, cached?.url || null);
-}
-
-function handleChaseClick(el) {
-  const localId = el.dataset.localid;
-  const name    = el.dataset.name;
-  const rarity  = el.dataset.rarity;
-  const imgUrl  = el.dataset.img;
-  const cached  = priceCache[priceKey(localId, name)] || priceCache[priceKeyByName(localId, name)];
+  const cached  = priceCache[priceKey(localId, rawName)]
+    || priceCache[priceKeyByName(localId, rawName)]
+    || priceCache[priceKey(localId)];
   openModal(localId, name, rarity, imgUrl, cached?.url || null);
 }
 
