@@ -953,34 +953,8 @@ function initNav() {
   });
   onepieceMenuItem?.addEventListener('click', () => { hamburgerMenu.classList.remove('open'); onepieceSetsView?.classList.add('open'); });
   backToMenu?.addEventListener('click', () => { pokemonSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
-  backToMenu?.addEventListener('click', () => { pokemonSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
   backToMenuOp?.addEventListener('click', () => { onepieceSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
 
-  function renderPokemonSets() {
-    if (!setsGridContainer) return;
-    const pokeSets = allSets.filter(s => {
-      const id = (s.setId || '').toLowerCase();
-      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
-    });
-    if (!pokeSets.length) { setsGridContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>'; return; }
-    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
-    // Group by series
-    const grouped = {};
-    pokeSets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
-    let html = '';
-    Object.entries(grouped).forEach(([series, sets]) => {
-      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
-      sets.forEach(set => {
-        const disabled = !set.live;
-        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
-        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
-          <div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🎴</div>'}</div>
-          <div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short || ''} • ${set.series || ''}</div>${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
-      });
-      html += '</div>';
-    });
-    setsGridContainer.innerHTML = html;
-  }
 
   function renderPokemonSets() {
     if (!setsGridContainer) return;
@@ -994,13 +968,17 @@ function initNav() {
     pokeSets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
     let html = '';
     Object.entries(grouped).forEach(([series, sets]) => {
-      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
+      html += '<div class="series-label">' + series + '</div><div class="sets-grid">';
       sets.forEach(set => {
         const disabled = !set.live;
-        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
-        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
-          <div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🎴</div>'}</div>
-          <div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short || ''} • ${set.series || ''}</div>${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
+        const logoUrl = set.setId ? (r2 + '/logos/' + set.setId + '.png') : null;
+        const imgHtml = logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=\'none\'">' : '<div style="font-size:3rem">🎴</div>';
+        html += '<a href="' + (disabled ? 'javascript:void(0)' : '/' + set.slug) + '" class="set-card' + (disabled ? ' disabled' : '') + '">'
+          + '<div class="set-card-image">' + imgHtml + '</div>'
+          + '<div class="set-card-content"><div class="set-card-name">' + set.name + '</div>'
+          + '<div class="set-card-info">' + (set.short || '') + ' \u2022 ' + (set.series || '') + '</div>'
+          + (disabled ? '<span class="set-card-soon">Coming Soon</span>' : '')
+          + '</div></a>';
       });
       html += '</div>';
     });
