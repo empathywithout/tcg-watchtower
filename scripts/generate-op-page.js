@@ -843,36 +843,30 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!setsBtn || !dropdown) return;
   let populated = false;
+
   setsBtn.addEventListener('click', async () => {
     const isOpen = dropdown.classList.contains('open');
-    if (!isOpen) {
-      const rect = setsBtn.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom - 8;
-      const spaceAbove = rect.top - 8;
-      if (spaceBelow >= 200 || spaceBelow >= spaceAbove) {
-        dropdown.style.top = '100%';
-        dropdown.style.bottom = 'auto';
-        dropdown.style.maxHeight = Math.min(400, spaceBelow) + 'px';
-      } else {
-        dropdown.style.bottom = '100%';
-        dropdown.style.top = 'auto';
-        dropdown.style.maxHeight = Math.min(400, spaceAbove) + 'px';
-      }
-    }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
+
     if (!isOpen && !populated) await populateNavSets();
   });
 
-
   document.addEventListener('click', e => {
-    if (!setsBtn.contains(e.target) && !dropdown.contains(e.target)) { dropdown.classList.remove('open'); setsBtn.classList.remove('open'); }
+    if (!setsBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+      setsBtn.classList.remove('open');
+    }
   });
+
   async function populateNavSets() {
     try {
       const res = await fetch('/sets.json');
       const allSetsData = await res.json();
-      const sets = allSetsData.filter(s => { const id = (s.setId || '').toLowerCase(); return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG'; });
+      const sets = allSetsData.filter(s => {
+        const id = (s.setId || '').toLowerCase();
+        return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || s.series === 'One Piece TCG';
+      });
       const grouped = {};
       sets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
       let html = '';
@@ -882,7 +876,8 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
         seriesSets.forEach(s => {
           const isCurrent = currentPath.includes(s.setId) || ('/' + s.slug) === window.location.pathname;
           const isDisabled = !s.live;
-          const logoUrl = \`\${R2}/logos/op/\${s.setId}.png\`;
+          const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+          const logoUrl = \`\${r2}/logos/op/\${s.setId}.png\`;
           html += \`<a href="\${isDisabled ? 'javascript:void(0)' : '/' + s.slug}" class="nav-dropdown-set\${isCurrent ? ' current' : ''}\${isDisabled ? ' disabled' : ''}">
             <img src="\${logoUrl}" alt="\${s.name}" onerror="this.style.display='none'">
             <span>\${s.name}\${isDisabled ? ' <span style="font-size:.7rem;opacity:.5">(coming soon)</span>' : ''}</span>
@@ -891,7 +886,9 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
       });
       dropdown.innerHTML = html || '<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">No sets available</div>';
       populated = true;
-    } catch(e) { dropdown.innerHTML = \`<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">Could not load sets</div>\`; }
+    } catch(e) {
+      dropdown.innerHTML = \`<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">Could not load sets</div>\`;
+    }
   }
 })();
 
