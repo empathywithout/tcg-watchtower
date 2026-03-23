@@ -12,6 +12,7 @@ const ONE_PIECE_CATEGORY  = 68;
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_VERSION = 'v2'; // bump to bust in-memory cache
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
   const debugCard = req.query.card;
 
   if (!debugMode) {
-    const cached = cache.get(groupId);
+    const cached = cache.get(CACHE_VERSION + groupId);
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
       res.setHeader('X-Cache', 'HIT');
@@ -202,7 +203,7 @@ export default async function handler(req, res) {
       sealedPrices,
     };
 
-    cache.set(groupId, { ts: Date.now(), data: responseData });
+    cache.set(CACHE_VERSION + groupId, { ts: Date.now(), data: responseData });
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     res.setHeader('X-Cache', 'MISS');
     return res.status(200).json(responseData);
