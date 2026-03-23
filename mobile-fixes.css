@@ -50,6 +50,31 @@
 
 
 
+
+
+@media (max-width: 768px) {
+  /* Dropdown opens upward since nav is fixed to bottom */
+  .section-nav-dropdown {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+    max-height: 50vh !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  /* Dropdown opens upward since nav is fixed to bottom */
+  .section-nav-dropdown {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+    max-height: 50vh !important;
+  }
+}
+
 @media (max-width: 768px) {
   /* Fix section nav to bottom of screen on mobile so it's always visible */
   .section-nav {
