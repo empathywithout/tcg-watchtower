@@ -52,7 +52,7 @@ const SET_OVERRIDES = {
       name: 'Donquixote Rosinante',
       rarity: 'Treasure Rare',
       isVariant: false,
-      // No imageUrl — image already correctly in R2 from previous sync
+      imageUrl: 'https://tcgplayer-cdn.tcgplayer.com/product/670876_400w.jpg',
     },
     {
       localId: 'prb02006_specialaltart',
