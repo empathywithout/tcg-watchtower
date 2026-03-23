@@ -845,19 +845,27 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   // Move dropdown to body so no ancestor backdrop-filter/transform breaks position:fixed
   document.body.appendChild(dropdown);
   let populated = false;
+  function positionDropdown() {
+    const navEl = document.getElementById('section-nav');
+    const rect = navEl ? navEl.getBoundingClientRect() : setsBtn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 2) + 'px';
+    dropdown.style.right = '16px';
+  }
+
   setsBtn.addEventListener('click', async () => {
     const isOpen = dropdown.classList.contains('open');
-    // Position dropdown under the button using fixed coords (escapes overflow:hidden parents)
     if (!isOpen) {
-      const navEl = document.getElementById('section-nav');
-      const navBottom = navEl ? navEl.getBoundingClientRect().bottom : setsBtn.getBoundingClientRect().bottom;
-      dropdown.style.top = navBottom + 'px';
-      dropdown.style.right = '16px';
+      positionDropdown();
+      if (!populated) await populateNavSets();
     }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
-    if (!isOpen && !populated) await populateNavSets();
   });
+
+  // Reposition on scroll so dropdown follows the sticky nav
+  window.addEventListener('scroll', () => {
+    if (dropdown.classList.contains('open')) positionDropdown();
+  }, { passive: true });
   document.addEventListener('click', e => {
     if (!setsBtn.contains(e.target) && !dropdown.contains(e.target)) { dropdown.classList.remove('open'); setsBtn.classList.remove('open'); }
   });
