@@ -937,6 +937,8 @@ function initNav() {
     pokemonSetsView?.classList.remove('open');
     onepieceSetsView?.classList.remove('open');
   });
+  pokemonMenuItem?.addEventListener('click', () => { window.location.href = '/sets'; });
+  pokemonMenuItem?.addEventListener('click', () => { window.location.href = '/sets'; });
   onepieceMenuItem?.addEventListener('click', () => { hamburgerMenu.classList.remove('open'); onepieceSetsView?.classList.add('open'); });
   backToMenuOp?.addEventListener('click', () => { onepieceSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
 
