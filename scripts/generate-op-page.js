@@ -937,10 +937,75 @@ function initNav() {
     pokemonSetsView?.classList.remove('open');
     onepieceSetsView?.classList.remove('open');
   });
-  pokemonMenuItem?.addEventListener('click', () => { window.location.href = '/sets'; });
-  pokemonMenuItem?.addEventListener('click', () => { window.location.href = '/sets'; });
+  pokemonMenuItem?.addEventListener('click', () => {
+    hamburgerMenu.classList.remove('open');
+    if (pokemonSetsView) {
+      pokemonSetsView.classList.add('open');
+      renderPokemonSets();
+    }
+  });
+  pokemonMenuItem?.addEventListener('click', () => {
+    hamburgerMenu.classList.remove('open');
+    if (pokemonSetsView) {
+      pokemonSetsView.classList.add('open');
+      renderPokemonSets();
+    }
+  });
   onepieceMenuItem?.addEventListener('click', () => { hamburgerMenu.classList.remove('open'); onepieceSetsView?.classList.add('open'); });
+  backToMenu?.addEventListener('click', () => { pokemonSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
+  backToMenu?.addEventListener('click', () => { pokemonSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
   backToMenuOp?.addEventListener('click', () => { onepieceSetsView?.classList.remove('open'); hamburgerMenu.classList.add('open'); });
+
+  function renderPokemonSets() {
+    if (!setsGridContainer) return;
+    const pokeSets = allSets.filter(s => {
+      const id = (s.setId || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
+    });
+    if (!pokeSets.length) { setsGridContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>'; return; }
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    // Group by series
+    const grouped = {};
+    pokeSets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
+    let html = '';
+    Object.entries(grouped).forEach(([series, sets]) => {
+      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
+      sets.forEach(set => {
+        const disabled = !set.live;
+        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
+        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
+          <div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🎴</div>'}</div>
+          <div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short || ''} • ${set.series || ''}</div>${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
+      });
+      html += '</div>';
+    });
+    setsGridContainer.innerHTML = html;
+  }
+
+  function renderPokemonSets() {
+    if (!setsGridContainer) return;
+    const pokeSets = allSets.filter(s => {
+      const id = (s.setId || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
+    });
+    if (!pokeSets.length) { setsGridContainer.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">No sets available</div>'; return; }
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    const grouped = {};
+    pokeSets.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
+    let html = '';
+    Object.entries(grouped).forEach(([series, sets]) => {
+      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
+      sets.forEach(set => {
+        const disabled = !set.live;
+        const logoUrl = set.setId ? `${r2}/logos/${set.setId}.png` : null;
+        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
+          <div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : '<div style="font-size:3rem">🎴</div>'}</div>
+          <div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short || ''} • ${set.series || ''}</div>${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
+      });
+      html += '</div>';
+    });
+    setsGridContainer.innerHTML = html;
+  }
 
   function renderOnePieceSets() {
     if (!setsGridContainerOp) return;
