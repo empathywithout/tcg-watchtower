@@ -636,14 +636,14 @@ async function loadCards() {
   document.getElementById('stat-total-count').textContent = officialCount;
   document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards — search and filter by rarity. Click any card to find it.\`;
 
+  // Normalize rarity strings FIRST so dropdown and all lookups use full names
+  allCards.forEach(c => { c.rarity = normalizeRarity(c.rarity || ''); });
+
   const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Special','Secret Rare','Treasure Rare','Manga Rare'];
   const raritySet = new Set(allCards.map(c => c.rarity).filter(Boolean));
   const sel = document.getElementById('rarity-filter');
   RARITY_ORDER.forEach(r => { if (raritySet.has(r)) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
   raritySet.forEach(r => { if (!RARITY_ORDER.includes(r) && r) { const o = document.createElement('option'); o.value = r; o.textContent = r; sel.appendChild(o); } });
-
-  // Normalize rarity strings once (TR -> Treasure Rare, SEC -> Secret Rare, etc.)
-  allCards.forEach(c => { c.rarity = normalizeRarity(c.rarity || ''); });
   renderChaseCards(allCards);
   filteredCards = allCards;
   setTimeout(() => { renderCards(true); loadTCGPlayerPrices(); }, 0);
