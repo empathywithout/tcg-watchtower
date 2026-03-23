@@ -108,7 +108,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .gradient-text{background:linear-gradient(135deg,var(--red),var(--orange),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .set-desc{color:var(--muted);font-size:1rem;line-height:1.7;margin-bottom:28px;max-width:600px}
 .set-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:500px;animation:fadeInUp .8s ease-out .45s backwards}
-.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
+.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .stat-card-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:bold;color:white}
 .stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
@@ -298,7 +298,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         <p class="set-desc">Complete guide to Heroines Edition — full card list, chase cards ranked by market price, and where to buy sealed product.<br><br><span style="font-size:0.95rem;opacity:0.85">Heroines Edition is the third Extra Booster in the English One Piece Card Game, released in February 2026. Focused on iconic female characters including Boa Hancock, Nami, Nico Robin, and Uta, with SP alternate arts and a Manga Rare of Uta as the top chase cards.</span></p>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" alt="Heroines Edition" width="120" height="50" style="width:100%;max-width:120px;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
+            <img id="set-logo-hero" alt="Heroines Edition" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
             <div class="stat-label">EB03</div>
           </div>
           <div class="stat-card">
