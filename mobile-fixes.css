@@ -74,13 +74,15 @@
   50%       { opacity: 1;   }
 }
 
-/* Dropdown opens upward on mobile since nav is fixed to bottom */
+/* Dropdown fixed to viewport on mobile — always visible above bottom nav */
 @media (max-width: 768px) {
   .section-nav-dropdown {
+    position: fixed !important;
+    bottom: 50px !important;
     top: auto !important;
-    bottom: 100% !important;
-    margin-top: 0 !important;
-    margin-bottom: 4px !important;
+    right: 8px !important;
     max-height: 50vh !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
   }
 }

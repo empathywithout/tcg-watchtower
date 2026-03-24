@@ -138,25 +138,5 @@
   });
 })();
 
-// On mobile, fix JS-positioned dropdowns to open upward from bottom nav
-(function() {
-  if (window.innerWidth > 768) return;
-  document.addEventListener('click', function(e) {
-    var setsBtn = document.getElementById('nav-sets-btn');
-    var dropdown = document.getElementById('nav-sets-dropdown');
-    if (!setsBtn || !dropdown || !setsBtn.contains(e.target)) return;
-    setTimeout(function() {
-      if (dropdown.classList.contains('open')) {
-        var navEl = document.getElementById('section-nav');
-        var navRect = navEl ? navEl.getBoundingClientRect() : null;
-        if (navRect) {
-          dropdown.style.top = 'auto';
-          dropdown.style.bottom = (window.innerHeight - navRect.top + 4) + 'px';
-          dropdown.style.right = '8px';
-        }
-      }
-    }, 10);
-  });
-})();
 
 </script>
