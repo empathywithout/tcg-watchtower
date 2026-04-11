@@ -588,10 +588,11 @@ const setsPath = 'sets.json';
 const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
 
 const mergedSets = ALL_KNOWN_SETS.map(known => {
-  const existing = existingSets.find(s => s.slug === known.slug);
-  const isCurrentSet = known.slug === SET_SLUG;
+  const existing = existingSets.find(s => s.setId === known.setId);
+  const isCurrentSet = known.setId === SET_ID;
   return {
     ...known,
+    slug:  existing?.slug ?? known.slug,
     phase: isCurrentSet ? PHASE : (existing?.phase ?? 'en'),
     live:  isCurrentSet ? true  : (existing?.live  ?? false),
   };
