@@ -132,7 +132,7 @@
     "short": "ME01",
     "setId": "me01",
     "phase": "en",
-    "live": false
+    "live": true
   },
   {
     "slug": "phantasmal-flames-card-list",
@@ -141,7 +141,7 @@
     "short": "PFL",
     "setId": "me02",
     "phase": "en",
-    "live": false
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
@@ -168,6 +168,6 @@
     "short": "ME4",
     "setId": "me04",
     "phase": "en",
-    "live": false
+    "live": true
   }
 ]
