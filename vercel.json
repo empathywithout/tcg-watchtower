@@ -357,10 +357,6 @@
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/one-piece",
       "destination": "/sets.html"
     },
@@ -413,18 +409,6 @@
       "destination": "/chaos-rising-card-list.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
       "source": "/heroines-edition-card-list",
       "destination": "/heroines-edition-card-list.html"
     },
@@ -451,6 +435,26 @@
     {
       "source": "/one-piece/sets/the-azure-seas-seven/top-chase-cards",
       "destination": "/the-azure-seas-seven-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
   ],
   "redirects": [
@@ -647,6 +651,11 @@
     {
       "source": "/ascended-heroes-card-list",
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/cards",
+      "permanent": true
+    },
+    {
+      "source": "/perfect-order-card-list",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/cards",
       "permanent": true
     }
   ],
