@@ -437,22 +437,6 @@
       "destination": "/the-azure-seas-seven-card-list.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/perfect-order/perfect-order/cards",
       "destination": "/perfect-order-card-list.html"
     },
@@ -467,6 +451,22 @@
     {
       "source": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards",
       "destination": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
