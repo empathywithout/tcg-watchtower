@@ -328,6 +328,15 @@ const SET_PRODUCTS = {
     { tcgpId: '624678', type: 'Booster Box Case',   filterKey: 'case',   badgeClass: 'badge-case',   name: 'Destined Rivals Booster Box Case (6 Boxes)',     q: 'Pokemon Destined Rivals Booster Box Case SV10', noAmazon: true },
     { tcgpId: '625677', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Destined Rivals Build & Battle Box',             q: 'Pokemon Destined Rivals Build Battle Box SV10' },
   ],
+  me04: [
+  { tcgpId: '684444', type: 'Booster Box',               filterKey: 'box',    badgeClass: 'badge-box',    name: 'Chaos Rising Booster Box (36 Packs)',                q: 'Pokemon Chaos Rising Booster Box ME4' },
+  { tcgpId: '684450', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Elite Trainer Box',                     q: 'Pokemon Chaos Rising Elite Trainer Box ME4' },
+  { tcgpId: '684452', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Pokémon Center Elite Trainer Box',      q: 'Pokemon Chaos Rising Pokemon Center Elite Trainer Box ME4' },
+  { tcgpId: '684456', type: 'Booster Bundle',             filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Chaos Rising Booster Bundle',                        q: 'Pokemon Chaos Rising Booster Bundle ME4' },
+  { tcgpId: '684445', type: 'Booster Box Case',           filterKey: 'case',   badgeClass: 'badge-case',   name: 'Chaos Rising Booster Box Case (6 Boxes)',            q: 'Pokemon Chaos Rising Booster Box Case ME4', noAmazon: true },
+  { tcgpId: '684451', type: 'Booster Box Case',           filterKey: 'case',   badgeClass: 'badge-case',   name: 'Chaos Rising ETB Case',                             q: 'Pokemon Chaos Rising Elite Trainer Box Case ME4', noAmazon: true },
+  { tcgpId: '684454', type: 'Build & Battle Box',         filterKey: 'battle', badgeClass: 'badge-battle', name: 'Chaos Rising Build & Battle Box',                    q: 'Pokemon Chaos Rising Build Battle Box ME4' },
+],
 };
 
 if (!productMetaJson) {
