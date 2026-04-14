@@ -500,7 +500,7 @@ const vars = {
   '{{SEO_META_TITLE}}':     SEO_META_TITLE,
   '{{SEO_META_DESC}}':      SEO_META_DESC,
   '{{SEO_INTRO}}':          SEO_INTRO,
-  '{{BODY_BACKGROUND}}': PHASE === 'jp' ? 'transparent' : 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
+  '{{BODY_BACKGROUND}}': 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
 };
 
 for (const [placeholder, value] of Object.entries(vars)) {
