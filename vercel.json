@@ -696,7 +696,7 @@
     },
     {
       "source": "/chaos-rising-card-list",
-      "destination": "/pokemon/sets/chaos-rising/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
       "permanent": true
     }
   ],
