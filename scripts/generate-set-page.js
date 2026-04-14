@@ -43,7 +43,7 @@ const SET_SERIES       = (process.env.SET_SERIES || '').trim() || (SET_ID?.start
 const SERIES_SLUG_MAP = {
   'me01': 'mega-evolution', 'me02': 'mega-evolution',
   'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
-  'me03': 'mega-evolution',
+  'me03': 'mega-evolution', 'me04': 'mega-evolution',
 };
 // .trim() guards against GitHub Actions passing empty string instead of omitting the var
 const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
