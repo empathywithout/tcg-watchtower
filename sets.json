@@ -294,7 +294,7 @@
     "short": "OP14",
     "setId": "op14",
     "game": "onepiece",
-    "live": false
+    "live": true
   },
   {
     "slug": "memorial-collection-card-list",
@@ -321,7 +321,7 @@
     "short": "EB03",
     "setId": "eb03",
     "game": "onepiece",
-    "live": false
+    "live": true
   },
   {
     "slug": "egghead-crisis-card-list",
