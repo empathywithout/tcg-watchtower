@@ -26,9 +26,9 @@
 <!-- ===== PRIMARY SEO ===== -->
 <title>Chaos Rising Card List and Prices | TCG Watchtower</title>
 <meta name="description" content="Full Chaos Rising ME4 card list with live prices. Every card, Mega Greninja ex chase pulls, Special Illustration Rares, and booster box values updated daily.">
-<meta name="keywords" content="Chaos Rising, ME4 card list, ME4 chase cards, ME4 booster box, pokemon ME4, Mega Evolution cards">
+<meta name="keywords" content="Chaos Rising, ME04 card list, ME04 chase cards, ME04 booster box, pokemon ME04, Mega Evolution cards">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/cards">
+<link rel="canonical" href="https://tcgwatchtower.com/pokemon/sets/chaos-rising/chaos-rising/cards">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
 
 <!-- ===== OPEN GRAPH (Facebook, Discord, iMessage previews) ===== -->
@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="TCG Watchtower">
 <meta property="og:title" content="Chaos Rising Complete Guide — Card List & Chase Cards">
 <meta property="og:description" content="Full Chaos Rising card list with rarity filter, top chase cards, booster box prices and restock alerts. The complete collector's guide.">
-<meta property="og:url" content="https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/cards">
+<meta property="og:url" content="https://tcgwatchtower.com/pokemon/sets/chaos-rising/chaos-rising/cards">
 <meta property="og:image" content="https://tcgwatchtower.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -55,7 +55,7 @@
   "@type": "CollectionPage",
   "name": "Chaos Rising Complete Guide",
   "description": "Complete guide to Chaos Rising — full card list, chase cards, and where to buy sealed product.",
-  "url": "https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/cards",
+  "url": "https://tcgwatchtower.com/pokemon/sets/chaos-rising/chaos-rising/cards",
   "datePublished": "May 2026",
   "publisher": {
     "@type": "Organization",
@@ -81,13 +81,13 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Scarlet & Violet",
-        "item": "https://tcgwatchtower.com/pokemon/sets/mega-evolution"
+        "item": "https://tcgwatchtower.com/pokemon/sets/chaos-rising"
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": "Chaos Rising",
-        "item": "https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/cards"
+        "item": "https://tcgwatchtower.com/pokemon/sets/chaos-rising/chaos-rising/cards"
       }
     ]
   }
@@ -125,7 +125,7 @@
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87);
+  background: transparent;
   color: var(--text-light);
   line-height: 1.6;
   overflow-x: hidden;
@@ -182,42 +182,6 @@ body {
   padding: 0 4px;
 }
 .jp-banner-dismiss:hover { opacity: 1; }
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
-}
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87);
-}
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: transparent;
-}
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: transparent;
-}
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: transparent;
-}
-nav:not(.section-nav) {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: transparent;
-}
 nav.container {
   padding: 24px 0;
   display: flex;
@@ -297,6 +261,7 @@ nav.container {
 .set-hero {
   padding: 60px 0 80px;
   position: relative;
+  scroll-margin-top: 60px;
 }
 .breadcrumb {
   display: flex; align-items: center; gap: 8px;
@@ -957,16 +922,7 @@ footer {
 .section-nav-inner::-webkit-scrollbar { display: none; }
 .nav-short { display: none; }
 @media (max-width: 640px) {
-  .section-nav-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: center;
-}
+  .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
   .nav-short { display: inline; }
@@ -1051,25 +1007,12 @@ footer {
 
 <!-- ===== NAV ===== -->
 <div id="site-nav"></div>
-<script>
-fetch('/nav.html').then(r => r.text()).then(html => {
-  const placeholder = document.getElementById('site-nav');
-  if (!placeholder) return;
-  const temp = document.createElement('div');
-  temp.innerHTML = html;
-  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
-  placeholder.remove();
-  if (typeof initNav === 'function') initNav();
-});
-</script>
 
 <!-- ===== HERO ===== -->
 <section class="set-hero">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Home</a>
-      <span>›</span>
-      <a href="/sets">Pokémon TCG</a>
       <span>›</span>
       <a href="/sets">All Sets</a>
       <span>›</span>
@@ -1091,7 +1034,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="Chaos Rising Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
-            <div class="stat-label">ME4</div>
+            <div class="stat-label">ME04</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-total-count">…</div>
@@ -1105,9 +1048,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-set="me04" data-id="120" alt="Card 1" width="245" height="337" fetchpriority="high">
-          <img data-set="me04" data-id="114" alt="Card 2" width="245" height="337" loading="lazy">
-          <img data-set="me04" data-id="115" alt="Card 3" width="245" height="337" loading="lazy">
+          <img data-set="me04" data-id="001" alt="Card 1" width="245" height="337" fetchpriority="high">
+          <img data-set="me04" data-id="002" alt="Card 2" width="245" height="337" loading="lazy">
+          <img data-set="me04" data-id="003" alt="Card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -1129,9 +1072,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/mega-evolution/chaos-rising/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/mega-evolution/chaos-rising/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">Sealed</span></button>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/chaos-rising/chaos-rising/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/chaos-rising/chaos-rising/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/chaos-rising/chaos-rising/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
@@ -1170,7 +1113,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">📋 Chaos Rising <span class="gradient-text">Card List</span></h2>
-      <p class="section-sub" id="card-list-sub">Complete ME4 card list — search and filter by rarity. Click any card to view and find it.</p>
+      <p class="section-sub" id="card-list-sub">Complete ME04 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
     <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
@@ -1194,7 +1137,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <section class="section" id="section-products">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🛒 Buy ME4 <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
+      <h2 class="section-title">🛒 Buy ME04 <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
       <p class="section-sub">Compare Chaos Rising sealed product prices across Amazon, eBay, and TCGplayer</p>
     </div>
     <div class="product-filter-bar" id="product-filters">
@@ -1223,7 +1166,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     </div>
     <h2 class="section-title">Get Chaos Rising <span class="gradient-text">Restock Alerts</span></h2>
     <p style="color:var(--text-muted);max-width:560px;margin:0 auto 36px">
-      Join 1,800+ collectors on Discord and get instant notifications when ME4 Booster Boxes, ETBs, and sealed product goes live at major retailers.
+      Join 1,800+ collectors on Discord and get instant notifications when ME04 Booster Boxes, ETBs, and sealed product goes live at major retailers.
     </p>
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
       <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
@@ -1458,7 +1401,7 @@ function renderChaseCardsHTML(grid) {
 }
 
 /* ===== PRODUCTS ===== */
-const PRODUCT_META = {};
+const PRODUCT_META = {"684444":{"tcgpId":"684444","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Chaos Rising Booster Box (36 Packs)","q":"Pokemon Chaos Rising Booster Box ME4","image":"https://product-images.tcgplayer.com/fit-in/437x437/684444.jpg"},"684445":{"tcgpId":"684445","type":"Booster Box Case","filterKey":"case","badgeClass":"badge-case","name":"Chaos Rising Booster Box Case (6 Boxes)","q":"Pokemon Chaos Rising Booster Box Case ME4","noAmazon":true,"image":"https://product-images.tcgplayer.com/fit-in/437x437/684445.jpg"},"684450":{"tcgpId":"684450","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Chaos Rising Elite Trainer Box","q":"Pokemon Chaos Rising Elite Trainer Box ME4","image":"https://product-images.tcgplayer.com/fit-in/437x437/684450.jpg"},"684451":{"tcgpId":"684451","type":"Booster Box Case","filterKey":"case","badgeClass":"badge-case","name":"Chaos Rising ETB Case","q":"Pokemon Chaos Rising Elite Trainer Box Case ME4","noAmazon":true,"image":"https://product-images.tcgplayer.com/fit-in/437x437/684451.jpg"},"684452":{"tcgpId":"684452","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Chaos Rising Pokémon Center Elite Trainer Box","q":"Pokemon Chaos Rising Pokemon Center Elite Trainer Box ME4","image":"https://product-images.tcgplayer.com/fit-in/437x437/684452.jpg"},"684454":{"tcgpId":"684454","type":"Build & Battle Box","filterKey":"battle","badgeClass":"badge-battle","name":"Chaos Rising Build & Battle Box","q":"Pokemon Chaos Rising Build Battle Box ME4","image":"https://product-images.tcgplayer.com/fit-in/437x437/684454.jpg"},"684456":{"tcgpId":"684456","type":"Booster Bundle","filterKey":"bundle","badgeClass":"badge-bundle","name":"Chaos Rising Booster Bundle","q":"Pokemon Chaos Rising Booster Bundle ME4","image":"https://product-images.tcgplayer.com/fit-in/437x437/684456.jpg"}};
 
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
@@ -1772,7 +1715,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/120', 'chaos-rising')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
-        <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/chaos-rising/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+        <a class="modal-buy-link" href="/pokemon/sets/chaos-rising/chaos-rising/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>📄 View Card Page</span><span>→</span>
         </a>
       </div>
@@ -1851,7 +1794,10 @@ function initNav() {
 
   function showOnePieceSets() {
     hamburgerMenu.classList.remove('open');
-    if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
+    if (onepieceSetsView) {
+      onepieceSetsView.classList.add('open');
+      renderOnePieceSets();
+    }
   }
 
   function backToMainMenu() {
@@ -1888,76 +1834,111 @@ function initNav() {
       renderOnePieceSets();
     });
   });
-
+  
   async function fetchSets() {
     try {
       const res = await fetch('/sets.json');
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.error('Failed to fetch sets');
+        return;
+      }
       allSets = await res.json();
       renderSets();
-    } catch(e) { console.error('Error fetching sets:', e); }
-  }
-
-  function renderSets() {
-    if (!setsGridContainer) return;
-    const pokemonSets = allSets.filter(s => {
-      const id = (s.setId || '').toLowerCase();
-      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
-    });
-    let filtered = pokemonSets;
-    if (currentFilter === 'live') filtered = pokemonSets.filter(s => s.live);
-    else if (currentFilter !== 'all') {
-      const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,'');
-      filtered = pokemonSets.filter(s => s.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf);
+    } catch(e) {
+      console.error('Error fetching sets:', e);
     }
-    const grouped = {};
-    filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
+  }
+  
+  function renderSets() {
+    if (!allSets || allSets.length === 0) {
+      setsGridContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Loading sets...</div>';
+      return;
+    }
+    
+    let filteredSets = allSets;
+    if (currentFilter === 'live') {
+      filteredSets = allSets.filter(set => set.live);
+    } else if (currentFilter !== 'all') {
+      const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
+      filteredSets = allSets.filter(set => {
+        const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return normalizedSeries === normalizedFilter;
+      });
+    }
+    
+    const groupedSets = {};
+    filteredSets.forEach(set => {
+      if (!groupedSets[set.series]) {
+        groupedSets[set.series] = [];
+      }
+      groupedSets[set.series].push(set);
+    });
+    
     let html = '';
-    Object.keys(grouped).forEach(series => {
-      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
-      grouped[series].forEach(set => {
-        const disabled = !set.live;
+    Object.keys(groupedSets).forEach(series => {
+      html += `<div class="series-label">${series}</div>`;
+      html += '<div class="sets-grid">';
+      groupedSets[series].forEach(set => {
+        const isDisabled = !set.live;
+        const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
+        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
         const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
-        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
-          <div class="set-card-image">
-            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>` : `<div style="font-size:3rem">🎴</div>`}
-          </div>
-          <div class="set-card-content">
-            <div class="set-card-name">${set.name}</div>
-            <div class="set-card-info">${set.short} • ${set.series}</div>
-            ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-          </div></a>`;
+        
+        html += `
+          <a href="${link}" class="${cardClass}">
+            <div class="set-card-image">
+              ${logoUrl ? `
+                <img src="${logoUrl}" 
+                     alt="${set.name}" 
+                     style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="font-size: 3rem; display: none;">🎴</div>
+              ` : `
+                <div style="font-size: 3rem;">🎴</div>
+              `}
+            </div>
+            <div class="set-card-content">
+              <div class="set-card-name">${set.name}</div>
+              <div class="set-card-info">${set.short} • ${set.series}</div>
+              ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+            </div>
+          </a>
+        `;
       });
       html += '</div>';
     });
-    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
+    
+    setsGridContainer.innerHTML = html;
   }
 
   function renderOnePieceSets() {
     if (!setsGridContainerOp) return;
     const opSets = allSets.filter(s => {
-      const id = (s.setId || '').toLowerCase();
+      const id = (s.setId || s.slug || '').toLowerCase();
       return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
     });
-    const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
     if (!filtered.length) {
       setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
       return;
     }
-    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     let html = '<div class="sets-grid">';
     filtered.forEach(set => {
-      const disabled = !set.live;
+      const isDisabled = !set.live;
+      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+      const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
       const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
-      html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
-        <div class="set-card-image">
-          ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem">🃏</div>`}
-        </div>
-        <div class="set-card-content">
-          <div class="set-card-name">${set.name}</div>
-          <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
-          ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-        </div></a>`;
+      html += `
+        <a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+          <div class="set-card-image">
+            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🃏</div>`}
+          </div>
+          <div class="set-card-content">
+            <div class="set-card-name">${set.name}</div>
+            <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+            ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div>
+        </a>`;
     });
     html += '</div>';
     setsGridContainerOp.innerHTML = html;
@@ -1966,6 +1947,16 @@ function initNav() {
   await fetchSets();
 })();
 } // end initNav
+
+/* ===== NAV LOADER ===== */
+fetch('/nav.html').then(r => r.text()).then(html => {
+  const placeholder = document.getElementById('site-nav');
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  while (temp.firstChild) placeholder.parentNode.insertBefore(temp.firstChild, placeholder);
+  placeholder.remove();
+  initNav();
+});
 
 /* ===== SECTION NAV ACTIVE STATE ===== */
 (function() {
@@ -2047,6 +2038,7 @@ function initNav() {
     try {
       const res = await fetch('/sets.json');
       const allSetsData = await res.json();
+      // Only show Pokémon sets in this dropdown (OP sets have their own pages)
       const sets = allSetsData.filter(s => {
         const id = (s.setId || '').toLowerCase();
         return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && s.series !== 'One Piece TCG';
