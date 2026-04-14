@@ -1621,7 +1621,7 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      if (SET_PHASE === 'en') loadTCGPlayerPrices();
+      loadTCGPlayerPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
