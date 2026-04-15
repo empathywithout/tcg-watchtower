@@ -22,23 +22,51 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="shortcut icon" href="/favicon.ico">
     
-    <title>TCG Watchtower - Never Miss a Restock | Pokémon & One Piece TCG Alerts</title>
-    <meta name="description" content="Get instant restock alerts for Pokémon and One Piece trading cards. Join 1,800+ collectors on Discord for real-time notifications from major retailers.">
-    <meta name="keywords" content="Pokemon cards, One Piece TCG, restock alerts, trading cards, TCG marketplace, Discord bot">
+    <title>TCG Watchtower — Pokémon &amp; One Piece TCG Card Lists, Prices &amp; Restock Alerts</title>
+    <meta name="description" content="Browse complete Pokémon and One Piece TCG card lists with live TCGplayer prices, chase card rankings, and sealed product values. Plus instant Discord restock alerts for major retailers.">
+    <meta name="keywords" content="Pokemon card list, One Piece TCG card list, Pokemon TCG prices, restock alerts, Chaos Rising card list, Mega Evolution cards">
     <meta name="google-site-verification" content="t_Mdm5sF1ofHVv5FGzN_Fb27fHsxUCWGeMOuarLRq7w">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="TCG Watchtower">
+    <meta property="og:title" content="TCG Watchtower — Pokémon &amp; One Piece TCG Card Lists, Prices &amp; Restock Alerts">
+    <meta property="og:description" content="Complete card lists with live TCGplayer prices for every Pokémon and One Piece TCG set. Plus instant Discord restock alerts.">
+    <meta property="og:url" content="https://tcgwatchtower.com/">
+    <meta property="og:image" content="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@TCGWatchtower">
+    <meta name="twitter:title" content="TCG Watchtower — Pokémon &amp; One Piece TCG Card Lists &amp; Restock Alerts">
+    <meta name="twitter:description" content="Complete card lists with live prices for every Pokémon and One Piece TCG set.">
+    <meta name="twitter:image" content="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png">
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TCG Watchtower",
+      "url": "https://tcgwatchtower.com",
+      "description": "Complete Pokémon and One Piece TCG card lists with live prices, chase card rankings, sealed product values, and instant restock alerts.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "TCG Watchtower",
+        "url": "https://tcgwatchtower.com",
+        "logo": { "@type": "ImageObject", "url": "https://tcgwatchtower.com/tcg-watchtower-logo.jpg" }
+      }
+    }
+    </script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
         
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary-blue: #3b82f6;
@@ -59,1426 +87,297 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
         .bg-grid {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: 0.2;
+            position: fixed; inset: 0;
+            background-image: linear-gradient(to right, rgba(59,130,246,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(59,130,246,0.1) 1px, transparent 1px);
+            background-size: 60px 60px; opacity: 0.2;
             animation: grid-flow 20s linear infinite;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
+        @keyframes grid-flow { 0%{transform:translateY(0)} 100%{transform:translateY(60px)} }
 
-        @keyframes grid-flow {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(60px); }
-        }
+        .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.3; pointer-events: none; z-index: 0; }
+        .orb-1 { top:10%; left:20%; width:400px; height:400px; background:var(--primary-blue); animation:float 8s ease-in-out infinite; }
+        .orb-2 { bottom:10%; right:20%; width:350px; height:350px; background:var(--primary-purple); animation:float 10s ease-in-out infinite 2s; }
+        .orb-3 { top:50%; right:30%; width:300px; height:300px; background:var(--accent-amber); animation:float 12s ease-in-out infinite 4s; }
+        @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.1)} }
 
-        /* Floating orbs */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-        .orb-1 {
-            top: 10%;
-            left: 20%;
-            width: 400px;
-            height: 400px;
-            background: var(--primary-blue);
-            animation: float 8s ease-in-out infinite;
-        }
+        .nav-wrapper { position: sticky; top: 0; z-index: 1000; background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent); }
+        nav.container { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
+        .nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; -webkit-text-fill-color:#f1f5f9; background:none; }
+        .nav-links { display:flex; gap:32px; align-items:center; }
+        .nav-links a { color:var(--text-light); text-decoration:none; font-weight:500; transition:color 0.3s; }
+        .nav-links a:hover { color:white; }
 
-        .orb-2 {
-            bottom: 10%;
-            right: 20%;
-            width: 350px;
-            height: 350px;
-            background: var(--primary-purple);
-            animation: float 10s ease-in-out infinite 2s;
-        }
+        .btn-primary { background:linear-gradient(135deg,var(--primary-blue),var(--primary-purple)); color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-flex; align-items:center; gap:8px; transition:transform 0.3s,box-shadow 0.3s; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(59,130,246,0.4); }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(168,85,247,0.5); }
+        .btn-secondary { background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); border:2px solid rgba(255,255,255,0.2); color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-flex; align-items:center; gap:8px; transition:all 0.3s; cursor:pointer; }
+        .btn-secondary:hover { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.4); transform:translateY(-2px); }
 
-        .orb-3 {
-            top: 50%;
-            right: 30%;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-amber);
-            animation: float 12s ease-in-out infinite 4s;
-        }
+        .hero { padding: 80px 0 120px; position: relative; }
+        .hero-content { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+        .badge { display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(168,85,247,0.2)); border:1px solid rgba(59,130,246,0.3); border-radius:999px; font-size:0.875rem; margin-bottom:32px; animation:fadeInUp 1s ease-out 0.3s backwards; }
+        .star-icon { color:var(--accent-amber); animation:pulse 2s ease-in-out infinite; }
+        h1 { font-family:'Bebas Neue',sans-serif; font-size:4rem; line-height:1.1; margin-bottom:24px; animation:fadeInUp 1s ease-out 0.5s backwards; }
+        .gradient-text { background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; background-size:200% 100%; animation:gradient-shift 3s ease infinite; }
+        @keyframes gradient-shift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+        .hero-description { font-size:1.25rem; line-height:1.6; margin-bottom:32px; color:rgba(226,232,240,0.9); animation:fadeInUp 1s ease-out 0.7s backwards; }
+        .hero-description .highlight { font-weight:600; }
+        .hero-description .highlight-amber { color:var(--accent-amber); }
+        .hero-description .highlight-green { color:var(--accent-green); }
+        .hero-description .highlight-purple { color:#c084fc; }
+        .cta-buttons { display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap; animation:fadeInUp 1s ease-out 0.9s backwards; }
+        .trust-badges { display:flex; gap:24px; flex-wrap:wrap; animation:fadeInUp 1s ease-out 1.1s backwards; }
+        .trust-badge { display:flex; align-items:center; gap:8px; color:var(--text-light); }
+        .trust-icon { padding:6px; background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.3); border-radius:6px; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-30px) scale(1.1); }
-        }
+        .discord-preview { background:linear-gradient(135deg,rgba(30,41,59,0.9),rgba(30,41,59,0.8)); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:fadeInRight 1s ease-out 0.5s backwards; }
+        .discord-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+        .channel-name { display:flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-weight:bold; }
+        .online-indicator { width:8px; height:8px; background:var(--accent-green); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(1.1)} }
+        .alert-card { background:linear-gradient(135deg,rgba(30,41,59,0.8),rgba(15,23,42,0.8)); border-left:4px solid var(--accent-green); border-radius:8px; margin-bottom:12px; overflow:hidden; transition:transform 0.3s,box-shadow 0.3s; }
+        .alert-card:hover { transform:translateX(4px); box-shadow:0 4px 20px rgba(74,222,128,0.2); }
+        .alert-header { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.05); }
+        .app-badge { display:inline-block; background:var(--primary-blue); color:white; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-right:8px; }
+        .alert-status { display:flex; align-items:center; gap:8px; margin-top:4px; font-size:0.875rem; color:var(--accent-green); font-weight:bold; }
+        .alert-body { padding:16px; display:flex; gap:16px; }
+        .product-image { width:60px; height:60px; background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(168,85,247,0.2)); border:1px solid rgba(255,255,255,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; }
+        .product-details { flex:1; }
+        .product-name { font-size:0.875rem; font-weight:500; margin-bottom:12px; line-height:1.3; }
+        .product-info { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; font-size:0.75rem; }
+        .info-label { color:var(--text-muted); margin-bottom:4px; }
+        .info-value { font-weight:bold; font-family:'Space Mono',monospace; }
+        .price { color:var(--accent-green); }
+        .atc { color:var(--accent-amber); }
+        .alert-footer { padding:0 16px 12px; font-size:0.75rem; color:var(--text-muted); }
+        .discord-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1); text-align:center; }
+        .stat-value { font-size:1.5rem; font-weight:bold; margin-bottom:4px; }
+        .stat-label { font-size:0.75rem; color:var(--text-muted); }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 1;
-        }
+        .features { padding:120px 0; position:relative; }
+        .section-header { text-align:center; max-width:700px; margin:0 auto 64px; }
+        .section-title { font-family:'Bebas Neue',sans-serif; font-size:3rem; margin-bottom:16px; }
+        .section-description { font-size:1.125rem; color:rgba(226,232,240,0.8); }
+        .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:32px; }
+        .feature-card { background:linear-gradient(135deg,rgba(30,41,59,0.6),rgba(15,23,42,0.6)); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:32px; transition:transform 0.3s,box-shadow 0.3s; }
+        .feature-card:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(59,130,246,0.2); }
+        .feature-icon { width:56px; height:56px; background:linear-gradient(135deg,var(--primary-blue),var(--primary-purple)); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; font-size:1.5rem; }
+        .feature-title { font-size:1.5rem; font-weight:bold; margin-bottom:12px; }
+        .feature-description { color:rgba(226,232,240,0.8); line-height:1.6; }
 
-        /* Navigation */
-.nav-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.98) 80%, transparent);
-}
-nav.container {
-  padding: 24px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+        .how-it-works { padding:120px 0; background:linear-gradient(135deg,rgba(30,41,59,0.3),rgba(88,28,135,0.3)); }
+        .steps-container { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:48px; margin-top:64px; }
+        .step { text-align:center; position:relative; }
+        .step-number { width:64px; height:64px; background:linear-gradient(135deg,var(--primary-blue),var(--primary-purple)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:bold; margin:0 auto 24px; box-shadow:0 8px 24px rgba(59,130,246,0.4); }
+        .step-title { font-size:1.5rem; font-weight:bold; margin-bottom:12px; }
+        .step-description { color:rgba(226,232,240,0.8); }
 
-.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-.nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
-.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; -webkit-text-fill-color:#f1f5f9; background:none; }
+        .success-section { padding:100px 0 80px; overflow:hidden; }
+        .success-marquee-wrap { margin-top:56px; display:flex; flex-direction:column; gap:16px; overflow:hidden; width:100%; }
+        .success-row { overflow:hidden; width:100%; mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%); -webkit-mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%); }
+        .success-track { display:flex; gap:16px; width:max-content; }
+        .success-track:hover { animation-play-state:paused !important; }
+        .success-img-wrap { flex-shrink:0; width:220px; height:280px; border-radius:16px; overflow:hidden; background:rgba(30,41,59,0.6); border:1px solid rgba(255,255,255,0.07); box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+        .success-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s ease; }
+        .success-img-wrap:hover img { transform:scale(1.05); }
+        @keyframes marquee-left { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        @keyframes marquee-right { 0%{transform:translateX(-50%)} 100%{transform:translateX(0)} }
 
-        .nav-links {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: white;
-        }
-
-        .nav-dropdown { position: relative; }
-        .nav-dropdown-trigger {
-            color: var(--text-light);
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.3s;
-            user-select: none;
-            white-space: nowrap;
-        }
-        .nav-dropdown:hover .nav-dropdown-trigger { color: white; }
-        .nav-dropdown-menu {
-            display: none;
-        }
-        .pokemon-flyout {
-            position: fixed;
-            background: #1a1040;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            max-height: 70vh;
-            overflow-y: auto;
-            min-width: 240px;
-            z-index: 2147483647;
-        }
-        .nav-dropdown-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            padding: 6px 12px 4px;
-        }
-        .nav-dropdown-menu a {
-            padding: 9px 12px;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 500;
-            transition: background 0.15s, color 0.15s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            white-space: nowrap;
-        }
-        .nav-dropdown-menu a:hover:not(.nav-dropdown-soon) {
-            background: rgba(59,130,246,0.15);
-            color: white;
-        }
-        .nav-dropdown-soon {
-            color: var(--text-muted) !important;
-            cursor: default;
-            pointer-events: none;
-        }
-        .nav-dropdown-soon-badge {
-            font-size: 0.68rem;
-            background: rgba(255,255,255,0.08);
-            padding: 2px 7px;
-            border-radius: 20px;
-            color: var(--text-muted);
-            margin-left: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 80px 0 120px;
-            position: relative;
-        }
-
-        .hero-content {
+        /* ===== BROWSE SETS SECTION ===== */
+        .browse-sets { padding: 100px 0; }
+        .browse-sets-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 64px;
-            align-items: center;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
         }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 999px;
-            font-size: 0.875rem;
-            margin-bottom: 32px;
-            animation: fadeInUp 1s ease-out 0.3s backwards;
-        }
-
-        .star-icon {
-            color: var(--accent-amber);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        h1 {
+        .browse-series-label {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            animation: fadeInUp 1s ease-out 0.5s backwards;
-        }
-
-        .gradient-text {
-            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 100%;
-            animation: gradient-shift 3s ease infinite;
-        }
-
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .hero-description {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            margin-bottom: 32px;
-            color: rgba(226, 232, 240, 0.9);
-            animation: fadeInUp 1s ease-out 0.7s backwards;
-        }
-
-        .hero-description .highlight {
-            font-weight: 600;
-        }
-
-        .hero-description .highlight-amber { color: var(--accent-amber); }
-        .hero-description .highlight-green { color: var(--accent-green); }
-        .hero-description .highlight-purple { color: #c084fc; }
-
-        .cta-buttons {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.9s backwards;
-        }
-
-        .trust-badges {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 1.1s backwards;
-        }
-
-        .trust-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-light);
-        }
-
-        .trust-icon {
-            padding: 6px;
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 6px;
-        }
-
-        /* Discord Preview */
-        .discord-preview {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.8));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: fadeInRight 1s ease-out 0.5s backwards;
-        }
-
-        .discord-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 16px;
-        }
-
-        .channel-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Space Mono', monospace;
-            font-weight: bold;
-        }
-
-        .online-indicator {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-        }
-
-        .alert-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
-            border-left: 4px solid var(--accent-green);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .alert-card:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.2);
-        }
-
-        .alert-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .app-badge {
-            display: inline-block;
-            background: var(--primary-blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .alert-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-            font-size: 0.875rem;
-            color: var(--accent-green);
-            font-weight: bold;
-        }
-
-        .alert-body {
-            padding: 16px;
-            display: flex;
-            gap: 16px;
-        }
-
-        .product-image {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            flex-shrink: 0;
-        }
-
-        .product-details {
-            flex: 1;
-        }
-
-        .product-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-
-        .product-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-            font-size: 0.75rem;
-        }
-
-        .info-label {
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .info-value {
-            font-weight: bold;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .price { color: var(--accent-green); }
-        .atc { color: var(--accent-amber); }
-
-        .alert-footer {
-            padding: 0 16px 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .discord-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 120px 0;
-            position: relative;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 64px;
-        }
-
-        .section-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-
-        .section-description {
-            font-size: 1.125rem;
-            color: rgba(226, 232, 240, 0.8);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 32px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
-        .feature-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .feature-description {
-            color: rgba(226, 232, 240, 0.8);
-            line-height: 1.6;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            padding: 120px 0;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(88, 28, 135, 0.3));
-        }
-
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 48px;
-            margin-top: 64px;
-        }
-
-        .step {
-            text-align: center;
-            position: relative;
-        }
-
-        .step-number {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 0 auto 24px;
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-        }
-
-        .step-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .step-description {
-            color: rgba(226, 232, 240, 0.8);
-        }
-
-        /* Testimonials */
-        .testimonials {
-            padding: 120px 0;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 32px;
-            margin-top: 64px;
-        }
-
-        .testimonial-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 32px;
-        }
-
-        /* Carousel Styles */
-        .carousel-wrapper {
-            max-width: 820px;
-            margin: 56px auto 0;
-            position: relative;
-        }
-
-        .carousel-container {
-            overflow: hidden;
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .carousel-track {
-            display: flex;
-            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .carousel-item {
-            min-width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .win-image {
-            position: relative;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
-            border-radius: 20px;
-            overflow: hidden;
-            width: 100%;
-            height: 520px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .win-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 20px;
-            display: block;
-            padding: 12px;
-        }
-
-        .win-caption {
-            margin-top: 16px;
-            font-size: 0.925rem;
-            color: rgba(226, 232, 240, 0.75);
-            text-align: center;
-            letter-spacing: 0.02em;
-            padding: 0 16px 20px;
-            font-style: italic;
-        }
-
-        .carousel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.25s;
-            margin-top: -24px;
-        }
-
-        .carousel-arrow:hover {
-            background: rgba(59, 130, 246, 0.5);
-            border-color: rgba(59, 130, 246, 0.6);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-prev { left: -56px; }
-        .carousel-next { right: -56px; }
-
-        .carousel-counter {
-            text-align: center;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: rgba(148, 163, 184, 0.7);
-            letter-spacing: 0.1em;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .win-placeholder {
-            font-size: 8rem;
-            opacity: 0.8;
-        }
-
-        .win-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(74, 222, 128, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 999px;
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: white;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
-        }
-
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 20px;
-            padding: 0 8px;
-        }
-
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.25);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .carousel-dot.active {
-            background: var(--primary-blue);
-            transform: scale(1.4);
-            box-shadow: 0 0 6px rgba(59,130,246,0.6);
-        }
-
-        .carousel-dot:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        @media (max-width: 900px) {
-            .carousel-prev { left: -8px; }
-            .carousel-next { right: -8px; }
-            .carousel-arrow { width: 38px; height: 38px; }
-        }
-
-        .testimonial-text {
-            font-size: 1.125rem;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .author-avatar {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .author-name {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .author-role {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        /* FAQ */
-        .faq {
-            padding: 120px 0;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(88, 28, 135, 0.3));
-        }
-
-        .faq-container {
-            max-width: 800px;
-            margin: 64px auto 0;
-        }
-
-        .faq-item {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-
-        .faq-question {
-            padding: 24px;
-            font-size: 1.125rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
-        }
-
-        .faq-question:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .faq-answer {
-            padding: 0 24px 24px;
-            color: rgba(226, 232, 240, 0.8);
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 120px 0;
-            text-align: center;
-        }
-
-        .cta-content {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .cta-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3.5rem;
-            margin-bottom: 24px;
-        }
-
-        .cta-description {
-            font-size: 1.25rem;
-            margin-bottom: 40px;
-            color: rgba(226, 232, 240, 0.9);
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 64px 0 32px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 48px;
-            margin-bottom: 48px;
-        }
-
-        .footer-section h3 {
-            font-size: 1.25rem;
-            margin-bottom: 16px;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-light);
-        }
-
-        .footer-disclaimer {
-            border-top: 1px solid rgba(255,255,255,0.06);
-            margin-top: 32px;
-            padding-top: 24px;
-            margin-bottom: 24px;
-        }
-        .footer-disclaimer p {
-            color: rgba(148,163,184,0.6);
-            font-size: 0.75rem;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .footer-disclaimer p:last-child { margin-bottom: 0; }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Responsive */
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            padding: 8px 12px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .hamburger:hover {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-        .hamburger span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: var(--text-light);
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-        .hamburger.open span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .hamburger.open span:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger.open span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-        
-        /* Main hamburger menu overlay */
-        .hamburger-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2147483646;
-            animation: fadeIn 0.2s;
-        }
-        .hamburger-overlay.open { display: block; }
-        
-        /* Hamburger menu panel */
-        .hamburger-menu {
-            display: none;
-            flex-direction: column;
-            background: #1a1040;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 8px;
-            position: fixed;
-            top: 80px;
-            left: auto;
-            right: 24px;
-            width: 200px;
-            z-index: 2147483647;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.9);
-            animation: slideDown 0.3s ease-out;
-        }
-        .hamburger-menu.open { display: flex; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .hamburger-menu-item {
-            padding: 14px 16px;
-            border-radius: 8px;
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background 0.15s;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .hamburger-menu-item:hover { 
-            background: rgba(59,130,246,0.15); 
-            color: white;
-        }
-        .hamburger-menu-divider {
-            height: 1px;
-            background: rgba(255,255,255,0.08);
-            margin: 8px 0;
-        }
-        
-        /* Pokemon Sets Grid View */
-        .pokemon-sets-view {
-            display: none;
-            flex-direction: column;
-            background: #1a1040;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 20px;
-            position: fixed;
-            top: 80px;
-            left: 16px;
-            right: 16px;
-            bottom: 80px;
-            z-index: 2147483647;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.9);
-            animation: slideDown 0.3s ease-out;
-            overflow-y: auto;
-        }
-        .pokemon-sets-view.open { display: flex; }
-        
-        .pokemon-sets-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-        
-        .back-button {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .back-button:hover {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-        
-        .pokemon-sets-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(90deg, #93c5fd, #c4b5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .sets-filter-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-tab {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            color: var(--text-light);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-tab:hover {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-        .filter-tab.active {
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            border-color: transparent;
-            color: white;
-        }
-        
-        .sets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        
-        .set-card {
-            background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8));
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-        }
-        .set-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
-        }
-        .set-card.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .set-card.disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .set-card-image {
-            width: 100%;
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .set-card-image::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.3) 100%);
-        }
-        
-        .set-card-content {
-            padding: 12px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .set-card-name {
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-        
-        .set-card-info {
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            margin-top: auto;
-        }
-        
-        .set-card-soon {
-            display: inline-block;
-            font-size: 0.65rem;
-            background: rgba(255,255,255,0.08);
-            padding: 3px 8px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        
-        .series-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-size: 1.4rem;
             letter-spacing: 0.05em;
             color: var(--text-muted);
-            padding: 16px 0 8px;
-            margin-top: 8px;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            margin: 32px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-        .series-label:first-child {
-            margin-top: 0;
-            border-top: none;
-        }
-        
-        /* Legacy mobile menu (kept for backwards compatibility) */
-        .mobile-menu {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-content {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .cta-title {
-                font-size: 2.5rem;
-            }
-
-            .product-info {
-                grid-template-columns: 1fr;
-            }
-            
-            .sets-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 12px;
-            }
-            
-            .nav-links {
-                gap: 16px;
-            }
-            
-            .nav-links a:not(.btn-primary) {
-                display: none;
-            }
-            
-            .hamburger-menu {
-                right: 16px;
-            }
-        }
-        
-        @media (min-width: 769px) {
-            .sets-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            }
-            
-            .pokemon-sets-view {
-                left: 50%;
-                transform: translateX(-50%);
-                max-width: 800px;
-                right: auto;
-            }
-            .hamburger-menu {
-                left: 50%;
-                transform: translateX(-50%);
-                right: auto;
-            }
-        }
-
-        /* Utility */
-        .icon {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-        }
-
-        /* Community Success Marquee */
-        .success-section {
-            padding: 100px 0 80px;
+        .browse-series-label:first-of-type { margin-top: 0; }
+        .browse-set-tile {
+            background: linear-gradient(135deg, rgba(30,41,59,0.7), rgba(15,23,42,0.7));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
             overflow: hidden;
-        }
-
-        .success-marquee-wrap {
-            margin-top: 56px;
+            text-decoration: none;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            overflow: hidden;
-            width: 100%;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
         }
-
-        .success-row {
-            overflow: hidden;
-            width: 100%;
-            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+        .browse-set-tile:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59,130,246,0.4);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.2);
         }
-
-        .success-track {
+        .browse-set-tile-img {
+            width: 100%;
+            aspect-ratio: 16/7;
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(168,85,247,0.15));
             display: flex;
-            gap: 16px;
-            width: max-content;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+        .browse-set-tile-img img {
+            max-width: 100%;
+            max-height: 40px;
+            object-fit: contain;
+        }
+        .browse-set-tile-info {
+            padding: 10px 12px 12px;
+        }
+        .browse-set-tile-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+        .browse-set-tile-meta {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+        .browse-set-tile-live {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(74,222,128,0.15);
+            border: 1px solid rgba(74,222,128,0.3);
+            color: var(--accent-green);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .success-track:hover {
-            animation-play-state: paused !important;
-        }
+        .faq { padding:120px 0; background:linear-gradient(135deg,rgba(30,41,59,0.3),rgba(88,28,135,0.3)); }
+        .faq-container { max-width:800px; margin:64px auto 0; }
+        .faq-item { background:linear-gradient(135deg,rgba(30,41,59,0.6),rgba(15,23,42,0.6)); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:12px; margin-bottom:16px; overflow:hidden; }
+        .faq-question { padding:24px; font-size:1.125rem; font-weight:bold; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s; }
+        .faq-question:hover { background:rgba(255,255,255,0.05); }
+        .faq-answer { padding:0 24px 24px; color:rgba(226,232,240,0.8); line-height:1.6; }
 
-        .success-img-wrap {
-            flex-shrink: 0;
-            width: 220px;
-            height: 280px;
-            border-radius: 16px;
-            overflow: hidden;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(255,255,255,0.07);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
+        .cta-section { padding:120px 0; text-align:center; }
+        .cta-content { max-width:700px; margin:0 auto; }
+        .cta-title { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; margin-bottom:24px; }
+        .cta-description { font-size:1.25rem; margin-bottom:40px; color:rgba(226,232,240,0.9); }
 
-        .success-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.4s ease;
-        }
+        footer { background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); border-top:1px solid rgba(255,255,255,0.1); padding:64px 0 32px; }
+        .footer-content { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:48px; margin-bottom:48px; }
+        .footer-section h3 { font-size:1.25rem; margin-bottom:16px; }
+        .footer-links { list-style:none; }
+        .footer-links li { margin-bottom:12px; }
+        .footer-links a { color:var(--text-muted); text-decoration:none; transition:color 0.3s; }
+        .footer-links a:hover { color:var(--text-light); }
+        .footer-disclaimer { border-top:1px solid rgba(255,255,255,0.06); margin-top:32px; padding-top:24px; margin-bottom:24px; }
+        .footer-disclaimer p { color:rgba(148,163,184,0.6); font-size:0.75rem; line-height:1.6; margin-bottom:10px; }
+        .footer-disclaimer p:last-child { margin-bottom:0; }
+        .footer-bottom { text-align:center; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1); color:var(--text-muted); }
 
-        .success-img-wrap:hover img {
-            transform: scale(1.05);
-        }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeInRight { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
 
-        @keyframes marquee-left {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        .hamburger { display:flex; flex-direction:column; gap:4px; cursor:pointer; padding:8px 12px; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:8px; transition:all 0.3s; }
+        .hamburger:hover { background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.4); }
+        .hamburger span { display:block; width:20px; height:2px; background:var(--text-light); border-radius:2px; transition:all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+        .hamburger.open span:nth-child(2) { opacity:0; }
+        .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+        .hamburger-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2147483646; animation:fadeIn 0.2s; }
+        .hamburger-overlay.open { display:block; }
+        .hamburger-menu { display:none; flex-direction:column; background:#1a1040; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:8px; position:fixed; top:80px; left:auto; right:24px; width:200px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; }
+        .hamburger-menu.open { display:flex; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+        .hamburger-menu-item { padding:14px 16px; border-radius:8px; color:var(--text-light); text-decoration:none; font-size:1rem; font-weight:500; transition:background 0.15s; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+        .hamburger-menu-item:hover { background:rgba(59,130,246,0.15); color:white; }
+        .hamburger-menu-divider { height:1px; background:rgba(255,255,255,0.08); margin:8px 0; }
+        .pokemon-sets-view { display:none; flex-direction:column; background:#1a1040; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:20px; position:fixed; top:80px; left:16px; right:16px; bottom:80px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; overflow-y:auto; }
+        .pokemon-sets-view.open { display:flex; }
+        .pokemon-sets-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .back-button { background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:8px; padding:8px 12px; color:var(--text-light); cursor:pointer; transition:all 0.2s; font-size:0.9rem; font-weight:500; }
+        .back-button:hover { background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.4); }
+        .pokemon-sets-title { font-family:'Space Mono',monospace; font-size:1.5rem; font-weight:bold; background:linear-gradient(90deg,#93c5fd,#c4b5fd); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .sets-filter-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+        .filter-tab { padding:8px 16px; border-radius:20px; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); color:var(--text-light); font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s; }
+        .filter-tab:hover { background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.4); }
+        .filter-tab.active { background:linear-gradient(135deg,var(--primary-blue),var(--primary-purple)); border-color:transparent; color:white; }
+        .sets-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:16px; margin-bottom:20px; }
+        .set-card { background:linear-gradient(135deg,rgba(30,41,59,0.8),rgba(15,23,42,0.8)); border:1px solid rgba(255,255,255,0.08); border-radius:12px; overflow:hidden; cursor:pointer; transition:all 0.3s; text-decoration:none; display:flex; flex-direction:column; }
+        .set-card:hover { transform:translateY(-4px); border-color:rgba(59,130,246,0.4); box-shadow:0 8px 24px rgba(59,130,246,0.2); }
+        .set-card.disabled { opacity:0.5; cursor:not-allowed; }
+        .set-card.disabled:hover { transform:none; box-shadow:none; }
+        .set-card-image { width:100%; aspect-ratio:1; background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(168,85,247,0.2)); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+        .set-card-image::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent 0%,rgba(0,0,0,0.3) 100%); }
+        .set-card-content { padding:12px; flex:1; display:flex; flex-direction:column; }
+        .set-card-name { color:var(--text-light); font-weight:600; font-size:0.85rem; margin-bottom:4px; line-height:1.3; }
+        .set-card-info { color:var(--text-muted); font-size:0.7rem; margin-top:auto; }
+        .set-card-soon { display:inline-block; font-size:0.65rem; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:12px; color:var(--text-muted); margin-top:6px; }
+        .series-label { font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); padding:16px 0 8px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); }
+        .series-label:first-child { margin-top:0; border-top:none; }
 
-        @keyframes marquee-right {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
-        }
+        @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+        .alert-skeleton { background:linear-gradient(135deg,rgba(30,41,59,0.8),rgba(15,23,42,0.8)); border-left:4px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:12px; padding:12px 16px; }
+        .skeleton-header { height:16px; width:60%; margin-bottom:12px; }
+        .skeleton-body { display:flex; gap:12px; align-items:flex-start; }
+        .skeleton-img { width:48px; height:48px; border-radius:8px; flex-shrink:0; }
+        .skeleton-lines { flex:1; }
+        .skeleton-line { height:12px; margin-bottom:8px; }
+        .skeleton-line.long { width:85%; }
+        .skeleton-line.short { width:50%; }
+        .skeleton-header,.skeleton-img,.skeleton-line { background:linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.12) 50%,rgba(255,255,255,0.05) 75%); background-size:400px 100%; animation:shimmer 1.4s ease-in-out infinite; border-radius:6px; }
+        .live-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); padding:3px 10px; border-radius:999px; font-size:0.7rem; font-family:'Space Mono',monospace; color:var(--accent-green); letter-spacing:0.05em; }
+        .live-dot { width:6px; height:6px; background:var(--accent-green); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+        .atc-btn { display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg,var(--primary-blue),var(--primary-purple)); color:white; padding:4px 10px; border-radius:5px; font-size:0.7rem; font-weight:bold; text-decoration:none; transition:opacity 0.2s; }
+        .atc-btn:hover { opacity:0.85; }
+        .no-alerts { text-align:center; padding:24px 16px; color:var(--text-muted); font-size:0.9rem; }
 
-        /* Skeleton loaders */
-        @keyframes shimmer {
-            0% { background-position: -400px 0; }
-            100% { background-position: 400px 0; }
+        @media (max-width: 768px) {
+            h1 { font-size:2.5rem; }
+            .hero-content { grid-template-columns:1fr; }
+            .section-title { font-size:2rem; }
+            .cta-title { font-size:2.5rem; }
+            .product-info { grid-template-columns:1fr; }
+            .sets-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+            .nav-links { gap:16px; }
+            .nav-links a:not(.btn-primary) { display:none; }
+            .hamburger-menu { right:16px; }
+            .browse-sets-grid { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
         }
-        .skeleton-base {
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-            background-size: 400px 100%;
-            animation: shimmer 1.4s ease-in-out infinite;
-            border-radius: 6px;
-        }
-        .alert-skeleton {
-            background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8));
-            border-left: 4px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            padding: 12px 16px;
-        }
-        .skeleton-header { height: 16px; width: 60%; margin-bottom: 12px; }
-        .skeleton-body { display: flex; gap: 12px; align-items: flex-start; }
-        .skeleton-img { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; }
-        .skeleton-lines { flex: 1; }
-        .skeleton-line { height: 12px; margin-bottom: 8px; }
-        .skeleton-line.long { width: 85%; }
-        .skeleton-line.short { width: 50%; }
-        .skeleton-header, .skeleton-img, .skeleton-line {
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-            background-size: 400px 100%;
-            animation: shimmer 1.4s ease-in-out infinite;
-            border-radius: 6px;
-        }
-
-        /* Live badge */
-        .live-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3);
-            padding: 3px 10px; border-radius: 999px;
-            font-size: 0.7rem; font-family: 'Space Mono', monospace;
-            color: var(--accent-green); letter-spacing: 0.05em;
-        }
-        .live-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-
-        /* Alert card ATC button */
-        .atc-btn {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
-            color: white; padding: 4px 10px; border-radius: 5px;
-            font-size: 0.7rem; font-weight: bold; text-decoration: none;
-            transition: opacity 0.2s;
-        }
-        .atc-btn:hover { opacity: 0.85; }
-        .no-alerts {
-            text-align: center; padding: 24px 16px;
-            color: var(--text-muted); font-size: 0.9rem;
+        @media (min-width: 769px) {
+            .sets-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
+            .pokemon-sets-view { left:50%; transform:translateX(-50%); max-width:800px; right:auto; }
+            .hamburger-menu { left:50%; transform:translateX(-50%); right:auto; }
         }
     </style>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-    <!-- Background Elements -->
     <div class="bg-grid"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    <!-- Navigation -->
     <div class="nav-wrapper">
     <nav class="container">
         <a href="/" class="nav-logo">
             <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
             <span>TCG Watchtower</span>
-          </a>
+        </a>
         <div class="nav-links">
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
@@ -1486,29 +385,16 @@ nav.container {
             <button class="hamburger" id="hamburger" aria-label="Pokémon Sets Menu">
                 <span></span><span></span><span></span>
             </button>
-            <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
-                Join Discord
-            </a>
+            <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
         </div>
     </nav>
-    </div><!-- /nav-wrapper -->
-    
-    <!-- Hamburger Menu Overlay -->
-    <div class="hamburger-overlay" id="hamburger-overlay"></div>
-    
-    <!-- Pokemon Menu (triggered by hamburger) -->
-    <div class="hamburger-menu" id="hamburger-menu">
-        <div class="hamburger-menu-item" id="pokemon-menu-item">
-            Pokémon
-            <span>›</span>
-        </div>
-        <div class="hamburger-menu-item" id="onepiece-menu-item">
-            One Piece
-            <span>›</span>
-        </div>
     </div>
 
-    <!-- One Piece Sets View -->
+    <div class="hamburger-overlay" id="hamburger-overlay"></div>
+    <div class="hamburger-menu" id="hamburger-menu">
+        <div class="hamburger-menu-item" id="pokemon-menu-item">Pokémon<span>›</span></div>
+        <div class="hamburger-menu-item" id="onepiece-menu-item">One Piece<span>›</span></div>
+    </div>
     <div class="pokemon-sets-view" id="onepiece-sets-view">
         <div class="pokemon-sets-header">
             <button class="back-button" id="back-to-menu-op">← Back</button>
@@ -1520,147 +406,57 @@ nav.container {
         </div>
         <div id="sets-grid-container-op"></div>
     </div>
-    
-    <!-- Pokemon Sets View -->
-    <div class="pokemon-sets-view" id="pokemon-sets-view"><a id="pokemon"></a>
+    <div class="pokemon-sets-view" id="pokemon-sets-view">
         <div class="pokemon-sets-header">
             <button class="back-button" id="back-to-menu">← Back</button>
             <div class="pokemon-sets-title">Pokémon TCG Sets</div>
         </div>
-        
         <div class="sets-filter-tabs" id="sets-filter-tabs">
             <div class="filter-tab active" data-filter="all">All Sets</div>
             <div class="filter-tab" data-filter="mega-evolution">Mega Evolution</div>
             <div class="filter-tab" data-filter="scarlet-violet">Scarlet & Violet</div>
-            <div class="filter-tab" data-filter="sword-shield">Sword & Shield</div>
             <div class="filter-tab" data-filter="live">Live Only</div>
         </div>
-        
-        <div id="sets-grid-container">
-            <!-- Sets will be dynamically loaded here -->
-        </div>
+        <div id="sets-grid-container"></div>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <!-- Left Column -->
                 <div>
-                    <div class="badge">
-                        <span class="star-icon">⭐</span>
-                        <span>Trusted by 1,800+ collectors</span>
-                    </div>
-
-                    <h1>
-                        GET INSTANT<br>
-                        <span class="gradient-text">POKÉMON AND ONE PIECE</span><br>
-                        RESTOCK<br>
-                        <span style="color: #93c5fd;">ALERTS</span>
-                    </h1>
-
-                    <p class="hero-description">
-                        TCG Watchtower sends instant alerts for Pokémon, One Piece, and other sealed TCG products. <span class="highlight highlight-amber">Join thousands of collectors tracking sets like Ascended Heroes</span> and <span class="highlight highlight-green">One Piece TCG OP‑15 “Adventure on KAMI’s Island”</span> and <span class="highlight highlight-purple">get notified as soon as new stock hits.</span>.
-                    </p>
-
+                    <div class="badge"><span class="star-icon">⭐</span><span>Trusted by 1,800+ collectors</span></div>
+                    <h1>GET INSTANT<br><span class="gradient-text">POKÉMON AND ONE PIECE</span><br>RESTOCK<br><span style="color:#93c5fd;">ALERTS</span></h1>
+                    <p class="hero-description">TCG Watchtower sends instant alerts for Pokémon, One Piece, and other sealed TCG products. <span class="highlight highlight-amber">Join thousands of collectors tracking sets like Chaos Rising</span> and <span class="highlight highlight-green">One Piece TCG</span> and <span class="highlight highlight-purple">get notified as soon as new stock hits.</span></p>
                     <div class="cta-buttons">
                         <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             Join the Discord — It's Free
                         </a>
-                        <a href="#how-it-works" class="btn-secondary">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                            </svg>
-                            Get Restock Alerts
-                        </a>
+                        <a href="#browse-sets" class="btn-secondary">Browse Card Lists</a>
                     </div>
-
                     <div class="trust-badges">
-                        <div class="trust-badge">
-                            <div class="trust-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                                </svg>
-                            </div>
-                            <span>Real-Time Alerts</span>
-                        </div>
-
-                        <div class="trust-badge">
-                            <div class="trust-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="9" cy="7" r="4"></circle>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                </svg>
-                            </div>
-                            <span>1,800+ Members</span>
-                        </div>
+                        <div class="trust-badge"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div><span>Real-Time Alerts</span></div>
+                        <div class="trust-badge"><div class="trust-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg></div><span>1,800+ Members</span></div>
                     </div>
                 </div>
-
-                <!-- Right Column - Discord Preview -->
                 <div>
                     <div class="discord-preview">
                         <div class="discord-header">
-                            <div class="channel-name">
-                                <span style="color: #94a3b8;">#</span>
-                                <span>restock-alerts</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="channel-name"><span style="color:#94a3b8;">#</span><span>restock-alerts</span></div>
+                            <div style="display:flex;align-items:center;gap:8px;">
                                 <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
-                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                </svg>
                                 <div class="online-indicator"></div>
                             </div>
                         </div>
-
-                        <!-- Live Alerts Container -->
                         <div id="live-alerts-container">
-                            <!-- Skeleton loaders while fetching -->
-                            <div class="alert-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-body">
-                                    <div class="skeleton-img"></div>
-                                    <div class="skeleton-lines">
-                                        <div class="skeleton-line long"></div>
-                                        <div class="skeleton-line short"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="alert-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-body">
-                                    <div class="skeleton-img"></div>
-                                    <div class="skeleton-lines">
-                                        <div class="skeleton-line long"></div>
-                                        <div class="skeleton-line short"></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="alert-skeleton"><div class="skeleton-header"></div><div class="skeleton-body"><div class="skeleton-img"></div><div class="skeleton-lines"><div class="skeleton-line long"></div><div class="skeleton-line short"></div></div></div></div>
+                            <div class="alert-skeleton"><div class="skeleton-header"></div><div class="skeleton-body"><div class="skeleton-img"></div><div class="skeleton-lines"><div class="skeleton-line long"></div><div class="skeleton-line short"></div></div></div></div>
                         </div>
-
-                        <!-- Stats -->
                         <div class="discord-stats">
-                            <div>
-                                <div class="stat-value">247</div>
-                                <div class="stat-label">Alerts Today</div>
-                            </div>
-                            <div>
-                                <div class="stat-value" style="color: var(--accent-green);">98%</div>
-                                <div class="stat-label">Success Rate</div>
-                            </div>
-                            <div>
-                                <div class="stat-value" style="color: var(--primary-purple);">1.8K+</div>
-                                <div class="stat-label">Members</div>
-                            </div>
+                            <div><div class="stat-value">247</div><div class="stat-label">Alerts Today</div></div>
+                            <div><div class="stat-value" style="color:var(--accent-green);">98%</div><div class="stat-label">Success Rate</div></div>
+                            <div><div class="stat-value" style="color:var(--primary-purple);">1.8K+</div><div class="stat-label">Members</div></div>
                         </div>
                     </div>
                 </div>
@@ -1668,39 +464,18 @@ nav.container {
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Features -->
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Why TCG Watchtower?</h2>
                 <p class="section-description">Everything you need to stay ahead in the TCG game</p>
             </div>
-
             <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3 class="feature-title">Lightning-Fast Alerts</h3>
-                    <p class="feature-description">Get notified within seconds of restocks at major retailers. Our monitors check 24/7 so you never miss a drop.</p>
-                </div>
-
-<div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3 class="feature-title">Engaged Community</h3>
-                    <p class="feature-description">Connect with 1,800+ collectors who share your passion. Get advice, trade tips, and build friendships.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🏪</div>
-                    <h3 class="feature-title">Multi-Store Coverage</h3>
-                    <p class="feature-description">We monitor Target, Walmart, Amazon, Best Buy, GameStop, and more—all in one place.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
-                    <h3 class="feature-title">Custom Notifications</h3>
-                    <p class="feature-description">Set alerts for specific products, price points, or stores. Only get notified about what matters to you.</p>
-                </div>
-
+                <div class="feature-card"><div class="feature-icon">⚡</div><h3 class="feature-title">Lightning-Fast Alerts</h3><p class="feature-description">Get notified within seconds of restocks at major retailers. Our monitors check 24/7 so you never miss a drop.</p></div>
+                <div class="feature-card"><div class="feature-icon">👥</div><h3 class="feature-title">Engaged Community</h3><p class="feature-description">Connect with 1,800+ collectors who share your passion. Get advice, trade tips, and build friendships.</p></div>
+                <div class="feature-card"><div class="feature-icon">🏪</div><h3 class="feature-title">Multi-Store Coverage</h3><p class="feature-description">We monitor Target, Walmart, Amazon, Best Buy, GameStop, and more—all in one place.</p></div>
+                <div class="feature-card"><div class="feature-icon">🔔</div><h3 class="feature-title">Custom Notifications</h3><p class="feature-description">Set alerts for specific products, price points, or stores. Only get notified about what matters to you.</p></div>
             </div>
         </div>
     </section>
@@ -1712,25 +487,10 @@ nav.container {
                 <h2 class="section-title">How It Works</h2>
                 <p class="section-description">Get started in under 2 minutes</p>
             </div>
-
             <div class="steps-container">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3 class="step-title">Join Our Discord</h3>
-                    <p class="step-description">Click the invite link and join our free Discord server. No credit card required.</p>
-                </div>
-
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">Set Your Preferences</h3>
-                    <p class="step-description">Choose which products and stores you want to monitor. Customize your alert settings.</p>
-                </div>
-
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3 class="step-title">Get Instant Alerts</h3>
-                    <p class="step-description">Receive real-time notifications when products restock. Act fast and secure your cards!</p>
-                </div>
+                <div class="step"><div class="step-number">1</div><h3 class="step-title">Join Our Discord</h3><p class="step-description">Click the invite link and join our free Discord server. No credit card required.</p></div>
+                <div class="step"><div class="step-number">2</div><h3 class="step-title">Set Your Preferences</h3><p class="step-description">Choose which products and stores you want to monitor. Customize your alert settings.</p></div>
+                <div class="step"><div class="step-number">3</div><h3 class="step-title">Get Instant Alerts</h3><p class="step-description">Receive real-time notifications when products restock. Act fast and secure your cards!</p></div>
             </div>
         </div>
     </section>
@@ -1744,119 +504,77 @@ nav.container {
             </div>
         </div>
         <div class="success-marquee-wrap">
-            <div class="success-row">
-  <div class="success-track" style="animation: marquee-left 45s linear infinite;">
-    <div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-4a061a17cd05337bf025c768e5b79391.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8bf4340281dd67f6f62780ed453b1c99.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-ca4f4739bc48e5f91cc6fc1d3f05d043.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-312e07cdbc6b6aaa511e451ab54f89ef.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-22b4fdd4ad700cebeb5dac1a91b5bd08.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-214fdbf43aac0cb1d7ab1444601f0e4f.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-2c6085d8535b80f7d02a63484bfe9021.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-4a061a17cd05337bf025c768e5b79391.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8bf4340281dd67f6f62780ed453b1c99.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-ca4f4739bc48e5f91cc6fc1d3f05d043.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-312e07cdbc6b6aaa511e451ab54f89ef.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-22b4fdd4ad700cebeb5dac1a91b5bd08.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-214fdbf43aac0cb1d7ab1444601f0e4f.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-2c6085d8535b80f7d02a63484bfe9021.png" alt="Community Success" loading="lazy"></div>
-
-  </div>
-</div>
-            <div class="success-row">
-  <div class="success-track" style="animation: marquee-right 38s linear infinite;">
-    <div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-cddd3ccc49fdc818cd8c90c501d65b1b.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-7eacf58d00aa44e9c8fc1d790a9e3ce9.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-a9b1a10b6f239d55d9195a8220d2b5e6.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-61a639e44248e4c4cae0f721345e24d2.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-26312a4a978df3000d6b9210ae8d94e0.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-67447dfa546a3d33c2cff5eb3b2a7f00.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-cddd3ccc49fdc818cd8c90c501d65b1b.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-7eacf58d00aa44e9c8fc1d790a9e3ce9.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-a9b1a10b6f239d55d9195a8220d2b5e6.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-61a639e44248e4c4cae0f721345e24d2.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-26312a4a978df3000d6b9210ae8d94e0.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-67447dfa546a3d33c2cff5eb3b2a7f00.png" alt="Community Success" loading="lazy"></div>
-
-  </div>
-</div>
-            <div class="success-row">
-  <div class="success-track" style="animation: marquee-left 42s linear infinite;">
-    <div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-c68f284a0cacc9e5b1615ffc79aa7b17.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-fe39a6aed1958b76e928d8ce4dda9413.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-3badb697a88568b9e95f132e11027e96.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-223d50a9ab64816a2967f24d5b67f5e1.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8b0ebad6c1869c2e72ae3908e84f43af.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-931767b367445c0faf87a0b43f8c46ff.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-c68f284a0cacc9e5b1615ffc79aa7b17.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-fe39a6aed1958b76e928d8ce4dda9413.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-3badb697a88568b9e95f132e11027e96.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-223d50a9ab64816a2967f24d5b67f5e1.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8b0ebad6c1869c2e72ae3908e84f43af.png" alt="Community Success" loading="lazy"></div>
-<div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-931767b367445c0faf87a0b43f8c46ff.png" alt="Community Success" loading="lazy"></div>
-
-  </div>
-</div>
+            <div class="success-row"><div class="success-track" style="animation:marquee-left 45s linear infinite;"><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-4a061a17cd05337bf025c768e5b79391.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8bf4340281dd67f6f62780ed453b1c99.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-ca4f4739bc48e5f91cc6fc1d3f05d043.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-312e07cdbc6b6aaa511e451ab54f89ef.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-22b4fdd4ad700cebeb5dac1a91b5bd08.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-214fdbf43aac0cb1d7ab1444601f0e4f.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-2c6085d8535b80f7d02a63484bfe9021.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-4a061a17cd05337bf025c768e5b79391.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8bf4340281dd67f6f62780ed453b1c99.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-ca4f4739bc48e5f91cc6fc1d3f05d043.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-312e07cdbc6b6aaa511e451ab54f89ef.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-22b4fdd4ad700cebeb5dac1a91b5bd08.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-214fdbf43aac0cb1d7ab1444601f0e4f.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-2c6085d8535b80f7d02a63484bfe9021.png" alt="Community Success" loading="lazy"></div></div></div>
+            <div class="success-row"><div class="success-track" style="animation:marquee-right 38s linear infinite;"><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-cddd3ccc49fdc818cd8c90c501d65b1b.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-7eacf58d00aa44e9c8fc1d790a9e3ce9.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-a9b1a10b6f239d55d9195a8220d2b5e6.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-61a639e44248e4c4cae0f721345e24d2.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-26312a4a978df3000d6b9210ae8d94e0.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-67447dfa546a3d33c2cff5eb3b2a7f00.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-cddd3ccc49fdc818cd8c90c501d65b1b.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-7eacf58d00aa44e9c8fc1d790a9e3ce9.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-a9b1a10b6f239d55d9195a8220d2b5e6.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-61a639e44248e4c4cae0f721345e24d2.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-26312a4a978df3000d6b9210ae8d94e0.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-67447dfa546a3d33c2cff5eb3b2a7f00.png" alt="Community Success" loading="lazy"></div></div></div>
+            <div class="success-row"><div class="success-track" style="animation:marquee-left 42s linear infinite;"><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-c68f284a0cacc9e5b1615ffc79aa7b17.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-fe39a6aed1958b76e928d8ce4dda9413.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-3badb697a88568b9e95f132e11027e96.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-223d50a9ab64816a2967f24d5b67f5e1.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8b0ebad6c1869c2e72ae3908e84f43af.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-931767b367445c0faf87a0b43f8c46ff.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-c68f284a0cacc9e5b1615ffc79aa7b17.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-fe39a6aed1958b76e928d8ce4dda9413.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-3badb697a88568b9e95f132e11027e96.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-223d50a9ab64816a2967f24d5b67f5e1.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-8b0ebad6c1869c2e72ae3908e84f43af.png" alt="Community Success" loading="lazy"></div><div class="success-img-wrap"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/marquee/marquee-931767b367445c0faf87a0b43f8c46ff.png" alt="Community Success" loading="lazy"></div></div></div>
         </div>
-        <div style="text-align: center; margin-top: 48px; position: relative; z-index: 1;">
+        <div style="text-align:center;margin-top:48px;position:relative;z-index:1;">
             <a href="https://discord.gg/cZxJV9YRyb" class="btn-secondary">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 Share Your Win in #share-success
             </a>
+        </div>
+    </section>
+
+    <!-- ===== BROWSE SETS SECTION ===== -->
+    <section id="browse-sets" class="browse-sets">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Browse <span class="gradient-text">Card Lists & Prices</span></h2>
+                <p class="section-description">Complete card lists with live TCGplayer prices for every set</p>
+            </div>
+
+            <div id="browse-sets-container">
+                <div class="browse-series-label">🎴 Pokémon TCG</div>
+                <div class="browse-sets-grid">
+                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/chaos-rising/cards">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png" alt="Chaos Rising" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Chaos Rising</div><div class="browse-set-tile-meta">ME04 · May 2026</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/perfect-order/cards">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me03.png" alt="Perfect Order" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Perfect Order</div><div class="browse-set-tile-meta">ME03 · Mar 2026</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/ascended-heroes/cards">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02pt5.png" alt="Ascended Heroes" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Ascended Heroes</div><div class="browse-set-tile-meta">ASC · Feb 2026</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                    <a class="browse-set-tile" href="/phantasmal-flames-card-list">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02.png" alt="Phantasmal Flames" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Phantasmal Flames</div><div class="browse-set-tile-meta">PFL · Nov 2025</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                </div>
+
+                <div class="browse-series-label" style="margin-top:28px;">🏴‍☠️ One Piece TCG</div>
+                <div class="browse-sets-grid">
+                    <a class="browse-set-tile" href="/one-piece/sets/the-azure-seas-seven/cards">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op14.png" alt="Azure Sea's Seven" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Azure Sea's Seven</div><div class="browse-set-tile-meta">OP14 · Jan 2026</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                    <a class="browse-set-tile" href="/one-piece/sets/heroines-edition/cards">
+                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/eb03.png" alt="Heroines Edition" loading="lazy" onerror="this.style.display='none'"></div>
+                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Heroines Edition</div><div class="browse-set-tile-meta">EB03 · Feb 2026</div><span class="browse-set-tile-live">Live</span></div>
+                    </a>
+                </div>
+
+                <div style="text-align:center;margin-top:32px;">
+                    <a href="/sets" class="btn-secondary" style="display:inline-flex;gap:8px;align-items:center;">
+                        View All Sets →
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- FAQ -->
     <section id="faq" class="faq">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Frequently Asked Questions</h2>
-            </div>
-
+            <div class="section-header"><h2 class="section-title">Frequently Asked Questions</h2></div>
             <div class="faq-container">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Is TCG Watchtower really free?
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Yes! Joining our Discord and receiving restock alerts from major retailers is completely free. Some features, like in-store stock checkers, are part of our premium offerings, but core alerts will always remain free.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Which stores do you monitor?
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        We monitor major retailers including Target, Walmart, Amazon, Best Buy, GameStop, Pokémon Center, and more. We're constantly adding new stores based on community feedback.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        How fast are the alerts?
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Get 24/7 live alerts from major retailers, including Pokémon Center. Be notified the moment products go live, even before links appear, and stay ahead with instant alerts when a queue is active.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Can I customize which alerts I receive?
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Absolutely! Choose which stores you want to get alerts from.
-                    </div>
-                </div>
-
-
+                <div class="faq-item"><div class="faq-question">Is TCG Watchtower really free?<span>+</span></div><div class="faq-answer">Yes! Joining our Discord and receiving restock alerts from major retailers is completely free. Some features, like in-store stock checkers, are part of our premium offerings, but core alerts will always remain free.</div></div>
+                <div class="faq-item"><div class="faq-question">Which stores do you monitor?<span>+</span></div><div class="faq-answer">We monitor major retailers including Target, Walmart, Amazon, Best Buy, GameStop, Pokémon Center, and more. We're constantly adding new stores based on community feedback.</div></div>
+                <div class="faq-item"><div class="faq-question">How fast are the alerts?<span>+</span></div><div class="faq-answer">Get 24/7 live alerts from major retailers, including Pokémon Center. Be notified the moment products go live, even before links appear, and stay ahead with instant alerts when a queue is active.</div></div>
+                <div class="faq-item"><div class="faq-question">Can I customize which alerts I receive?<span>+</span></div><div class="faq-answer">Absolutely! Choose which stores you want to get alerts from.</div></div>
             </div>
         </div>
     </section>
@@ -1867,13 +585,8 @@ nav.container {
             <div class="cta-content">
                 <h2 class="cta-title">Ready to Never Miss a Restock?</h2>
                 <p class="cta-description">Join 1,800+ collectors who are staying ahead of the game</p>
-                <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary" style="font-size: 1.125rem; padding: 16px 40px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary" style="font-size:1.125rem;padding:16px 40px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     Join the Discord Now — It's Free
                 </a>
             </div>
@@ -1886,27 +599,30 @@ nav.container {
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>TCG Watchtower</h3>
-                    <p style="color: var(--text-muted); margin-top: 12px;">Your trusted hub for Pokémon and One Piece TCG restock alerts and community.</p>
+                    <p style="color:var(--text-muted);margin-top:12px;">Your trusted hub for Pokémon and One Piece TCG restock alerts and community.</p>
                 </div>
-
                 <div class="footer-section">
-                    <h3>Quick Links</h3>
+                    <h3>Pokémon TCG Sets</h3>
                     <ul class="footer-links">
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="#faq">FAQ</a></li>
-                        <li><a href="https://discord.gg/cZxJV9YRyb">Join Discord</a></li>
+                        <li><a href="/pokemon/sets/mega-evolution/chaos-rising/cards">Chaos Rising</a></li>
+                        <li><a href="/pokemon/sets/mega-evolution/perfect-order/cards">Perfect Order</a></li>
+                        <li><a href="/pokemon/sets/mega-evolution/ascended-heroes/cards">Ascended Heroes</a></li>
+                        <li><a href="/phantasmal-flames-card-list">Phantasmal Flames</a></li>
+                        <li><a href="/sets" style="color:var(--primary-blue);">View All Sets →</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-section">
-                    <h3>Community</h3>
+                    <h3>One Piece TCG</h3>
+                    <ul class="footer-links">
+                        <li><a href="/one-piece/sets/the-azure-seas-seven/cards">Azure Sea's Seven (OP14)</a></li>
+                        <li><a href="/one-piece/sets/heroines-edition/cards">Heroines Edition (EB03)</a></li>
+                    </ul>
+                    <h3 style="margin-top:20px;">Community</h3>
                     <ul class="footer-links">
                         <li><a href="https://discord.gg/cZxJV9YRyb">Discord Server</a></li>
-                        <li><a href="#">Twitter</a></li>
+                        <li><a href="https://x.com/tcgwatchtower" target="_blank" rel="noopener">Twitter / X</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-section">
                     <h3>Legal</h3>
                     <ul class="footer-links">
@@ -1917,171 +633,62 @@ nav.container {
                     </ul>
                 </div>
             </div>
-
             <div class="footer-disclaimer">
                 <p>TCG Watchtower is an independent service and is not affiliated with, endorsed by, or sponsored by Pokémon, Nintendo, Game Freak, Wizards of the Coast, or any other trading card game companies. All trademarks, logos, and images related to trading card games remain the property of their respective owners.</p>
-                <p>All product names, set titles, and images on this site are used for informational and news purposes only under fair use. TCG Watchtower does not sell or distribute official trading card products. References to merchandise are provided solely to help collectors and fans find publicly available retail listings, restocks, and alerts.</p>
-                <p>TCG Watchtower does not claim ownership of any intellectual property, characters, or artwork. Any similarities between TCG Watchtower branding, logos, or imagery and official trademarks are purely descriptive and non-confusing. If you are a rights holder and believe any content on this site infringes your intellectual property, please <a href="contact.html" style="color:#93c5fd;text-decoration:none;">contact us</a> and we will promptly address the issue.</p>
+                <p>TCG Watchtower participates in affiliate programs including the Amazon Associates Program, eBay Partner Network, and TCGplayer Affiliate Program. We may earn a commission on qualifying purchases at no extra cost to you.</p>
+                <p>All product names, set titles, and images on this site are used for informational and news purposes only under fair use. If you are a rights holder and believe any content on this site infringes your intellectual property, please <a href="contact.html" style="color:#93c5fd;text-decoration:none;">contact us</a>.</p>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 TCG Watchtower. All rights reserved.</p>
-            </div>
+            <div class="footer-bottom"><p>&copy; 2026 TCG Watchtower. All rights reserved.</p></div>
         </div>
     </footer>
 
     <script>
-        // ── Live Alerts from Discord ──────────────────────────────────────
         const ALERTS_ENDPOINT = '/api/alerts';
         const container = document.getElementById('live-alerts-container');
-
+        function escHtml(str) { if (!str) return ''; return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
         function buildAlertCard(alert) {
-            const atcBtn = alert.url
-                ? `<a href="${alert.url}" target="_blank" rel="noopener" class="atc-btn">🛒 ATC</a>`
-                : `<span class="info-value atc">ATC</span>`;
-
-            const productImg = alert.image
-                ? `<img src="${escHtml(alert.image)}" alt="${escHtml(alert.title)}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.05);">`
-                : `<div style="font-size:2rem;">🎴</div>`;
-
-            const stockBadge = alert.stock
-                ? `<span style="font-size:0.65rem;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;padding:2px 7px;border-radius:999px;font-weight:bold;">Stock: ${escHtml(alert.stock)}</span>`
-                : '';
-
-            const limitBadge = alert.orderLimit
-                ? `<span style="font-size:0.65rem;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;padding:2px 7px;border-radius:999px;font-weight:bold;">Limit: ${escHtml(alert.orderLimit)}</span>`
-                : '';
-
-            return `
-                <div class="alert-card" style="animation: fadeInUp 0.4s ease-out backwards;">
-                    <div class="alert-header">
-                        <div>
-                            <span class="app-badge">APP</span>
-                            <span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span>
-                        </div>
-                        <div class="alert-status">
-                            <div class="online-indicator"></div>
-                            <span>Item Restocked</span>
-                        </div>
-                    </div>
-                    <div class="alert-body">
-                        <div class="product-image" style="padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-                            ${productImg}
-                        </div>
-                        <div class="product-details">
-                            <div class="product-name">${escHtml(alert.title)}</div>
-                            <div class="product-info">
-                                <div>
-                                    <div class="info-label">SKU</div>
-                                    <div class="info-value" style="font-size:0.65rem;">${alert.sku ? escHtml(alert.sku) : '—'}</div>
-                                </div>
-                                <div>
-                                    <div class="info-label">Price</div>
-                                    <div class="info-value price">${alert.price ? escHtml(alert.price) : '—'}</div>
-                                </div>
-                                <div>
-                                    <div class="info-label">Add to cart</div>
-                                    <div>${atcBtn}</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-                                ${stockBadge}${limitBadge}
-                            </div>
-                            <div class="alert-footer">
-                                🛒 TCG Watchtower Monitors • ${escHtml(alert.store)} • ${escHtml(alert.timeAgo)}
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+            const atcBtn = alert.url ? `<a href="${alert.url}" target="_blank" rel="noopener" class="atc-btn">🛒 ATC</a>` : `<span class="info-value atc">ATC</span>`;
+            const productImg = alert.image ? `<img src="${escHtml(alert.image)}" alt="${escHtml(alert.title)}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.05);">` : `<div style="font-size:2rem;">🎴</div>`;
+            const stockBadge = alert.stock ? `<span style="font-size:0.65rem;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;padding:2px 7px;border-radius:999px;font-weight:bold;">Stock: ${escHtml(alert.stock)}</span>` : '';
+            const limitBadge = alert.orderLimit ? `<span style="font-size:0.65rem;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;padding:2px 7px;border-radius:999px;font-weight:bold;">Limit: ${escHtml(alert.orderLimit)}</span>` : '';
+            return `<div class="alert-card" style="animation:fadeInUp 0.4s ease-out backwards;"><div class="alert-header"><div><span class="app-badge">APP</span><span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span></div><div class="alert-status"><div class="online-indicator"></div><span>Item Restocked</span></div></div><div class="alert-body"><div class="product-image" style="padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">${productImg}</div><div class="product-details"><div class="product-name">${escHtml(alert.title)}</div><div class="product-info"><div><div class="info-label">SKU</div><div class="info-value" style="font-size:0.65rem;">${alert.sku ? escHtml(alert.sku) : '—'}</div></div><div><div class="info-label">Price</div><div class="info-value price">${alert.price ? escHtml(alert.price) : '—'}</div></div><div><div class="info-label">Add to cart</div><div>${atcBtn}</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${stockBadge}${limitBadge}</div><div class="alert-footer">🛒 TCG Watchtower Monitors • ${escHtml(alert.store)} • ${escHtml(alert.timeAgo)}</div></div></div></div>`;
         }
-
-        function escHtml(str) {
-            if (!str) return '';
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
-
         async function fetchAlerts() {
             try {
                 const res = await fetch(ALERTS_ENDPOINT);
                 const data = await res.json();
-
-                if (!data.alerts || data.alerts.length === 0) {
-                    container.innerHTML = `<div class="no-alerts">⏳ No recent alerts — check back soon!</div>`;
-                    return;
-                }
-
-                container.innerHTML = data.alerts.map((a, i) => {
-                    // Stagger animation delays
-                    const card = buildAlertCard(a);
-                    return card.replace('backwards;">', `backwards; animation-delay: ${i * 0.1}s;">`);
-                }).join('');
-
+                if (!data.alerts || data.alerts.length === 0) { container.innerHTML = `<div class="no-alerts">⏳ No recent alerts — check back soon!</div>`; return; }
+                container.innerHTML = data.alerts.map((a, i) => buildAlertCard(a).replace('backwards;">', `backwards; animation-delay: ${i * 0.1}s;">`)).join('');
             } catch (err) {
-                // On error, show fallback demo cards silently
-                container.innerHTML = `
-                    <div class="alert-card">
-                        <div class="alert-header">
-                            <div><span class="app-badge">APP</span> <span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span></div>
-                            <div class="alert-status"><div class="online-indicator"></div><span>Item Restocked</span></div>
-                        </div>
-                        <div class="alert-body">
-                            <div class="product-image">🎴</div>
-                            <div class="product-details">
-                                <div class="product-name">Pokemon Prismatic Evolutions Tech Sticker Collection</div>
-                                <div class="product-info">
-                                    <div><div class="info-label">SKU</div><div class="info-value">1419660941</div></div>
-                                    <div><div class="info-label">Price</div><div class="info-value price">$34.99</div></div>
-                                    <div><div class="info-label">Add to cart</div><div class="info-value atc">ATC</div></div>
-                                </div>
-                                <div class="alert-footer">🛒 TCG Watchtower Monitors • Walmart • 2m ago</div>
-                            </div>
-                        </div>
-                    </div>`;
+                container.innerHTML = `<div class="alert-card"><div class="alert-header"><div><span class="app-badge">APP</span> <span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span></div><div class="alert-status"><div class="online-indicator"></div><span>Item Restocked</span></div></div><div class="alert-body"><div class="product-image">🎴</div><div class="product-details"><div class="product-name">Pokemon Prismatic Evolutions Tech Sticker Collection</div><div class="product-info"><div><div class="info-label">SKU</div><div class="info-value">1419660941</div></div><div><div class="info-label">Price</div><div class="info-value price">$34.99</div></div><div><div class="info-label">Add to cart</div><div class="info-value atc">ATC</div></div></div><div class="alert-footer">🛒 TCG Watchtower Monitors • Walmart • 2m ago</div></div></div></div>`;
             }
         }
-
-        // Fetch on load, then refresh every 10 seconds
         fetchAlerts();
         setInterval(fetchAlerts, 10000);
 
-        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
-                // Skip if href is just "#" or invalid
-                if (!href || href === '#' || href.length <= 1) {
-                    return;
-                }
+                if (!href || href === '#' || href.length <= 1) return;
                 e.preventDefault();
                 const target = document.querySelector(href);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
-        // FAQ accordion
         document.querySelectorAll('.faq-question').forEach(question => {
             question.addEventListener('click', function() {
                 const answer = this.nextElementSibling;
                 const isOpen = answer.style.display === 'block';
                 document.querySelectorAll('.faq-answer').forEach(a => { a.style.display = 'none'; });
                 document.querySelectorAll('.faq-question span').forEach(s => { s.textContent = '+'; });
-                if (!isOpen) {
-                    answer.style.display = 'block';
-                    this.querySelector('span').textContent = '−';
-                }
+                if (!isOpen) { answer.style.display = 'block'; this.querySelector('span').textContent = '−'; }
             });
         });
-
-        // Initialize FAQ answers as hidden
-        document.querySelectorAll('.faq-answer').forEach(answer => {
-            answer.style.display = 'none';
-        });
-
+        document.querySelectorAll('.faq-answer').forEach(answer => { answer.style.display = 'none'; });
     </script>
 
     <script>
-    // Hamburger Menu and Pokemon Sets View
     (async function() {
         const hamburger = document.getElementById('hamburger');
         const hamburgerOverlay = document.getElementById('hamburger-overlay');
@@ -2097,229 +704,66 @@ nav.container {
         const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
         const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
         let currentFilterOp = 'all';
-        
-        // R2 Configuration
         const R2_PUBLIC_URL = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
-        
         let allSets = [];
         let currentFilter = 'all';
-        
-        // Build set logo URL - uses R2 if configured, falls back to TCGdex
         const TCGDEX_ID_REMAP = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};
-        function tcgdexSeriesPrefix(setId) {
-            const remapped = TCGDEX_ID_REMAP[setId] || setId;
-            return remapped.replace(/[^a-z]/gi, '').toLowerCase().replace(/\d.*$/, '') || 'sv';
-        }
-        function setLogoUrl(setId) {
-            if (R2_PUBLIC_URL && R2_PUBLIC_URL !== '__R2_PUBLIC_URL__') {
-                return `${R2_PUBLIC_URL}/logos/${setId}.png`;
-            }
-            const prefix = tcgdexSeriesPrefix(setId);
-            const remapped = TCGDEX_ID_REMAP[setId] || setId;
-            return `https://assets.tcgdex.net/en/${prefix}/${remapped}/logo.png`;
-        }
-        
-        // Toggle hamburger menu
-        function toggleHamburgerMenu() {
-            const isOpen = hamburgerMenu.classList.contains('open');
-            if (isOpen) {
-                closeAllMenus();
-            } else {
-                hamburgerMenu.classList.add('open');
-                hamburgerOverlay.classList.add('open');
-                hamburger.classList.add('open');
-            }
-        }
-        
-        function closeAllMenus() {
-            hamburgerMenu.classList.remove('open');
-            pokemonSetsView.classList.remove('open');
-            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
-            hamburgerOverlay.classList.remove('open');
-            hamburger.classList.remove('open');
-        }
-
-        function showOnePieceSets() {
-            hamburgerMenu.classList.remove('open');
-            if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
-        }
-
-        function backToMainMenu() {
-            pokemonSetsView.classList.remove('open');
-            if (onepieceSetsView) onepieceSetsView.classList.remove('open');
-            hamburgerMenu.classList.add('open');
-        }
-        
-        function showPokemonSets() {
-            hamburgerMenu.classList.remove('open');
-            pokemonSetsView.classList.add('open');
-        }
-        
-        function backToMainMenu() {
-            pokemonSetsView.classList.remove('open');
-            hamburgerMenu.classList.add('open');
-        }
-        
-        // Event listeners
+        function setLogoUrl(setId) { return `${R2_PUBLIC_URL}/logos/${setId}.png`; }
+        function toggleHamburgerMenu() { const isOpen = hamburgerMenu.classList.contains('open'); if (isOpen) { closeAllMenus(); } else { hamburgerMenu.classList.add('open'); hamburgerOverlay.classList.add('open'); hamburger.classList.add('open'); } }
+        function closeAllMenus() { hamburgerMenu.classList.remove('open'); pokemonSetsView.classList.remove('open'); if (onepieceSetsView) onepieceSetsView.classList.remove('open'); hamburgerOverlay.classList.remove('open'); hamburger.classList.remove('open'); }
+        function showOnePieceSets() { hamburgerMenu.classList.remove('open'); if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); } }
+        function showPokemonSets() { hamburgerMenu.classList.remove('open'); pokemonSetsView.classList.add('open'); }
+        function backToMainMenu() { pokemonSetsView.classList.remove('open'); if (onepieceSetsView) onepieceSetsView.classList.remove('open'); hamburgerMenu.classList.add('open'); }
         hamburger.addEventListener('click', toggleHamburgerMenu);
         hamburgerOverlay.addEventListener('click', closeAllMenus);
         pokemonMenuItem.addEventListener('click', showPokemonSets);
         if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
         backToMenu.addEventListener('click', backToMainMenu);
         if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
-        
-        // Filter tabs
-        filterTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                filterTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilter = tab.dataset.filter;
-                renderSets();
-            });
-        });
-        
-        // Fetch and render sets
+        filterTabs.forEach(tab => { tab.addEventListener('click', () => { filterTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); currentFilter = tab.dataset.filter; renderSets(); }); });
         async function fetchSets() {
             try {
-                console.log('Fetching sets.json...');
                 const res = await fetch('/sets.json');
-                if (!res.ok) {
-                    console.error('Failed to fetch sets:', res.status);
-                    return;
-                }
+                if (!res.ok) return;
                 const allData = await res.json();
                 window._allSetsData = allData;
-                allSets = allData.filter(s => {
-                    const id = (s.setId || '').toLowerCase();
-                    return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && (s.series || '') !== 'One Piece TCG';
-                });
-                console.log('Sets loaded:', allSets);
+                allSets = allData.filter(s => { const id = (s.setId || '').toLowerCase(); return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && (s.series || '') !== 'One Piece TCG'; });
                 renderSets();
-            } catch(e) {
-                console.error('Error fetching sets:', e);
-            }
+            } catch(e) {}
         }
-        
         function renderSets() {
-            console.log('renderSets called with filter:', currentFilter);
-            console.log('allSets:', allSets);
-            
-            if (!allSets || allSets.length === 0) {
-                setsGridContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Loading sets...</div>';
-                return;
-            }
-            
-            // Filter sets
+            if (!allSets || allSets.length === 0) { setsGridContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">Loading sets...</div>'; return; }
             let filteredSets = allSets;
-            if (currentFilter === 'live') {
-                filteredSets = allSets.filter(set => set.live);
-            } else if (currentFilter !== 'all') {
-                // Normalize both the filter and series name for comparison
-                const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
-                console.log('Normalized filter:', normalizedFilter);
-                filteredSets = allSets.filter(set => {
-                    const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    console.log('Comparing:', normalizedSeries, '===', normalizedFilter);
-                    return normalizedSeries === normalizedFilter;
-                });
-            }
-            
-            console.log('Filtered sets:', filteredSets);
-            
-            // Group by series
+            if (currentFilter === 'live') filteredSets = allSets.filter(set => set.live);
+            else if (currentFilter !== 'all') { const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,''); filteredSets = allSets.filter(set => set.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf); }
             const groupedSets = {};
-            filteredSets.forEach(set => {
-                if (!groupedSets[set.series]) {
-                    groupedSets[set.series] = [];
-                }
-                groupedSets[set.series].push(set);
-            });
-            
-            console.log('Grouped sets:', groupedSets);
-            
-            // Render grouped sets
+            filteredSets.forEach(set => { if (!groupedSets[set.series]) groupedSets[set.series] = []; groupedSets[set.series].push(set); });
             let html = '';
             Object.keys(groupedSets).forEach(series => {
-                html += `<div class="series-label">${series}</div>`;
-                html += '<div class="sets-grid">';
+                html += `<div class="series-label">${series}</div><div class="sets-grid">`;
                 groupedSets[series].forEach(set => {
                     const isDisabled = !set.live;
-                    const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
                     const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-                    
-                    // Get logo URL (R2 or TCGdex fallback)
                     const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
-                    
-                    html += `
-                        <a href="${link}" class="${cardClass}">
-                            <div class="set-card-image">
-                                ${logoUrl ? `
-                                    <img src="${logoUrl}" data-setid="${set.setId}" 
-                                         alt="${set.name}" 
-                                         style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
-                                         onerror="const m={'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5'};const id=m[this.dataset.setid]||this.dataset.setid;const p=id.replace(/[^a-z]/gi,'').toLowerCase().replace(/\d.*$/,'');this.onerror=null;this.src='https://assets.tcgdex.net/en/'+p+'/'+id+'/logo.png'">
-                                    <div style="font-size: 3rem; display: none;">🎴</div>
-                                ` : `
-                                    <div style="font-size: 3rem;">🎴</div>
-                                `}
-                            </div>
-                            <div class="set-card-content">
-                                <div class="set-card-name">${set.name}</div>
-                                <div class="set-card-info">${set.short} • ${set.series}</div>
-                                ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-                            </div>
-                        </a>
-                    `;
+                    html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}"><div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🎴</div>`}</div><div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short} • ${set.series}</div>${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
                 });
                 html += '</div>';
             });
-            
-            console.log('Rendered HTML length:', html.length);
             setsGridContainer.innerHTML = html;
         }
-        
         function renderOnePieceSets() {
-            const setsGridContainerOp = document.getElementById('sets-grid-container-op');
             if (!setsGridContainerOp) return;
             const sourceData = window._allSetsData || [];
-            const opSets = sourceData.filter(s => {
-                const id = (s.setId || s.slug || '').toLowerCase();
-                return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || (s.series || '') === 'One Piece TCG';
-            });
+            const opSets = sourceData.filter(s => { const id = (s.setId || s.slug || '').toLowerCase(); return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || (s.series || '') === 'One Piece TCG'; });
             const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
-            if (!filtered.length) {
-                setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
-                return;
-            }
+            if (!filtered.length) { setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>'; return; }
             const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
             let html = '<div class="sets-grid">';
-            filtered.forEach(set => {
-                const isDisabled = !set.live;
-                const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-                const logoUrl = set.setId ? r2 + '/logos/op/' + set.setId + '.png' : null;
-                html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '">' +
-                    '<div class="set-card-image">' +
-                    (logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=&quot;none&quot;">' : '<div style="font-size:3rem;">🃏</div>') +
-                    '</div><div class="set-card-content">' +
-                    '<div class="set-card-name">' + set.name + '</div>' +
-                    '<div class="set-card-info">' + (set.short || '') + ' • ' + (set.series || 'One Piece TCG') + '</div>' +
-                    (isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : '') +
-                    '</div></a>';
-            });
+            filtered.forEach(set => { const isDisabled = !set.live; const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug; const logoUrl = set.setId ? r2 + '/logos/op/' + set.setId + '.png' : null; html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '"><div class="set-card-image">' + (logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=\'none\'">' : '<div style="font-size:3rem;">🃏</div>') + '</div><div class="set-card-content"><div class="set-card-name">' + set.name + '</div><div class="set-card-info">' + (set.short || '') + ' • ' + (set.series || 'One Piece TCG') + '</div>' + (isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : '') + '</div></a>'; });
             html += '</div>';
             setsGridContainerOp.innerHTML = html;
         }
-
-        filterTabsOp.forEach(tab => {
-            tab.addEventListener('click', () => {
-                filterTabsOp.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilterOp = tab.dataset.filter;
-                renderOnePieceSets();
-            });
-        });
-
-        // Initialize
+        filterTabsOp.forEach(tab => { tab.addEventListener('click', () => { filterTabsOp.forEach(t => t.classList.remove('active')); tab.classList.add('active'); currentFilterOp = tab.dataset.filter; renderOnePieceSets(); }); });
         await fetchSets();
     })();
     </script>
