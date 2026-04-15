@@ -169,5 +169,158 @@
     "setId": "me04",
     "phase": "jp",
     "live": true
+  },
+  {
+    "slug": "one-piece/sets/romance-dawn/cards",
+    "name": "Romance Dawn (OP01)",
+    "series": "One Piece TCG",
+    "short": "OP01",
+    "setId": "op01",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/paramount-war/cards",
+    "name": "Paramount War (OP02)",
+    "series": "One Piece TCG",
+    "short": "OP02",
+    "setId": "op02",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/pillars-of-strength/cards",
+    "name": "Pillars of Strength (OP03)",
+    "series": "One Piece TCG",
+    "short": "OP03",
+    "setId": "op03",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/kingdoms-of-intrigue/cards",
+    "name": "Kingdoms of Intrigue (OP04)",
+    "series": "One Piece TCG",
+    "short": "OP04",
+    "setId": "op04",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/awakening-of-the-new-era/cards",
+    "name": "Awakening of the New Era (OP05)",
+    "series": "One Piece TCG",
+    "short": "OP05",
+    "setId": "op05",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/wings-of-the-captain/cards",
+    "name": "Wings of the Captain (OP06)",
+    "series": "One Piece TCG",
+    "short": "OP06",
+    "setId": "op06",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/500-years-in-the-future/cards",
+    "name": "500 Years in the Future (OP07)",
+    "series": "One Piece TCG",
+    "short": "OP07",
+    "setId": "op07",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/two-legends/cards",
+    "name": "Two Legends (OP08)",
+    "series": "One Piece TCG",
+    "short": "OP08",
+    "setId": "op08",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/emperors-in-the-new-world/cards",
+    "name": "Emperors in the New World (OP09)",
+    "series": "One Piece TCG",
+    "short": "OP09",
+    "setId": "op09",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/royal-blood/cards",
+    "name": "Royal Blood (OP10)",
+    "series": "One Piece TCG",
+    "short": "OP10",
+    "setId": "op10",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/a-fist-of-divine-speed/cards",
+    "name": "A Fist of Divine Speed (OP11)",
+    "series": "One Piece TCG",
+    "short": "OP11",
+    "setId": "op11",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/legacy-of-the-master/cards",
+    "name": "Legacy of the Master (OP12)",
+    "series": "One Piece TCG",
+    "short": "OP12",
+    "setId": "op12",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/carrying-on-his-will/cards",
+    "name": "Carrying On His Will (OP13)",
+    "series": "One Piece TCG",
+    "short": "OP13",
+    "setId": "op13",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/the-azure-seas-seven/cards",
+    "name": "The Azure Sea's Seven (OP14)",
+    "series": "One Piece TCG",
+    "short": "OP14",
+    "setId": "op14",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "one-piece/sets/memorial-collection/cards",
+    "name": "Memorial Collection (EB01)",
+    "series": "One Piece TCG",
+    "short": "EB01",
+    "setId": "eb01",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/anime-25th-collection/cards",
+    "name": "Anime 25th Collection (EB02)",
+    "series": "One Piece TCG",
+    "short": "EB02",
+    "setId": "eb02",
+    "phase": "en",
+    "live": false
+  },
+  {
+    "slug": "one-piece/sets/heroines-edition/cards",
+    "name": "Heroines Edition (EB03)",
+    "series": "One Piece TCG",
+    "short": "EB03",
+    "setId": "eb03",
+    "phase": "en",
+    "live": true
   }
 ]
