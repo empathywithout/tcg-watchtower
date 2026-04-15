@@ -1,5 +1,4 @@
 /* ===== MOBILE FIXES — loaded via nav.html, applies to all pages ===== */
-
 @media (max-width: 768px) {
   /* Stat boxes — keep 3-column so all fit in one row */
   .set-stats {
@@ -21,7 +20,6 @@
   .stat-card img {
     max-height: 28px !important;
   }
-
   /* Compress hero so section nav is reachable sooner */
   .set-hero {
     padding: 24px 0 32px !important;
@@ -47,10 +45,20 @@
     margin-bottom: 12px !important;
     font-size: 0.7rem !important;
   }
-
   /* Scroll hint */
   .scroll-hint {
     display: block !important;
+  }
+  /* Section nav dropdown — fixed position so it appears below nav correctly */
+  .section-nav-dropdown {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    max-height: 60vh !important;
+    z-index: 9999 !important;
   }
 }
 
@@ -68,21 +76,7 @@
   user-select: none;
 }
 .scroll-hint.hidden { display: none !important; }
-
 @keyframes mobileHintPulse {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 1;   }
-}
-
-/* Dropdown fixed to viewport on mobile — always visible above bottom nav */
-@media (max-width: 768px) {
-  .section-nav-dropdown {
-    position: fixed !important;
-    bottom: 50px !important;
-    top: auto !important;
-    right: 8px !important;
-    max-height: 50vh !important;
-    margin: 0 !important;
-    z-index: 9999 !important;
-  }
 }
