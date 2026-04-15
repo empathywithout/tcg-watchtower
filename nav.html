@@ -107,29 +107,6 @@
   });
 })();
 
-// On mobile, fix JS-positioned dropdowns to open upward from bottom nav
-(function() {
-  if (window.innerWidth > 768) return;
-  document.addEventListener('click', function(e) {
-    const setsBtn = document.getElementById('nav-sets-btn');
-    const dropdown = document.getElementById('nav-sets-dropdown');
-    if (!setsBtn || !dropdown) return;
-    if (setsBtn.contains(e.target)) {
-      // Override any JS top positioning — open upward instead
-      setTimeout(function() {
-        if (dropdown.classList.contains('open')) {
-          const navEl = document.getElementById('section-nav');
-          const navRect = navEl ? navEl.getBoundingClientRect() : null;
-          if (navRect) {
-            dropdown.style.top = 'auto';
-            dropdown.style.bottom = (window.innerHeight - navRect.top + 4) + 'px';
-          }
-        }
-      }, 0);
-    }
-  });
-})();
-
 // Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
 (function() {
   document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
