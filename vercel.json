@@ -457,22 +457,6 @@
       "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/chaos-rising/chaos-rising/cards",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards"
-    },
-    {
-      "source": "/pokemon/sets/chaos-rising/chaos-rising/sealed-product",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product"
-    },
-    {
-      "source": "/pokemon/sets/chaos-rising/chaos-rising/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/chaos-rising/chaos-rising/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
       "destination": "/chaos-rising-card-list.html"
     },
@@ -699,6 +683,26 @@
       "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
       "permanent": true
     }
+     {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards"
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product"
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable.html"
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards"
+      "permanent": true
+    },
   ],
   "headers": [
     {
