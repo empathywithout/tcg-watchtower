@@ -1,0 +1,32 @@
+name: Clean Sitemap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean-sitemap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run clean-sitemap script
+        run: node scripts/clean-sitemap.mjs
+
+      - name: Commit cleaned sitemap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Clean bad card URLs from sitemap"
+          git pull --rebase origin main
+          git push
