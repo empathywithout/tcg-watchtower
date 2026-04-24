@@ -83,7 +83,6 @@
     });
     sectionNav.parentNode.insertBefore(hint, sectionNav);
   }
-  // Run after nav is injected and page has rendered
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectHint);
   } else {
@@ -99,21 +98,22 @@
   });
 })();
 
-// Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
+// Inject Twitter/X link into footer on all pages
 (function() {
-  document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
-    link.media = 'print';
-    link.onload = function() { this.media = 'all'; };
-  });
+  function fixTwitterLink() {
+    document.querySelectorAll('footer a[href="#"]').forEach(function(a) {
+      if (a.textContent.trim() === 'Twitter') {
+        a.href = 'https://x.com/tcgwatchtower';
+        a.textContent = 'X (Twitter)';
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixTwitterLink);
+  } else {
+    fixTwitterLink();
+  }
 })();
-
-// Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
-(function() {
-  document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
-    link.media = 'print';
-    link.onload = function() { this.media = 'all'; };
-  });
-})();
-
-
 </script>
