@@ -10,6 +10,10 @@ const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
 const ONE_PIECE_CATEGORY  = 68;
 
+const TCGCSV_HEADERS = {
+  'User-Agent': 'TCGWatchtower/1.0',
+};
+
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const CACHE_VERSION = 'v2'; // bump to bust in-memory cache
@@ -44,10 +48,12 @@ export default async function handler(req, res) {
   try {
     const [productsRes, pricesRes] = await Promise.all([
       fetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(10000),
+        headers: TCGCSV_HEADERS,
       }),
       fetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(10000),
+        headers: TCGCSV_HEADERS,
       })
     ]);
 
