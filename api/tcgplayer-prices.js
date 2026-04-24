@@ -46,6 +46,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Temporary debug — remove after confirming User-Agent is sent correctly
+    const testRes = await fetch('https://httpbin.org/headers', { headers: TCGCSV_HEADERS });
+    const testData = await testRes.json();
+    console.log('Outbound headers:', JSON.stringify(testData));
+
     const [productsRes, pricesRes] = await Promise.all([
       fetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
         signal: AbortSignal.timeout(10000),
@@ -58,13 +63,15 @@ export default async function handler(req, res) {
     ]);
 
     if (!productsRes.ok) {
-  const body = await productsRes.text();
-  return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body });
-}
+      const body = await productsRes.text();
+      const headers = Object.fromEntries(productsRes.headers.entries());
+      return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body, headers });
+    }
     if (!pricesRes.ok) {
-  const body = await pricesRes.text();
-  return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body });
-}
+      const body = await pricesRes.text();
+      const headers = Object.fromEntries(pricesRes.headers.entries());
+      return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body, headers });
+    }
 
     const [productsData, pricesData] = await Promise.all([
       productsRes.json(),
@@ -159,25 +166,19 @@ export default async function handler(req, res) {
         const numKey  = opLocalId + suffix;
 
         // FIX: dedup by numKey (card number + variant), not nameKey.
-        // nameKey caused collision: e.g. Uta (003) and Uta Manga Art (061) both
-        // normalized to "uta_mangaaltart", so the lower productId (wrong card) always won.
         if (bestProductId[numKey] !== undefined) continue;
         bestProductId[numKey] = product.productId;
 
         const productUrl = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
 
-        // Store under numKey as the authoritative entry
         prices[numKey]  = priceObj.marketPrice;
         tcgpUrls[numKey] = productUrl;
 
-        // Also store under nameKey for name-based lookups (may be overwritten by later
-        // products with the same name — numKey is the source of truth for URLs)
         if (!prices[nameKey]) {
           prices[nameKey]   = priceObj.marketPrice;
           tcgpUrls[nameKey] = productUrl;
         }
 
-        // Store base number key (no suffix) for simple lookups, don't overwrite
         if (!prices[opLocalId]) {
           prices[opLocalId]   = priceObj.marketPrice;
           tcgpUrls[opLocalId] = productUrl;
