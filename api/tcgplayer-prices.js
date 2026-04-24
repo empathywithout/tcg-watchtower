@@ -57,8 +57,14 @@ export default async function handler(req, res) {
       })
     ]);
 
-    if (!productsRes.ok) return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}` });
-    if (!pricesRes.ok)   return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}` });
+    if (!productsRes.ok) {
+  const body = await productsRes.text();
+  return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body });
+}
+    if (!pricesRes.ok) {
+  const body = await pricesRes.text();
+  return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body });
+}
 
     const [productsData, pricesData] = await Promise.all([
       productsRes.json(),
