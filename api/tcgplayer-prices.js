@@ -2,9 +2,13 @@
 // Fetches accurate TCGplayer market prices via TCGCSV (free, no auth, daily updated)
 // TCGCSV mirrors TCGplayer's API: https://tcgcsv.com/docs
 //
+// Uses undici fetch to ensure User-Agent header is not overridden by Vercel's runtime
+//
 // URL: GET /api/tcgplayer-prices?groupId=22873
 // Debug: GET /api/tcgplayer-prices?groupId=22873&debug=1&card=234
 // Returns: { prices: { "001": 0.50, "199": 59.99, ... }, tcgpUrls: {...} }
+
+import { fetch as undiciFetch } from 'undici';
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
@@ -16,7 +20,7 @@ const TCGCSV_HEADERS = {
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v2'; // bump to bust in-memory cache
+const CACHE_VERSION = 'v3'; // bumped — undici fetch
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -46,17 +50,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Temporary debug — remove after confirming User-Agent is sent correctly
-    const testRes = await fetch('https://httpbin.org/headers', { headers: TCGCSV_HEADERS });
-    const testData = await testRes.json();
-    console.log('Outbound headers:', JSON.stringify(testData));
-
     const [productsRes, pricesRes] = await Promise.all([
-      fetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
+      undiciFetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
         signal: AbortSignal.timeout(10000),
         headers: TCGCSV_HEADERS,
       }),
-      fetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
+      undiciFetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
         signal: AbortSignal.timeout(10000),
         headers: TCGCSV_HEADERS,
       })
@@ -64,13 +63,11 @@ export default async function handler(req, res) {
 
     if (!productsRes.ok) {
       const body = await productsRes.text();
-      const headers = Object.fromEntries(productsRes.headers.entries());
-      return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body, headers });
+      return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body });
     }
     if (!pricesRes.ok) {
       const body = await pricesRes.text();
-      const headers = Object.fromEntries(pricesRes.headers.entries());
-      return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body, headers });
+      return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body });
     }
 
     const [productsData, pricesData] = await Promise.all([
