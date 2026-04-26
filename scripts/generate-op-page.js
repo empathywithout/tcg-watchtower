@@ -492,20 +492,19 @@ const EBAY_MKRID = '711-53200-19255-0';
 const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
-// cardImg handles both primary ("118") and cross-set ("EB04-044") localIds
+// cardImg handles primary ("118") and cross-set ("EB04-044") localIds
 function cardImg(id) { return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\`; }
 
-// Display number: strips variant suffix but keeps full cross-set ID
-// "118" -> "118", "EB04-044" -> "EB04-044", "118_altart" -> "118", "EB04-044_altart" -> "EB04-044"
+// displayNumber strips variant suffix, keeps full cross-set ID
 function displayNumber(localId) {
   if (!localId) return '';
   return localId.includes('_') ? localId.split('_')[0] : localId;
 }
 
-// Set hero stack images from data-id attributes — never overridden by chase sort
+// Set hero stack images from data-id — never overridden
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
 const logoEl = document.getElementById('set-logo-hero');
-if (logoEl) { logoEl.src = \`\${R2}/logos/op/\${SET_ID}.png\`; }
+if (logoEl) logoEl.src = \`\${R2}/logos/op/\${SET_ID}.png\`;
 
 function ebayLink(q) { return \`https://www.ebay.com/sch/i.html?_nkw=\${encodeURIComponent(q)}&mkcid=1&mkrid=\${EBAY_MKRID}&siteid=0&campid=\${EBAY_CAMP}&toolid=10001&mkevt=1\`; }
 function tcgpLink(name, num) {
@@ -519,40 +518,39 @@ function formatVariantType(type) {
   return map[type] || type.replace(/([A-Z])/g,' \$1').trim();
 }
 function variantTypeFromId(localId) {
-  if (!localId || !localId.includes('_')) return null;
+  if (!localId||!localId.includes('_')) return null;
   const suffix = localId.split('_').slice(1).join('_');
   const map = {'altart':'altArt','specialaltart':'specialAltArt','mangaaltart':'mangaAltArt','redmangaaltart':'redMangaAltArt','parallel':'parallel','fullart':'fullart','promo':'promo'};
-  return map[suffix] || suffix;
+  return map[suffix]||suffix;
 }
 function cleanVariantName(name, variantType, localId) {
-  const vtype = variantType || variantTypeFromId(localId);
+  const vtype = variantType||variantTypeFromId(localId);
   if (!vtype) return name;
-  return name.replace(/[ ]*[(][^)]*[)][ ]*\$/, '').trim() + ' (' + formatVariantType(vtype) + ')';
+  return name.replace(/[ ]*[(][^)]*[)][ ]*\$/, '').trim()+' ('+formatVariantType(vtype)+')';
 }
 function normalizeName(name) {
   return (name||'').replace(/[(][^)]*[)]/g,'').replace(/[^a-zA-Z0-9 ]/g,'').trim().toLowerCase().replace(/  +/g,' ').trim();
 }
 
-// Price cache key — cross-set cards (e.g. "EB04-044") pass through as-is
+// Price key — cross-set IDs pass through as-is, primary get zero-padded
 function priceKey(localId) {
   if (!localId) return localId;
-  const isCrossSet = /^[A-Z]{2,}\d+-\d+/.test(localId);
-  if (isCrossSet) return localId;
-  const suffix = localId.includes('_') ? '_' + localId.split('_').slice(1).join('_') : '';
+  if (/^[A-Z]{2,}\d+-/.test(localId)) return localId;
+  const suffix = localId.includes('_') ? '_'+localId.split('_').slice(1).join('_') : '';
   const base = (localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0');
-  return base + suffix;
+  return base+suffix;
 }
 function priceKeyByName(localId, cardName) {
-  if (!localId || !cardName) return priceKey(localId);
-  const suffix = localId.includes('_') ? '_' + localId.split('_').slice(1).join('_') : '';
-  return normalizeName(cardName) + suffix;
+  if (!localId||!cardName) return priceKey(localId);
+  const suffix = localId.includes('_') ? '_'+localId.split('_').slice(1).join('_') : '';
+  return normalizeName(cardName)+suffix;
 }
 function getCached(localId, cardName) {
-  return priceCache[priceKey(localId)] || priceCache[priceKeyByName(localId, cardName)] || null;
+  return priceCache[priceKey(localId)]||priceCache[priceKeyByName(localId,cardName)]||null;
 }
 
 const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
-function normalizeRarity(r) { return RARITY_NORMALIZE[r] || r || ''; }
+function normalizeRarity(r) { return RARITY_NORMALIZE[r]||r||''; }
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
 const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR','Alternate Art':'ALT','Special':'SP','Super Rare':'SR','Rare':'R','Uncommon':'UC','Common':'C','Leader':'L'};
@@ -569,19 +567,27 @@ async function loadCards() {
     const res = await fetch(\`/api/cards?set=\${SET_ID}&game=onepiece\`);
     if (!res.ok) throw new Error(\`API \${res.status}\`);
     const json = await res.json();
-    allCards = json.cards || [];
+    allCards = json.cards||[];
     if (!allCards.length) throw new Error('empty');
   } catch(e) {
     try {
       const res2 = await fetch(\`\${R2}/data/op/\${SET_ID}.json\`);
       if (!res2.ok) throw new Error(\`R2 \${res2.status}\`);
       const json2 = await res2.json();
-      allCards = json2.cards || [];
+      allCards = json2.cards||[];
       if (!allCards.length) throw new Error('empty');
     } catch(e2) { countEl.textContent='⚠️ Could not load cards — try refreshing.'; return; }
   }
 
-  const officialCount = allCards.filter(c=>!c.isVariant).length || allCards.length;
+  // Deduplicate by localId — keep first occurrence
+  const seenIds = new Set();
+  allCards = allCards.filter(c => {
+    if (seenIds.has(c.localId)) return false;
+    seenIds.add(c.localId);
+    return true;
+  });
+
+  const officialCount = allCards.filter(c=>!c.isVariant).length||allCards.length;
   document.getElementById('stat-total-count').textContent = officialCount;
   document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards — search and filter by rarity. Click any card to find it.\`;
 
@@ -590,8 +596,8 @@ async function loadCards() {
   const RARITY_ORDER = ['Common','Uncommon','Leader','Rare','Super Rare','Special','Secret Rare','Treasure Rare','Manga Rare'];
   const raritySet = new Set(allCards.map(c=>c.rarity).filter(Boolean));
   const sel = document.getElementById('rarity-filter');
-  RARITY_ORDER.forEach(r => { if (raritySet.has(r)) { const o=document.createElement('option'); o.value=r; o.textContent=r; sel.appendChild(o); }});
-  raritySet.forEach(r => { if (!RARITY_ORDER.includes(r)&&r) { const o=document.createElement('option'); o.value=r; o.textContent=r; sel.appendChild(o); }});
+  RARITY_ORDER.forEach(r=>{ if(raritySet.has(r)){const o=document.createElement('option');o.value=r;o.textContent=r;sel.appendChild(o);}});
+  raritySet.forEach(r=>{ if(!RARITY_ORDER.includes(r)&&r){const o=document.createElement('option');o.value=r;o.textContent=r;sel.appendChild(o);}});
 
   renderChaseCards(allCards);
   filteredCards = allCards;
@@ -600,33 +606,33 @@ async function loadCards() {
 
 function renderChaseCards(cards) {
   currentChaseList = cards
-    .filter(c => CHASE_RARITIES.includes(c.rarity||''))
-    .sort((a,b) => (RARITY_TIER[a.rarity]??99)-(RARITY_TIER[b.rarity]??99))
-    .map(c => ({
-      id: c.localId,
-      displayId: displayNumber(c.localId),
-      name: (c.variantType||(c.localId&&c.localId.includes('_'))) ? cleanVariantName(c.name,c.variantType,c.localId) : c.name,
-      rawName: c.name,
-      rarity: c.rarity,
-      rarityClass: RARITY_CLASS[c.rarity]||'rarity-r',
-      label: RARITY_LABEL[c.rarity]||c.rarity,
-      img: c.image || cardImg(c.localId),
+    .filter(c=>CHASE_RARITIES.includes(c.rarity||''))
+    .sort((a,b)=>(RARITY_TIER[a.rarity]??99)-(RARITY_TIER[b.rarity]??99))
+    .map(c=>({
+      id:c.localId,
+      displayId:displayNumber(c.localId),
+      name:(c.variantType||(c.localId&&c.localId.includes('_')))?cleanVariantName(c.name,c.variantType,c.localId):c.name,
+      rawName:c.name,
+      rarity:c.rarity,
+      rarityClass:RARITY_CLASS[c.rarity]||'rarity-r',
+      label:RARITY_LABEL[c.rarity]||c.rarity,
+      img:c.image||cardImg(c.localId),
     }));
   renderChaseHTML();
 }
 
 function renderChaseHTML() {
-  const pricesKnown = Object.keys(priceCache).length > 0;
+  const pricesKnown = Object.keys(priceCache).length>0;
   const sorted = [...currentChaseList]
-    .map(c => ({ ...c, price: getCached(c.id, c.rawName)?.price ?? null }))
-    .sort((a,b) => pricesKnown ? (b.price??-1)-(a.price??-1) : (RARITY_TIER[a.rarity]??99)-(RARITY_TIER[b.rarity]??99));
+    .map(c=>({...c,price:getCached(c.id,c.rawName)?.price??null}))
+    .sort((a,b)=>pricesKnown?(b.price??-1)-(a.price??-1):(RARITY_TIER[a.rarity]??99)-(RARITY_TIER[b.rarity]??99));
 
-  // NOTE: hero stack images are NOT updated here — they are set once from data-id attributes
-  document.getElementById('chase-grid').innerHTML = sorted.map(c => {
+  // Hero stack images are set once from data-id attributes — never overridden here
+  document.getElementById('chase-grid').innerHTML = sorted.map(c=>{
     const priceHTML = c.price
       ? \`<div class="chase-card-price-wrap"><span class="price-value">\$\${c.price.toFixed(2)}</span></div>\`
       : \`<div class="chase-card-price-wrap" style="color:var(--muted);font-size:.75rem;font-style:italic">—</div>\`;
-    const cached = getCached(c.id, c.rawName);
+    const cached = getCached(c.id,c.rawName);
     return \`<div class="chase-card" data-localid="\${c.id}" data-rawname="\${(c.rawName||c.name).replace(/"/g,'&quot;')}" data-name="\${c.name.replace(/"/g,'&quot;')}" data-rarity="\${c.rarity}" data-img="\${c.img}" onclick="handleChaseClick(this)">
       <img class="chase-card-img" src="\${c.img}" alt="\${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="chase-card-info">
@@ -643,24 +649,29 @@ function renderChaseHTML() {
   }).join('');
 }
 
+// Track rendered localIds to skip duplicates — fixes the broken displayedCount caused by duplicate '105'
+const _seenRenderIds = new Set();
 function renderCards(reset) {
   const grid = document.getElementById('card-grid');
-  if (reset) { grid.innerHTML=''; displayedCount=0; }
+  if (reset) { grid.innerHTML=''; displayedCount=0; _seenRenderIds.clear(); }
   const slice = filteredCards.slice(displayedCount, displayedCount+PAGE_SIZE);
+  let rendered = 0;
   slice.forEach(card => {
-    const imgUrl = card.image || cardImg(card.localId);
+    if (_seenRenderIds.has(card.localId)) return;
+    _seenRenderIds.add(card.localId);
+    const imgUrl = card.image||cardImg(card.localId);
     const el = document.createElement('div');
-    el.className = 'card-item';
-    el.dataset.localId = card.localId;
-    el.dataset.cardName = card.name;
-    const cached = getCached(card.localId, card.name);
-    const priceText = cached?.price ? \`\$\${cached.price.toFixed(2)}\` : '';
-    const priceClass = !cached ? 'loading' : '';
-    const displayName = (card.variantType||(card.localId&&card.localId.includes('_'))) ? cleanVariantName(card.name,card.variantType,card.localId) : card.name;
+    el.className='card-item';
+    el.dataset.localId=card.localId;
+    el.dataset.cardName=card.name;
+    const cached = getCached(card.localId,card.name);
+    const priceText = cached?.price?\`\$\${cached.price.toFixed(2)}\`:'';
+    const priceClass = !cached?'loading':'';
+    const displayName = (card.variantType||(card.localId&&card.localId.includes('_')))?cleanVariantName(card.name,card.variantType,card.localId):card.name;
     const dispNum = displayNumber(card.localId);
-    const tcgpUrl = cached?.url || tcgpLink(card.name, dispNum);
+    const tcgpUrl = cached?.url||tcgpLink(card.name,dispNum);
     const ebayUrl = ebayLink(\`\${card.name} \${dispNum} \${SET_FULL_NAME} One Piece\`);
-    el.innerHTML = \`<img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
+    el.innerHTML=\`<img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">\${displayName}</div>
         <div class="card-item-num">\${dispNum}</div>
@@ -671,12 +682,14 @@ function renderCards(reset) {
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>\`;
-    el.addEventListener('click', ()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
+    el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
     grid.appendChild(el);
+    rendered++;
   });
-  displayedCount += slice.length;
-  document.getElementById('card-count').textContent = \`Showing \${Math.min(displayedCount,filteredCards.length)} of \${filteredCards.length} cards\`;
-  document.getElementById('load-more-btn').style.display = displayedCount < filteredCards.length ? 'block' : 'none';
+  displayedCount+=slice.length;
+  const total = filteredCards.length - (filteredCards.length - _seenRenderIds.size);
+  document.getElementById('card-count').textContent=\`Showing \${_seenRenderIds.size} of \${filteredCards.length} cards\`;
+  document.getElementById('load-more-btn').style.display=displayedCount<filteredCards.length?'block':'none';
 }
 
 function applyFilters() {
@@ -685,7 +698,7 @@ function applyFilters() {
   const sort   = document.getElementById('sort-select').value;
   let cards = allCards.filter(c=>(!search||c.name.toLowerCase().includes(search))&&(!rarity||c.rarity===rarity));
   if (sort==='price') {
-    cards = [...cards].sort((a,b)=>{
+    cards=[...cards].sort((a,b)=>{
       const pa=getCached(a.localId,a.name)?.price??-1;
       const pb=getCached(b.localId,b.name)?.price??-1;
       return pb-pa;
@@ -791,11 +804,10 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
       const grouped={};
       sets.forEach(s=>{if(!grouped[s.series])grouped[s.series]=[];grouped[s.series].push(s);});
       let html='';
-      const currentPath=window.location.pathname.replace(/^[/]/,'').replace(/[.]html\$/,'');
       Object.entries(grouped).forEach(([series,seriesSets])=>{
         html+=\`<div class="nav-dropdown-series">\${series}</div>\`;
         seriesSets.forEach(s=>{
-          const isCurrent=currentPath.includes(s.setId)||('/'+s.slug)===window.location.pathname;
+          const isCurrent=window.location.pathname.includes(s.setId)||('/'+s.slug)===window.location.pathname;
           const isDisabled=!s.live;
           const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
           html+=\`<a href="\${isDisabled?'javascript:void(0)':'/'+s.slug}" class="nav-dropdown-set\${isCurrent?' current':''}\${isDisabled?' disabled':''}">
@@ -863,13 +875,13 @@ function initNav(){
           <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short}•\${set.series}</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
       });html+='</div>';
     });
-    setsGridContainer.innerHTML=html||'<div style="color:var(--muted);padding:40px;text-align:center">No sets found</div>';
+    setsGridContainer.innerHTML=html||'<div style="padding:40px;text-align:center">No sets found</div>';
   }
   function renderOnePieceSets(){
     if(!setsGridContainerOp)return;
     const opSets=allSets.filter(s=>{const id=(s.setId||'').toLowerCase();return id.startsWith('op')||id.startsWith('eb')||id.startsWith('st');});
     const filtered=currentFilterOp==='live'?opSets.filter(s=>s.live):opSets;
-    if(!filtered.length){setsGridContainerOp.innerHTML='<div style="color:var(--muted);text-align:center;padding:40px;">No sets available</div>';return;}
+    if(!filtered.length){setsGridContainerOp.innerHTML='<div style="text-align:center;padding:40px;">No sets available</div>';return;}
     const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     let html='<div class="sets-grid">';
     filtered.forEach(set=>{
