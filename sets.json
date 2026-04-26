@@ -322,5 +322,14 @@
     "setId": "eb03",
     "phase": "en",
     "live": true
+  },
+  {
+    "slug": "one-piece/sets/adventure-on-kamis-island/cards",
+    "name": "Adventure on Kami's Island",
+    "series": "One Piece TCG",
+    "short": "OP15",
+    "setId": "op15",
+    "phase": "en",
+    "live": true
   }
 ]
