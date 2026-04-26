@@ -3,8 +3,10 @@
  * sync-op-images.mjs
  * Syncs One Piece TCG card images and metadata to R2
  *
- * Dynamically detects all card set prefixes in the TCGplayer group via TCGCSV,
- * fetches each from Scrydex, and merges results. No hardcoded companion maps needed.
+ * Strategy:
+ * - Fetches TCGCSV to detect all card numbers in the TCGplayer group
+ * - Primary expansion only (e.g. OP15): full Scrydex fetch
+ * - Everything else (EB04, PRB02, OP11 SPs etc): fetch only the specific cards present in the group
  */
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -28,7 +30,7 @@ const s3 = new S3Client({
     secretAccessKey: process.env.CF_R2_SECRET_KEY,
   },
 });
-const BUCKET     = process.env.CF_R2_BUCKET;
+const BUCKET      = process.env.CF_R2_BUCKET;
 const CARD_WIDTH  = 400;
 const CARD_HEIGHT = 558;
 
@@ -37,17 +39,15 @@ const HEADERS = {
   'X-Team-ID': SCRYDEX_TEAM_ID,
 };
 
-// Primary Scrydex ID for the set (used for logo fetch)
 const SCRYDEX_ID_MAP = {
   'op01':'OP01','op02':'OP02','op03':'OP03','op04':'OP04','op05':'OP05',
   'op06':'OP06','op07':'OP07','op08':'OP08','op09':'OP09','op10':'OP10',
   'op11':'OP11','op12':'OP12','op13':'OP13','op14':'OP14','op15':'OP15',
+  'op16':'OP16',
   'eb01':'EB01','eb02':'EB02','eb03':'EB03','eb04':'EB04',
   'st01':'ST01','st02':'ST02','st03':'ST03','st04':'ST04','st10':'ST10','st13':'ST13',
 };
 
-// Known Scrydex expansion IDs — used to map card number prefixes to Scrydex IDs
-// Scrydex uses uppercase e.g. "OP01", "EB04", "PRB02", "ST01"
 const SCRYDEX_KNOWN_EXPANSIONS = new Set([
   'OP01','OP02','OP03','OP04','OP05','OP06','OP07','OP08','OP09','OP10',
   'OP11','OP12','OP13','OP14','OP15','OP16',
@@ -71,13 +71,13 @@ const RARITY_MAP = {
 function normalizeRarity(r) { return RARITY_MAP[r?.trim()] || r?.trim() || ''; }
 
 const VARIANT_RARITY = {
-  'normal':          null,
-  'altart':          'Alternate Art',
-  'mangaaltart':     'Manga Rare',
-  'specialaltart':   'Special',
-  'parallel':        'Special',
-  'fullart':         'Alternate Art',
-  'promo':           'Special',
+  'normal':        null,
+  'altart':        'Alternate Art',
+  'mangaaltart':   'Manga Rare',
+  'specialaltart': 'Special',
+  'parallel':      'Special',
+  'fullart':       'Alternate Art',
+  'promo':         'Special',
 };
 
 function normalizeVariantName(name) {
@@ -141,10 +141,6 @@ function pickImage(images) {
   return images[0]?.large || images[0]?.medium || images[0]?.small || null;
 }
 
-/**
- * Extract card number prefix from a TCGplayer product number string
- * e.g. "OP15-118" -> "OP15", "EB04-044" -> "EB04", "PRB02-006" -> "PRB02"
- */
 function extractPrefix(numberStr) {
   if (!numberStr) return null;
   const match = numberStr.match(/^([A-Z]+\d+)-/);
@@ -152,51 +148,53 @@ function extractPrefix(numberStr) {
 }
 
 /**
- * Fetch all products from a TCGplayer group via TCGCSV and extract
- * unique card number prefixes that Scrydex knows about.
+ * Fetch TCGplayer group from TCGCSV.
+ * Returns { prefix -> Set<cardNumber> } for all non-primary expansions.
+ * e.g. { EB04: Set{'042','043','044',...}, PRB02: Set{'006'}, OP11: Set{'106'} }
  */
-async function getExpansionPrefixesFromTCGCSV(groupId) {
-  if (!groupId) return [];
-  console.log(`\n🔍 Fetching TCGplayer group ${groupId} from TCGCSV to detect expansions...`);
-
+async function getGroupInfo(groupId, primaryId) {
   const url = `https://tcgcsv.com/tcgplayer/68/${groupId}/products`;
+  console.log(`🔍 Fetching TCGplayer group ${groupId} from TCGCSV...`);
+
   let data;
   try {
     const res = await fetch(url, { headers: { Accept: 'application/json', 'User-Agent': 'TCGWatchtower/1.0' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = await res.json();
   } catch (e) {
-    console.warn(`⚠️  TCGCSV fetch failed: ${e.message} — falling back to primary expansion only`);
-    return [];
+    console.warn(`⚠️  TCGCSV fetch failed: ${e.message} — will use primary expansion only`);
+    return {};
   }
 
   const products = data.results || [];
-  const prefixCounts = {};
+  const prefixMap = {};
 
   for (const product of products) {
     const extData = product.extendedData || [];
     const numberEntry = extData.find(d => d.name === 'Number');
     if (!numberEntry) continue;
-    const prefix = extractPrefix(numberEntry.value);
-    if (prefix && SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) {
-      prefixCounts[prefix] = (prefixCounts[prefix] || 0) + 1;
-    }
+    const fullNumber = numberEntry.value;
+    const prefix = extractPrefix(fullNumber);
+    // Skip primary — it gets a full fetch separately
+    if (!prefix || prefix === primaryId || !SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
+    const cardNum = fullNumber.split('-')[1];
+    if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
+    prefixMap[prefix].add(cardNum);
   }
 
-  const prefixes = Object.entries(prefixCounts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([p]) => p);
-
-  console.log(`✅ Found ${prefixes.length} expansion(s) in TCGplayer group: ${prefixes.join(', ')}`);
-  return prefixes;
+  const summary = Object.entries(prefixMap)
+    .sort((a,b) => b[1].size - a[1].size)
+    .map(([p, s]) => `${p}(${s.size})`)
+    .join(', ');
+  console.log(`✅ Non-primary expansions: ${summary || 'none'}`);
+  return prefixMap;
 }
 
 /**
- * Fetch all cards from a Scrydex expansion ID using the printings filter.
- * Falls back to the expansion endpoint if printings returns nothing.
+ * Fetch all cards from a Scrydex expansion (primary set only).
  */
-async function fetchScrydexExpansion(expansionId) {
-  console.log(`\n📋 Fetching Scrydex expansion: ${expansionId}...`);
+async function fetchFullExpansion(expansionId) {
+  console.log(`\n📋 Full fetch: ${expansionId}...`);
   let allRaw = [], page = 1, total = null;
 
   while (true) {
@@ -221,20 +219,45 @@ async function fetchScrydexExpansion(expansionId) {
       const batch = data.data || [];
       if (total === null) total = data.totalCount || data.total || null;
       allRaw = allRaw.concat(batch);
-      console.log(`  Fallback page ${page}: ${batch.length} cards`);
       if (batch.length === 0 || batch.length < 100) break;
       if (total !== null && allRaw.length >= total) break;
       page++;
     }
   }
 
-  console.log(`  ✅ ${allRaw.length} cards from ${expansionId}`);
+  console.log(`  ✅ ${allRaw.length} raw cards`);
   return allRaw;
 }
 
 /**
+ * Fetch only specific card numbers from a Scrydex expansion.
+ * Used for EB04, PRB02, cross-set SPs etc — only pulls the cards
+ * that actually appear in the TCGplayer group.
+ */
+async function fetchSpecificCards(expansionId, cardNumbers) {
+  console.log(`\n📋 Individual fetch: ${expansionId} — ${cardNumbers.size} card(s): ${[...cardNumbers].slice(0,10).join(', ')}${cardNumbers.size > 10 ? '...' : ''}`);
+  const results = [];
+
+  for (const num of [...cardNumbers].sort()) {
+    const cardId = `${expansionId}-${num}`;
+    try {
+      const url = `${SCRYDEX_BASE}/cards/${cardId}?select=id,name,rarity,variants,images`;
+      const data = await fetchWithRetry(url, { headers: HEADERS });
+      if (data.data) {
+        results.push(data.data);
+        process.stdout.write('.');
+      }
+    } catch (e) {
+      process.stdout.write('✗');
+    }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  console.log(` (${results.length}/${cardNumbers.size} found)`);
+  return results;
+}
+
+/**
  * Expand raw Scrydex cards into base + variant entries.
- * Filters variants to only those printed in the given expansionId.
  */
 function expandCards(rawCards, expansionId) {
   const cards = [];
@@ -276,10 +299,10 @@ function expandCards(rawCards, expansionId) {
         variantRarity = baseRarity;
       }
 
-      const variantImage  = pickImage(v.images) || baseImage;
-      const suffix        = variantSuffix(vType);
+      const variantImage   = pickImage(v.images) || baseImage;
+      const suffix         = variantSuffix(vType);
       const variantLocalId = `${baseLocalId}_${suffix}`;
-      const variantName   = `${(c.name||'').trim()} (${vType})`;
+      const variantName    = `${(c.name||'').trim()} (${vType})`;
 
       cards.push({
         localId: variantLocalId,
@@ -303,76 +326,62 @@ async function main() {
   }
 
   const primaryScrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
-  console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Primary Scrydex ID: ${primaryScrydexId}\n`);
+  console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Primary: ${primaryScrydexId}\n`);
 
-  // Step 1: Detect all expansion prefixes in the TCGplayer group
-  let expansionIds = [];
+  // Step 1: Get non-primary card numbers from TCGCSV
+  let individualFetchMap = {};
   if (TCGP_GROUP_ID) {
-    expansionIds = await getExpansionPrefixesFromTCGCSV(TCGP_GROUP_ID);
+    individualFetchMap = await getGroupInfo(TCGP_GROUP_ID, primaryScrydexId);
   }
 
-  // Always ensure the primary expansion is included
-  if (!expansionIds.includes(primaryScrydexId)) {
-    expansionIds.unshift(primaryScrydexId);
-  }
-
-  console.log(`\n📦 Will fetch from expansions: ${expansionIds.join(', ')}`);
-
-  // Step 2: Fetch all cards from each expansion, dedup by localId
+  // Step 2: Full fetch for primary expansion
   const seenLocalIds = new Set();
   let allCards = [];
 
-  for (const expId of expansionIds) {
+  let primaryRaw;
+  try { primaryRaw = await fetchFullExpansion(primaryScrydexId); }
+  catch (e) { console.error(`❌ Primary expansion fetch failed: ${e.message}`); process.exit(1); }
+
+  const primaryExpanded = expandCards(primaryRaw, primaryScrydexId);
+  for (const card of primaryExpanded) {
+    if (!seenLocalIds.has(card.localId)) { seenLocalIds.add(card.localId); allCards.push(card); }
+  }
+  console.log(`  Added ${primaryExpanded.length} cards from ${primaryScrydexId} (${seenLocalIds.size} total)`);
+
+  // Step 3: Individual fetches for all other expansions
+  for (const [expId, cardNums] of Object.entries(individualFetchMap)) {
     let rawCards;
-    try {
-      rawCards = await fetchScrydexExpansion(expId);
-    } catch (e) {
-      console.warn(`⚠️  Failed to fetch ${expId} from Scrydex: ${e.message} — skipping`);
-      continue;
-    }
+    try { rawCards = await fetchSpecificCards(expId, cardNums); }
+    catch (e) { console.warn(`⚠️  ${expId} failed: ${e.message}`); continue; }
 
     const expanded = expandCards(rawCards, expId);
-
     let added = 0;
     for (const card of expanded) {
-      if (!seenLocalIds.has(card.localId)) {
-        seenLocalIds.add(card.localId);
-        allCards.push(card);
-        added++;
-      }
+      if (!seenLocalIds.has(card.localId)) { seenLocalIds.add(card.localId); allCards.push(card); added++; }
     }
-    console.log(`  Added ${added} unique cards from ${expId} (${seenLocalIds.size} total so far)`);
+    console.log(`  Added ${added} unique cards from ${expId}`);
   }
 
-  // Debug: show sample variants
-  const sampleVariants = allCards.filter(c => c.isVariant).slice(0, 5);
-  if (sampleVariants.length) {
-    console.log('\n🔍 Sample variants:');
-    sampleVariants.forEach(v => console.log(`   ${v.localId} | ${v.name} | rarity: ${v.rarity} | type: ${v.variantType}`));
-  }
-
-  // Log rarity breakdown
+  // Rarity breakdown
   const rarityCounts = {};
   allCards.forEach(c => { rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1; });
   const officialCount = allCards.filter(c => !c.isVariant).length;
   console.log(`\n✅ ${allCards.length} total entries (${officialCount} base + ${allCards.length - officialCount} variants):`);
   Object.entries(rarityCounts).sort((a,b) => b[1]-a[1]).forEach(([r,n]) => console.log(`   ${r}: ${n}`));
 
-  // Step 3: Upload metadata JSON
+  // Step 4: Upload metadata JSON
   console.log('\n📦 Uploading metadata JSON...');
-  const metaCards = allCards.map(c => ({
-    localId:     c.localId,
-    name:        c.name,
-    rarity:      c.rarity,
-    isVariant:   c.isVariant || false,
-    variantType: c.variantType || null,
-    baseLocalId: c.baseLocalId || null,
-  }));
-
   await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
     setId: SET_ID, game: 'onepiece', phase: PHASE,
     cardCount: { official: officialCount, total: allCards.length },
-    cards: metaCards,
+    cards: allCards.map(c => ({
+      localId:     c.localId,
+      name:        c.name,
+      rarity:      c.rarity,
+      isVariant:   c.isVariant || false,
+      variantType: c.variantType || null,
+      baseLocalId: c.baseLocalId || null,
+    })),
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
 
@@ -382,7 +391,7 @@ async function main() {
     return;
   }
 
-  // Step 4: Sync images
+  // Step 5: Sync images
   console.log(`\n🖼️  Syncing ${allCards.length} card images...`);
   let uploaded = 0, skipped = 0, failed = 0;
 
@@ -405,7 +414,7 @@ async function main() {
   }
   console.log(`\n✅ ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
 
-  // Step 5: Logo (always from primary expansion)
+  // Step 6: Logo
   try {
     const res = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${primaryScrydexId}`, { headers: HEADERS });
     const exp = res.data || {};
