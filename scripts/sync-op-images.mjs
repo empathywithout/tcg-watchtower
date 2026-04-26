@@ -4,10 +4,11 @@
  * Syncs One Piece TCG card images and metadata to R2
  *
  * Strategy:
- * - Fetches TCGCSV to detect all card numbers in the TCGplayer group
- * - Primary expansion (e.g. OP15): full Scrydex fetch, localId = number only (e.g. "118")
- * - All other expansions (EB04, PRB02, OP11 SPs etc): fetch only specific cards present
- *   in the group, localId = full card ID (e.g. "EB04-044") to avoid collisions
+ * - Primary expansion (e.g. OP15): full Scrydex fetch, localId = short number ("118")
+ * - Cross-set cards (EB04, PRB02, OP11 etc): individual fetch for only the specific
+ *   card numbers in the TCGplayer group, localId = full card ID ("EB04-044")
+ * - Cross-set cards always WIN over anything the primary fetch returned with the same
+ *   short number — primary duplicates are removed before cross-set cards are added
  */
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -131,26 +132,12 @@ async function resizeImage(buffer) {
     .toBuffer();
 }
 
-/**
- * Parse localId from a Scrydex card ID for PRIMARY expansion cards.
- * e.g. "onepiece-OP15-118" -> "118"
- */
-function parsePrimaryLocalId(rawId) {
+/** Short number from a Scrydex card ID. "onepiece-OP15-118" or "OP15-118" -> "118" */
+function parseShortNum(rawId) {
   if (!rawId) return '';
   const parts = rawId.split('-');
-  // Scrydex IDs: "onepiece-OP15-118" or "OP15-118"
-  const numPart = parts[parts.length - 1];
-  return numPart.includes('/') ? numPart.split('/')[0].trim() : numPart;
-}
-
-/**
- * Parse localId for CROSS-SET cards — keep full card ID to avoid collisions.
- * e.g. "onepiece-EB04-044" -> "EB04-044"
- * e.g. "OP11-106" -> "OP11-106"
- */
-function parseCrossSetLocalId(rawId, expansionId, cardNum) {
-  // Always use the canonical form: EXPANSION-CARDNUM
-  return `${expansionId}-${cardNum}`;
+  const num = parts[parts.length - 1];
+  return num.includes('/') ? num.split('/')[0].trim() : num;
 }
 
 function pickImage(images) {
@@ -171,27 +158,24 @@ function extractPrefix(numberStr) {
 async function getGroupInfo(groupId, primaryId) {
   const url = `https://tcgcsv.com/tcgplayer/68/${groupId}/products`;
   console.log(`🔍 Fetching TCGplayer group ${groupId} from TCGCSV...`);
-
   let data;
   try {
     const res = await fetch(url, { headers: { Accept: 'application/json', 'User-Agent': 'TCGWatchtower/1.0' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = await res.json();
   } catch (e) {
-    console.warn(`⚠️  TCGCSV fetch failed: ${e.message} — will use primary expansion only`);
+    console.warn(`⚠️  TCGCSV fetch failed: ${e.message} — primary expansion only`);
     return {};
   }
 
   const products = data.results || [];
   const prefixMap = {};
-
   for (const product of products) {
     const extData = product.extendedData || [];
     const numberEntry = extData.find(d => d.name === 'Number');
     if (!numberEntry) continue;
     const fullNumber = numberEntry.value;
     const prefix = extractPrefix(fullNumber);
-    // Skip primary — it gets a full fetch separately
     if (!prefix || prefix === primaryId || !SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
     const cardNum = fullNumber.split('-')[1];
     if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
@@ -200,19 +184,15 @@ async function getGroupInfo(groupId, primaryId) {
 
   const summary = Object.entries(prefixMap)
     .sort((a,b) => b[1].size - a[1].size)
-    .map(([p, s]) => `${p}(${s.size})`)
-    .join(', ');
+    .map(([p, s]) => `${p}(${s.size})`).join(', ');
   console.log(`✅ Non-primary expansions: ${summary || 'none'}`);
   return prefixMap;
 }
 
-/**
- * Fetch all cards from a Scrydex expansion (primary set — full fetch).
- */
+/** Full Scrydex fetch for the primary expansion. */
 async function fetchFullExpansion(expansionId) {
   console.log(`\n📋 Full fetch: ${expansionId}...`);
   let allRaw = [], page = 1, total = null;
-
   while (true) {
     const url = `${SCRYDEX_BASE}/cards?q=printings:${expansionId}&select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
     const data = await fetchWithRetry(url, { headers: HEADERS });
@@ -224,7 +204,6 @@ async function fetchFullExpansion(expansionId) {
     if (total !== null && allRaw.length >= total) break;
     page++;
   }
-
   if (allRaw.length === 0) {
     console.log(`  ⚠️  printings filter returned 0 — trying expansion endpoint...`);
     page = 1; total = null;
@@ -239,101 +218,69 @@ async function fetchFullExpansion(expansionId) {
       page++;
     }
   }
-
   console.log(`  ✅ ${allRaw.length} raw cards`);
   return allRaw;
 }
 
-/**
- * Fetch only specific card numbers from a Scrydex expansion.
- * Returns cards with their cardNum so we can build full IDs.
- */
+/** Individual card fetch for cross-set cards. Returns { raw, cardNum } pairs. */
 async function fetchSpecificCards(expansionId, cardNumbers) {
   console.log(`\n📋 Individual fetch: ${expansionId} — ${cardNumbers.size} card(s): ${[...cardNumbers].slice(0,10).join(', ')}${cardNumbers.size > 10 ? '...' : ''}`);
   const results = [];
-
   for (const num of [...cardNumbers].sort()) {
     const cardId = `${expansionId}-${num}`;
     try {
       const url = `${SCRYDEX_BASE}/cards/${cardId}?select=id,name,rarity,variants,images`;
       const data = await fetchWithRetry(url, { headers: HEADERS });
-      if (data.data) {
-        results.push({ raw: data.data, cardNum: num });
-        process.stdout.write('.');
-      }
-    } catch (e) {
-      process.stdout.write('✗');
-    }
+      if (data.data) { results.push({ raw: data.data, cardNum: num }); process.stdout.write('.'); }
+    } catch (e) { process.stdout.write('✗'); }
     await new Promise(r => setTimeout(r, 100));
   }
   console.log(` (${results.length}/${cardNumbers.size} found)`);
   return results;
 }
 
-/**
- * Expand primary expansion cards into base + variant entries.
- * localId = number only (e.g. "118")
- */
+/** Expand primary expansion raw cards. localId = short number e.g. "118" */
 function expandPrimaryCards(rawCards, expansionId) {
   const cards = [];
-
   for (const c of rawCards) {
-    const baseLocalId = parsePrimaryLocalId(c.id);
-    const baseRarity  = normalizeRarity(c.rarity);
-    const baseImage   = pickImage(c.images);
-    const variants    = c.variants || [];
+    const baseNum    = parseShortNum(c.id);
+    const baseRarity = normalizeRarity(c.rarity);
+    const baseImage  = pickImage(c.images);
+    const variants   = c.variants || [];
 
     if (!variants.length) {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
       continue;
     }
-
     const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
-    if (normalV) {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: pickImage(normalV.images) || baseImage, isVariant: false });
-    } else {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
-    }
+    cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false });
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
-
       const vType = (v.name || '').trim();
-      const normalizedVType = normalizeVariantName(vType);
-      if (normalizedVType === 'normal' || normalizedVType === 'foil') continue;
-
+      const nVType = normalizeVariantName(vType);
+      if (nVType === 'normal' || nVType === 'foil') continue;
       const nameRarity = variantRarityFromName(vType);
       const variantRarity = nameRarity !== undefined ? (nameRarity || baseRarity) : (v.rarity ? normalizeRarity(v.rarity) : baseRarity);
-      const variantImage   = pickImage(v.images) || baseImage;
-      const suffix         = variantSuffix(vType);
-      const variantLocalId = `${baseLocalId}_${suffix}`;
-
+      const suffix = variantSuffix(vType);
       cards.push({
-        localId: variantLocalId,
+        localId: `${baseNum}_${suffix}`,
         name: `${(c.name||'').trim()} (${vType})`,
         rarity: variantRarity,
-        image: variantImage,
-        isVariant: true,
-        variantType: vType,
-        baseLocalId,
+        image: pickImage(v.images) || baseImage,
+        isVariant: true, variantType: vType, baseLocalId: baseNum,
       });
     }
   }
-
   return cards;
 }
 
-/**
- * Expand cross-set cards into base + variant entries.
- * localId = full card ID (e.g. "EB04-044") to avoid collisions with primary.
- */
+/** Expand cross-set raw cards. localId = full card ID e.g. "EB04-044" */
 function expandCrossSetCards(rawCardEntries, expansionId) {
   const cards = [];
-
   for (const { raw: c, cardNum } of rawCardEntries) {
-    // Full ID as base localId — e.g. "EB04-044"
-    const baseLocalId = parseCrossSetLocalId(c.id, expansionId, cardNum);
+    const baseLocalId = `${expansionId}-${cardNum}`;
     const baseRarity  = normalizeRarity(c.rarity);
     const baseImage   = pickImage(c.images);
     const variants    = c.variants || [];
@@ -342,76 +289,81 @@ function expandCrossSetCards(rawCardEntries, expansionId) {
       cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false, crossSet: true, expansionId });
       continue;
     }
-
     const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
-    if (normalV) {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: pickImage(normalV.images) || baseImage, isVariant: false, crossSet: true, expansionId });
-    } else {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false, crossSet: true, expansionId });
-    }
+    cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false, crossSet: true, expansionId });
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
-
       const vType = (v.name || '').trim();
-      const normalizedVType = normalizeVariantName(vType);
-      if (normalizedVType === 'normal' || normalizedVType === 'foil') continue;
-
+      const nVType = normalizeVariantName(vType);
+      if (nVType === 'normal' || nVType === 'foil') continue;
       const nameRarity = variantRarityFromName(vType);
       const variantRarity = nameRarity !== undefined ? (nameRarity || baseRarity) : (v.rarity ? normalizeRarity(v.rarity) : baseRarity);
-      const variantImage   = pickImage(v.images) || baseImage;
-      const suffix         = variantSuffix(vType);
-      // Variant localId: "EB04-044_altart"
-      const variantLocalId = `${baseLocalId}_${suffix}`;
-
+      const suffix = variantSuffix(vType);
       cards.push({
-        localId: variantLocalId,
+        localId: `${baseLocalId}_${suffix}`,
         name: `${(c.name||'').trim()} (${vType})`,
         rarity: variantRarity,
-        image: variantImage,
-        isVariant: true,
-        variantType: vType,
-        baseLocalId,
-        crossSet: true,
-        expansionId,
+        image: pickImage(v.images) || baseImage,
+        isVariant: true, variantType: vType, baseLocalId,
+        crossSet: true, expansionId,
       });
     }
   }
-
   return cards;
 }
 
 async function main() {
-  if (!SET_ID || !SET_FULL_NAME) {
-    console.error('❌ SET_ID and SET_FULL_NAME are required');
-    process.exit(1);
-  }
+  if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME are required'); process.exit(1); }
 
   const primaryScrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
   console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Primary: ${primaryScrydexId}\n`);
 
-  // Step 1: Get non-primary card numbers from TCGCSV
+  // Step 1: Get cross-set card numbers from TCGCSV
   let individualFetchMap = {};
   if (TCGP_GROUP_ID) {
     individualFetchMap = await getGroupInfo(TCGP_GROUP_ID, primaryScrydexId);
   }
 
-  // Step 2: Full fetch for primary expansion
-  const seenLocalIds = new Set();
-  let allCards = [];
+  // Build a flat set of ALL cross-set card numbers (short form e.g. "044", "106")
+  // so we can remove them from the primary fetch results
+  const crossSetNums = new Set();
+  for (const cardNums of Object.values(individualFetchMap)) {
+    for (const num of cardNums) crossSetNums.add(num);
+  }
+  if (crossSetNums.size > 0) {
+    console.log(`\n⚠️  Will remove ${crossSetNums.size} cross-set card number(s) from primary fetch to avoid duplicates: ${[...crossSetNums].join(', ')}`);
+  }
 
+  // Step 2: Full fetch for primary expansion
   let primaryRaw;
   try { primaryRaw = await fetchFullExpansion(primaryScrydexId); }
   catch (e) { console.error(`❌ Primary expansion fetch failed: ${e.message}`); process.exit(1); }
 
-  const primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
-  for (const card of primaryExpanded) {
-    if (!seenLocalIds.has(card.localId)) { seenLocalIds.add(card.localId); allCards.push(card); }
-  }
-  console.log(`  Added ${primaryExpanded.length} cards from ${primaryScrydexId} (${seenLocalIds.size} total)`);
+  let primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
 
-  // Step 3: Individual fetches for cross-set cards (always use full ID, no collision possible)
+  // Remove any primary cards whose short number appears in the cross-set map.
+  // These will be replaced by the individual fetch with the correct full ID + image.
+  const beforeCount = primaryExpanded.length;
+  primaryExpanded = primaryExpanded.filter(card => {
+    const baseNum = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
+    return !crossSetNums.has(baseNum);
+  });
+  const removedCount = beforeCount - primaryExpanded.length;
+  if (removedCount > 0) {
+    console.log(`  Removed ${removedCount} duplicate(s) from primary fetch (will be replaced by cross-set individual fetches)`);
+  }
+
+  const seenLocalIds = new Set();
+  let allCards = [];
+  for (const card of primaryExpanded) {
+    seenLocalIds.add(card.localId);
+    allCards.push(card);
+  }
+  console.log(`  Added ${primaryExpanded.length} cards from ${primaryScrydexId}`);
+
+  // Step 3: Individual fetches for cross-set cards
   for (const [expId, cardNums] of Object.entries(individualFetchMap)) {
     let rawEntries;
     try { rawEntries = await fetchSpecificCards(expId, cardNums); }
@@ -420,7 +372,6 @@ async function main() {
     const expanded = expandCrossSetCards(rawEntries, expId);
     let added = 0;
     for (const card of expanded) {
-      // Cross-set cards use full ID (e.g. "EB04-044") so they never collide
       if (!seenLocalIds.has(card.localId)) { seenLocalIds.add(card.localId); allCards.push(card); added++; }
     }
     console.log(`  Added ${added} unique cards from ${expId}`);
@@ -451,18 +402,13 @@ async function main() {
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
 
-  if (SKIP_IMAGES) {
-    console.log('\n⏭️  Skipping image sync');
-    console.log('\n🎉 Done!');
-    return;
-  }
+  if (SKIP_IMAGES) { console.log('\n⏭️  Skipping image sync\n🎉 Done!'); return; }
 
   // Step 5: Sync images
-  // Primary cards: cards/op/op15/118.webp
-  // Cross-set cards: cards/op/op15/EB04-044.webp
+  // Primary: cards/op/op15/118.webp
+  // Cross-set: cards/op/op15/EB04-044.webp
   console.log(`\n🖼️  Syncing ${allCards.length} card images...`);
   let uploaded = 0, skipped = 0, failed = 0;
-
   for (const card of allCards) {
     const r2Key = `cards/op/${SET_ID}/${card.localId}.webp`;
     if (!FORCE_RESYNC && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
@@ -474,10 +420,7 @@ async function main() {
       await uploadToR2(r2Key, buf, 'image/webp');
       process.stdout.write('+');
       uploaded++;
-    } catch(e) {
-      process.stdout.write('✗');
-      failed++;
-    }
+    } catch(e) { process.stdout.write('✗'); failed++; }
     await new Promise(r => setTimeout(r, 50));
   }
   console.log(`\n✅ ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
@@ -491,10 +434,7 @@ async function main() {
       const img = await fetch(logoUrl);
       if (img.ok) {
         const rawBuf = Buffer.from(await img.arrayBuffer());
-        const resizedLogo = await sharp(rawBuf)
-          .resize(300, null, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 85 })
-          .toBuffer();
+        const resizedLogo = await sharp(rawBuf).resize(300, null, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toBuffer();
         await uploadToR2(`logos/op/${SET_ID}.webp`, resizedLogo, 'image/webp');
         await uploadToR2(`logos/op/${SET_ID}.png`, rawBuf, 'image/png');
         console.log(`✅ Logo uploaded (WebP + PNG)`);
