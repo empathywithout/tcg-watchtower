@@ -71,6 +71,13 @@ const SET_OVERRIDES = {
   },
 };
 
+// Rarity overrides — correct rarities where Scrydex returns wrong value
+const RARITY_OVERRIDES = {
+  'op15': {
+    'OP13-037': 'Treasure Rare',
+  },
+};
+
 const SCRYDEX_KNOWN_EXPANSIONS = new Set([
   'OP01','OP02','OP03','OP04','OP05','OP06','OP07','OP08','OP09','OP10',
   'OP11','OP12','OP13','OP14','OP15','OP16',
@@ -337,6 +344,17 @@ async function main() {
       added++;
     }
     console.log(`  Added ${added} unique cards from ${ebExpansionId} (${range.start}-${range.end})`);
+  }
+
+  // Apply rarity overrides
+  const rarityOverrides = RARITY_OVERRIDES[SET_ID.toLowerCase()] || {};
+  if (Object.keys(rarityOverrides).length > 0) {
+    allCards.forEach(c => {
+      if (rarityOverrides[c.localId]) {
+        console.log(`  Rarity override: ${c.localId} ${c.rarity} -> ${rarityOverrides[c.localId]}`);
+        c.rarity = rarityOverrides[c.localId];
+      }
+    });
   }
 
   // Rarity breakdown
