@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adventure on Kami's Island Card List and Prices | TCG Watchtower</title>
 <meta name="description" content="Full Adventure on Kami's Island OP15 card list with live prices. Enel Manga Rare, Koby, Zeus SP, and all card prices for One Piece TCG.">
-<meta name="keywords" content="Adventure on Kami's Island, OP01 card list, OP01 prices, One Piece TCG OP01, Adventure on Kami's Island secret rare, one piece card game">
+<meta name="keywords" content="Adventure on Kami's Island, OP15 card list, OP15 prices, One Piece TCG OP15, Adventure on Kami's Island secret rare, one piece card game">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/one-piece/sets/adventure-on-kamis-island/cards">
 <meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
@@ -285,7 +285,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="Adventure on Kami's Island" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
-            <div class="stat-label">OP01</div>
+            <div class="stat-label">OP15</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="stat-total-count">…</div>
@@ -344,7 +344,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">📋 Adventure on Kami's Island <span class="gradient-text">Card List</span></h2>
-      <p class="section-sub" id="card-list-sub">Complete OP01 card list — search and filter by rarity</p>
+      <p class="section-sub" id="card-list-sub">Complete OP15 card list — search and filter by rarity</p>
     </div>
     <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
@@ -416,7 +416,11 @@ const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
 // cardImg handles primary ("118") and cross-set ("EB04-044") localIds
-function cardImg(id) {   const isCrossSet = /^[A-Z]{2,}d+-/.test(id);   return `${R2}/cards/op/${SET_ID}/${id}.webp${isCrossSet ? '?v=2' : ''}`; }
+// Cross-set cards get ?v=2 to bust Cloudflare cache of old wrong images
+function cardImg(id) {
+  const isCrossSet = id && /^[A-Z]{2,}d+-/.test(id);
+  return `${R2}/cards/op/${SET_ID}/${id}.webp${isCrossSet ? '?v=2' : ''}`;
+}
 
 // displayNumber strips variant suffix, keeps full cross-set ID
 function displayNumber(localId) {
@@ -480,7 +484,7 @@ const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR'
 const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Alternate Art':'rarity-sp','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
 
 let currentChaseList=[], allCards=[], filteredCards=[], displayedCount=0;
-const PAGE_SIZE=200;
+const PAGE_SIZE=60;
 const priceCache={};
 
 async function loadCards() {
