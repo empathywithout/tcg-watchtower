@@ -442,7 +442,8 @@ async function main() {
       await uploadToR2(r2Key, buf, 'image/webp');
       if (!overrideUrl) process.stdout.write('+');
       uploaded++;
-    } catch(e) { process.stdout.write('✗'); failed++; }
+    } catch(e) { console.error(`
+✗ FAILED: ${r2Key} | ${imageUrl} | ${e.message}`); failed++; }
     await new Promise(r => setTimeout(r, 50));
   }
   console.log(`\n✅ ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
