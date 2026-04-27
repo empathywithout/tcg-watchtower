@@ -68,7 +68,26 @@ const SET_OVERRIDES = {
   'op15': {
     // Koby Manga Rare — Scrydex API returns wrong image for this variant
     'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044C/medium',
+    // Sabo SP — not on Scrydex, use direct image
+    'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
   },
+};
+
+/**
+ * Manual card entries — cards not on Scrydex that need to be added manually.
+ * These are injected directly into allCards after all Scrydex fetches.
+ */
+const MANUAL_CARDS = {
+  'op15': [
+    {
+      localId: 'PRB02-014',
+      name: 'Sabo',
+      rarity: 'Super Rare',
+      isVariant: false,
+      variantType: null,
+      baseLocalId: null,
+    },
+  ],
 };
 
 // Rarity overrides — correct rarities where Scrydex returns wrong value
@@ -315,7 +334,26 @@ async function main() {
   try { primaryRaw = await fetchFullExpansion(primaryScrydexId); }
   catch (e) { console.error(`❌ Primary expansion fetch failed: ${e.message}`); process.exit(1); }
 
-  const primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
+  let primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
+
+  // Remove any cards from primary fetch whose short number falls in any EB split range
+  // These will be added back with proper full IDs (e.g. EB04-044) by the EB split fetch
+  const ebSplitRanges = EB_SPLIT[SET_ID.toLowerCase()] || {};
+  const ebNums = new Set();
+  for (const range of Object.values(ebSplitRanges)) {
+    for (let i = range.start; i <= range.end; i++) {
+      ebNums.add(String(i).padStart(3, '0'));
+    }
+  }
+  if (ebNums.size > 0) {
+    const before = primaryExpanded.length;
+    primaryExpanded = primaryExpanded.filter(card => {
+      const baseNum = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
+      return !ebNums.has(baseNum);
+    });
+    console.log(`  Removed ${before - primaryExpanded.length} EB split cards from primary fetch (will be re-added with full IDs)`);
+  }
+
   const seenLocalIds = new Set();
   let allCards = [];
   for (const card of primaryExpanded) {
@@ -337,6 +375,16 @@ async function main() {
       added++;
     }
     console.log(`  Added ${added} unique cards from ${ebExpansionId} (${range.start}-${range.end})`);
+  }
+
+  // Inject manual cards (not on Scrydex)
+  const manualCards = MANUAL_CARDS[SET_ID.toLowerCase()] || [];
+  for (const card of manualCards) {
+    if (!seenLocalIds.has(card.localId)) {
+      seenLocalIds.add(card.localId);
+      allCards.push(card);
+      console.log(`  Injected manual card: ${card.localId} ${card.name}`);
+    }
   }
 
   // Apply rarity overrides
