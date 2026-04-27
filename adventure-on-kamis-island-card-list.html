@@ -301,7 +301,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
         <div class="card-stack" id="hero-stack">
           <img data-id="OP15-118" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
           <img data-id="EB04-044" alt="Top chase card 2" width="245" height="337" loading="lazy">
-          <img data-id="EB04-061" alt="Top chase card 3" width="245" height="337" loading="lazy">
+          <img data-id="OP11-106" alt="Top chase card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -480,7 +480,7 @@ const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR'
 const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Alternate Art':'rarity-sp','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
 
 let currentChaseList=[], allCards=[], filteredCards=[], displayedCount=0;
-const PAGE_SIZE=60;
+const PAGE_SIZE=200;
 const priceCache={};
 
 async function loadCards() {
