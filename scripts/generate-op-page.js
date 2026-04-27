@@ -620,7 +620,7 @@ function renderChaseCards(cards) {
       rarity:c.rarity,
       rarityClass:RARITY_CLASS[c.rarity]||'rarity-r',
       label:RARITY_LABEL[c.rarity]||c.rarity,
-      img:c.image||cardImg(c.localId),
+      img:c.crossSet ? cardImg(c.localId) : (c.image||cardImg(c.localId)),
     }));
   renderChaseHTML();
 }
@@ -663,7 +663,7 @@ function renderCards(reset) {
   slice.forEach(card => {
     if (_seenRenderIds.has(card.localId)) return;
     _seenRenderIds.add(card.localId);
-    const imgUrl = card.image||cardImg(card.localId);
+    const imgUrl = card.crossSet ? cardImg(card.localId) : (card.image||cardImg(card.localId));
     const el = document.createElement('div');
     el.className='card-item';
     el.dataset.localId=card.localId;
