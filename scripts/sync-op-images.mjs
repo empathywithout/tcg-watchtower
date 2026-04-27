@@ -9,6 +9,7 @@
  *   card numbers in the TCGplayer group, localId = full card ID ("EB04-044")
  * - Cross-set cards always WIN over anything the primary fetch returned with the same
  *   short number — primary duplicates are removed before cross-set cards are added
+ * - SET_OVERRIDES: force specific image URLs for cards where Scrydex returns wrong art
  */
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -48,6 +49,25 @@ const SCRYDEX_ID_MAP = {
   'op16':'OP16',
   'eb01':'EB01','eb02':'EB02','eb03':'EB03','eb04':'EB04',
   'st01':'ST01','st02':'ST02','st03':'ST03','st04':'ST04','st10':'ST10','st13':'ST13',
+};
+
+/**
+ * Image overrides — use direct Scrydex image CDN URLs for cards where the API
+ * returns wrong art (e.g. cross-set SP reprints that Scrydex stores under original set).
+ * Key = localId as it appears in the JSON (e.g. "OP11-106")
+ * Value = direct image URL to use instead of what Scrydex API returns
+ */
+const SET_OVERRIDES = {
+  'op15': {
+    'OP11-106':  'https://images.scrydex.com/onepiece/OP11-106/large',
+    'OP12-014':  'https://images.scrydex.com/onepiece/OP12-014/large',
+    'OP13-031':  'https://images.scrydex.com/onepiece/OP13-031/large',
+    'OP13-037':  'https://images.scrydex.com/onepiece/OP13-037/large',
+    'OP13-042':  'https://images.scrydex.com/onepiece/OP13-042/large',
+    'EB02-052':  'https://images.scrydex.com/onepiece/EB02-052/large',
+    'PRB02-014': 'https://images.scrydex.com/onepiece/PRB02-014/large',
+    'ST26-005':  'https://images.scrydex.com/onepiece/ST26-005/large',
+  },
 };
 
 const SCRYDEX_KNOWN_EXPANSIONS = new Set([
@@ -132,7 +152,6 @@ async function resizeImage(buffer) {
     .toBuffer();
 }
 
-/** Short number from a Scrydex card ID. "onepiece-OP15-118" or "OP15-118" -> "118" */
 function parseShortNum(rawId) {
   if (!rawId) return '';
   const parts = rawId.split('-');
@@ -151,10 +170,6 @@ function extractPrefix(numberStr) {
   return match ? match[1] : null;
 }
 
-/**
- * Fetch TCGplayer group from TCGCSV.
- * Returns { prefix -> Set<cardNumber> } for all non-primary expansions.
- */
 async function getGroupInfo(groupId, primaryId) {
   const url = `https://tcgcsv.com/tcgplayer/68/${groupId}/products`;
   console.log(`🔍 Fetching TCGplayer group ${groupId} from TCGCSV...`);
@@ -189,7 +204,6 @@ async function getGroupInfo(groupId, primaryId) {
   return prefixMap;
 }
 
-/** Full Scrydex fetch for the primary expansion. */
 async function fetchFullExpansion(expansionId) {
   console.log(`\n📋 Full fetch: ${expansionId}...`);
   let allRaw = [], page = 1, total = null;
@@ -222,7 +236,6 @@ async function fetchFullExpansion(expansionId) {
   return allRaw;
 }
 
-/** Individual card fetch for cross-set cards. Returns { raw, cardNum } pairs. */
 async function fetchSpecificCards(expansionId, cardNumbers) {
   console.log(`\n📋 Individual fetch: ${expansionId} — ${cardNumbers.size} card(s): ${[...cardNumbers].slice(0,10).join(', ')}${cardNumbers.size > 10 ? '...' : ''}`);
   const results = [];
@@ -239,7 +252,6 @@ async function fetchSpecificCards(expansionId, cardNumbers) {
   return results;
 }
 
-/** Expand primary expansion raw cards. localId = short number e.g. "118" */
 function expandPrimaryCards(rawCards, expansionId) {
   const cards = [];
   for (const c of rawCards) {
@@ -276,7 +288,6 @@ function expandPrimaryCards(rawCards, expansionId) {
   return cards;
 }
 
-/** Expand cross-set raw cards. localId = full card ID e.g. "EB04-044" */
 function expandCrossSetCards(rawCardEntries, expansionId) {
   const cards = [];
   for (const { raw: c, cardNum } of rawCardEntries) {
@@ -320,14 +331,18 @@ async function main() {
   const primaryScrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
   console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Primary: ${primaryScrydexId}\n`);
 
+  // Get image overrides for this set
+  const imageOverrides = SET_OVERRIDES[SET_ID.toLowerCase()] || {};
+  if (Object.keys(imageOverrides).length > 0) {
+    console.log(`📌 Image overrides: ${Object.keys(imageOverrides).join(', ')}`);
+  }
+
   // Step 1: Get cross-set card numbers from TCGCSV
   let individualFetchMap = {};
   if (TCGP_GROUP_ID) {
     individualFetchMap = await getGroupInfo(TCGP_GROUP_ID, primaryScrydexId);
   }
 
-  // Build a flat set of ALL cross-set card numbers (short form e.g. "044", "106")
-  // so we can remove them from the primary fetch results
   const crossSetNums = new Set();
   for (const cardNums of Object.values(individualFetchMap)) {
     for (const num of cardNums) crossSetNums.add(num);
@@ -343,8 +358,6 @@ async function main() {
 
   let primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
 
-  // Remove any primary cards whose short number appears in the cross-set map.
-  // These will be replaced by the individual fetch with the correct full ID + image.
   const beforeCount = primaryExpanded.length;
   primaryExpanded = primaryExpanded.filter(card => {
     const baseNum = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
@@ -405,22 +418,29 @@ async function main() {
   if (SKIP_IMAGES) { console.log('\n⏭️  Skipping image sync\n🎉 Done!'); return; }
 
   // Step 5: Sync images
-  // Primary: cards/op/op15/118.webp
-  // Cross-set: cards/op/op15/EB04-044.webp
   console.log(`\n🖼️  Syncing ${allCards.length} card images...`);
   let uploaded = 0, skipped = 0, failed = 0;
   for (const card of allCards) {
     const r2Key = `cards/op/${SET_ID}/${card.localId}.webp`;
-    // Cross-set cards: never force-resync — Scrydex may return wrong images on subsequent syncs
-const forceThis = FORCE_RESYNC && !card.crossSet;
-if (!forceThis && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
-    if (!card.image) { process.stdout.write('-'); failed++; continue; }
+
+    // Check for image override — use direct Scrydex CDN URL if specified
+    const overrideUrl = imageOverrides[card.localId];
+
+    // Cross-set cards: never force-resync unless there's an explicit override
+    const forceThis = overrideUrl ? true : (FORCE_RESYNC && !card.crossSet);
+
+    if (!forceThis && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
+
+    const imageUrl = overrideUrl || card.image;
+    if (!imageUrl) { process.stdout.write('-'); failed++; continue; }
+
+    if (overrideUrl) process.stdout.write('O'); // mark overrides distinctly
     try {
-      const res = await fetch(card.image);
+      const res = await fetch(imageUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = await resizeImage(Buffer.from(await res.arrayBuffer()));
       await uploadToR2(r2Key, buf, 'image/webp');
-      process.stdout.write('+');
+      if (!overrideUrl) process.stdout.write('+');
       uploaded++;
     } catch(e) { process.stdout.write('✗'); failed++; }
     await new Promise(r => setTimeout(r, 50));
