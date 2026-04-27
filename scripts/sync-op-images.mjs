@@ -67,7 +67,7 @@ const EB_SPLIT = {
 const SET_OVERRIDES = {
   'op15': {
     // Koby Manga Rare — Scrydex API returns wrong image for this variant
-    'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044C/medium',
+    'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044B/medium',
     // Sabo SP — not on Scrydex, use direct image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
   },
@@ -334,25 +334,8 @@ async function main() {
   try { primaryRaw = await fetchFullExpansion(primaryScrydexId); }
   catch (e) { console.error(`❌ Primary expansion fetch failed: ${e.message}`); process.exit(1); }
 
-  let primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
-
-  // Remove any cards from primary fetch whose short number falls in any EB split range
-  // These will be added back with proper full IDs (e.g. EB04-044) by the EB split fetch
-  const ebSplitRanges = EB_SPLIT[SET_ID.toLowerCase()] || {};
-  const ebNums = new Set();
-  for (const range of Object.values(ebSplitRanges)) {
-    for (let i = range.start; i <= range.end; i++) {
-      ebNums.add(String(i).padStart(3, '0'));
-    }
-  }
-  if (ebNums.size > 0) {
-    const before = primaryExpanded.length;
-    primaryExpanded = primaryExpanded.filter(card => {
-      const baseNum = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
-      return !ebNums.has(baseNum);
-    });
-    console.log(`  Removed ${before - primaryExpanded.length} EB split cards from primary fetch (will be re-added with full IDs)`);
-  }
+  // Use primary fetch as-is — just expand directly
+  const primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
 
   const seenLocalIds = new Set();
   let allCards = [];
