@@ -557,7 +557,7 @@ const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR'
 const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Alternate Art':'rarity-sp','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
 
 let currentChaseList=[], allCards=[], filteredCards=[], displayedCount=0;
-const PAGE_SIZE=60;
+const PAGE_SIZE=200;
 const priceCache={};
 
 async function loadCards() {
