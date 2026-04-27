@@ -411,7 +411,9 @@ async function main() {
   let uploaded = 0, skipped = 0, failed = 0;
   for (const card of allCards) {
     const r2Key = `cards/op/${SET_ID}/${card.localId}.webp`;
-    if (!FORCE_RESYNC && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
+    // Cross-set cards: never force-resync — Scrydex may return wrong images on subsequent syncs
+const forceThis = FORCE_RESYNC && !card.crossSet;
+if (!forceThis && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
     if (!card.image) { process.stdout.write('-'); failed++; continue; }
     try {
       const res = await fetch(card.image);
