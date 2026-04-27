@@ -59,14 +59,14 @@ const SCRYDEX_ID_MAP = {
  */
 const SET_OVERRIDES = {
   'op15': {
-    'OP11-106':  'https://images.scrydex.com/onepiece/OP11-106/large',
-    'OP12-014':  'https://images.scrydex.com/onepiece/OP12-014/large',
-    'OP13-031':  'https://images.scrydex.com/onepiece/OP13-031/large',
-    'OP13-037':  'https://images.scrydex.com/onepiece/OP13-037/large',
-    'OP13-042':  'https://images.scrydex.com/onepiece/OP13-042/large',
-    'EB02-052':  'https://images.scrydex.com/onepiece/EB02-052/large',
-    'PRB02-014': 'https://images.scrydex.com/onepiece/PRB02-014/large',
-    'ST26-005':  'https://images.scrydex.com/onepiece/ST26-005/large',
+    'OP11-106':  'https://images.scrydex.com/onepiece/OP11-106B/medium',
+    'OP12-014':  'https://images.scrydex.com/onepiece/OP12-014B/medium',
+    'OP13-031':  'https://images.scrydex.com/onepiece/OP13-031B/medium',
+    'OP13-037':  'https://images.scrydex.com/onepiece/OP13-037A/medium',
+    'OP13-042':  'https://images.scrydex.com/onepiece/OP13-042B/medium',
+    'EB02-052':  'https://images.scrydex.com/onepiece/EB02-052B/medium',
+    'PRB02-014': 'https://images.scrydex.com/onepiece/PRB02-014B/medium',
+    'ST26-005':  'https://images.scrydex.com/onepiece/ST26-005B/medium',
   },
 };
 
