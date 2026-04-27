@@ -493,7 +493,7 @@ const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
 // cardImg handles primary ("118") and cross-set ("EB04-044") localIds
-function cardImg(id) { return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\`; }
+function cardImg(id) {   const isCrossSet = /^[A-Z]{2,}\d+-/.test(id);   return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\${isCrossSet ? '?v=2' : ''}\`; }
 
 // displayNumber strips variant suffix, keeps full cross-set ID
 function displayNumber(localId) {
