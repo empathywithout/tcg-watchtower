@@ -324,11 +324,17 @@ async function main() {
     const expanded = expandEBCards(rawEntries);
     let added = 0;
     for (const card of expanded) {
-      if (!seenLocalIds.has(card.localId)) {
-        seenLocalIds.add(card.localId);
-        allCards.push(card);
-        added++;
-      }
+      if (seenLocalIds.has(card.localId)) continue;
+      // Skip if short number already exists from primary fetch
+      // e.g. EB04-061 short num 061 already present as primary card 061
+      const ebParts = card.localId.split('-');
+      const shortBase = ebParts[ebParts.length - 1].split('_')[0];
+      const ebSuffix = card.localId.includes('_') ? '_' + card.localId.split('_').slice(1).join('_') : '';
+      const shortKey = shortBase + ebSuffix;
+      if (seenLocalIds.has(shortKey)) continue;
+      seenLocalIds.add(card.localId);
+      allCards.push(card);
+      added++;
     }
     console.log(`  Added ${added} unique cards from ${ebExpansionId} (${range.start}-${range.end})`);
   }
