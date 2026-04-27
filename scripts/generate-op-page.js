@@ -493,7 +493,11 @@ const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
 // cardImg handles primary ("118") and cross-set ("EB04-044") localIds
-function cardImg(id) {   const isCrossSet = /^[A-Z]{2,}\d+-/.test(id);   return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\${isCrossSet ? '?v=2' : ''}\`; }
+// Cross-set cards get ?v=2 to bust Cloudflare cache of old wrong images
+function cardImg(id) {
+  const isCrossSet = id && /^[A-Z]{2,}\d+-/.test(id);
+  return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\${isCrossSet ? '?v=2' : ''}\`;
+}
 
 // displayNumber strips variant suffix, keeps full cross-set ID
 function displayNumber(localId) {
@@ -557,7 +561,7 @@ const RARITY_LABEL = {'Manga Rare':'MR','Secret Rare':'SEC','Treasure Rare':'TR'
 const RARITY_CLASS = {'Manga Rare':'rarity-mr','Secret Rare':'rarity-sec','Treasure Rare':'rarity-tr','Alternate Art':'rarity-sp','Special':'rarity-sp','Super Rare':'rarity-sr','Rare':'rarity-r'};
 
 let currentChaseList=[], allCards=[], filteredCards=[], displayedCount=0;
-const PAGE_SIZE=200;
+const PAGE_SIZE=60;
 const priceCache={};
 
 async function loadCards() {
