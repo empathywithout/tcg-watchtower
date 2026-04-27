@@ -61,12 +61,12 @@ const SET_OVERRIDES = {
   'op15': {
     'OP11-106':  'https://images.scrydex.com/onepiece/OP11-106B/medium',
     'OP12-014':  'https://images.scrydex.com/onepiece/OP12-014B/medium',
-    'OP13-031':  'https://images.scrydex.com/onepiece/OP13-031B/medium',
+    'OP13-031':  'https://images.scrydex.com/onepiece/OP13-031A/medium',
     'OP13-037':  'https://images.scrydex.com/onepiece/OP13-037A/medium',
     'OP13-042':  'https://images.scrydex.com/onepiece/OP13-042B/medium',
     'EB02-052':  'https://images.scrydex.com/onepiece/EB02-052B/medium',
-    'PRB02-014': 'https://images.scrydex.com/onepiece/PRB02-014B/medium',
-    'ST26-005':  'https://images.scrydex.com/onepiece/ST26-005B/medium',
+    'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
+    'ST26-005':  'https://images.scrydex.com/onepiece/ST26-005A/medium',
   },
 };
 
@@ -442,8 +442,7 @@ async function main() {
       await uploadToR2(r2Key, buf, 'image/webp');
       if (!overrideUrl) process.stdout.write('+');
       uploaded++;
-    } catch(e) { console.error(`
-✗ FAILED: ${r2Key} | ${imageUrl} | ${e.message}`); failed++; }
+    } catch(e) { process.stdout.write('✗'); failed++; }
     await new Promise(r => setTimeout(r, 50));
   }
   console.log(`\n✅ ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
