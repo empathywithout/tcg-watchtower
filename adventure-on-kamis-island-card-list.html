@@ -427,9 +427,7 @@ function toSlug(s) {
 }
 function cardPageUrl(localId, rawName) {
   const dispNum = displayNumber(localId);
-  // Use base name only (strip variant parentheticals) to match generated page slugs
-  const baseName = (rawName||'').replace(/s*[(][^)]*[)]s*$/, '').trim();
-  return `/one-piece/sets/${SET_URL_SLUG}/cards/${toSlug(baseName)}-${toSlug(dispNum)}`;
+  return `/one-piece/sets/${SET_URL_SLUG}/cards/${toSlug(rawName)}-${toSlug(dispNum)}`;
 }
 
 // displayNumber strips variant suffix, keeps full cross-set ID
