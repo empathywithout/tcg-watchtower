@@ -174,10 +174,14 @@ function generateCardPage(card, allCards) {
   const title       = `${fullDisplayName} ${dispNum} Price & Info | ${SET_FULL_NAME} One Piece TCG`;
   const description = `${fullDisplayName} (${dispNum}) from ${SET_FULL_NAME} — ${rarity} One Piece TCG card. Current market price, rarity, and where to buy on TCGplayer and eBay.`;
 
-  // Price key for JS — cross-set uses full base ID, primary uses padded short number
-  // Strip variant suffix for cross-set cards (e.g. EB04-044_mangaaltart -> EB04-044)
+  // Price key for JS — mirrors the prices API key format
+  // Cross-set base cards: full ID e.g. "OP11-106"
+  // Cross-set variants: full base ID e.g. "EB04-044" (strip suffix)
+  // Primary variants: padded num + suffix e.g. "118_mangaaltart"
+  // Primary base: padded num e.g. "118"
   const baseLocalId = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
-  const priceKey = isCrossSet ? baseLocalId : dispNum.padStart(3, '0');
+  const variantSuffix = card.localId.includes('_') ? '_' + card.localId.split('_').slice(1).join('_') : '';
+  const priceKey = isCrossSet ? baseLocalId : (dispNum.padStart(3, '0') + variantSuffix);
 
   return `<!-- Generated: ${new Date().toISOString()} -->
 <!DOCTYPE html>
