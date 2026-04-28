@@ -174,8 +174,10 @@ function generateCardPage(card, allCards) {
   const title       = `${fullDisplayName} ${dispNum} Price & Info | ${SET_FULL_NAME} One Piece TCG`;
   const description = `${fullDisplayName} (${dispNum}) from ${SET_FULL_NAME} — ${rarity} One Piece TCG card. Current market price, rarity, and where to buy on TCGplayer and eBay.`;
 
-  // Price key for JS — cross-set uses full ID, primary uses padded short number
-  const priceKey = isCrossSet ? card.localId : dispNum.padStart(3, '0');
+  // Price key for JS — cross-set uses full base ID, primary uses padded short number
+  // Strip variant suffix for cross-set cards (e.g. EB04-044_mangaaltart -> EB04-044)
+  const baseLocalId = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
+  const priceKey = isCrossSet ? baseLocalId : dispNum.padStart(3, '0');
 
   return `<!-- Generated: ${new Date().toISOString()} -->
 <!DOCTYPE html>
