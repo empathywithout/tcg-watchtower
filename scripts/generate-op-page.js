@@ -502,9 +502,11 @@ function cardImg(id) {
 function toSlug(s) {
   return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-\$/g,'');
 }
-function cardPageUrl(localId, name) {
+function cardPageUrl(localId, rawName) {
   const dispNum = displayNumber(localId);
-  return \`/one-piece/sets/\${SET_URL_SLUG}/cards/\${toSlug(name)}-\${toSlug(dispNum)}\`;
+  // Use base name only (strip variant parentheticals) to match generated page slugs
+  const baseName = (rawName||'').replace(/\s*[(][^)]*[)]\s*$/, '').trim();
+  return \`/one-piece/sets/\${SET_URL_SLUG}/cards/\${toSlug(baseName)}-\${toSlug(dispNum)}\`;
 }
 
 // displayNumber strips variant suffix, keeps full cross-set ID
@@ -693,7 +695,7 @@ function renderCards(reset) {
     const tcgpUrl = cached?.url||tcgpLink(card.name,dispNum);
     const ebayUrl = ebayLink(\`\${card.name} \${dispNum} \${SET_FULL_NAME} One Piece\`);
     const cardPageHref = cardPageUrl(card.localId, card.name);
-    el.innerHTML=\`<a href="\${cardPageHref}" onclick="event.stopPropagation()"><img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337"></a>
+    el.innerHTML=\`<img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">\${displayName}</div>
         <div class="card-item-num">\${dispNum}</div>
@@ -703,6 +705,7 @@ function renderCards(reset) {
           <a class="buy-link buy-ebay" href="\${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
+        <a href="\${cardPageHref}" onclick="event.stopPropagation()" style="display:block;text-align:center;color:var(--amber);font-size:.65rem;margin-top:6px;text-decoration:none;opacity:.8">📄 Card Page →</a>
       </div>\`;
     el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
     grid.appendChild(el);
