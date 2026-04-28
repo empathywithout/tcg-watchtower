@@ -247,7 +247,12 @@ async function fetchEBCards(expansionId, start, end) {
 function expandPrimaryCards(rawCards, expansionId) {
   const cards = [];
   for (const c of rawCards) {
-    const baseNum    = parseShortNum(c.id);
+    // If Scrydex returned a card from a different expansion (e.g. EB04-001 in OP15 printings),
+    // use the full card ID as localId instead of stripping to a short number
+    const rawScrydexId = (c.id || '').replace(/^onepiece-/i, '');
+    const cardExpansion = rawScrydexId.split('-')[0];
+    const isFromDifferentExpansion = cardExpansion && cardExpansion !== expansionId && /^[A-Z]{2,}\d+$/.test(cardExpansion);
+    const baseNum = isFromDifferentExpansion ? rawScrydexId : parseShortNum(c.id);
     const baseRarity = normalizeRarity(c.rarity);
     const baseImage  = pickImage(c.images);
     const variants   = c.variants || [];
@@ -261,7 +266,10 @@ function expandPrimaryCards(rawCards, expansionId) {
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
+      // Skip variant if it belongs to a different expansion entirely
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
+      // Skip variant if it belongs to a completely different expansion prefix (e.g. EB04 variant on OP15 card)
+      if (vPrintings.some(p => p !== expansionId.toUpperCase() && !p.startsWith(expansionId.replace(/[0-9]/g,'').toUpperCase()) && p.match(/^[A-Z]+[0-9]+$/))) continue;
       const vType = (v.name || '').trim();
       const nVType = normalizeVariantName(vType);
       if (nVType === 'normal' || nVType === 'foil') continue;
@@ -298,7 +306,10 @@ function expandEBCards(rawCardEntries) {
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
+      // Skip variant if it belongs to a different expansion entirely
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
+      // Skip variant if it belongs to a completely different expansion prefix (e.g. EB04 variant on OP15 card)
+      if (vPrintings.some(p => p !== expansionId.toUpperCase() && !p.startsWith(expansionId.replace(/[0-9]/g,'').toUpperCase()) && p.match(/^[A-Z]+[0-9]+$/))) continue;
       const vType = (v.name || '').trim();
       const nVType = normalizeVariantName(vType);
       if (nVType === 'normal' || nVType === 'foil') continue;
@@ -315,6 +326,55 @@ function expandEBCards(rawCardEntries) {
     }
   }
   return cards;
+}
+
+/** Fetch TCGplayer group from TCGCSV — returns { prefix -> Set<cardNumber> } for non-primary, non-EB expansions */
+async function getGroupInfo(groupId, primaryId, skipPrefixes) {
+  const url = `https://tcgcsv.com/tcgplayer/68/${groupId}/products`;
+  console.log(`🔍 Fetching TCGplayer group ${groupId} from TCGCSV...`);
+  let data;
+  try {
+    const res = await fetch(url, { headers: { Accept: 'application/json', 'User-Agent': 'TCGWatchtower/1.0' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (e) {
+    console.warn(`⚠️  TCGCSV fetch failed: ${e.message}`);
+    return {};
+  }
+  const products = data.results || [];
+  const prefixMap = {};
+  for (const product of products) {
+    const extData = product.extendedData || [];
+    const numberEntry = extData.find(d => d.name === 'Number');
+    if (!numberEntry) continue;
+    const fullNumber = numberEntry.value;
+    const match = fullNumber.match(/^([A-Z]+\d+)-/);
+    if (!match) continue;
+    const prefix = match[1];
+    if (prefix === primaryId || skipPrefixes.has(prefix)) continue;
+    if (!SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
+    const cardNum = fullNumber.split('-')[1];
+    if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
+    prefixMap[prefix].add(cardNum);
+  }
+  const summary = Object.entries(prefixMap).sort((a,b)=>b[1].size-a[1].size).map(([p,s])=>`${p}(${s.size})`).join(', ');
+  if (summary) console.log(`✅ Cross-set SP cards: ${summary}`);
+  return prefixMap;
+}
+
+/** Fetch specific cross-set cards from Scrydex by card ID */
+async function fetchSpecificCards(expansionId, cardNumbers) {
+  const results = [];
+  for (const num of [...cardNumbers].sort()) {
+    const cardId = `${expansionId}-${num}`;
+    try {
+      const url = `${SCRYDEX_BASE}/cards/${cardId}?select=id,name,rarity,variants,images`;
+      const data = await fetchWithRetry(url, { headers: HEADERS });
+      if (data.data) { results.push({ raw: data.data, cardNum: num, expansionId }); process.stdout.write('.'); }
+    } catch (e) { process.stdout.write('✗'); }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return results;
 }
 
 async function main() {
@@ -358,6 +418,40 @@ async function main() {
       added++;
     }
     console.log(`  Added ${added} unique cards from ${ebExpansionId} (${range.start}-${range.end})`);
+  }
+
+  // Step 3: Fetch cross-set SP cards from TCGCSV + Scrydex
+  // These are SP reprints from other sets included in this English release
+  if (TCGP_GROUP_ID) {
+    const ebPrefixes = new Set(Object.keys(EB_SPLIT[SET_ID.toLowerCase()] || {}));
+    ebPrefixes.add(primaryScrydexId);
+    const crossSetMap = await getGroupInfo(TCGP_GROUP_ID, primaryScrydexId, ebPrefixes);
+    for (const [expId, cardNums] of Object.entries(crossSetMap)) {
+      console.log(`\n📋 Cross-set fetch: ${expId} — ${[...cardNums].join(', ')}`);
+      const rawEntries = await fetchSpecificCards(expId, cardNums);
+      console.log(` (${rawEntries.length}/${cardNums.size} found)`);
+      for (const { raw: c, cardNum, expansionId } of rawEntries) {
+        const localId = `${expansionId}-${cardNum}`;
+        if (seenLocalIds.has(localId)) continue;
+        const baseRarity = normalizeRarity(c.rarity);
+        const baseImage = pickImage(c.images);
+        seenLocalIds.add(localId);
+        allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+        // Add SP alt art variant if present
+        for (const v of (c.variants||[])) {
+          const vType = (v.name||'').trim();
+          const nv = normalizeVariantName(vType);
+          if (nv === 'normal' || nv === 'foil') continue;
+          const nameRarity = variantRarityFromName(vType);
+          const variantRarity = nameRarity !== undefined ? (nameRarity||baseRarity) : baseRarity;
+          const suffix = variantSuffix(vType);
+          const vLocalId = `${localId}_${suffix}`;
+          if (seenLocalIds.has(vLocalId)) continue;
+          seenLocalIds.add(vLocalId);
+          allCards.push({ localId: vLocalId, name: `${(c.name||'').trim()} (${vType})`, rarity: variantRarity, image: pickImage(v.images)||baseImage, isVariant: true, variantType: vType, baseLocalId: localId });
+        }
+      }
+    }
   }
 
   // Inject manual cards (not on Scrydex)
