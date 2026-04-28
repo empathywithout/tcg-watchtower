@@ -67,6 +67,8 @@ const SET_OVERRIDES = {
   'op15': {
     // Koby Manga Rare — Scrydex API returns wrong image for this variant
     'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044B/medium',
+    // Zoro Treasure Rare
+    'OP13-037': 'https://images.scrydex.com/onepiece/OP13-037A/medium',
     // Sabo SP cards — not on Scrydex API, use direct CDN image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
     'P-105': 'https://images.scrydex.com/onepiece/P-105A/medium',
