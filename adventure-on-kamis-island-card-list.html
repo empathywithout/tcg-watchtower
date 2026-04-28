@@ -687,10 +687,11 @@ function handleChaseClick(el) {
   const rarity=el.dataset.rarity;
   const imgUrl=el.dataset.img;
   const cached=getCached(localId,rawName);
-  openModal(localId,name,rarity,imgUrl,cached?.url||null);
+  openModal(localId,name,rarity,imgUrl,cached?.url||null,rawName);
 }
 
-function openModal(localId,name,rarity,imgUrl,directUrl) {
+function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
+  rawName = rawName || name;
   if(!imgUrl)imgUrl=cardImg(localId);
   const cached=getCached(localId,name);
   const dispNum=displayNumber(localId);
@@ -704,7 +705,7 @@ function openModal(localId,name,rarity,imgUrl,directUrl) {
       <div class="modal-links">
         <a class="modal-buy-link pl-ebay" href="${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener"><span>${directUrl?'🛒 Buy on TCGplayer':'🔍 Find on TCGplayer'}</span><span>→</span></a>
-        <a class="modal-buy-link" href="${cardPageUrl(localId,name)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
+        <a class="modal-buy-link" href="${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
