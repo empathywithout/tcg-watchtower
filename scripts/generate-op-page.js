@@ -485,6 +485,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 
 <script>
 const SET_ID = '${SET_ID}';
+const SET_URL_SLUG = '${SET_URL_SLUG}';
 const SET_FULL_NAME = '${SET_FULL_NAME.replace(/'/g, "\\'")}';
 const R2 = '${R2_PUBLIC_URL}';
 const TCGP_GROUP_ID = '${tcgpGroupId}';
@@ -497,6 +498,13 @@ const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 function cardImg(id) {
   const isCrossSet = id && /^[A-Z]{2,}\d+-/.test(id);
   return \`\${R2}/cards/op/\${SET_ID}/\${id}.webp\${isCrossSet ? '?v=2' : ''}\`;
+}
+function toSlug(s) {
+  return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-\$/g,'');
+}
+function cardPageUrl(localId, name) {
+  const dispNum = displayNumber(localId);
+  return \`/one-piece/sets/\${SET_URL_SLUG}/cards/\${toSlug(name)}-\${toSlug(dispNum)}\`;
 }
 
 // displayNumber strips variant suffix, keeps full cross-set ID
@@ -684,7 +692,8 @@ function renderCards(reset) {
     const dispNum = displayNumber(card.localId);
     const tcgpUrl = cached?.url||tcgpLink(card.name,dispNum);
     const ebayUrl = ebayLink(\`\${card.name} \${dispNum} \${SET_FULL_NAME} One Piece\`);
-    el.innerHTML=\`<img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
+    const cardPageHref = cardPageUrl(card.localId, card.name);
+    el.innerHTML=\`<a href="\${cardPageHref}" onclick="event.stopPropagation()"><img src="\${imgUrl}" alt="\${card.name} \${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337"></a>
       <div class="card-item-info">
         <div class="card-item-name">\${displayName}</div>
         <div class="card-item-num">\${dispNum}</div>
@@ -771,6 +780,7 @@ function openModal(localId,name,rarity,imgUrl,directUrl) {
       <div class="modal-links">
         <a class="modal-buy-link pl-ebay" href="\${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>\${directUrl?'🛒 Buy on TCGplayer':'🔍 Find on TCGplayer'}</span><span>→</span></a>
+        <a class="modal-buy-link" href="\${cardPageUrl(localId,name)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
       </div>
     </div>\`;
   document.getElementById('modal-overlay').classList.add('open');
