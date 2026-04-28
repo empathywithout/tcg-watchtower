@@ -56,7 +56,7 @@ const SCRYDEX_ID_MAP = {
  * These are fetched individually from Scrydex and stored with full IDs (e.g. "EB04-044").
  */
 const EB_SPLIT = {
-  'op15': { 'EB04': { start: 1, end: 61 } },
+  'op15': { 'EB04': [{ start: 1, end: 10 }, { start: 42, end: 61 }] },
 };
 
 /**
@@ -266,7 +266,9 @@ function expandPrimaryCards(rawCards, expansionId) {
       const rangeForExp = ebSplitRanges[cardExpansion];
       if (rangeForExp) {
         const cardNumInt = parseInt(rawScrydexId.split('-')[1], 10);
-        if (cardNumInt < rangeForExp.start || cardNumInt > rangeForExp.end) continue; // outside our range, skip
+        const ranges = Array.isArray(rangeForExp) ? rangeForExp : [rangeForExp];
+        const inRange = ranges.some(r => cardNumInt >= r.start && cardNumInt <= r.end);
+        if (!inRange) continue; // outside our range, skip
       } else {
         continue; // not in EB_SPLIT at all, skip
       }
@@ -426,8 +428,14 @@ async function main() {
 
   // Step 2: EB split cards — only fetch the specific range for this set
   const ebSplit = EB_SPLIT[SET_ID.toLowerCase()] || {};
-  for (const [ebExpansionId, range] of Object.entries(ebSplit)) {
-    const rawEntries = await fetchEBCards(ebExpansionId, range.start, range.end);
+  for (const [ebExpansionId, rangeOrRanges] of Object.entries(ebSplit)) {
+    const ranges = Array.isArray(rangeOrRanges) ? rangeOrRanges : [rangeOrRanges];
+    let allRawEntries = [];
+    for (const range of ranges) {
+      const entries = await fetchEBCards(ebExpansionId, range.start, range.end);
+      allRawEntries = allRawEntries.concat(entries);
+    }
+    const rawEntries = allRawEntries;
     const expanded = expandEBCards(rawEntries);
     let added = 0;
     for (const card of expanded) {
