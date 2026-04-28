@@ -72,6 +72,13 @@ const SET_OVERRIDES = {
     // Sabo SP cards — not on Scrydex API, use direct CDN image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
     'P-105': 'https://images.scrydex.com/onepiece/P-105A/medium',
+    // Cross-set SP reprints — Scrydex individual fetch returns base card image, not SP art
+    'OP11-106': 'https://images.scrydex.com/onepiece/OP11-106B/medium',
+    'OP12-014': 'https://images.scrydex.com/onepiece/OP12-014B/medium',
+    'OP13-031': 'https://images.scrydex.com/onepiece/OP13-031A/medium',
+    'OP13-042': 'https://images.scrydex.com/onepiece/OP13-042B/medium',
+    'EB02-052': 'https://images.scrydex.com/onepiece/EB02-052B/medium',
+    'ST26-005': 'https://images.scrydex.com/onepiece/ST26-005A/medium',
   },
 };
 
