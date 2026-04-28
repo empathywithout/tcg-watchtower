@@ -247,11 +247,22 @@ async function fetchEBCards(expansionId, start, end) {
 function expandPrimaryCards(rawCards, expansionId) {
   const cards = [];
   for (const c of rawCards) {
-    // If Scrydex returned a card from a different expansion (e.g. EB04-001 in OP15 printings),
-    // use the full card ID as localId instead of stripping to a short number
+    // If Scrydex returned a card from a different expansion (e.g. EB04-044 in OP15 printings),
+    // check if it belongs to our EB split range. If yes, use full ID. If outside range, skip it.
     const rawScrydexId = (c.id || '').replace(/^onepiece-/i, '');
     const cardExpansion = rawScrydexId.split('-')[0];
     const isFromDifferentExpansion = cardExpansion && cardExpansion !== expansionId && /^[A-Z]{2,}\d+$/.test(cardExpansion);
+    if (isFromDifferentExpansion) {
+      // Check if this card is in our EB split range
+      const ebSplitRanges = EB_SPLIT[SET_ID.toLowerCase()] || {};
+      const rangeForExp = ebSplitRanges[cardExpansion];
+      if (rangeForExp) {
+        const cardNumInt = parseInt(rawScrydexId.split('-')[1], 10);
+        if (cardNumInt < rangeForExp.start || cardNumInt > rangeForExp.end) continue; // outside our range, skip
+      } else {
+        continue; // not in EB_SPLIT at all, skip
+      }
+    }
     const baseNum = isFromDifferentExpansion ? rawScrydexId : parseShortNum(c.id);
     const baseRarity = normalizeRarity(c.rarity);
     const baseImage  = pickImage(c.images);
@@ -268,8 +279,7 @@ function expandPrimaryCards(rawCards, expansionId) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
       // Skip variant if it belongs to a different expansion entirely
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
-      // Skip variant if it belongs to a completely different expansion prefix (e.g. EB04 variant on OP15 card)
-      if (vPrintings.some(p => p !== expansionId.toUpperCase() && !p.startsWith(expansionId.replace(/[0-9]/g,'').toUpperCase()) && p.match(/^[A-Z]+[0-9]+$/))) continue;
+
       const vType = (v.name || '').trim();
       const nVType = normalizeVariantName(vType);
       if (nVType === 'normal' || nVType === 'foil') continue;
@@ -308,8 +318,7 @@ function expandEBCards(rawCardEntries) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
       // Skip variant if it belongs to a different expansion entirely
       if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
-      // Skip variant if it belongs to a completely different expansion prefix (e.g. EB04 variant on OP15 card)
-      if (vPrintings.some(p => p !== expansionId.toUpperCase() && !p.startsWith(expansionId.replace(/[0-9]/g,'').toUpperCase()) && p.match(/^[A-Z]+[0-9]+$/))) continue;
+
       const vType = (v.name || '').trim();
       const nVType = normalizeVariantName(vType);
       if (nVType === 'normal' || nVType === 'foil') continue;
