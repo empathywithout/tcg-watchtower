@@ -444,7 +444,7 @@ async function main() {
       allCards.push(card);
       added++;
     }
-    console.log(`  Added ${added} unique cards from ${ebExpansionId} (${range.start}-${range.end})`);
+    const rangeStr = ranges.map(r=>r.start+'-'+r.end).join(', '); console.log(`  Added ${added} unique cards from ${ebExpansionId} (${rangeStr})`);
   }
 
   // Step 3: Fetch cross-set SP cards from TCGCSV + Scrydex
