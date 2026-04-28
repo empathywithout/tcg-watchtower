@@ -20,7 +20,7 @@ const TCGCSV_HEADERS = {
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v3'; // bumped — undici fetch
+const CACHE_VERSION = 'v4'; // bumped — full cross-set card number keys
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -117,6 +117,23 @@ export default async function handler(req, res) {
     const tcgpUrls = {};
     const bestProductId = {};
 
+    // Primary set prefix for this group — detect from products
+    // Cards whose rawNumber prefix differs from primary are cross-set cards
+    // and should be keyed by full number (e.g. "OP11-106") not short number ("106")
+    const primaryPrefixCounts = {};
+    for (const product of products) {
+      const extData  = product.extendedData || [];
+      const numEntry = extData.find(e => e.name === 'Number');
+      if (!numEntry) continue;
+      const rawNumber = numEntry.value.split('/')[0].trim();
+      const match = rawNumber.match(/^([A-Z]+\d+)-/);
+      if (match) {
+        primaryPrefixCounts[match[1]] = (primaryPrefixCounts[match[1]] || 0) + 1;
+      }
+    }
+    // The primary prefix is the one with the most cards
+    const primaryPrefix = Object.entries(primaryPrefixCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '';
+
     for (const product of products) {
       const extData  = product.extendedData || [];
       const numEntry = extData.find(e => e.name === 'Number');
@@ -124,8 +141,17 @@ export default async function handler(req, res) {
 
       const rawNumber = numEntry.value.split('/')[0].trim();
       const cardNumber = rawNumber;
-      // Extract numeric suffix and pad: "OP14-120" -> "120", "OP09-051" -> "051", "EB03-061" -> "061"
-      const opLocalId = category === 68 ? rawNumber.split('-').pop().padStart(3, '0') : null;
+
+      // Detect if this is a cross-set card (different prefix from primary)
+      const prefixMatch = rawNumber.match(/^([A-Z]+\d+)-/);
+      const cardPrefix = prefixMatch ? prefixMatch[1] : '';
+      const isCrossSet = cardPrefix && primaryPrefix && cardPrefix !== primaryPrefix;
+
+      // For primary cards: use short padded number e.g. "106"
+      // For cross-set cards: use full number e.g. "OP11-106"
+      const opLocalId = category === 68
+        ? (isCrossSet ? rawNumber : rawNumber.split('-').pop().padStart(3, '0'))
+        : null;
 
       const priceObj = priceByProductId[product.productId];
       if (!priceObj || priceObj.marketPrice == null) continue;
@@ -162,13 +188,13 @@ export default async function handler(req, res) {
         const nameKey = baseName + suffix;
         const numKey  = opLocalId + suffix;
 
-        // FIX: dedup by numKey (card number + variant), not nameKey.
+        // Dedup by numKey (card number + variant)
         if (bestProductId[numKey] !== undefined) continue;
         bestProductId[numKey] = product.productId;
 
         const productUrl = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
 
-        prices[numKey]  = priceObj.marketPrice;
+        prices[numKey]   = priceObj.marketPrice;
         tcgpUrls[numKey] = productUrl;
 
         if (!prices[nameKey]) {
