@@ -111,6 +111,14 @@ const MANUAL_CARDS = {
 const RARITY_OVERRIDES = {
   'op15': {
     'OP13-037': 'Treasure Rare',
+    // Cross-set SP cards — Scrydex returns base rarity, override to Special
+    'OP11-106': 'Special',
+    'OP12-014': 'Special',
+    'OP13-031': 'Special',
+    'OP13-042': 'Special',
+    'EB02-052': 'Special',
+    'ST26-005': 'Special',
+    'PRB02-014': 'Special',
   },
 };
 
