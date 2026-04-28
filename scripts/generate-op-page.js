@@ -539,18 +539,27 @@ function normalizeName(name) {
 // Price key — cross-set IDs pass through as-is, primary get zero-padded
 function priceKey(localId) {
   if (!localId) return localId;
-  if (/^[A-Z]{2,}\d+-/.test(localId)) return localId;
   const suffix = localId.includes('_') ? '_'+localId.split('_').slice(1).join('_') : '';
+  if (/^[A-Z]{2,}\d+-/.test(localId)) {
+    const base = localId.includes('_') ? localId.split('_')[0] : localId;
+    const shortNum = base.split('-').pop();
+    return [localId, shortNum+suffix, shortNum.padStart(3,'0')+suffix];
+  }
   const base = (localId.includes('_') ? localId.split('_')[0] : localId).padStart(3,'0');
   return base+suffix;
 }
 function priceKeyByName(localId, cardName) {
-  if (!localId||!cardName) return priceKey(localId);
+  if (!localId||!cardName) return localId;
   const suffix = localId.includes('_') ? '_'+localId.split('_').slice(1).join('_') : '';
   return normalizeName(cardName)+suffix;
 }
 function getCached(localId, cardName) {
-  return priceCache[priceKey(localId)]||priceCache[priceKeyByName(localId,cardName)]||null;
+  const key = priceKey(localId);
+  if (Array.isArray(key)) {
+    for (const k of key) { if (priceCache[k]) return priceCache[k]; }
+    return priceCache[priceKeyByName(localId,cardName)]||null;
+  }
+  return priceCache[key]||priceCache[priceKeyByName(localId,cardName)]||null;
 }
 
 const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
