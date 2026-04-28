@@ -56,8 +56,7 @@ const SCRYDEX_ID_MAP = {
  * These are fetched individually from Scrydex and stored with full IDs (e.g. "EB04-044").
  */
 const EB_SPLIT = {
-  'op14': { 'EB04': { start: 1,  end: 41 } },
-  'op15': { 'EB04': { start: 42, end: 61 } },
+  'op15': { 'EB04': { start: 1, end: 61 } },
 };
 
 /**
@@ -68,8 +67,9 @@ const SET_OVERRIDES = {
   'op15': {
     // Koby Manga Rare — Scrydex API returns wrong image for this variant
     'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044B/medium',
-    // Sabo SP — not on Scrydex, use direct image
+    // Sabo SP cards — not on Scrydex API, use direct CDN image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
+    'P-105': 'https://images.scrydex.com/onepiece/P-105A/medium',
   },
 };
 
@@ -81,8 +81,16 @@ const MANUAL_CARDS = {
   'op15': [
     {
       localId: 'PRB02-014',
-      name: 'Sabo',
+      name: 'Sabo (PRB02-014)',
       rarity: 'Super Rare',
+      isVariant: false,
+      variantType: null,
+      baseLocalId: null,
+    },
+    {
+      localId: 'P-105',
+      name: 'Sabo (P-105)',
+      rarity: 'Promo',
       isVariant: false,
       variantType: null,
       baseLocalId: null,
@@ -363,6 +371,8 @@ async function getGroupInfo(groupId, primaryId, skipPrefixes) {
     if (prefix === primaryId || skipPrefixes.has(prefix)) continue;
     if (!SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
     const cardNum = fullNumber.split('-')[1];
+    // Skip Dash Pack variants — these are reprint promos, not set cards
+    if (p.name && p.name.includes('Dash Pack')) continue;
     if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
     prefixMap[prefix].add(cardNum);
   }
@@ -446,19 +456,6 @@ async function main() {
         const baseImage = pickImage(c.images);
         seenLocalIds.add(localId);
         allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
-        // Add SP alt art variant if present
-        for (const v of (c.variants||[])) {
-          const vType = (v.name||'').trim();
-          const nv = normalizeVariantName(vType);
-          if (nv === 'normal' || nv === 'foil') continue;
-          const nameRarity = variantRarityFromName(vType);
-          const variantRarity = nameRarity !== undefined ? (nameRarity||baseRarity) : baseRarity;
-          const suffix = variantSuffix(vType);
-          const vLocalId = `${localId}_${suffix}`;
-          if (seenLocalIds.has(vLocalId)) continue;
-          seenLocalIds.add(vLocalId);
-          allCards.push({ localId: vLocalId, name: `${(c.name||'').trim()} (${vType})`, rarity: variantRarity, image: pickImage(v.images)||baseImage, isVariant: true, variantType: vType, baseLocalId: localId });
-        }
       }
     }
   }
