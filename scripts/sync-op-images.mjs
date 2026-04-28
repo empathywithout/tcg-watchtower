@@ -71,7 +71,6 @@ const SET_OVERRIDES = {
     'OP13-037': 'https://images.scrydex.com/onepiece/OP13-037A/medium',
     // Sabo SP cards — not on Scrydex API, use direct CDN image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
-    'P-105': 'https://images.scrydex.com/onepiece/P-105A/medium',
     // Cross-set SP reprints — Scrydex individual fetch returns base card image, not SP art
     'OP11-106': 'https://images.scrydex.com/onepiece/OP11-106B/medium',
     'OP12-014': 'https://images.scrydex.com/onepiece/OP12-014B/medium',
@@ -91,15 +90,7 @@ const MANUAL_CARDS = {
     {
       localId: 'PRB02-014',
       name: 'Sabo (PRB02-014)',
-      rarity: 'Super Rare',
-      isVariant: false,
-      variantType: null,
-      baseLocalId: null,
-    },
-    {
-      localId: 'P-105',
-      name: 'Sabo (P-105)',
-      rarity: 'Promo',
+      rarity: 'Special',
       isVariant: false,
       variantType: null,
       baseLocalId: null,
