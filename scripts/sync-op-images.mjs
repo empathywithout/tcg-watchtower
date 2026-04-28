@@ -372,7 +372,7 @@ async function getGroupInfo(groupId, primaryId, skipPrefixes) {
     if (!SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
     const cardNum = fullNumber.split('-')[1];
     // Skip Dash Pack variants — these are reprint promos, not set cards
-    if (p.name && p.name.includes('Dash Pack')) continue;
+    if (product.name && product.name.includes('Dash Pack')) continue;
     if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
     prefixMap[prefix].add(cardNum);
   }
