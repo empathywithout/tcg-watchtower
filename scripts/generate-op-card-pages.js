@@ -171,8 +171,9 @@ function generateCardPage(card, allCards) {
     : '';
   const fullDisplayName = cardDisplayName + variantLabel;
 
-  const title       = `${fullDisplayName} ${dispNum} Price & Info | ${SET_FULL_NAME} One Piece TCG`;
-  const description = `${fullDisplayName} (${dispNum}) from ${SET_FULL_NAME} — ${rarity} One Piece TCG card. Current market price, rarity, and where to buy on TCGplayer and eBay.`;
+  const setShortId  = dispNum.includes('-') ? dispNum : `${SET_SHORT_NAME}-${dispNum}`;
+  const title       = `${fullDisplayName} ${setShortId} Price, Rarity & Info | ${SET_FULL_NAME} One Piece TCG`;
+  const description = `${fullDisplayName} (${setShortId}) from ${SET_FULL_NAME} — ${rarity} One Piece TCG card. Live TCGplayer market price, rarity info, and where to buy.`;
 
   // Price key for JS — mirrors the prices API key format exactly
   // Cross-set base: "OP11-106"
@@ -318,10 +319,11 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
     <div class="card-image-wrap">
       <img src="${img}" alt="${fullDisplayName} ${dispNum} ${SET_FULL_NAME} One Piece Card"
            width="400" height="558" fetchpriority="high"
+           alt="${fullDisplayName} ${setShortId} ${rarity} ${SET_FULL_NAME} One Piece TCG Card"
            onerror="this.style.background='#1e293b';this.style.aspectRatio='5/7'">
     </div>
     <div>
-      <div class="card-name">${fullDisplayName}</div>
+      <div class="card-name">${fullDisplayName} <span style="font-size:1.2rem;opacity:.6;font-weight:500">(${setShortId})</span></div>
       <div class="card-meta">
         ${dispNum} · <a href="${cardListUrl}">${SET_FULL_NAME}</a> · One Piece TCG
       </div>
@@ -332,7 +334,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
       </div>
       <div class="info-table">
         <div class="info-row"><div class="info-key">Card Name</div><div class="info-val">${fullDisplayName}</div></div>
-        <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${dispNum}</div></div>
+        <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${setShortId}</div></div>
         <div class="info-row"><div class="info-key">Set</div><div class="info-val"><a href="${cardListUrl}" style="color:var(--amber)">${SET_FULL_NAME}</a></div></div>
         <div class="info-row"><div class="info-key">Rarity</div><div class="info-val">
           <span class="rarity-badge ${
@@ -357,7 +359,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
       </div>
       <div class="section-title">About This Card</div>
       <p class="card-description">
-        ${fullDisplayName} (${dispNum}) is a${rarity ? ` <strong>${rarity}</strong>` : ''} card from the <strong>${SET_FULL_NAME}</strong> set of the One Piece Card Game.
+        ${fullDisplayName} (${setShortId}) is a${rarity ? ` <strong>${rarity}</strong>` : ''} card from the <strong>${SET_FULL_NAME}</strong> set of the One Piece Card Game.
         ${rarity === 'Manga Rare' ? 'Manga Rares are the top chase cards in this set, featuring manga-style artwork.' : ''}
         ${rarity === 'Secret Rare' ? 'Secret Rares are among the hardest cards to pull from a booster pack.' : ''}
         ${rarity === 'Treasure Rare' ? 'Treasure Rares are rare cross-set reprints included in this English release.' : ''}
@@ -374,7 +376,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
           const rImg = `${R2_PUBLIC_URL}/cards/op/${SET_ID}/${r.localId}.webp${rIsCrossSet ? '?v=2' : ''}`;
           const rSlug = cardSlug(r);
           return `<a class="related-card" href="/one-piece/sets/${SET_URL_SLUG}/cards/${rSlug}">
-          <img src="${rImg}" alt="${r.name} ${rDispNum} One Piece" width="200" height="279" loading="lazy" onerror="this.style.display='none'">
+          <img src="${rImg}" alt="${r.name} ${rDispNum} ${SET_SHORT_NAME} One Piece TCG Card" width="200" height="279" loading="lazy" onerror="this.style.display='none'">
           <div class="related-card-info">
             <div class="related-card-name">${r.name}</div>
             <div class="related-card-num">${rDispNum}</div>
