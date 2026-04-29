@@ -357,6 +357,206 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
     <div class="card-count" id="card-count">Loading cards…</div>
     <div class="card-grid" id="card-grid"></div>
     <button id="load-more-btn" style="display:none">Load More</button>
+    <!-- Static card index for search engines — hidden visually but crawlable -->
+    <ul id="card-seo-index" style="display:none" aria-hidden="true">
+      <li>Krieg OP15-001 Leader</li>
+      <li>Krieg (altArt) OP15-001 Alternate Art</li>
+      <li>Lucy OP15-002 Leader</li>
+      <li>Lucy (altArt) OP15-002 Alternate Art</li>
+      <li>Alvida OP15-003 Rare</li>
+      <li>Alvida (altArt) OP15-003 Alternate Art</li>
+      <li>Sea Cat OP15-004 Common</li>
+      <li>Cabaji OP15-005 Common</li>
+      <li>Cavendish OP15-006 Uncommon</li>
+      <li>Gin OP15-007 Super Rare</li>
+      <li>Gin (altArt) OP15-007 Alternate Art</li>
+      <li>Krieg OP15-008 Super Rare</li>
+      <li>Krieg (altArt) OP15-008 Alternate Art</li>
+      <li>Koby OP15-009 Uncommon</li>
+      <li>Nezumi OP15-010 Common</li>
+      <li>Pearl OP15-011 Rare</li>
+      <li>Buggy OP15-012 Common</li>
+      <li>Pincers OP15-013 Common</li>
+      <li>Bartolomeo OP15-014 Rare</li>
+      <li>Higuma OP15-015 Common</li>
+      <li>Fullbody OP15-016 Uncommon</li>
+      <li>Morgan OP15-017 Common</li>
+      <li>Mohji OP15-018 Common</li>
+      <li>Barrier Bulls OP15-019 Uncommon</li>
+      <li>Fire Fist OP15-020 Rare</li>
+      <li>Just Watch Me, Ace!!! OP15-021 Uncommon</li>
+      <li>Brook OP15-022 Leader</li>
+      <li>Brook (altArt) OP15-022 Alternate Art</li>
+      <li>Arlong OP15-023 Rare</li>
+      <li>Usopp OP15-024 Rare</li>
+      <li>Kuro OP15-025 Rare</li>
+      <li>Kuro (altArt) OP15-025 Alternate Art</li>
+      <li>Jango OP15-026 Uncommon</li>
+      <li>Dracule Mihawk OP15-027 Common</li>
+      <li>Meowban Brothers OP15-028 Uncommon</li>
+      <li>Bartholomew Kuma OP15-029 Common</li>
+      <li>Hyouzou OP15-030 Uncommon</li>
+      <li>Purinpurin OP15-031 Common</li>
+      <li>Brook OP15-032 Super Rare</li>
+      <li>Brook (altArt) OP15-032 Alternate Art</li>
+      <li>Hody Jones OP15-033 Common</li>
+      <li>Yorki OP15-034 Common</li>
+      <li>Laboon OP15-035 Uncommon</li>
+      <li>Ryuma OP15-036 Common</li>
+      <li>The Outcome Will Tell Us Who's Strong and Who's Weak OP15-037 Uncommon</li>
+      <li>It's an Order! Do Not Defy Me!!! OP15-038 Rare</li>
+      <li>Rebecca OP15-039 Leader</li>
+      <li>Rebecca (altArt) OP15-039 Alternate Art</li>
+      <li>Viola OP15-040 Rare</li>
+      <li>Orlumbus OP15-041 Uncommon</li>
+      <li>Kyros OP15-042 Rare</li>
+      <li>Kelly Funk OP15-043 Common</li>
+      <li>Koala OP15-044 Common</li>
+      <li>Sai OP15-045 Uncommon</li>
+      <li>Sabo OP15-046 Super Rare</li>
+      <li>Sabo (altArt) OP15-046 Alternate Art</li>
+      <li>Sanji OP15-047 Rare</li>
+      <li>Sanji (altArt) OP15-047 Alternate Art</li>
+      <li>Chinjao OP15-048 Common</li>
+      <li>Hajrudin OP15-049 Uncommon</li>
+      <li>Bobby Funk OP15-050 Common</li>
+      <li>Monkey.D.Luffy OP15-051 Uncommon</li>
+      <li>Leo OP15-052 Uncommon</li>
+      <li>Rebecca OP15-053 Super Rare</li>
+      <li>Rebecca (altArt) OP15-053 Alternate Art</li>
+      <li>And No One Else Can Have It! It's Our Memento of Him OP15-054 Common</li>
+      <li>Go Ahead and Use 'Em, Mr. Luffy!!! OP15-055 Rare</li>
+      <li>Would You Let Me Eat the Flame-Flame Fruit? OP15-056 Common</li>
+      <li>Dressrosa Kingdom OP15-057 Common</li>
+      <li>Enel OP15-058 Leader</li>
+      <li>Enel (altArt) OP15-058 Alternate Art</li>
+      <li>Amazon OP15-059 Common</li>
+      <li>Enel OP15-060 Super Rare</li>
+      <li>Enel (altArt) OP15-060 Alternate Art</li>
+      <li>Ohm OP15-061 Rare</li>
+      <li>Ohm (altArt) OP15-061 Alternate Art</li>
+      <li>Captain Seamars OP15-062 Uncommon</li>
+      <li>Gedatsu OP15-063 Rare</li>
+      <li>Kotori OP15-064 Common</li>
+      <li>Goro OP15-065 Common</li>
+      <li>Satori OP15-066 Rare</li>
+      <li>Shura OP15-067 Rare</li>
+      <li>Heavenly Warriors OP15-068 Common</li>
+      <li>Nola OP15-069 Uncommon</li>
+      <li>Fuza OP15-070 Common</li>
+      <li>Holly OP15-071 Common</li>
+      <li>Hotori OP15-072 Common</li>
+      <li>Yama OP15-073 Common</li>
+      <li>Varie OP15-074 Uncommon</li>
+      <li>El Thor OP15-075 Uncommon</li>
+      <li>Lightning Beast Kiten OP15-076 Uncommon</li>
+      <li>Lightning Dragon OP15-077 Rare</li>
+      <li>Lightning Dragon (altArt) OP15-077 Alternate Art</li>
+      <li>Mamaragan OP15-078 Super Rare</li>
+      <li>Mamaragan (altArt) OP15-078 Alternate Art</li>
+      <li>Absalom OP15-079 Common</li>
+      <li>Oars OP15-080 Rare</li>
+      <li>Sanji OP15-081 Uncommon</li>
+      <li>Charlotte Lola OP15-082 Common</li>
+      <li>Spoil OP15-083 Common</li>
+      <li>Dr. Hogback OP15-084 Common</li>
+      <li>Tony Tony.Chopper OP15-085 Rare</li>
+      <li>Nami OP15-086 Super Rare</li>
+      <li>Nami (altArt) OP15-086 Alternate Art</li>
+      <li>Nico Robin OP15-087 Common</li>
+      <li>Pirates Docking Six OP15-088 Rare</li>
+      <li>Franky OP15-089 Uncommon</li>
+      <li>Perona OP15-090 Uncommon</li>
+      <li>Margarita OP15-091 Common</li>
+      <li>Monkey.D.Luffy OP15-092 Rare</li>
+      <li>Monkey.D.Luffy (altArt) OP15-092 Alternate Art</li>
+      <li>The Risky Brothers OP15-093 Common</li>
+      <li>Roronoa Zoro OP15-094 Uncommon</li>
+      <li>Gum-Gum Storm OP15-095 Uncommon</li>
+      <li>Swallow Bond en Avant OP15-096 Rare</li>
+      <li>I Find It Embarrassing as a Human Being OP15-097 Common</li>
+      <li>Monkey.D.Luffy OP15-098 Leader</li>
+      <li>Monkey.D.Luffy (altArt) OP15-098 Alternate Art</li>
+      <li>Urouge OP15-099 Uncommon</li>
+      <li>Kamakiri OP15-100 Common</li>
+      <li>Kalgara OP15-101 Uncommon</li>
+      <li>Gan.Fall OP15-102 Rare</li>
+      <li>Genbo OP15-103 Common</li>
+      <li>Conis OP15-104 Common</li>
+      <li>Jewelry Bonney OP15-105 Uncommon</li>
+      <li>Octoballoon OP15-106 Common</li>
+      <li>Tony Tony.Chopper OP15-107 Uncommon</li>
+      <li>Nami OP15-108 Rare</li>
+      <li>Nico Robin OP15-109 Rare</li>
+      <li>Nico Robin (altArt) OP15-109 Alternate Art</li>
+      <li>Braham OP15-110 Common</li>
+      <li>Mont Blanc Noland OP15-111 Common</li>
+      <li>Raki OP15-112 Common</li>
+      <li>Roronoa Zoro OP15-113 Super Rare</li>
+      <li>Roronoa Zoro (altArt) OP15-113 Alternate Art</li>
+      <li>Wyper OP15-114 Super Rare</li>
+      <li>Wyper (altArt) OP15-114 Alternate Art</li>
+      <li>Impact Dial OP15-115 Common</li>
+      <li>Gum-Gum Golden Rifle OP15-116 Rare</li>
+      <li>Gum-Gum Golden Rifle (altArt) OP15-116 Alternate Art</li>
+      <li>Heso!! OP15-117 Uncommon</li>
+      <li>Enel OP15-118 Secret Rare</li>
+      <li>Enel (altArt) OP15-118 Alternate Art</li>
+      <li>Enel (mangaAltArt) OP15-118 Manga Rare</li>
+      <li>Monkey.D.Luffy OP15-119 Secret Rare</li>
+      <li>Monkey.D.Luffy (altArt) OP15-119 Alternate Art</li>
+      <li>Jewelry Bonney EB04-001 Leader</li>
+      <li>Jewelry Bonney (altArt) EB04-001 Alternate Art</li>
+      <li>Jewelry Bonney EB04-002 Rare</li>
+      <li>Jewelry Bonney (altArt) EB04-002 Alternate Art</li>
+      <li>Smoker & Tashigi EB04-003 Rare</li>
+      <li>Smoker & Tashigi (specialAltArt) EB04-003 Special</li>
+      <li>Zeff EB04-004 Common</li>
+      <li>Trafalgar Law EB04-005 Common</li>
+      <li>Moda EB04-006 Common</li>
+      <li>Roronoa Zoro EB04-007 Super Rare</li>
+      <li>Roronoa Zoro (altArt) EB04-007 Alternate Art</li>
+      <li>Distorted Future EB04-008 Rare</li>
+      <li>It's My Student's Farewell. I Want It to Be Proper. EB04-009 Common</li>
+      <li>Lulucia Kingdom EB04-010 Common</li>
+      <li>Alpha EB04-042 Common</li>
+      <li>Kaku EB04-043 Rare</li>
+      <li>Kaku (altArt) EB04-043 Alternate Art</li>
+      <li>Koby EB04-044 Super Rare</li>
+      <li>Koby (altArt) EB04-044 Alternate Art</li>
+      <li>Koby (mangaAltArt) EB04-044 Manga Rare</li>
+      <li>Ginny EB04-045 Common</li>
+      <li>Doll EB04-046 Common</li>
+      <li>Helmeppo EB04-047 Rare</li>
+      <li>Rob Lucci EB04-048 Super Rare</li>
+      <li>Rob Lucci (altArt) EB04-048 Alternate Art</li>
+      <li>Finger Pistol Yellow Lotus EB04-049 Common</li>
+      <li>I'll Whip You Into Shape. ♡ EB04-050 Rare</li>
+      <li>Emet EB04-051 Common</li>
+      <li>Sanji EB04-052 Rare</li>
+      <li>Sanji (altArt) EB04-052 Alternate Art</li>
+      <li>Sentomaru EB04-053 Rare</li>
+      <li>Bartholomew Kuma EB04-054 Rare</li>
+      <li>Bartholomew Kuma EB04-055 Common</li>
+      <li>Pacifista EB04-056 Common</li>
+      <li>Vegapunk EB04-057 Common</li>
+      <li>Borsalino EB04-058 Super Rare</li>
+      <li>Borsalino (altArt) EB04-058 Alternate Art</li>
+      <li>Black Rope Dragon Twister EB04-059 Rare</li>
+      <li>Gum-Gum Hawk Gatling EB04-060 Common</li>
+      <li>Monkey.D.Luffy EB04-061 Secret Rare</li>
+      <li>Monkey.D.Luffy (altArt) EB04-061 Alternate Art</li>
+      <li>Sabo OP15-105 Promo</li>
+      <li>Sabo (specialAltArt) OP15-105 Special</li>
+      <li>Enel EB02-052 Special</li>
+      <li>Zeus OP11-106 Special</li>
+      <li>Boa Hancock OP12-014 Special</li>
+      <li>Trafalgar Law OP13-031 Special</li>
+      <li>Roronoa Zoro OP13-037 Treasure Rare</li>
+      <li>Edward.Newgate OP13-042 Special</li>
+      <li>Sabo PRB02-014 Special</li>
+      <li>Monkey.D.Luffy ST26-005 Special</li>
+    </ul>
   </div>
 </section>
 
