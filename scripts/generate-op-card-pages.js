@@ -387,6 +387,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
         <div class="set-block-title">${SET_FULL_NAME} (${SET_SHORT_NAME})</div>
         <div class="set-links">
           <a class="set-link" href="${cardListUrl}">📋 View Full Card List →</a>
+          <a class="set-link" href="/one-piece/sets/${SET_URL_SLUG}/most-valuable">⭐ Most Valuable Cards →</a>
           <a class="set-link" href="/one-piece/sets/${SET_URL_SLUG}/top-chase-cards">🔥 Top Chase Cards →</a>
         </div>
       </div>
