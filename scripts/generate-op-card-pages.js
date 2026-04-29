@@ -501,3 +501,218 @@ sitemap = sitemap.replace(
 sitemap = sitemap.replace('</urlset>', `${cardEntries}\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap);
 console.log(`✅ sitemap.xml updated with ${slugsSeen.size} One Piece card URLs`);
+
+// ─── Most Valuable / Top Chase Cards page ─────────────────────────────────────
+
+const CHASE_RARITIES_OP = ['Manga Rare', 'Secret Rare', 'Treasure Rare', 'Alternate Art', 'Special', 'Super Rare'];
+const RARITY_TIER_OP = { 'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2, 'Alternate Art': 3, 'Special': 4, 'Super Rare': 5 };
+const RARITY_LABEL_OP = { 'Manga Rare': 'MR', 'Secret Rare': 'SEC', 'Treasure Rare': 'TR', 'Alternate Art': 'ALT', 'Special': 'SP', 'Super Rare': 'SR', 'Rare': 'R' };
+
+const chaseCards = cards
+  .filter(c => CHASE_RARITIES_OP.includes(c.rarity || ''))
+  .sort((a, b) => (RARITY_TIER_OP[a.rarity] ?? 99) - (RARITY_TIER_OP[b.rarity] ?? 99));
+
+const setDir = path.join(ROOT, 'one-piece', 'sets', SET_URL_SLUG);
+fs.mkdirSync(setDir, { recursive: true });
+
+const mvPageUrl   = `${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/most-valuable`;
+const mvTitle     = `Most Valuable ${SET_FULL_NAME} Cards | One Piece TCG Prices`;
+const mvDesc      = `The most valuable ${SET_FULL_NAME} One Piece TCG cards ranked by market price. See current TCGplayer prices for all Manga Rares, Secret Rares, SP cards, and Alternate Arts.`;
+
+const mvHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${mvTitle}</title>
+<meta name="description" content="${mvDesc}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${mvPageUrl}">
+<meta name='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
+<meta property="og:title" content="${mvTitle}">
+<meta property="og:description" content="${mvDesc}">
+<meta property="og:url" content="${mvPageUrl}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "${mvTitle}",
+  "description": "${mvDesc}",
+  "url": "${mvPageUrl}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}" },
+      { "@type": "ListItem", "position": 2, "name": "One Piece TCG", "item": "${SITE_URL}/one-piece" },
+      { "@type": "ListItem", "position": 3, "name": "${SET_FULL_NAME}", "item": "${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/cards" },
+      { "@type": "ListItem", "position": 4, "name": "Most Valuable Cards", "item": "${mvPageUrl}" }
+    ]
+  }
+}<\/script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0514;--surface:#0f172a;--surface2:#1e293b;--border:rgba(255,255,255,.08);--text:#f1f5f9;--muted:#94a3b8;--amber:#fbbf24;--green:#22c55e;--red:#ef4444;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;background-image:linear-gradient(to bottom right,#0f0a1a,#1a0a2e,#0a1520)}
+a{color:inherit;text-decoration:none}
+nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
+.nav-back{color:var(--muted);font-size:.85rem;transition:color .2s}
+.nav-back:hover{color:var(--text)}
+.breadcrumb{padding:.75rem 1.5rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
+.breadcrumb a:hover{color:var(--text)}
+.breadcrumb span{opacity:.5}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:.5rem}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
+@media(max-width:640px){.cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}}
+.card-item{background:rgba(15,23,42,.9);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+.card-item:hover{border-color:rgba(239,68,68,.4);transform:translateY(-2px)}
+.card-item img{width:100%;aspect-ratio:245/337;object-fit:contain;background:rgba(15,23,42,.85);display:block}
+.card-info{padding:.75rem}
+.card-name{font-weight:700;font-size:.85rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-num{font-size:.75rem;color:var(--muted);margin-bottom:6px;font-family:monospace}
+.rarity-badge{display:inline-flex;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.badge-mr{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(239,68,68,.3));border:1px solid rgba(251,191,36,.6);color:#fde68a}
+.badge-sec{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(239,68,68,.2));border:1px solid rgba(251,191,36,.4);color:#fbbf24}
+.badge-tr{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(249,115,22,.2));border:1px solid rgba(251,191,36,.4);color:#fb923c}
+.badge-sp{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(59,130,246,.2));border:1px solid rgba(168,85,247,.4);color:#c084fc}
+.badge-sr{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171}
+.badge-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.card-price{font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:10px;min-height:1.6rem;font-family:monospace}
+.card-price.loading{color:var(--muted);font-size:.8rem;font-weight:400}
+.buy-btns{display:flex;gap:6px}
+.btn{flex:1;padding:7px 4px;border-radius:6px;font-size:.75rem;font-weight:700;text-align:center;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80}
+.btn-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--amber);margin-top:2.5rem;font-size:.9rem;transition:color .2s}
+.back-link:hover{color:white}
+footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.6;margin-top:3rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <a href="/one-piece/sets/${SET_URL_SLUG}/cards" class="nav-back">← ${SET_FULL_NAME} Card List</a>
+</nav>
+<div class="breadcrumb">
+  <a href="/">Home</a><span>›</span>
+  <a href="/one-piece">One Piece TCG</a><span>›</span>
+  <a href="/one-piece/sets/${SET_URL_SLUG}/cards">${SET_FULL_NAME}</a><span>›</span>
+  <span>Most Valuable Cards</span>
+</div>
+<div class="container">
+  <h1>Most Valuable ${SET_FULL_NAME} Cards</h1>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily from TCGplayer</p>
+  <div class="cards-grid" id="cards-grid">
+    ${chaseCards.map(c => {
+      const dispNum = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
+      const isCrossSet = /^[A-Z]{2,}\d+-/.test(c.localId);
+      const img = `${R2_PUBLIC_URL}/cards/op/${SET_ID}/${c.localId}.webp${isCrossSet ? '?v=2' : ''}`;
+      const slug = cardSlug(c);
+      const baseLocalId = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
+      const variantSuffix = c.localId.includes('_') ? '_' + c.localId.split('_').slice(1).join('_') : '';
+      const priceDataKey = isCrossSet ? (baseLocalId + variantSuffix) : (dispNum.padStart(3, '0') + variantSuffix);
+      const tcgpUrl = `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${encodeURIComponent(c.name + ' ' + dispNum + ' One Piece')}&view=grid`;
+      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + dispNum + ' ' + SET_FULL_NAME + ' One Piece Card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339145069&toolid=10001&mkevt=1`;
+      const badgeClass = c.rarity === 'Manga Rare' ? 'badge-mr' : c.rarity === 'Secret Rare' ? 'badge-sec' : c.rarity === 'Treasure Rare' ? 'badge-tr' : (c.rarity === 'Special' || c.rarity === 'Alternate Art') ? 'badge-sp' : c.rarity === 'Super Rare' ? 'badge-sr' : 'badge-r';
+      const label = RARITY_LABEL_OP[c.rarity] || c.rarity;
+      const displayName = c.name.replace(/\s*\(([a-z])/g, (m, l) => ' (' + l.toUpperCase()).replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim();
+      return `<div class="card-item">
+      <a href="/one-piece/sets/${SET_URL_SLUG}/cards/${slug}">
+        <img src="${img}" alt="${c.name} ${dispNum} ${SET_FULL_NAME} One Piece Card" width="200" height="279" loading="lazy" onerror="this.style.background='#1e293b'">
+      </a>
+      <div class="card-info">
+        <div class="card-name">${displayName}</div>
+        <div class="card-num">${dispNum}</div>
+        <span class="rarity-badge ${badgeClass}">${label}</span>
+        <div class="card-price loading" data-price-key="${priceDataKey}">—</div>
+        <div class="buy-btns">
+          <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+        </div>
+      </div>
+    </div>`;
+    }).join('')}
+  </div>
+  <a href="/one-piece/sets/${SET_URL_SLUG}/cards" class="back-link">← View Full ${SET_FULL_NAME} Card List</a>
+</div>
+<footer>
+  <p>TCG Watchtower is not affiliated with or endorsed by Bandai or the One Piece Card Game. Prices sourced from TCGplayer via TCGCSV.</p>
+  <p style="margin-top:6px">TCG Watchtower participates in affiliate programs including eBay Partner Network and TCGplayer. We may earn a commission on qualifying purchases.</p>
+</footer>
+<script>
+const GROUP_ID = '${TCGP_GROUP_ID}';
+async function loadPrices() {
+  if (!GROUP_ID) return;
+  try {
+    const res = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID + '&game=onepiece');
+    if (!res.ok) return;
+    const { prices = {} } = await res.json();
+    document.querySelectorAll('[data-price-key]').forEach(el => {
+      const key = el.dataset.priceKey;
+      const price = prices[key];
+      if (price != null) {
+        el.textContent = '$' + price.toFixed(2);
+        el.classList.remove('loading');
+      } else {
+        el.textContent = '—';
+        el.classList.remove('loading');
+      }
+    });
+    // Re-sort grid by price descending
+    const grid = document.getElementById('cards-grid');
+    const items = [...grid.querySelectorAll('.card-item')];
+    items.sort((a, b) => {
+      const pa = parseFloat(a.querySelector('[data-price-key]').textContent.replace('$', '')) || 0;
+      const pb = parseFloat(b.querySelector('[data-price-key]').textContent.replace('$', '')) || 0;
+      return pb - pa;
+    });
+    items.forEach(i => grid.appendChild(i));
+  } catch(e) { console.warn('Prices unavailable:', e.message); }
+}
+loadPrices();
+</script>
+${impactScript}
+</body>
+</html>`;
+
+fs.writeFileSync(path.join(setDir, 'most-valuable.html'), mvHtml);
+console.log(`✅ Generated most-valuable page: one-piece/sets/${SET_URL_SLUG}/most-valuable.html`);
+
+// Add vercel rewrite for most-valuable
+updateVercel(vercel => {
+  vercel.rewrites = vercel.rewrites.filter(r =>
+    r.source !== `/one-piece/sets/${SET_URL_SLUG}/most-valuable`
+  );
+  vercel.rewrites.push({
+    source:      `/one-piece/sets/${SET_URL_SLUG}/most-valuable`,
+    destination: `/one-piece/sets/${SET_URL_SLUG}/most-valuable.html`,
+  });
+});
+console.log(`✅ vercel.json updated with most-valuable rewrite`);
+
+// Add to sitemap
+let sitemap4 = fs.readFileSync(sitemapPath, 'utf8');
+sitemap4 = sitemap4.replace('</urlset>', `  <url>
+    <loc>${mvPageUrl}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>\n</urlset>`);
+fs.writeFileSync(sitemapPath, sitemap4);
+console.log(`✅ sitemap.xml updated with most-valuable URL`);
