@@ -62,6 +62,25 @@ const SET_DESCRIPTION = `Complete guide to ${SET_FULL_NAME} — full card list, 
 
 if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME required'); process.exit(1); }
 
+// Fetch card data from R2 to bake into static HTML for SEO
+let CARD_LIST_HTML = '';
+try {
+  const r2Url = `${R2_PUBLIC_URL}/data/op/${SET_ID}.json`;
+  const r2Res = await fetch(r2Url);
+  if (r2Res.ok) {
+    const r2Data = await r2Res.json();
+    const r2Cards = r2Data.cards || [];
+    CARD_LIST_HTML = r2Cards.map(c => {
+      const dispNum = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
+      const setShortId = dispNum.includes('-') ? dispNum : `${SET_SHORT_NAME}-${dispNum}`;
+      return `      <li>${c.name} ${setShortId} ${c.rarity || ''}</li>`;
+    }).join('\n');
+    console.log(`✅ Baked ${r2Cards.length} card names into static HTML for SEO`);
+  }
+} catch(e) {
+  console.warn('⚠️  Could not fetch R2 card data for SEO bake-in:', e.message);
+}
+
 const setsPath = 'sets.json';
 const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
 const currentSlug = `one-piece/sets/${SET_URL_SLUG}/cards`;
@@ -434,6 +453,10 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
     <div class="card-count" id="card-count">Loading cards…</div>
     <div class="card-grid" id="card-grid"></div>
     <button id="load-more-btn" style="display:none">Load More</button>
+    <!-- Static card index for search engines — hidden visually but crawlable -->
+    <ul id="card-seo-index" style="display:none" aria-hidden="true">
+${CARD_LIST_HTML}
+    </ul>
   </div>
 </section>
 
