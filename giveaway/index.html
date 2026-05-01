@@ -5,211 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giveaway — TCG Watchtower</title>
   <link rel="icon" href="/favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:         #0a0f1e;
-      --bg-card:    rgba(15,20,40,0.8);
-      --border:     rgba(255,255,255,0.08);
-      --primary:    #3b82f6;
-      --primary-dim:rgba(59,130,246,0.15);
-      --primary-bdr:rgba(59,130,246,0.3);
-      --purple:     #a855f7;
-      --purple-dim: rgba(168,85,247,0.15);
-      --purple-bdr: rgba(168,85,247,0.3);
-      --text:       #f1f5f9;
-      --text-muted: #64748b;
-      --text-mid:   #94a3b8;
-      --green:      #22c55e;
-      --green-dim:  rgba(34,197,94,0.12);
-      --green-bdr:  rgba(34,197,94,0.3);
-      --red:        #ef4444;
+      --bg:          #0a0f1e;
+      --bg-card:     rgba(15,20,40,0.85);
+      --border:      rgba(255,255,255,0.08);
+      --primary:     #3b82f6;
+      --primary-dim: rgba(59,130,246,0.15);
+      --primary-bdr: rgba(59,130,246,0.3);
+      --purple:      #a855f7;
+      --purple-dim:  rgba(168,85,247,0.15);
+      --purple-bdr:  rgba(168,85,247,0.3);
+      --gold:        #f59e0b;
+      --gold-dim:    rgba(245,158,11,0.12);
+      --gold-bdr:    rgba(245,158,11,0.3);
+      --text:        #f1f5f9;
+      --text-muted:  #64748b;
+      --text-mid:    #94a3b8;
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,0.12);
+      --green-bdr:   rgba(34,197,94,0.3);
+      --red:         #ef4444;
     }
-
-    html, body {
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      overflow-x: hidden;
-    }
-
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
     body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(168,85,247,0.07) 0%, transparent 50%);
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 40% at 80% 60%, rgba(168,85,247,0.07) 0%, transparent 50%);
       pointer-events: none; z-index: 0;
     }
     body::after {
-      content: '';
-      position: fixed; inset: 0;
+      content: ''; position: fixed; inset: 0;
       background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 32px 32px;
       pointer-events: none; z-index: 0;
     }
 
     /* nav */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(10,15,30,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; height: 64px;
-    }
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(10,15,30,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 64px; }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo img { height: 32px; }
     .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); }
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .nav-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color .2s; }
     .nav-link:hover { color: var(--text); }
-    .nav-btn {
-      padding: 8px 16px;
-      background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4);
-      color: #818cf8; border-radius: 8px; text-decoration: none;
-      font-size: 13px; font-weight: 700; transition: all .2s;
-    }
+    .nav-btn { padding: 8px 16px; background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4); color: #818cf8; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700; transition: all .2s; }
     .nav-btn:hover { background: rgba(88,101,242,0.35); color: #a5b4fc; }
 
     /* layout */
-    .wrap {
-      position: relative; z-index: 1;
-      max-width: 860px; margin: 0 auto;
-      padding: 72px 24px 100px;
-    }
+    .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 72px 24px 100px; }
 
     /* hero */
-    .hero { text-align: center; margin-bottom: 52px; animation: fadeUp .5s ease both; }
-
-    .hero-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--purple-dim); border: 1px solid var(--purple-bdr);
-      color: #c084fc; border-radius: 20px;
-      padding: 6px 14px; font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(56px, 10vw, 108px);
-      line-height: 0.88; letter-spacing: 2px;
-      color: var(--text); margin-bottom: 18px;
-    }
+    .hero { text-align: center; margin-bottom: 48px; animation: fadeUp .5s ease both; }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; background: var(--purple-dim); border: 1px solid var(--purple-bdr); color: #c084fc; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 9vw, 96px); line-height: 0.9; letter-spacing: 2px; color: var(--text); margin-bottom: 10px; }
     .hero h1 .accent { color: var(--primary); }
 
-    .prize-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-    .prize-name  { font-size: clamp(18px, 3vw, 26px); font-weight: 600; color: var(--text); }
+    /* prize cards row */
+    .prize-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 0 auto 48px; animation: fadeUp .5s .08s ease both; }
+    @media (max-width: 520px) { .prize-row { grid-template-columns: 1fr; } }
 
-    /* stats */
-    .stats {
-      display: flex; justify-content: center;
-      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-      max-width: 360px; margin: 0 auto 52px;
-      background: var(--bg-card); backdrop-filter: blur(12px);
-      animation: fadeUp .5s .1s ease both;
-    }
-    .stat { flex: 1; text-align: center; padding: 20px 12px; border-right: 1px solid var(--border); }
-    .stat:last-child { border-right: none; }
-    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--primary); line-height: 1; }
-    .stat-lbl  { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    .prize-card { background: var(--bg-card); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px; text-align: center; }
+    .prize-card.regular { border: 1px solid var(--border); }
+    .prize-card.premium { border: 1px solid var(--gold-bdr); background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(15,20,40,0.85)); }
+    .prize-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .prize-card.regular .prize-card-label { color: var(--text-muted); }
+    .prize-card.premium .prize-card-label { color: var(--gold); }
+    .prize-card-name { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .prize-card-count { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+    .prize-card.premium .prize-card-count { color: rgba(245,158,11,0.6); }
 
-    /* card */
-    .card {
-      max-width: 440px; margin: 0 auto;
-      background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--border); border-radius: 16px;
-      padding: 36px;
-      animation: fadeUp .5s .18s ease both;
-    }
+    /* main card */
+    .card { max-width: 460px; margin: 0 auto; background: var(--bg-card); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; padding: 36px; animation: fadeUp .5s .16s ease both; }
 
     /* section label */
-    .section-lbl {
-      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--text-muted);
-      margin-bottom: 18px;
-    }
+    .section-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; }
 
     /* user row */
     .user-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
     .user-row img { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--border); }
     .user-name { font-weight: 700; font-size: 15px; }
     .user-handle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .premium-pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: var(--primary-dim); border: 1px solid var(--primary-bdr);
-      color: var(--primary); font-size: 11px; font-weight: 700;
-      padding: 2px 9px; border-radius: 100px; margin-top: 5px;
-    }
+    .premium-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 100px; margin-top: 5px; }
 
-    /* info rows */
+    /* divider */
     .divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
-    .info-row {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 13px; padding: 8px 0;
-    }
+
+    /* info row */
+    .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 8px 0; }
     .info-row .lbl { color: var(--text-muted); }
     .info-row .val { color: var(--text); font-weight: 500; }
 
+    /* pool tags */
+    .pool-tags { display: flex; gap: 8px; margin-top: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+    .pool-tag { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
+    .pool-tag.regular { background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); }
+    .pool-tag.premium { background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); }
+
     /* buttons */
-    .btn {
-      width: 100%; display: flex; align-items: center; justify-content: center; gap: 9px;
-      padding: 14px 20px; border-radius: 10px;
-      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; border: none; text-decoration: none; transition: all .2s;
-    }
-    .btn-primary {
-      background: var(--primary); color: #fff; margin-top: 20px;
-    }
+    .btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 9px; padding: 14px 20px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; border: none; text-decoration: none; transition: all .2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,0.3); }
     .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .btn-discord {
-      background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4);
-      color: #818cf8;
-    }
+    .btn-discord { background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4); color: #818cf8; }
     .btn-discord:hover { background: rgba(88,101,242,0.35); color: #a5b4fc; transform: translateY(-1px); }
-
-    .btn-entered {
-      background: var(--green-dim); border: 1px solid var(--green-bdr);
-      color: var(--green); cursor: default; margin-top: 0;
-    }
+    .btn-entered { background: var(--green-dim); border: 1px solid var(--green-bdr); color: var(--green); cursor: default; }
 
     /* states */
     .state { display: none; }
     .state.active { display: block; }
 
     /* success */
-    .success-icon  { font-size: 48px; text-align: center; margin-bottom: 14px; }
+    .success-icon { font-size: 48px; text-align: center; margin-bottom: 14px; }
     .success-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; text-align: center; letter-spacing: 1px; margin-bottom: 6px; }
-    .success-sub   { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 28px; }
-
-    /* ended */
-    .ended-wrap { text-align: center; padding: 24px 0; }
+    .success-sub { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 20px; }
+    .success-pools { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .success-pool { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+    .success-pool.regular { background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); }
+    .success-pool.premium { background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); }
 
     /* error */
-    .error-box {
-      background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
-      color: var(--red); font-size: 13px; padding: 12px 16px;
-      border-radius: 8px; margin-bottom: 16px; display: none;
-    }
+    .error-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: var(--red); font-size: 13px; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: none; }
 
     /* foot note */
     .foot-note { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; line-height: 1.6; }
     .foot-note a { color: var(--text-muted); text-decoration: none; }
     .foot-note a:hover { color: var(--text-mid); }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -232,28 +158,29 @@
   <div class="hero">
     <div class="hero-label">🎉 Live Giveaway</div>
     <h1>Monthly <span class="accent">Giveaway</span></h1>
-    <div class="prize-label">This Month's Prize</div>
-    <div class="prize-name" id="prize-display">Loading...</div>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-val" id="entry-count">—</div>
-      <div class="stat-lbl">Entries</div>
+  <!-- Prize cards -->
+  <div class="prize-row">
+    <div class="prize-card regular">
+      <div class="prize-card-label">🎁 Regular Prize</div>
+      <div class="prize-card-name" id="prize-display">Loading...</div>
+      <div class="prize-card-count" id="regular-count">— entries</div>
     </div>
-    <div class="stat">
-      <div class="stat-val" id="giveaway-status">—</div>
-      <div class="stat-lbl">Status</div>
+    <div class="prize-card premium">
+      <div class="prize-card-label">⭐ Premium Prize</div>
+      <div class="prize-card-name" id="premium-prize-display">Loading...</div>
+      <div class="prize-card-count" id="premium-count">— premium entries</div>
     </div>
   </div>
 
+  <!-- Card -->
   <div class="card">
-
     <div class="error-box" id="error-box"></div>
 
     <!-- not logged in -->
     <div class="state active" id="state-login">
-      <div class="section-lbl">Step 1 — Connect Discord</div>
+      <div class="section-lbl">Connect Discord to Enter</div>
       <a class="btn btn-discord" href="/api/giveaway/auth">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         Login with Discord to Enter
@@ -276,6 +203,9 @@
         <span class="lbl">Joined Server</span>
         <span class="val" id="info-joined">—</span>
       </div>
+      <div class="pool-tags" id="pool-tags">
+        <span class="pool-tag regular">🎁 Regular Giveaway</span>
+      </div>
       <button class="btn btn-primary" id="enter-btn" onclick="enterGiveaway()">
         🎉 Enter Giveaway
       </button>
@@ -287,6 +217,9 @@
       <div class="success-icon">🎉</div>
       <div class="success-title">You're In!</div>
       <div class="success-sub">Good luck! Winners announced in Discord.</div>
+      <div class="success-pools" id="success-pools">
+        <div class="success-pool regular">✓ Entered Regular Giveaway</div>
+      </div>
       <div class="btn btn-entered">✓ Entry Confirmed</div>
       <div class="foot-note" style="margin-top:16px">
         <a href="https://discord.gg/cZxJV9YRyb" target="_blank" style="color:var(--primary)">Join the Discord →</a> to see the winner announcement
@@ -295,7 +228,7 @@
 
     <!-- ended -->
     <div class="state" id="state-ended">
-      <div class="ended-wrap">
+      <div style="text-align:center;padding:24px 0">
         <div style="font-size:42px;margin-bottom:14px">🏁</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;margin-bottom:6px">Giveaway Ended</div>
         <div style="font-size:13px;color:var(--text-muted)">Check <a href="https://discord.gg/cZxJV9YRyb" target="_blank" style="color:var(--primary)">Discord</a> for winner announcements.</div>
@@ -309,7 +242,7 @@
   function getSession() {
     const m = document.cookie.match(/gw_session=([^;]+)/);
     if (!m) return null;
-    try { return JSON.parse(atob(m[1])); } catch { return null; }
+    try { return JSON.parse(atob(decodeURIComponent(m[1]))); } catch { return null; }
   }
   function fmt(iso) {
     if (!iso) return 'Unknown';
@@ -328,11 +261,10 @@
     try {
       const r = await fetch('/api/giveaway/entries?action=count');
       const d = await r.json();
-      document.getElementById('entry-count').textContent = d.count ?? '0';
-      document.getElementById('giveaway-status').textContent = d.active ? 'OPEN' : 'ENDED';
-      if (d.prize) {
-        document.getElementById('prize-display').textContent = d.prize;
-      }
+      document.getElementById('prize-display').textContent = d.prize || 'TBA';
+      document.getElementById('premium-prize-display').textContent = d.premiumPrize || 'TBA';
+      document.getElementById('regular-count').textContent = `${d.count ?? 0} entries`;
+      document.getElementById('premium-count').textContent = `${d.premiumCount ?? 0} premium entries`;
       if (!d.active) { showState('ended'); return; }
     } catch {}
 
@@ -342,15 +274,36 @@
     try {
       const r = await fetch(`/api/giveaway/entries?action=status&uid=${session.userId}`);
       const d = await r.json();
-      if (d.entered) { showState('entered'); return; }
+      if (d.entered) {
+        // Show which pools they're in
+        buildSuccessPools(session.isPremium);
+        showState('entered');
+        return;
+      }
     } catch {}
 
+    // Populate ready state
     document.getElementById('user-avatar').src = session.avatar || '';
     document.getElementById('user-name').textContent = session.displayName || session.username;
     document.getElementById('user-handle').textContent = '@' + session.username;
     document.getElementById('info-joined').textContent = fmt(session.joinedServer);
-    if (session.isPremium) document.getElementById('premium-pill').style.display = 'inline-flex';
+
+    if (session.isPremium) {
+      document.getElementById('premium-pill').style.display = 'inline-flex';
+      document.getElementById('pool-tags').innerHTML = `
+        <span class="pool-tag regular">🎁 Regular Giveaway</span>
+        <span class="pool-tag premium">⭐ Premium Giveaway</span>
+      `;
+    }
     showState('ready');
+  }
+
+  function buildSuccessPools(isPremium) {
+    const el = document.getElementById('success-pools');
+    el.innerHTML = `<div class="success-pool regular">✓ Entered Regular Giveaway</div>`;
+    if (isPremium) {
+      el.innerHTML += `<div class="success-pool premium">⭐ Entered Premium Giveaway</div>`;
+    }
   }
 
   async function enterGiveaway() {
@@ -360,9 +313,15 @@
       const r = await fetch('/api/giveaway/entries?action=enter', { method: 'POST' });
       const d = await r.json();
       if (d.success) {
+        buildSuccessPools(d.enteredPremium);
         showState('entered');
-        const el = document.getElementById('entry-count');
-        el.textContent = parseInt(el.textContent || '0') + 1;
+        // Update counts
+        const rc = document.getElementById('regular-count');
+        rc.textContent = (parseInt(rc.textContent) + 1) + ' entries';
+        if (d.enteredPremium) {
+          const pc = document.getElementById('premium-count');
+          pc.textContent = (parseInt(pc.textContent) + 1) + ' premium entries';
+        }
       } else {
         showError(d.error || 'Something went wrong.');
         btn.disabled = false; btn.textContent = '🎉 Enter Giveaway';
