@@ -461,6 +461,14 @@
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     },
     {
+      "source": "/giveaway",
+      "destination": "/giveaway/index.html"
+    },
+    {
+      "source": "/giveaway/admin",
+      "destination": "/giveaway/admin.html"
+    },
+    {
       "source": "/one-piece/sets/adventure-on-kamis-island/most-valuable",
       "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
     },
