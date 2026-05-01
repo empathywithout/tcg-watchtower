@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     const encoded = Buffer.from(JSON.stringify(session)).toString("base64");
     res.setHeader(
       "Set-Cookie",
-      `gw_session=${encoded}; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`
+      `gw_session=${encoded}; Path=/; SameSite=Lax; Max-Age=3600`
     );
 
     // Redirect based on state
