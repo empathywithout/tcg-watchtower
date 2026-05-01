@@ -5,223 +5,154 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giveaway Admin — TCG Watchtower</title>
   <link rel="icon" href="/favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:         #0a0f1e;
-      --bg-card:    rgba(15,20,40,0.8);
-      --bg-surface: rgba(255,255,255,0.03);
-      --border:     rgba(255,255,255,0.08);
-      --primary:    #3b82f6;
-      --primary-dim:rgba(59,130,246,0.15);
-      --primary-bdr:rgba(59,130,246,0.3);
-      --purple:     #a855f7;
-      --purple-dim: rgba(168,85,247,0.15);
-      --purple-bdr: rgba(168,85,247,0.3);
-      --text:       #f1f5f9;
-      --text-muted: #64748b;
-      --text-mid:   #94a3b8;
-      --green:      #22c55e;
-      --green-dim:  rgba(34,197,94,0.12);
-      --green-bdr:  rgba(34,197,94,0.3);
-      --red:        #ef4444;
-      --red-dim:    rgba(239,68,68,0.12);
-      --red-bdr:    rgba(239,68,68,0.3);
-      --amber:      #f59e0b;
+      --bg:          #0a0f1e;
+      --bg-card:     rgba(15,20,40,0.85);
+      --bg-surface:  rgba(255,255,255,0.03);
+      --border:      rgba(255,255,255,0.08);
+      --primary:     #3b82f6;
+      --primary-dim: rgba(59,130,246,0.15);
+      --primary-bdr: rgba(59,130,246,0.3);
+      --purple-dim:  rgba(168,85,247,0.15);
+      --purple-bdr:  rgba(168,85,247,0.3);
+      --gold:        #f59e0b;
+      --gold-dim:    rgba(245,158,11,0.12);
+      --gold-bdr:    rgba(245,158,11,0.3);
+      --text:        #f1f5f9;
+      --text-muted:  #64748b;
+      --text-mid:    #94a3b8;
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,0.12);
+      --green-bdr:   rgba(34,197,94,0.3);
+      --red:         #ef4444;
+      --red-dim:     rgba(239,68,68,0.12);
+      --red-bdr:     rgba(239,68,68,0.3);
     }
-
     html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 85% 70%, rgba(168,85,247,0.06) 0%, transparent 50%);
-      pointer-events: none; z-index: 0;
-    }
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none; z-index: 0;
-    }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.10) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 85% 70%, rgba(168,85,247,0.06) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+    body::after { content: ''; position: fixed; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; z-index: 0; }
 
     /* nav */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(10,15,30,0.9); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; height: 64px;
-    }
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(10,15,30,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 64px; }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo img { height: 32px; }
     .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); }
-    .admin-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: var(--primary-dim); border: 1px solid var(--primary-bdr);
-      color: var(--primary); font-size: 11px; font-weight: 700;
-      padding: 3px 10px; border-radius: 100px; letter-spacing: 1px; text-transform: uppercase;
-    }
+    .admin-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; letter-spacing: 1px; text-transform: uppercase; }
 
     /* layout */
     .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
-
-    /* page header */
-    .page-header { padding: 52px 0 36px; }
-    .page-header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(42px, 6vw, 64px); letter-spacing: 1px;
-      color: var(--text); line-height: 1;
-    }
+    .page-header { padding: 52px 0 32px; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 6vw, 60px); letter-spacing: 1px; color: var(--text); line-height: 1; }
     .page-header h1 .accent { color: var(--primary); }
     .page-header p { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
 
-    /* stats row */
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
-    .stat-card {
-      background: var(--bg-card); backdrop-filter: blur(12px);
-      border: 1px solid var(--border); border-radius: 12px;
-      padding: 22px 24px;
-    }
-    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--primary); line-height: 1; }
-    .stat-lbl { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    /* stats */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    @media (max-width: 700px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+    .stat-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+    .stat-card.premium-stat { border-color: var(--gold-bdr); background: linear-gradient(135deg, rgba(245,158,11,0.05), rgba(15,20,40,0.85)); }
+    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--primary); line-height: 1; }
+    .stat-card.premium-stat .stat-val { color: var(--gold); }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
     /* grid */
     .grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
     /* card */
-    .card {
-      background: var(--bg-card); backdrop-filter: blur(12px);
-      border: 1px solid var(--border); border-radius: 14px;
-      padding: 24px; margin-bottom: 20px;
-    }
-    .card-title {
-      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--text-muted);
-      margin-bottom: 18px; padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-    }
+    .card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+    .card.premium-card { border-color: var(--gold-bdr); background: linear-gradient(135deg, rgba(245,158,11,0.04), rgba(15,20,40,0.85)); }
+    .card-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .card.premium-card .card-title { color: var(--gold); border-bottom-color: var(--gold-bdr); }
 
     /* form */
     label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
-    input[type="text"], input[type="number"] {
-      width: 100%; background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border); color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      padding: 10px 14px; border-radius: 8px; outline: none;
-      transition: border-color .2s;
-    }
+    input[type="text"], input[type="number"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 14px; border-radius: 8px; outline: none; transition: border-color .2s; }
     input:focus { border-color: var(--primary); }
     .field { margin-bottom: 16px; }
 
     /* buttons */
-    .btn {
-      width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 11px 18px; border-radius: 8px;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
-      cursor: pointer; border: none; text-decoration: none; transition: all .2s;
-    }
+    .btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; border: none; text-decoration: none; transition: all .2s; }
     .btn + .btn { margin-top: 10px; }
-
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.3); }
-
+    .btn-gold { background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); }
+    .btn-gold:hover { background: rgba(245,158,11,0.2); }
     .btn-ghost { background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-mid); }
     .btn-ghost:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
-
     .btn-green { background: var(--green-dim); border: 1px solid var(--green-bdr); color: var(--green); }
     .btn-green:hover { background: rgba(34,197,94,0.2); }
-
     .btn-red { background: var(--red-dim); border: 1px solid var(--red-bdr); color: var(--red); }
     .btn-red:hover { background: rgba(239,68,68,0.2); }
-
     .btn-blue { background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); }
     .btn-blue:hover { background: rgba(59,130,246,0.25); }
-
     .btn-discord { background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4); color: #818cf8; }
     .btn-discord:hover { background: rgba(88,101,242,0.35); color: #a5b4fc; }
 
-    /* status pill */
-    .pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700;
-    }
+    /* pills */
+    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700; }
     .pill-green { background: var(--green-dim); border: 1px solid var(--green-bdr); color: var(--green); }
-    .pill-red   { background: var(--red-dim);   border: 1px solid var(--red-bdr);   color: var(--red); }
     .pill-blue  { background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .pill-gold  { background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); }
+
+    /* winner boxes */
+    .winner-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 700px) { .winner-boxes { grid-template-columns: 1fr; } }
+    .winner-box { border-radius: 12px; padding: 20px; display: none; }
+    .winner-box.visible { display: block; }
+    .winner-box.regular { background: var(--primary-dim); border: 1px solid var(--primary-bdr); }
+    .winner-box.premium { background: var(--gold-dim); border: 1px solid var(--gold-bdr); }
+    .winner-box-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; margin-bottom: 12px; }
+    .winner-box.regular .winner-box-title { color: var(--primary); }
+    .winner-box.premium .winner-box-title { color: var(--gold); }
+    .winner-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .winner-item:last-child { margin-bottom: 0; }
+    .winner-item img { width: 36px; height: 36px; border-radius: 50%; }
+    .winner-item-name { font-weight: 700; font-size: 14px; }
+    .winner-item-handle { font-size: 11px; color: var(--text-muted); }
 
     /* table */
-    .table-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+    .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th {
-      text-align: left; font-size: 11px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: var(--text-muted); padding: 0 12px 14px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    td { padding: 13px 12px 13px 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); padding: 0 12px 14px 0; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(255,255,255,0.015); }
-
     .user-cell { display: flex; align-items: center; gap: 10px; }
-    .user-cell img { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; border: 1px solid var(--border); }
-    .user-name-primary { font-weight: 600; font-size: 13px; color: var(--text); }
-    .user-name-sub     { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-
+    .user-cell img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+    .un { font-weight: 600; font-size: 13px; }
+    .dn { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
     .winner-row td { background: rgba(59,130,246,0.04) !important; }
 
-    /* winner box */
-    .winner-box {
-      background: var(--primary-dim); border: 1px solid var(--primary-bdr);
-      border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; display: none;
-    }
-    .winner-box.visible { display: block; }
-    .winner-box-title {
-      font-family: 'Bebas Neue', sans-serif; font-size: 22px;
-      color: var(--primary); letter-spacing: 1px; margin-bottom: 14px;
-    }
-    .winner-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .winner-item:last-child { margin-bottom: 0; }
-    .winner-item img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary-bdr); }
-    .winner-item-name { font-weight: 700; font-size: 15px; }
-    .winner-item-handle { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    /* tabs */
+    .tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--text-muted); transition: all .2s; }
+    .tab.active { background: var(--primary-dim); color: var(--primary); }
+    .tab.active.gold-tab { background: var(--gold-dim); color: var(--gold); }
 
     /* auth wall */
     #auth-wall { text-align: center; padding: 100px 20px; }
     #auth-wall h2 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 1px; margin-bottom: 12px; }
-    #auth-wall p  { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; max-width: 360px; margin-inline: auto; }
+    #auth-wall p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
     .auth-btn-wrap { display: flex; justify-content: center; }
     .auth-btn-wrap .btn { width: auto; padding: 13px 28px; }
 
+    /* section divider */
+    .section-divider { display: flex; align-items: center; gap: 12px; margin: 8px 0 20px; }
+    .section-divider span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; }
+    .section-divider.regular span { color: var(--primary); }
+    .section-divider.premium span { color: var(--gold); }
+    .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
     /* toast */
-    .toast {
-      position: fixed; bottom: 28px; right: 28px; z-index: 999;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 13px 20px; font-size: 13px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      transform: translateY(70px); opacity: 0; transition: all .3s ease;
-    }
+    .toast { position: fixed; bottom: 28px; right: 28px; z-index: 999; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 13px 20px; font-size: 13px; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateY(70px); opacity: 0; transition: all .3s ease; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { border-color: var(--green-bdr); color: var(--green); }
     .toast.error   { border-color: var(--red-bdr);   color: var(--red); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { animation: fadeUp .4s ease both; }
   </style>
 </head>
 <body>
@@ -237,7 +168,7 @@
 </nav>
 
 <!-- Auth wall -->
-<div id="auth-wall" style="display:none" class="fade-up">
+<div id="auth-wall" style="display:none">
   <h2>Admin <span style="color:var(--primary)">Access</span> Required</h2>
   <p>Log in with an authorized Discord account to manage giveaways.</p>
   <div class="auth-btn-wrap">
@@ -249,11 +180,11 @@
 </div>
 
 <!-- Dashboard -->
-<div id="dashboard" style="display:none" class="wrap fade-up">
+<div id="dashboard" style="display:none" class="wrap">
 
   <div class="page-header">
     <h1>Giveaway <span class="accent">Dashboard</span></h1>
-    <p>Manage the active giveaway, view entries, and select winners.</p>
+    <p>Manage prizes, view entries, and pick winners for both pools.</p>
   </div>
 
   <!-- Stats -->
@@ -262,28 +193,42 @@
       <div class="stat-val" id="stat-entries">0</div>
       <div class="stat-lbl">Total Entries</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card premium-stat">
       <div class="stat-val" id="stat-premium">0</div>
-      <div class="stat-lbl">Premium Members</div>
+      <div class="stat-lbl">Premium Entries</div>
     </div>
     <div class="stat-card">
       <div class="stat-val" id="stat-status">—</div>
       <div class="stat-lbl">Status</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-non-premium">0</div>
+      <div class="stat-lbl">Regular Only</div>
+    </div>
   </div>
 
-  <!-- Winner box -->
-  <div class="winner-box" id="winner-box">
-    <div class="winner-box-title">🏆 Winner(s) Selected</div>
-    <div id="winner-list"></div>
+  <!-- Winner boxes -->
+  <div class="winner-boxes">
+    <div class="winner-box regular" id="winner-box-regular">
+      <div class="winner-box-title">🎁 Regular Winner(s)</div>
+      <div id="winner-list-regular"></div>
+    </div>
+    <div class="winner-box premium" id="winner-box-premium">
+      <div class="winner-box-title">⭐ Premium Winner(s)</div>
+      <div id="winner-list-premium"></div>
+    </div>
   </div>
 
   <div class="grid">
 
-    <!-- Left: table -->
+    <!-- Left: entry table with tabs -->
     <div>
       <div class="card">
         <div class="card-title">Entry List</div>
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('all', this)">All Entries</button>
+          <button class="tab gold-tab" onclick="switchTab('premium', this)">⭐ Premium Only</button>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -294,9 +239,7 @@
                 <th>Entered</th>
               </tr>
             </thead>
-            <tbody id="entries-tbody">
-              <tr><td colspan="4" style="color:var(--text-muted);padding:32px 0;text-align:center">Loading...</td></tr>
-            </tbody>
+            <tbody id="entries-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -305,29 +248,46 @@
     <!-- Right: controls -->
     <div>
 
+      <!-- Configure -->
       <div class="card">
-        <div class="card-title">Configure</div>
+        <div class="card-title">Configure Giveaway</div>
+        <div class="section-divider regular"><span>Regular</span></div>
         <div class="field">
-          <label>Prize Name</label>
+          <label>Regular Prize</label>
           <input type="text" id="prize-input" placeholder="e.g. Chaos Rising Booster Box" />
         </div>
-        <button class="btn btn-primary" onclick="savePrize()">Save Prize</button>
-        <button class="btn btn-ghost" style="margin-top:10px" onclick="toggleActive()">Toggle Open / Closed</button>
+        <div class="section-divider premium"><span>⭐ Premium</span></div>
+        <div class="field">
+          <label>Premium Prize</label>
+          <input type="text" id="premium-prize-input" placeholder="e.g. Prismatic Evolutions ETB" />
+        </div>
+        <button class="btn btn-primary" onclick="savePrizes()">Save Prizes</button>
+        <button class="btn btn-ghost" onclick="toggleActive()">Toggle Open / Closed</button>
       </div>
 
+      <!-- Pick Winners -->
       <div class="card">
-        <div class="card-title">Pick Winner</div>
+        <div class="card-title">Pick Winners</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;padding:10px 12px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border)">🎟 Regular pool is weighted — Free members get <strong style="color:var(--text)">1 ticket</strong>, Premium members get <strong style="color:var(--gold)">5 tickets</strong></div>
+        <div class="section-divider regular"><span>Regular Pool</span></div>
         <div class="field">
-          <label>Number of Winners</label>
+          <label>Regular Winners</label>
           <input type="number" id="winner-count" value="1" min="1" max="10" />
         </div>
-        <button class="btn btn-primary" onclick="pickWinner()">🎉 Pick Random Winner</button>
+        <div class="section-divider premium"><span>⭐ Premium Pool</span></div>
+        <div class="field">
+          <label>Premium Winners</label>
+          <input type="number" id="premium-winner-count" value="1" min="1" max="10" />
+        </div>
+        <button class="btn btn-primary" onclick="pickWinners()">🎉 Pick All Winners</button>
       </div>
 
+      <!-- Actions -->
       <div class="card">
         <div class="card-title">Actions</div>
-        <a class="btn btn-blue" href="/api/giveaway/entries?action=export">⬇ Export CSV</a>
-        <button class="btn btn-red" onclick="resetGiveaway()">🗑 Reset & Clear Entries</button>
+        <a class="btn btn-blue" href="/api/giveaway/entries?action=export&pool=all">⬇ Export All Entries CSV</a>
+        <a class="btn btn-gold" href="/api/giveaway/entries?action=export&pool=premium">⬇ Export Premium Entries CSV</a>
+        <button class="btn btn-red" onclick="resetGiveaway()">🗑 Reset & Clear All Entries</button>
       </div>
 
     </div>
@@ -339,11 +299,12 @@
 <script>
   let allEntries = [];
   let giveawayData = {};
+  let currentTab = 'all';
 
   function getSession() {
     const m = document.cookie.match(/gw_session=([^;]+)/);
     if (!m) return null;
-    try { return JSON.parse(atob(m[1])); } catch { return null; }
+    try { return JSON.parse(atob(decodeURIComponent(m[1]))); } catch { return null; }
   }
 
   function fmt(iso) {
@@ -357,56 +318,72 @@
     setTimeout(() => el.classList.remove('show'), 3000);
   }
 
+  function switchTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
+  }
+
   async function loadData() {
     const r = await fetch('/api/giveaway/entries?action=list');
-    if (r.status === 403) {
-      document.getElementById('auth-wall').style.display = 'block';
-      return;
-    }
+    if (r.status === 403) { document.getElementById('auth-wall').style.display = 'block'; return; }
     document.getElementById('dashboard').style.display = 'block';
+
     giveawayData = await r.json();
     allEntries = giveawayData.entries || [];
 
     const premCount = allEntries.filter(e => e.isPremium).length;
     document.getElementById('stat-entries').textContent = allEntries.length;
     document.getElementById('stat-premium').textContent = premCount;
+    const totalTickets = allEntries.reduce((sum, e) => sum + (e.isPremium ? 5 : 1), 0);
+    document.getElementById('stat-tickets').textContent = totalTickets;
     document.getElementById('stat-status').textContent = giveawayData.active ? 'OPEN' : 'ENDED';
-    if (giveawayData.prize) document.getElementById('prize-input').value = giveawayData.prize;
 
-    if (giveawayData.winners?.length) showWinners(giveawayData.winners);
-    renderTable(allEntries, giveawayData.winners || []);
+    if (giveawayData.prize) document.getElementById('prize-input').value = giveawayData.prize;
+    if (giveawayData.premiumPrize) document.getElementById('premium-prize-input').value = giveawayData.premiumPrize;
+
+    if (giveawayData.winners?.length) showWinners('regular', giveawayData.winners);
+    if (giveawayData.premiumWinners?.length) showWinners('premium', giveawayData.premiumWinners);
+
+    renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
   }
 
-  function renderTable(entries, winners) {
+  function renderTable(entries, winners, premiumWinners) {
     const tbody = document.getElementById('entries-tbody');
-    if (!entries.length) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text-muted);padding:32px 0;text-align:center">No entries yet</td></tr>`;
+    const winIds = new Set([...(winners || []), ...(premiumWinners || [])].map(w => w.userId));
+
+    let filtered = currentTab === 'premium' ? entries.filter(e => e.isPremium) : entries;
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text-muted);padding:32px 0;text-align:center">${currentTab === 'premium' ? 'No premium entries yet' : 'No entries yet'}</td></tr>`;
       return;
     }
-    const winIds = new Set((winners || []).map(w => w.userId));
-    tbody.innerHTML = entries.map(e => `
+
+    tbody.innerHTML = filtered.map(e => `
       <tr class="${winIds.has(e.userId) ? 'winner-row' : ''}">
         <td>
           <div class="user-cell">
             <img src="${e.avatar || ''}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'" />
             <div>
-              <div class="user-name-primary">${e.displayName || e.username}</div>
-              <div class="user-name-sub">@${e.username}</div>
+              <div class="un">${e.displayName || e.username}</div>
+              <div class="dn">@${e.username}</div>
             </div>
             ${winIds.has(e.userId) ? '<span class="pill pill-blue">🏆 Winner</span>' : ''}
           </div>
         </td>
         <td style="color:var(--text-mid)">${fmt(e.joinedServer)}</td>
-        <td>${e.isPremium ? '<span class="pill pill-green">⭐ Premium</span>' : '<span style="color:var(--text-muted)">—</span>'}</td>
+        <td>${e.isPremium ? '<span class="pill pill-gold">⭐ Premium</span>' : '<span style="color:var(--text-muted)">—</span>'}</td>
         <td style="color:var(--text-muted)">${fmt(e.enteredAt)}</td>
       </tr>
     `).join('');
   }
 
-  function showWinners(winners) {
-    const box = document.getElementById('winner-box');
+  function showWinners(pool, winners) {
+    const box = document.getElementById(`winner-box-${pool}`);
+    const list = document.getElementById(`winner-list-${pool}`);
     box.classList.add('visible');
-    document.getElementById('winner-list').innerHTML = winners.map(w => `
+    list.innerHTML = winners.map(w => `
       <div class="winner-item">
         <img src="${w.avatar || ''}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'" />
         <div>
@@ -417,14 +394,14 @@
     `).join('');
   }
 
-  async function savePrize() {
+  async function savePrizes() {
     const prize = document.getElementById('prize-input').value.trim();
-    if (!prize) return;
+    const premiumPrize = document.getElementById('premium-prize-input').value.trim();
     await fetch('/api/giveaway/entries?action=configure', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prize }),
+      body: JSON.stringify({ prize, premiumPrize }),
     });
-    toast('Prize saved!');
+    toast('Prizes saved!');
   }
 
   async function toggleActive() {
@@ -436,40 +413,44 @@
     loadData();
   }
 
-  async function pickWinner() {
+  async function pickWinners() {
     const count = parseInt(document.getElementById('winner-count').value || '1', 10);
-    if (!confirm(`Pick ${count} random winner(s) from ${allEntries.length} entries?`)) return;
+    const premiumCount = parseInt(document.getElementById('premium-winner-count').value || '1', 10);
+    const premiumEntries = allEntries.filter(e => e.isPremium);
+
+    if (!confirm(`Pick ${count} regular winner(s) from ${allEntries.length} entries and ${premiumCount} premium winner(s) from ${premiumEntries.length} premium entries?`)) return;
+
     const r = await fetch('/api/giveaway/entries?action=pick', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ count }),
+      body: JSON.stringify({ count, premiumCount }),
     });
     const d = await r.json();
+
     if (d.winners) {
-      showWinners(d.winners);
-      renderTable(allEntries, d.winners);
-      toast(`${d.winners.length} winner(s) selected! 🎉`);
+      showWinners('regular', d.winners);
+      showWinners('premium', d.premiumWinners || []);
+      renderTable(allEntries, d.winners, d.premiumWinners || []);
+      toast(`Winners selected! 🎉`);
     } else {
-      toast(d.error || 'Error picking winner', 'error');
+      toast(d.error || 'Error picking winners', 'error');
     }
   }
 
   async function resetGiveaway() {
-    if (!confirm('Clear ALL entries and winners?')) return;
+    if (!confirm('Clear ALL entries and winners for both pools?')) return;
     await fetch('/api/giveaway/entries?action=configure', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reset: true, active: true }),
+      body: JSON.stringify({ reset: true }),
     });
-    document.getElementById('winner-box').classList.remove('visible');
+    document.getElementById('winner-box-regular').classList.remove('visible');
+    document.getElementById('winner-box-premium').classList.remove('visible');
     toast('Giveaway reset!');
     loadData();
   }
 
   const session = getSession();
-  if (!session) {
-    document.getElementById('auth-wall').style.display = 'block';
-  } else {
-    loadData();
-  }
+  if (!session) { document.getElementById('auth-wall').style.display = 'block'; }
+  else { loadData(); }
 </script>
 </body>
 </html>
