@@ -202,8 +202,8 @@
       <div class="stat-lbl">Status</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val" id="stat-non-premium">0</div>
-      <div class="stat-lbl">Regular Only</div>
+      <div class="stat-val" id="stat-tickets">0</div>
+      <div class="stat-lbl">Weighted Tickets</div>
     </div>
   </div>
 
@@ -262,7 +262,7 @@
           <input type="text" id="premium-prize-input" placeholder="e.g. Prismatic Evolutions ETB" />
         </div>
         <button class="btn btn-primary" onclick="savePrizes()">Save Prizes</button>
-        <button class="btn btn-ghost" onclick="toggleActive()">Toggle Open / Closed</button>
+        <button class="btn btn-ghost" id="toggle-btn" onclick="toggleActive()">Toggle Open / Closed</button>
       </div>
 
       <!-- Pick Winners -->
@@ -339,6 +339,11 @@
     const totalTickets = allEntries.reduce((sum, e) => sum + (e.isPremium ? 5 : 1), 0);
     document.getElementById('stat-tickets').textContent = totalTickets;
     document.getElementById('stat-status').textContent = giveawayData.active ? 'OPEN' : 'ENDED';
+    const toggleBtn = document.getElementById('toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.textContent = giveawayData.active ? '🟢 Close Giveaway' : '🔴 Open Giveaway';
+      toggleBtn.className = giveawayData.active ? 'btn btn-red' : 'btn btn-green';
+    }
 
     if (giveawayData.prize) document.getElementById('prize-input').value = giveawayData.prize;
     if (giveawayData.premiumPrize) document.getElementById('premium-prize-input').value = giveawayData.premiumPrize;
@@ -402,6 +407,7 @@
       body: JSON.stringify({ prize, premiumPrize }),
     });
     toast('Prizes saved!');
+    await loadData();
   }
 
   async function toggleActive() {
