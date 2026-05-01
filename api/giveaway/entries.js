@@ -9,7 +9,7 @@
 import fs from "fs";
 import path from "path";
 
-const DATA_FILE = path.join(process.cwd(), "data", "giveaway.json");
+const DATA_FILE = "/tmp/giveaway.json";
 
 function loadData() {
   if (!fs.existsSync(DATA_FILE)) {
