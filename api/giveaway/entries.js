@@ -1,9 +1,11 @@
 // api/giveaway/entries.js
 // Dual giveaway: regular (weighted: free=1, premium=5) + premium pool (premium only)
+// Storage: Upstash Redis via @upstash/redis
 
-import fs from "fs";
+import { Redis } from "@upstash/redis";
 
-const DATA_FILE = "/tmp/giveaway.json";
+const redis = Redis.fromEnv();
+const KEY = "giveaway:data";
 const PREMIUM_WEIGHT = 5;
 
 const DEFAULT_DATA = {
@@ -15,18 +17,22 @@ const DEFAULT_DATA = {
   premiumWinners: [],
 };
 
-function loadData() {
+async function loadData() {
   try {
-    if (fs.existsSync(DATA_FILE)) {
-      return { ...DEFAULT_DATA, ...JSON.parse(fs.readFileSync(DATA_FILE, "utf8")) };
-    }
-  } catch {}
+    const data = await redis.get(KEY);
+    if (data) return { ...DEFAULT_DATA, ...(typeof data === "string" ? JSON.parse(data) : data) };
+  } catch (e) {
+    console.error("loadData error:", e);
+  }
   return { ...DEFAULT_DATA };
 }
 
-function saveData(data) {
-  try { fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); }
-  catch (e) { console.error("saveData error:", e); }
+async function saveData(data) {
+  try {
+    await redis.set(KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error("saveData error:", e);
+  }
 }
 
 function getSession(req) {
@@ -47,7 +53,6 @@ function shuffle(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-// Weighted pick without replacement — premium members get PREMIUM_WEIGHT tickets each
 function weightedPick(entries, count) {
   const pool = [];
   for (const entry of entries) {
@@ -86,7 +91,7 @@ function buildCsv(entries, pool = "all") {
 export default async function handler(req, res) {
   const action = req.query.action;
   const session = getSession(req);
-  const data = loadData();
+  const data = await loadData();
 
   // GET: public count
   if (req.method === "GET" && action === "count") {
@@ -141,7 +146,7 @@ export default async function handler(req, res) {
     };
 
     data.entries.push(entry);
-    saveData(data);
+    await saveData(data);
     return res.json({ success: true, entry, enteredPremium: session.isPremium });
   }
 
@@ -152,8 +157,13 @@ export default async function handler(req, res) {
     if (body.prize !== undefined) data.prize = body.prize;
     if (body.premiumPrize !== undefined) data.premiumPrize = body.premiumPrize;
     if (body.active !== undefined) data.active = body.active;
-    if (body.reset) { data.entries = []; data.winners = []; data.premiumWinners = []; data.active = true; }
-    saveData(data);
+    if (body.reset) {
+      data.entries = [];
+      data.winners = [];
+      data.premiumWinners = [];
+      data.active = true;
+    }
+    await saveData(data);
     return res.json({ success: true });
   }
 
@@ -166,10 +176,8 @@ export default async function handler(req, res) {
 
     if (data.entries.length === 0) return res.status(400).json({ error: "No entries" });
 
-    // Regular pool — weighted (free=1 ticket, premium=5 tickets)
     const winners = weightedPick(data.entries, count);
 
-    // Premium pool — unweighted, premium members only
     const premiumEntries = data.entries.filter(e => e.isPremium);
     const premiumWinners = premiumEntries.length > 0
       ? shuffle(premiumEntries).slice(0, Math.min(premiumCount, premiumEntries.length))
@@ -178,7 +186,7 @@ export default async function handler(req, res) {
     data.winners = winners;
     data.premiumWinners = premiumWinners;
     data.active = false;
-    saveData(data);
+    await saveData(data);
 
     return res.json({ winners, premiumWinners });
   }
