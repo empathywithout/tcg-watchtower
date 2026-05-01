@@ -467,14 +467,6 @@
     {
       "source": "/one-piece/sets/:set/cards/:slug",
       "destination": "/one-piece/sets/:set/cards/:slug.html"
-    },
-    {
-      "source": "/giveaway",
-      "destination": "/public/giveaway/index.html"
-    },
-    {
-      "source": "/giveaway/admin",
-      "destination": "/public/giveaway/admin.html"
     }
   ],
   "redirects": [
