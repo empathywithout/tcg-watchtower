@@ -299,168 +299,133 @@
 <script>
   let allEntries = [];
   let giveawayData = {};
-  let currentTab = 'all';
+  let currentTab = "all";
 
   function getSession() {
     const m = document.cookie.match(/gw_session=([^;]+)/);
     if (!m) return null;
     try { return JSON.parse(atob(decodeURIComponent(m[1]))); } catch { return null; }
   }
-
   function fmt(iso) {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    if (!iso) return "—";
+    return new Date(iso).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
   }
-
-  function toast(msg, type = 'success') {
-    const el = document.getElementById('toast');
-    el.textContent = msg; el.className = `toast show ${type}`;
-    setTimeout(() => el.classList.remove('show'), 3000);
+  function toast(msg, type = "success") {
+    const el = document.getElementById("toast");
+    el.textContent = msg; el.className = "toast show " + type;
+    setTimeout(() => el.classList.remove("show"), 3000);
   }
-
   function switchTab(tab, btn) {
     currentTab = tab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
     renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
-    } catch(e) { console.error(e); } finally { isLoading = false; }
   }
 
-  let isLoading = false;
   async function loadData() {
-    if (isLoading) return;
-    isLoading = true;
     try {
-    const r = await fetch('/api/giveaway/entries?action=list');
-    if (r.status === 403) { document.getElementById('auth-wall').style.display = 'block'; return; }
-    document.getElementById('dashboard').style.display = 'block';
-
-    giveawayData = await r.json();
-    allEntries = giveawayData.entries || [];
-
-    const premCount = allEntries.filter(e => e.isPremium).length;
-    document.getElementById('stat-entries').textContent = allEntries.length;
-    document.getElementById('stat-premium').textContent = premCount;
-    const totalTickets = allEntries.reduce((sum, e) => sum + (e.isPremium ? 5 : 1), 0);
-    document.getElementById('stat-tickets').textContent = totalTickets;
-    document.getElementById('stat-status').textContent = giveawayData.active ? 'OPEN' : 'ENDED';
-    const toggleBtn = document.getElementById('toggle-btn');
-    if (toggleBtn) {
-      toggleBtn.textContent = giveawayData.active ? '🟢 Close Giveaway' : '🔴 Open Giveaway';
-      toggleBtn.className = giveawayData.active ? 'btn btn-red' : 'btn btn-green';
-    }
-
-    if (giveawayData.prize) document.getElementById('prize-input').value = giveawayData.prize;
-    if (giveawayData.premiumPrize) document.getElementById('premium-prize-input').value = giveawayData.premiumPrize;
-
-    if (giveawayData.winners?.length) showWinners('regular', giveawayData.winners);
-    if (giveawayData.premiumWinners?.length) showWinners('premium', giveawayData.premiumWinners);
-
-    renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
-    } catch(e) { console.error(e); } finally { isLoading = false; }
+      const r = await fetch("/api/giveaway/entries?action=list");
+      if (r.status === 403) { document.getElementById("auth-wall").style.display = "block"; return; }
+      document.getElementById("dashboard").style.display = "block";
+      giveawayData = await r.json();
+      allEntries = giveawayData.entries || [];
+      const premCount = allEntries.filter(e => e.isPremium).length;
+      const totalTickets = allEntries.reduce((sum, e) => sum + (e.isPremium ? 5 : 1), 0);
+      document.getElementById("stat-entries").textContent = allEntries.length;
+      document.getElementById("stat-premium").textContent = premCount;
+      document.getElementById("stat-tickets").textContent = totalTickets;
+      document.getElementById("stat-status").textContent = giveawayData.active ? "OPEN" : "ENDED";
+      const toggleBtn = document.getElementById("toggle-btn");
+      if (toggleBtn) {
+        toggleBtn.textContent = giveawayData.active ? "🟢 Close Giveaway" : "🔴 Open Giveaway";
+        toggleBtn.className = giveawayData.active ? "btn btn-red" : "btn btn-green";
+      }
+      document.getElementById("prize-input").value = giveawayData.prize || "";
+      document.getElementById("premium-prize-input").value = giveawayData.premiumPrize || "";
+      if (giveawayData.winners?.length) showWinners("regular", giveawayData.winners);
+      if (giveawayData.premiumWinners?.length) showWinners("premium", giveawayData.premiumWinners);
+      renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
+    } catch(e) { console.error("loadData error:", e); }
   }
 
   function renderTable(entries, winners, premiumWinners) {
-    const tbody = document.getElementById('entries-tbody');
+    const tbody = document.getElementById("entries-tbody");
     const winIds = new Set([...(winners || []), ...(premiumWinners || [])].map(w => w.userId));
-
-    let filtered = currentTab === 'premium' ? entries.filter(e => e.isPremium) : entries;
-
+    const filtered = currentTab === "premium" ? entries.filter(e => e.isPremium) : entries;
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text-muted);padding:32px 0;text-align:center">${currentTab === 'premium' ? 'No premium entries yet' : 'No entries yet'}</td></tr>`;
+      tbody.innerHTML = "<tr><td colspan=4 style=color:var(--text-muted);padding:32px 0;text-align:center>" + (currentTab === "premium" ? "No premium entries yet" : "No entries yet") + "</td></tr>";
       return;
     }
-
-    tbody.innerHTML = filtered.map(e => `
-      <tr class="${winIds.has(e.userId) ? 'winner-row' : ''}">
-        <td>
-          <div class="user-cell">
-            <img src="${e.avatar || ''}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'" />
-            <div>
-              <div class="un">${e.displayName || e.username}</div>
-              <div class="dn">@${e.username}</div>
-            </div>
-            ${winIds.has(e.userId) ? '<span class="pill pill-blue">🏆 Winner</span>' : ''}
-          </div>
-        </td>
-        <td style="color:var(--text-mid)">${fmt(e.joinedServer)}</td>
-        <td>${e.isPremium ? '<span class="pill pill-gold">⭐ Premium</span>' : '<span style="color:var(--text-muted)">—</span>'}</td>
-        <td style="color:var(--text-muted)">${fmt(e.enteredAt)}</td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = filtered.map(e => "<tr class=" + (winIds.has(e.userId) ? "winner-row" : "") + "><td><div class=user-cell><img src=" + (e.avatar || "") + " onerror=this.src=https://cdn.discordapp.com/embed/avatars/0.png /><div><div class=un>" + (e.displayName || e.username) + "</div><div class=dn>@" + e.username + "</div></div>" + (winIds.has(e.userId) ? "<span class='pill pill-blue'>🏆 Winner</span>" : "") + "</div></td><td style=color:var(--text-mid)>" + fmt(e.joinedServer) + "</td><td>" + (e.isPremium ? "<span class='pill pill-gold'>⭐ Premium</span>" : "<span style=color:var(--text-muted)>—</span>") + "</td><td style=color:var(--text-muted)>" + fmt(e.enteredAt) + "</td></tr>").join("");
   }
 
   function showWinners(pool, winners) {
-    const box = document.getElementById(`winner-box-${pool}`);
-    const list = document.getElementById(`winner-list-${pool}`);
-    box.classList.add('visible');
-    list.innerHTML = winners.map(w => `
-      <div class="winner-item">
-        <img src="${w.avatar || ''}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'" />
-        <div>
-          <div class="winner-item-name">${w.displayName || w.username}</div>
-          <div class="winner-item-handle">@${w.username}</div>
-        </div>
-      </div>
-    `).join('');
+    const box = document.getElementById("winner-box-" + pool);
+    const list = document.getElementById("winner-list-" + pool);
+    box.classList.add("visible");
+    list.innerHTML = winners.map(w => "<div class=winner-item><img src=" + (w.avatar || "") + " onerror=this.src=https://cdn.discordapp.com/embed/avatars/0.png /><div><div class=winner-item-name>" + (w.displayName || w.username) + "</div><div class=winner-item-handle>@" + w.username + "</div></div></div>").join("");
   }
 
   async function savePrizes() {
-    const prize = document.getElementById('prize-input').value.trim();
-    const premiumPrize = document.getElementById('premium-prize-input').value.trim();
-    await fetch('/api/giveaway/entries?action=configure', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const prize = document.getElementById("prize-input").value.trim();
+    const premiumPrize = document.getElementById("premium-prize-input").value.trim();
+    const r = await fetch("/api/giveaway/entries?action=configure", {
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prize, premiumPrize }),
     });
-    toast('Prizes saved!');
+    const d = await r.json();
+    if (d.success) { toast("Prizes saved!"); }
+    else { toast(d.error || "Error saving", "error"); }
   }
 
   async function toggleActive() {
-    await fetch('/api/giveaway/entries?action=configure', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const r = await fetch("/api/giveaway/entries?action=configure", {
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ active: !giveawayData.active }),
     });
-    toast('Status updated');
-    loadData();
+    const d = await r.json();
+    if (d.success) {
+      giveawayData.active = !giveawayData.active;
+      const toggleBtn = document.getElementById("toggle-btn");
+      toggleBtn.textContent = giveawayData.active ? "🟢 Close Giveaway" : "🔴 Open Giveaway";
+      toggleBtn.className = giveawayData.active ? "btn btn-red" : "btn btn-green";
+      document.getElementById("stat-status").textContent = giveawayData.active ? "OPEN" : "ENDED";
+      toast("Giveaway " + (giveawayData.active ? "opened" : "closed") + "!");
+    } else { toast(d.error || "Error", "error"); }
   }
 
   async function pickWinners() {
-    const count = parseInt(document.getElementById('winner-count').value || '1', 10);
-    const premiumCount = parseInt(document.getElementById('premium-winner-count').value || '1', 10);
+    const count = parseInt(document.getElementById("winner-count").value || "1", 10);
+    const premiumCount = parseInt(document.getElementById("premium-winner-count").value || "1", 10);
     const premiumEntries = allEntries.filter(e => e.isPremium);
-
-    if (!confirm(`Pick ${count} regular winner(s) from ${allEntries.length} entries and ${premiumCount} premium winner(s) from ${premiumEntries.length} premium entries?`)) return;
-
-    const r = await fetch('/api/giveaway/entries?action=pick', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    if (!confirm("Pick " + count + " regular winner(s) from " + allEntries.length + " entries and " + premiumCount + " premium winner(s) from " + premiumEntries.length + " premium entries?")) return;
+    const r = await fetch("/api/giveaway/entries?action=pick", {
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ count, premiumCount }),
     });
     const d = await r.json();
-
     if (d.winners) {
-      showWinners('regular', d.winners);
-      showWinners('premium', d.premiumWinners || []);
+      showWinners("regular", d.winners);
+      if (d.premiumWinners?.length) showWinners("premium", d.premiumWinners);
       renderTable(allEntries, d.winners, d.premiumWinners || []);
-      toast(`Winners selected! 🎉`);
-    } else {
-      toast(d.error || 'Error picking winners', 'error');
-    }
+      toast("Winners selected! 🎉");
+    } else { toast(d.error || "Error picking winners", "error"); }
   }
 
   async function resetGiveaway() {
-    if (!confirm('Clear ALL entries and winners for both pools?')) return;
-    await fetch('/api/giveaway/entries?action=configure', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    if (!confirm("Clear ALL entries and winners for both pools?")) return;
+    await fetch("/api/giveaway/entries?action=configure", {
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reset: true }),
     });
-    document.getElementById('winner-box-regular').classList.remove('visible');
-    document.getElementById('winner-box-premium').classList.remove('visible');
-    toast('Giveaway reset!');
-    loadData();
+    document.getElementById("winner-box-regular").classList.remove("visible");
+    document.getElementById("winner-box-premium").classList.remove("visible");
+    toast("Giveaway reset!");
+    await loadData();
   }
 
   const session = getSession();
-  if (!session) { document.getElementById('auth-wall').style.display = 'block'; }
+  if (!session) { document.getElementById("auth-wall").style.display = "block"; }
   else { loadData(); }
 </script>
 </body>
