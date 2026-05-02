@@ -1,10 +1,14 @@
 // api/giveaway/entries.js
 // Dual giveaway: regular (weighted: free=1, premium=5) + premium pool (premium only)
-// Storage: Upstash Redis via @upstash/redis
+// Storage: Vercel KV via @upstash/redis
 
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
+
 const KEY = "giveaway:data";
 const PREMIUM_WEIGHT = 5;
 
@@ -132,7 +136,6 @@ export default async function handler(req, res) {
     if (data.entries.some(e => e.userId === session.userId)) {
       return res.status(400).json({ error: "Already entered" });
     }
-
     const entry = {
       userId: session.userId,
       username: session.username,
@@ -144,7 +147,6 @@ export default async function handler(req, res) {
       roles: session.roles,
       enteredAt: new Date().toISOString(),
     };
-
     data.entries.push(entry);
     await saveData(data);
     return res.json({ success: true, entry, enteredPremium: session.isPremium });
@@ -173,11 +175,9 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const count = parseInt(body.count || "1", 10);
     const premiumCount = parseInt(body.premiumCount || "1", 10);
-
     if (data.entries.length === 0) return res.status(400).json({ error: "No entries" });
 
     const winners = weightedPick(data.entries, count);
-
     const premiumEntries = data.entries.filter(e => e.isPremium);
     const premiumWinners = premiumEntries.length > 0
       ? shuffle(premiumEntries).slice(0, Math.min(premiumCount, premiumEntries.length))
@@ -187,7 +187,6 @@ export default async function handler(req, res) {
     data.premiumWinners = premiumWinners;
     data.active = false;
     await saveData(data);
-
     return res.json({ winners, premiumWinners });
   }
 
