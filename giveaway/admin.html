@@ -98,6 +98,7 @@
     .pill-green { background: var(--green-dim); border: 1px solid var(--green-bdr); color: var(--green); }
     .pill-blue  { background: var(--primary-dim); border: 1px solid var(--primary-bdr); color: var(--primary); }
     .pill-gold  { background: var(--gold-dim); border: 1px solid var(--gold-bdr); color: var(--gold); }
+    .pill-waiting { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; }
 
     /* winner boxes */
     .winner-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
@@ -235,7 +236,7 @@
               <tr>
                 <th>Member</th>
                 <th>Joined Server</th>
-                <th>Premium</th>
+                <th>Premium Status</th>
                 <th>Entered</th>
               </tr>
             </thead>
@@ -356,7 +357,15 @@
       tbody.innerHTML = "<tr><td colspan=4 style=color:var(--text-muted);padding:32px 0;text-align:center>" + (currentTab === "premium" ? "No premium entries yet" : "No entries yet") + "</td></tr>";
       return;
     }
-    tbody.innerHTML = filtered.map(e => "<tr class=" + (winIds.has(e.userId) ? "winner-row" : "") + "><td><div class=user-cell><img src=" + (e.avatar || "") + " onerror=this.src=https://cdn.discordapp.com/embed/avatars/0.png /><div><div class=un>" + (e.displayName || e.username) + "</div><div class=dn>@" + e.username + "</div></div>" + (winIds.has(e.userId) ? "<span class='pill pill-blue'>🏆 Winner</span>" : "") + "</div></td><td style=color:var(--text-mid)>" + fmt(e.joinedServer) + "</td><td>" + (e.isPremium ? "<span class='pill pill-gold'>⭐ Premium</span>" : "<span style=color:var(--text-muted)>—</span>") + "</td><td style=color:var(--text-muted)>" + fmt(e.enteredAt) + "</td></tr>").join("");
+    tbody.innerHTML = filtered.map(e => {
+      const premiumCell = e.isPremium
+        ? "<span class='pill pill-gold'>⭐ Premium (7d+)</span>"
+        : e.hasPremiumRole
+          ? "<span class='pill pill-waiting'>⏳ Premium (&lt;7d)</span>"
+          : "<span style=color:var(--text-muted)>—</span>";
+      const premiumSinceText = e.premiumSince ? "<div class=dn>Since " + fmt(e.premiumSince) + "</div>" : "";
+      return "<tr class=" + (winIds.has(e.userId) ? "winner-row" : "") + "><td><div class=user-cell><img src=" + (e.avatar || "") + " onerror=this.src=https://cdn.discordapp.com/embed/avatars/0.png /><div><div class=un>" + (e.displayName || e.username) + "</div><div class=dn>@" + e.username + "</div></div>" + (winIds.has(e.userId) ? "<span class='pill pill-blue'>🏆 Winner</span>" : "") + "</div></td><td style=color:var(--text-mid)>" + fmt(e.joinedServer) + "</td><td>" + premiumCell + premiumSinceText + "</td><td style=color:var(--text-muted)>" + fmt(e.enteredAt) + "</td></tr>";
+    }).join("");
   }
 
   function showWinners(pool, winners) {
@@ -387,6 +396,7 @@
     const d = await r.json();
     if (d.success) {
       toast("Giveaway " + (newState ? "opened" : "closed") + "!");
+      await new Promise(r => setTimeout(r, 800));
       await loadData();
     } else { toast(d.error || "Error", "error"); }
   }
