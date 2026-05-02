@@ -259,12 +259,11 @@
         </div>
         <div class="field">
           <label>Regular Prize Image</label>
-          <img id="prize-img-preview" class="img-preview" src="" alt="" />
           <div class="upload-area" onclick="document.getElementById('prize-file').click()">
             📁 Click to upload image
             <input type="file" id="prize-file" accept="image/*" onchange="handleUpload(this, 'regular')" />
           </div>
-          <input type="text" id="prize-image-url" placeholder="Or paste image URL" oninput="previewUrl(this.value, 'prize-img-preview', 'prize-image-url-val')" />
+          <input type="text" id="prize-image-url" placeholder="Or paste image URL" />
           <input type="hidden" id="prize-image-url-val" />
         </div>
         <div class="section-divider premium"><span>⭐ Premium</span></div>
@@ -274,12 +273,11 @@
         </div>
         <div class="field">
           <label>Premium Bonus Image</label>
-          <img id="premium-bonus-img-preview" class="img-preview" src="" alt="" />
           <div class="upload-area" onclick="document.getElementById('premium-bonus-file').click()">
             📁 Click to upload image
             <input type="file" id="premium-bonus-file" accept="image/*" onchange="handleUpload(this, 'premium')" />
           </div>
-          <input type="text" id="premium-bonus-image-url" placeholder="Or paste image URL" oninput="previewUrl(this.value, 'premium-bonus-img-preview', 'premium-bonus-image-url-val')" />
+          <input type="text" id="premium-bonus-image-url" placeholder="Or paste image URL" />
           <input type="hidden" id="premium-bonus-image-url-val" />
         </div>
         <button class="btn btn-primary" onclick="savePrizes()">Save Prizes</button>
@@ -364,14 +362,10 @@
       document.getElementById("prize-input").value = giveawayData.prize || "";
       document.getElementById("premium-bonus-input").value = giveawayData.premiumBonus || "";
       if (giveawayData.prizeImage) {
-        const img = document.getElementById("prize-img-preview");
-        img.src = giveawayData.prizeImage; img.classList.add("loaded");
         document.getElementById("prize-image-url").value = giveawayData.prizeImage;
         document.getElementById("prize-image-url-val").value = giveawayData.prizeImage;
       }
       if (giveawayData.premiumBonusImage) {
-        const img = document.getElementById("premium-bonus-img-preview");
-        img.src = giveawayData.premiumBonusImage; img.classList.add("loaded");
         document.getElementById("premium-bonus-image-url").value = giveawayData.premiumBonusImage;
         document.getElementById("premium-bonus-image-url-val").value = giveawayData.premiumBonusImage;
       }
@@ -425,14 +419,6 @@
     const hiddenId = pool === "premium" ? "premium-bonus-image-url-val" : "prize-image-url-val";
     const urlInputId = pool === "premium" ? "premium-bonus-image-url" : "prize-image-url";
 
-    // Show local preview immediately
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.getElementById(previewId);
-      img.src = e.target.result; img.classList.add("loaded");
-    };
-    reader.readAsDataURL(file);
-
     // Upload to R2
     toast("Uploading image...");
     const formData = new FormData();
@@ -444,9 +430,6 @@
       if (d.url) {
         document.getElementById(hiddenId).value = d.url;
         document.getElementById(urlInputId).value = d.url;
-        // Update preview with final R2 URL
-        const img = document.getElementById(previewId);
-        img.src = d.url; img.classList.add("loaded");
         toast("Image uploaded! Click Save Prizes to apply.");
       } else {
         toast(d.error || "Upload failed", "error");
