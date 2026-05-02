@@ -76,6 +76,8 @@
     .prize-card.premium .prize-card-label { color: var(--gold); }
     .prize-card-name { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.3; }
     .prize-card-count { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+    .prize-card-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; margin-bottom: 14px; display: none; }
+    .prize-card-img.loaded { display: block; }
     .prize-card.premium .prize-card-count { color: rgba(245,158,11,0.6); }
 
     /* main card */
@@ -163,11 +165,13 @@
   <!-- Prize cards -->
   <div class="prize-row">
     <div class="prize-card regular">
+      <img id="prize-image" class="prize-card-img" src="" alt="Regular Prize" />
       <div class="prize-card-label">🎁 Regular Prize</div>
       <div class="prize-card-name" id="prize-display">Loading...</div>
       <div class="prize-card-count" id="regular-count">— entries</div>
     </div>
     <div class="prize-card premium">
+      <img id="premium-prize-image" class="prize-card-img" src="" alt="Premium Prize" />
       <div class="prize-card-label">⭐ Premium Prize</div>
       <div class="prize-card-name" id="premium-prize-display">Loading...</div>
       <div class="prize-card-count" id="premium-count">— premium entries</div>
@@ -265,6 +269,14 @@
       document.getElementById('premium-prize-display').textContent = d.premiumPrize || 'TBA';
       document.getElementById('regular-count').textContent = `${d.count ?? 0} entries`;
       document.getElementById('premium-count').textContent = `${d.premiumCount ?? 0} premium entries`;
+      if (d.prizeImage) {
+        const img = document.getElementById('prize-image');
+        img.src = d.prizeImage; img.classList.add('loaded');
+      }
+      if (d.premiumPrizeImage) {
+        const img = document.getElementById('premium-prize-image');
+        img.src = d.premiumPrizeImage; img.classList.add('loaded');
+      }
       if (!d.active) { showState('ended'); return; }
     } catch {}
 
