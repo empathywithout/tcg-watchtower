@@ -304,6 +304,7 @@
       <!-- Actions -->
       <div class="card">
         <div class="card-title">Actions</div>
+        <button class="btn btn-ghost" onclick="resetWinners()">🔄 Reset Winners Only</button>
         <a class="btn btn-blue" href="/api/giveaway/entries?action=export&pool=all">⬇ Export All Entries CSV</a>
         <a class="btn btn-gold" href="/api/giveaway/entries?action=export&pool=premium">⬇ Export Premium Entries CSV</a>
         <button class="btn btn-red" onclick="resetGiveaway()">🗑 Reset & Clear All Entries</button>
@@ -485,6 +486,21 @@
       renderTable(allEntries, d.winners, d.premiumWinners || []);
       toast("Winners selected! 🎉");
     } else { toast(d.error || "Error picking winners", "error"); }
+  }
+
+  async function resetWinners() {
+    if (!confirm("Clear winners for both pools? Entries will be kept and giveaway will reopen.")) return;
+    const r = await fetch("/api/giveaway/entries?action=configure", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resetWinners: true }),
+    });
+    const d = await r.json();
+    if (d.success) {
+      document.getElementById("winner-box-regular").classList.remove("visible");
+      document.getElementById("winner-box-premium").classList.remove("visible");
+      toast("Winners reset — entries kept!");
+      await loadData();
+    } else { toast(d.error || "Error", "error"); }
   }
 
   async function resetGiveaway() {
