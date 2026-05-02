@@ -370,6 +370,8 @@
         document.getElementById("premium-bonus-image-url").value = giveawayData.premiumBonusImage;
         document.getElementById("premium-bonus-image-url-val").value = giveawayData.premiumBonusImage;
       }
+      document.getElementById("winner-box-regular").classList.remove("visible");
+      document.getElementById("winner-box-premium").classList.remove("visible");
       if (giveawayData.winners?.length) showWinners("regular", giveawayData.winners);
       if (giveawayData.premiumWinners?.length) showWinners("premium", giveawayData.premiumWinners);
       renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
