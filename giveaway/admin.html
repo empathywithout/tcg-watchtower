@@ -379,18 +379,15 @@
   }
 
   async function toggleActive() {
+    const newState = !giveawayData.active;
     const r = await fetch("/api/giveaway/entries?action=configure", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ active: !giveawayData.active }),
+      body: JSON.stringify({ active: newState }),
     });
     const d = await r.json();
     if (d.success) {
-      giveawayData.active = !giveawayData.active;
-      const toggleBtn = document.getElementById("toggle-btn");
-      toggleBtn.textContent = giveawayData.active ? "🟢 Close Giveaway" : "🔴 Open Giveaway";
-      toggleBtn.className = giveawayData.active ? "btn btn-red" : "btn btn-green";
-      document.getElementById("stat-status").textContent = giveawayData.active ? "OPEN" : "ENDED";
-      toast("Giveaway " + (giveawayData.active ? "opened" : "closed") + "!");
+      toast("Giveaway " + (newState ? "opened" : "closed") + "!");
+      await loadData();
     } else { toast(d.error || "Error", "error"); }
   }
 
