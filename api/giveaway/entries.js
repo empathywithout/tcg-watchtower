@@ -16,6 +16,8 @@ const DEFAULT_DATA = {
   active: false,
   prize: "",
   premiumPrize: "",
+  prizeImage: "",
+  premiumPrizeImage: "",
   entries: [],
   winners: [],
   premiumWinners: [],
@@ -123,6 +125,8 @@ export default async function handler(req, res) {
       active: data.active,
       prize: data.prize || null,
       premiumPrize: data.premiumPrize || null,
+      prizeImage: data.prizeImage || null,
+      premiumPrizeImage: data.premiumPrizeImage || null,
     });
   }
 
@@ -141,6 +145,8 @@ export default async function handler(req, res) {
       premiumWinners: data.premiumWinners || [],
       prize: data.prize,
       premiumPrize: data.premiumPrize,
+      prizeImage: data.prizeImage || null,
+      premiumPrizeImage: data.premiumPrizeImage || null,
       active: data.active,
       premiumWeight: PREMIUM_WEIGHT,
     });
@@ -181,6 +187,8 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     if (body.prize !== undefined) data.prize = body.prize;
     if (body.premiumPrize !== undefined) data.premiumPrize = body.premiumPrize;
+    if (body.prizeImage !== undefined) data.prizeImage = body.prizeImage;
+    if (body.premiumPrizeImage !== undefined) data.premiumPrizeImage = body.premiumPrizeImage;
     if (body.active !== undefined) data.active = body.active;
     if (body.reset) {
       data.entries = [];
