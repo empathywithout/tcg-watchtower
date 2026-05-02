@@ -161,6 +161,8 @@ export default async function handler(req, res) {
       joinedServer: session.joinedServer,
       joinedDiscord: session.joinedDiscord,
       isPremium: session.isPremium,
+      hasPremiumRole: session.hasPremiumRole || false,
+      premiumSince: session.premiumSince || null,
       roles: session.roles,
       enteredAt: new Date().toISOString(),
     };
