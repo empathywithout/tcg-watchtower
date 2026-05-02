@@ -15,9 +15,9 @@ const PREMIUM_WEIGHT = 5;
 const DEFAULT_DATA = {
   active: false,
   prize: "",
-  premiumPrize: "",
+  premiumBonus: "",
   prizeImage: "",
-  premiumPrizeImage: "",
+  premiumBonusImage: "",
   entries: [],
   winners: [],
   premiumWinners: [],
@@ -124,9 +124,9 @@ export default async function handler(req, res) {
       premiumCount,
       active: data.active,
       prize: data.prize || null,
-      premiumPrize: data.premiumPrize || null,
+      premiumBonus: data.premiumBonus || null,
       prizeImage: data.prizeImage || null,
-      premiumPrizeImage: data.premiumPrizeImage || null,
+      premiumBonusImage: data.premiumBonusImage || null,
     });
   }
 
@@ -144,9 +144,9 @@ export default async function handler(req, res) {
       winners: data.winners || [],
       premiumWinners: data.premiumWinners || [],
       prize: data.prize,
-      premiumPrize: data.premiumPrize,
+      premiumBonus: data.premiumBonus,
       prizeImage: data.prizeImage || null,
-      premiumPrizeImage: data.premiumPrizeImage || null,
+      premiumBonusImage: data.premiumBonusImage || null,
       active: data.active,
       premiumWeight: PREMIUM_WEIGHT,
     });
@@ -186,9 +186,9 @@ export default async function handler(req, res) {
     if (!isAdmin(session)) return res.status(403).json({ error: "Forbidden" });
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     if (body.prize !== undefined) data.prize = body.prize;
-    if (body.premiumPrize !== undefined) data.premiumPrize = body.premiumPrize;
+    if (body.premiumBonus !== undefined) data.premiumBonus = body.premiumBonus;
     if (body.prizeImage !== undefined) data.prizeImage = body.prizeImage;
-    if (body.premiumPrizeImage !== undefined) data.premiumPrizeImage = body.premiumPrizeImage;
+    if (body.premiumBonusImage !== undefined) data.premiumBonusImage = body.premiumBonusImage;
     if (body.active !== undefined) data.active = body.active;
     if (body.reset) {
       data.entries = [];
