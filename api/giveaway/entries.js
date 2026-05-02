@@ -24,7 +24,14 @@ const DEFAULT_DATA = {
 async function loadData() {
   try {
     const data = await redis.get(KEY);
-    if (data) return { ...DEFAULT_DATA, ...(typeof data === "string" ? JSON.parse(data) : data) };
+    // Upstash auto-parses JSON — data is already an object, not a string
+    if (data && typeof data === "object") {
+      return { ...DEFAULT_DATA, ...data };
+    }
+    // Fallback if somehow it's a string
+    if (data && typeof data === "string") {
+      return { ...DEFAULT_DATA, ...JSON.parse(data) };
+    }
   } catch (e) {
     console.error("loadData error:", e);
   }
@@ -33,9 +40,11 @@ async function loadData() {
 
 async function saveData(data) {
   try {
-    await redis.set(KEY, JSON.stringify(data));
+    // Pass object directly — Upstash serializes it
+    await redis.set(KEY, data);
   } catch (e) {
     console.error("saveData error:", e);
+    throw e; // rethrow so handler can return error response
   }
 }
 
@@ -95,7 +104,13 @@ function buildCsv(entries, pool = "all") {
 export default async function handler(req, res) {
   const action = req.query.action;
   const session = getSession(req);
-  const data = await loadData();
+
+  let data;
+  try {
+    data = await loadData();
+  } catch (e) {
+    return res.status(500).json({ error: "Failed to load data", detail: e.message });
+  }
 
   // GET: public count
   if (req.method === "GET" && action === "count") {
@@ -148,7 +163,11 @@ export default async function handler(req, res) {
       enteredAt: new Date().toISOString(),
     };
     data.entries.push(entry);
-    await saveData(data);
+    try {
+      await saveData(data);
+    } catch (e) {
+      return res.status(500).json({ error: "Failed to save entry", detail: e.message });
+    }
     return res.json({ success: true, entry, enteredPremium: session.isPremium });
   }
 
@@ -165,8 +184,12 @@ export default async function handler(req, res) {
       data.premiumWinners = [];
       data.active = true;
     }
-    await saveData(data);
-    return res.json({ success: true });
+    try {
+      await saveData(data);
+    } catch (e) {
+      return res.status(500).json({ error: "Failed to save config", detail: e.message });
+    }
+    return res.json({ success: true, data });
   }
 
   // POST: pick winners (admin)
