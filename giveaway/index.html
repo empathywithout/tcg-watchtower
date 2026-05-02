@@ -76,7 +76,7 @@
     .prize-card.premium .prize-card-label { color: var(--gold); }
     .prize-card-name { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.3; }
     .prize-card-count { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
-    .prize-card-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; margin-bottom: 14px; display: none; }
+    .prize-card-img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 8px; margin-bottom: 14px; display: none; background: rgba(0,0,0,0.15); padding: 8px; }
     .prize-card-img.loaded { display: block; }
     .prize-card.premium .prize-card-count { color: rgba(245,158,11,0.6); }
 
@@ -171,9 +171,9 @@
       <div class="prize-card-count" id="regular-count">— entries</div>
     </div>
     <div class="prize-card premium">
-      <img id="premium-prize-image" class="prize-card-img" src="" alt="Premium Prize" />
-      <div class="prize-card-label">⭐ Premium Prize</div>
-      <div class="prize-card-name" id="premium-prize-display">Loading...</div>
+      <img id="premium-bonus-image" class="prize-card-img" src="" alt="Premium Bonus" />
+      <div class="prize-card-label">⭐ Premium Bonus</div>
+      <div class="prize-card-name" id="premium-bonus-display">Loading...</div>
       <div class="prize-card-count" id="premium-count">— premium entries</div>
     </div>
   </div>
@@ -266,16 +266,16 @@
       const r = await fetch('/api/giveaway/entries?action=count');
       const d = await r.json();
       document.getElementById('prize-display').textContent = d.prize || 'TBA';
-      document.getElementById('premium-prize-display').textContent = d.premiumPrize || 'TBA';
+      document.getElementById('premium-bonus-display').textContent = d.premiumBonus || 'TBA';
       document.getElementById('regular-count').textContent = `${d.count ?? 0} entries`;
       document.getElementById('premium-count').textContent = `${d.premiumCount ?? 0} premium entries`;
       if (d.prizeImage) {
         const img = document.getElementById('prize-image');
         img.src = d.prizeImage; img.classList.add('loaded');
       }
-      if (d.premiumPrizeImage) {
-        const img = document.getElementById('premium-prize-image');
-        img.src = d.premiumPrizeImage; img.classList.add('loaded');
+      if (d.premiumBonusImage) {
+        const img = document.getElementById('premium-bonus-image');
+        img.src = d.premiumBonusImage; img.classList.add('loaded');
       }
       if (!d.active) { showState('ended'); return; }
     } catch {}
