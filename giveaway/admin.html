@@ -444,7 +444,10 @@
       if (d.url) {
         document.getElementById(hiddenId).value = d.url;
         document.getElementById(urlInputId).value = d.url;
-        toast("Image uploaded!");
+        // Update preview with final R2 URL
+        const img = document.getElementById(previewId);
+        img.src = d.url; img.classList.add("loaded");
+        toast("Image uploaded! Click Save Prizes to apply.");
       } else {
         toast(d.error || "Upload failed", "error");
       }
@@ -456,10 +459,10 @@
   async function savePrizes() {
     const prize = document.getElementById("prize-input").value.trim();
     const premiumBonus = document.getElementById("premium-bonus-input").value.trim();
-    const prizeImage = document.getElementById("prize-image-url-val").value ||
-                       document.getElementById("prize-image-url").value.trim();
-    const premiumBonusImage = document.getElementById("premium-bonus-image-url-val").value ||
-                              document.getElementById("premium-bonus-image-url").value.trim();
+    const prizeImage = document.getElementById("prize-image-url").value.trim() ||
+                       document.getElementById("prize-image-url-val").value;
+    const premiumBonusImage = document.getElementById("premium-bonus-image-url").value.trim() ||
+                              document.getElementById("premium-bonus-image-url-val").value;
     const r = await fetch("/api/giveaway/entries?action=configure", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prize, premiumBonus, prizeImage, premiumBonusImage }),
