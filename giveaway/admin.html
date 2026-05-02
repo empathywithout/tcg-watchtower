@@ -323,9 +323,14 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
+    } catch(e) { console.error(e); } finally { isLoading = false; }
   }
 
+  let isLoading = false;
   async function loadData() {
+    if (isLoading) return;
+    isLoading = true;
+    try {
     const r = await fetch('/api/giveaway/entries?action=list');
     if (r.status === 403) { document.getElementById('auth-wall').style.display = 'block'; return; }
     document.getElementById('dashboard').style.display = 'block';
@@ -352,6 +357,7 @@
     if (giveawayData.premiumWinners?.length) showWinners('premium', giveawayData.premiumWinners);
 
     renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
+    } catch(e) { console.error(e); } finally { isLoading = false; }
   }
 
   function renderTable(entries, winners, premiumWinners) {
@@ -407,7 +413,6 @@
       body: JSON.stringify({ prize, premiumPrize }),
     });
     toast('Prizes saved!');
-    await loadData();
   }
 
   async function toggleActive() {
