@@ -196,6 +196,11 @@ export default async function handler(req, res) {
       data.premiumWinners = [];
       data.active = true;
     }
+    if (body.resetWinners) {
+      data.winners = [];
+      data.premiumWinners = [];
+      data.active = true;
+    }
     try {
       await saveData(data);
     } catch (e) {
