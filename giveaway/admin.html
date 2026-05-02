@@ -254,13 +254,33 @@
         <div class="card-title">Configure Giveaway</div>
         <div class="section-divider regular"><span>Regular</span></div>
         <div class="field">
-          <label>Regular Prize</label>
+          <label>Regular Prize Name</label>
           <input type="text" id="prize-input" placeholder="e.g. Chaos Rising Booster Box" />
+        </div>
+        <div class="field">
+          <label>Regular Prize Image</label>
+          <img id="prize-img-preview" class="img-preview" src="" alt="" />
+          <div class="upload-area" onclick="document.getElementById('prize-file').click()">
+            📁 Click to upload image
+            <input type="file" id="prize-file" accept="image/*" onchange="handleUpload(this, 'regular')" />
+          </div>
+          <input type="text" id="prize-image-url" placeholder="Or paste image URL" oninput="previewUrl(this.value, 'prize-img-preview', 'prize-image-url-val')" />
+          <input type="hidden" id="prize-image-url-val" />
         </div>
         <div class="section-divider premium"><span>⭐ Premium</span></div>
         <div class="field">
-          <label>Premium Prize</label>
+          <label>Premium Prize Name</label>
           <input type="text" id="premium-prize-input" placeholder="e.g. Prismatic Evolutions ETB" />
+        </div>
+        <div class="field">
+          <label>Premium Prize Image</label>
+          <img id="premium-prize-img-preview" class="img-preview" src="" alt="" />
+          <div class="upload-area" onclick="document.getElementById('premium-prize-file').click()">
+            📁 Click to upload image
+            <input type="file" id="premium-prize-file" accept="image/*" onchange="handleUpload(this, 'premium')" />
+          </div>
+          <input type="text" id="premium-prize-image-url" placeholder="Or paste image URL" oninput="previewUrl(this.value, 'premium-prize-img-preview', 'premium-prize-image-url-val')" />
+          <input type="hidden" id="premium-prize-image-url-val" />
         </div>
         <button class="btn btn-primary" onclick="savePrizes()">Save Prizes</button>
         <button class="btn btn-ghost" id="toggle-btn" onclick="toggleActive()">Toggle Open / Closed</button>
@@ -343,6 +363,18 @@
       }
       document.getElementById("prize-input").value = giveawayData.prize || "";
       document.getElementById("premium-prize-input").value = giveawayData.premiumPrize || "";
+      if (giveawayData.prizeImage) {
+        const img = document.getElementById("prize-img-preview");
+        img.src = giveawayData.prizeImage; img.classList.add("loaded");
+        document.getElementById("prize-image-url").value = giveawayData.prizeImage;
+        document.getElementById("prize-image-url-val").value = giveawayData.prizeImage;
+      }
+      if (giveawayData.premiumPrizeImage) {
+        const img = document.getElementById("premium-prize-img-preview");
+        img.src = giveawayData.premiumPrizeImage; img.classList.add("loaded");
+        document.getElementById("premium-prize-image-url").value = giveawayData.premiumPrizeImage;
+        document.getElementById("premium-prize-image-url-val").value = giveawayData.premiumPrizeImage;
+      }
       if (giveawayData.winners?.length) showWinners("regular", giveawayData.winners);
       if (giveawayData.premiumWinners?.length) showWinners("premium", giveawayData.premiumWinners);
       renderTable(allEntries, giveawayData.winners || [], giveawayData.premiumWinners || []);
@@ -375,12 +407,62 @@
     list.innerHTML = winners.map(w => "<div class=winner-item><img src=" + (w.avatar || "") + " onerror=this.src=https://cdn.discordapp.com/embed/avatars/0.png /><div><div class=winner-item-name>" + (w.displayName || w.username) + "</div><div class=winner-item-handle>@" + w.username + "</div></div></div>").join("");
   }
 
+  function previewUrl(url, previewId, hiddenId) {
+    const img = document.getElementById(previewId);
+    const hidden = document.getElementById(hiddenId);
+    if (url.startsWith("http")) {
+      img.src = url; img.classList.add("loaded");
+      hidden.value = url;
+    } else {
+      img.classList.remove("loaded"); hidden.value = "";
+    }
+  }
+
+  async function handleUpload(input, pool) {
+    const file = input.files[0];
+    if (!file) return;
+    const previewId = pool === "premium" ? "premium-prize-img-preview" : "prize-img-preview";
+    const hiddenId = pool === "premium" ? "premium-prize-image-url-val" : "prize-image-url-val";
+    const urlInputId = pool === "premium" ? "premium-prize-image-url" : "prize-image-url";
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById(previewId);
+      img.src = e.target.result; img.classList.add("loaded");
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to R2
+    toast("Uploading image...");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("pool", pool);
+    try {
+      const r = await fetch("/api/giveaway/upload", { method: "POST", body: formData });
+      const d = await r.json();
+      if (d.url) {
+        document.getElementById(hiddenId).value = d.url;
+        document.getElementById(urlInputId).value = d.url;
+        toast("Image uploaded!");
+      } else {
+        toast(d.error || "Upload failed", "error");
+      }
+    } catch(e) {
+      toast("Upload failed", "error");
+    }
+  }
+
   async function savePrizes() {
     const prize = document.getElementById("prize-input").value.trim();
     const premiumPrize = document.getElementById("premium-prize-input").value.trim();
+    const prizeImage = document.getElementById("prize-image-url-val").value ||
+                       document.getElementById("prize-image-url").value.trim();
+    const premiumPrizeImage = document.getElementById("premium-prize-image-url-val").value ||
+                              document.getElementById("premium-prize-image-url").value.trim();
     const r = await fetch("/api/giveaway/entries?action=configure", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prize, premiumPrize }),
+      body: JSON.stringify({ prize, premiumPrize, prizeImage, premiumPrizeImage }),
     });
     const d = await r.json();
     if (d.success) { toast("Prizes saved!"); }
