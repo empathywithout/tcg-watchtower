@@ -102,6 +102,8 @@ function buildCsv(entries, pool = "all") {
 }
 
 export default async function handler(req, res) {
+  // Never cache — always serve fresh from Redis
+  res.setHeader("Cache-Control", "no-store");
   const action = req.query.action;
   const session = getSession(req);
 
