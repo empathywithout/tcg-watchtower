@@ -140,15 +140,42 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
     console.warn(`⚠️  Scrydex metadata failed: ${e.message}`);
   }
 } else {
-  console.log(`📋 Fetching set metadata from TCGdex for ${SET_ID}…`);
-  const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
-  if (!tcgRes.ok) {
-    console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
-    process.exit(1);
+  // For ME sets, try Scrydex EN first since TCGdex may not have them yet
+  const SCRYDEX_EN_META_MAP = {
+    'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me4','me05':'me5',
+  };
+  const scrydexMetaId = SCRYDEX_EN_META_MAP[SET_ID];
+  let scrydexMetaOk = false;
+  if (scrydexMetaId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+    try {
+      console.log(`📋 Fetching EN set metadata from Scrydex (${scrydexMetaId})…`);
+      const scrydexRes = await fetch(`https://api.scrydex.com/pokemon/v1/expansions/${scrydexMetaId}`, {
+        headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+      });
+      if (scrydexRes.ok) {
+        const raw = await scrydexRes.json();
+        setData = raw.data || raw;
+        officialCount = setData.printedTotal || setData.cardCount || setData.total || 0;
+        console.log(`✅  Scrydex EN: ${setData.name || SET_FULL_NAME} — ${officialCount} official cards`);
+        scrydexMetaOk = true;
+      } else {
+        console.warn(`⚠️  Scrydex EN ${scrydexRes.status} — falling back to TCGdex`);
+      }
+    } catch(e) {
+      console.warn(`⚠️  Scrydex EN metadata failed: ${e.message} — falling back to TCGdex`);
+    }
   }
-  setData       = await tcgRes.json();
-  officialCount = setData.cardCount?.official || setData.cards?.length || 0;
-  console.log(`✅  TCGdex: ${setData.name} — ${officialCount} official cards`);
+  if (!scrydexMetaOk) {
+    console.log(`📋 Fetching set metadata from TCGdex for ${SET_ID}…`);
+    const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
+    if (!tcgRes.ok) {
+      console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
+      process.exit(1);
+    }
+    setData       = await tcgRes.json();
+    officialCount = setData.cardCount?.official || setData.cards?.length || 0;
+    console.log(`✅  TCGdex: ${setData.name} — ${officialCount} official cards`);
+  }
 }
 
 const releaseDate = SET_RELEASE_DATE
