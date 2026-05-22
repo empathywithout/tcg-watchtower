@@ -2,9 +2,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"></noscript>
-
 <link rel="stylesheet" href="/mobile-fixes.css">
-
 <!-- ===== NAV ===== -->
 <nav class="container">
   <a href="/" class="nav-logo">
@@ -21,10 +19,9 @@
     <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
   </div>
 </nav>
-
+<div style="padding:3px 16px;text-align:center;font-size:.65rem;color:rgba(148,163,184,.4);letter-spacing:.02em;border-bottom:1px solid rgba(255,255,255,.04);">This site contains affiliate links for which we may be compensated.</div>
 <!-- Hamburger Menu Overlay -->
 <div class="hamburger-overlay" id="hamburger-overlay"></div>
-
 <!-- Main Menu -->
 <div class="hamburger-menu" id="hamburger-menu">
   <div class="hamburger-menu-item" id="pokemon-menu-item">
@@ -36,7 +33,6 @@
     <span>›</span>
   </div>
 </div>
-
 <!-- Pokemon Sets View -->
 <div class="pokemon-sets-view" id="pokemon-sets-view">
   <div class="pokemon-sets-header">
@@ -52,7 +48,6 @@
   </div>
   <div id="sets-grid-container"></div>
 </div>
-
 <!-- One Piece Sets View -->
 <div class="pokemon-sets-view" id="onepiece-sets-view">
   <div class="pokemon-sets-header">
@@ -65,7 +60,6 @@
   </div>
   <div id="sets-grid-container-op"></div>
 </div>
-
 <script>
 // Inject mobile scroll hint above section nav on mobile only
 (function() {
@@ -90,7 +84,6 @@
     setTimeout(injectHint, 100);
   }
 })();
-
 // Convert any blocking Google Fonts link to async (fixes LCP/FCP on existing pages)
 (function() {
   document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach(function(link) {
@@ -98,7 +91,6 @@
     link.onload = function() { this.media = 'all'; };
   });
 })();
-
 // Fix footer links — Twitter/X and .html extension legal links
 // Delayed to ensure footer is in DOM after nav.html is injected
 (function() {
@@ -112,7 +104,6 @@
         a.rel = 'noopener';
       }
     });
-
     // Fix .html extension legal links
     var linkMap = {
       '/privacy-policy.html': '/privacy-policy',
@@ -125,7 +116,6 @@
       if (linkMap[href]) a.href = linkMap[href];
     });
   }
-
   setTimeout(fixFooterLinks, 300);
 })();
 </script>
