@@ -43,7 +43,7 @@ const SET_SERIES       = (process.env.SET_SERIES || '').trim() || (SET_ID?.start
 const SERIES_SLUG_MAP = {
   'me01': 'mega-evolution', 'me02': 'mega-evolution',
   'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
-  'me03': 'mega-evolution', 'me04': 'mega-evolution',
+  'me03': 'mega-evolution', 'me04': 'mega-evolution', 'me05': 'mega-evolution',
 };
 // .trim() guards against GitHub Actions passing empty string instead of omitting the var
 const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
@@ -98,7 +98,7 @@ const GROUP_ID_MAP = {
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
   'me01': '24380', 'me02': '24448', 'me02.5': '24541', 'me03': '24587',
-  'me04': '24655',
+  'me04': '24655', 'me05': '0',
 };
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID && process.env.TCGP_GROUP_ID !== '0')
   ? process.env.TCGP_GROUP_ID
@@ -328,6 +328,7 @@ const SET_PRODUCTS = {
     { tcgpId: '624678', type: 'Booster Box Case',   filterKey: 'case',   badgeClass: 'badge-case',   name: 'Destined Rivals Booster Box Case (6 Boxes)',     q: 'Pokemon Destined Rivals Booster Box Case SV10', noAmazon: true },
     { tcgpId: '625677', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Destined Rivals Build & Battle Box',             q: 'Pokemon Destined Rivals Build Battle Box SV10' },
   ],
+  me05: [],
   me04: [
   { tcgpId: '684444', type: 'Booster Box',               filterKey: 'box',    badgeClass: 'badge-box',    name: 'Chaos Rising Booster Box (36 Packs)',                q: 'Pokemon Chaos Rising Booster Box ME4' },
   { tcgpId: '684450', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Elite Trainer Box',                     q: 'Pokemon Chaos Rising Elite Trainer Box ME4' },
@@ -454,6 +455,11 @@ const SEO_DATA = {
     metaTitle: 'Perfect Order Card List and Prices | TCG Watchtower',
     metaDesc: 'Full Perfect Order ME3 card list with live TCGplayer prices. Every card, Special Illustration Rare, Mega Ultra Rare, and booster box value updated daily.',
     intro: 'Perfect Order is the third main set in the Pokemon TCG Mega Evolution series, released in March 2026. The ME3 set contains 117 cards and is built around Mega Starmie ex, Mega Zygarde ex, and Mega Clefable ex as its headline Pokemon. The top chase cards include multiple Special Illustration Rares and a Mega Ultra Rare in Mega Zygarde ex at number 117, which sits at the apex of the pull sheet. Rosa\'s Encouragement has emerged as a standout Supporter card driving collector demand. This complete Perfect Order card list includes all ME3 cards with rarity labels, daily updated prices from TCGplayer, and rarity filters so you can quickly locate any card in the set whether you are tracking a recent pull or researching values before buying.',
+  },
+  'me05': {
+    metaTitle: 'Pitch Black Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Pitch Black ME5 card list with live prices. Mega Darkrai ex, Mega Zeraora ex, Special Illustration Rares, and booster box values updated daily.',
+    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 17, 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases on July 17, 2026.',
   },
   'me04': {
     metaTitle: 'Chaos Rising Card List and Prices | TCG Watchtower',
@@ -592,6 +598,7 @@ const ALL_KNOWN_SETS = [
   { slug: 'pokemon/sets/mega-evolution/ascended-heroes/cards', name: 'Ascended Heroes',  series: 'Mega Evolution',   short: 'ASC',  setId: 'me02pt5' },
   { slug: 'perfect-order-card-list',           name: 'Perfect Order (ME3)',             series: 'Mega Evolution',   short: 'ME3',  setId: 'me03'    },
   { slug: 'chaos-rising-card-list',            name: 'Chaos Rising (ME4)',              series: 'Mega Evolution',   short: 'ME4',  setId: 'me04'    },
+  { slug: 'pitch-black-card-list',              name: 'Pitch Black (ME5)',               series: 'Mega Evolution',   short: 'ME5',  setId: 'me05'    },
 ];
 
 const setsPath = 'sets.json';
