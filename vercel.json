@@ -441,6 +441,22 @@
       "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
     },
     {
+      "source": "/giveaway",
+      "destination": "/giveaway/index.html"
+    },
+    {
+      "source": "/giveaway/admin",
+      "destination": "/giveaway/admin.html"
+    },
+    {
+      "source": "/one-piece/sets/adventure-on-kamis-island/most-valuable",
+      "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
+    },
+    {
+      "source": "/one-piece/sets/:set/cards/:slug",
+      "destination": "/one-piece/sets/:set/cards/:slug.html"
+    },
+    {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
       "destination": "/chaos-rising-card-list.html"
     },
@@ -459,22 +475,6 @@
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
-      "source": "/giveaway",
-      "destination": "/giveaway/index.html"
-    },
-    {
-      "source": "/giveaway/admin",
-      "destination": "/giveaway/admin.html"
-    },
-    {
-      "source": "/one-piece/sets/adventure-on-kamis-island/most-valuable",
-      "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
-    },
-    {
-      "source": "/one-piece/sets/:set/cards/:slug",
-      "destination": "/one-piece/sets/:set/cards/:slug.html"
     }
   ],
   "redirects": [
