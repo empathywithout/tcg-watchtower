@@ -473,6 +473,22 @@
       "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "destination": "/pitch-black-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/sealed-product",
+      "destination": "/pitch-black-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
@@ -721,6 +737,11 @@
     {
       "source": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards",
       "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/pitch-black-card-list",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
       "permanent": true
     }
   ],
