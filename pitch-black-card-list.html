@@ -56,7 +56,7 @@
   "name": "Pitch Black Complete Guide",
   "description": "Complete guide to Pitch Black — full card list, chase cards, and where to buy sealed product.",
   "url": "https://tcgwatchtower.com/pokemon/sets/mega-evolution/pitch-black/cards",
-  "datePublished": "???",
+  "datePublished": "Jul 2026",
   "publisher": {
     "@type": "Organization",
     "name": "TCG Watchtower",
@@ -417,7 +417,7 @@ nav.container {
 .buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }
 .buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
 .buy-link {
-  padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;
+  padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;
   text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
 }
 .buy-amazon { background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.3); color:var(--accent-amber); }
@@ -1041,7 +1041,7 @@ footer {
             <div class="stat-label">Total Cards</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">???</div>
+            <div class="stat-value">Jul 2026</div>
             <div class="stat-label">Release Date</div>
           </div>
         </div>
@@ -1049,8 +1049,8 @@ footer {
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
           <img data-set="me05" data-id="118" alt="Card 1" width="245" height="337" fetchpriority="high">
-          <img data-set="me05" data-id="114" alt="Card 2" width="245" height="337" loading="lazy">
-          <img data-set="me05" data-id="115" alt="Card 3" width="245" height="337" loading="lazy">
+          <img data-set="me05" data-id="115" alt="Card 2" width="245" height="337" loading="lazy">
+          <img data-set="me05" data-id="114" alt="Card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -1392,6 +1392,7 @@ function renderChaseCardsHTML(grid) {
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
+          <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/118', 'pitch-black')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -1401,7 +1402,7 @@ function renderChaseCardsHTML(grid) {
 }
 
 /* ===== PRODUCTS ===== */
-const PRODUCT_META = {};
+const PRODUCT_META = {"692939":{"tcgpId":"692939","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Pitch Black Booster Box (36 Packs)","q":"Pokemon Pitch Black Booster Box ME5","image":"https://product-images.tcgplayer.com/fit-in/437x437/692939.jpg"},"692942":{"tcgpId":"692942","type":"Booster Bundle","filterKey":"bundle","badgeClass":"badge-bundle","name":"Pitch Black Booster Bundle","q":"Pokemon Pitch Black Booster Bundle ME5","image":"https://product-images.tcgplayer.com/fit-in/437x437/692942.jpg"},"692946":{"tcgpId":"692946","type":"Build & Battle Box","filterKey":"battle","badgeClass":"badge-battle","name":"Pitch Black Build & Battle Box","q":"Pokemon Pitch Black Build Battle Box ME5","image":"https://product-images.tcgplayer.com/fit-in/437x437/692946.jpg"},"692947":{"tcgpId":"692947","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Pitch Black Elite Trainer Box","q":"Pokemon Pitch Black Elite Trainer Box ME5","image":"https://product-images.tcgplayer.com/fit-in/437x437/692947.jpg"},"692949":{"tcgpId":"692949","type":"Elite Trainer Box","filterKey":"etb","badgeClass":"badge-etb","name":"Pitch Black Pokémon Center Elite Trainer Box","q":"Pokemon Pitch Black Pokemon Center Elite Trainer Box ME5","image":"https://product-images.tcgplayer.com/fit-in/437x437/692949.jpg"}};
 
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
@@ -1709,6 +1710,9 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
       <div class="modal-meta">#${localId} / Pitch Black</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
+        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
+          <span>🛒 Find on Amazon</span><span>→</span>
+        </a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
