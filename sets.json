@@ -184,7 +184,7 @@
     "name": "Heroines Edition",
     "series": "One Piece TCG",
     "short": "OP",
-    "setId": "heroines-edition",
+    "setId": "eb03",
     "phase": "en",
     "live": true
   },
@@ -193,7 +193,7 @@
     "name": "The Azure Seas Seven",
     "series": "One Piece TCG",
     "short": "OP",
-    "setId": "the-azure-seas-seven",
+    "setId": "op14",
     "phase": "en",
     "live": true
   },
@@ -202,7 +202,7 @@
     "name": "Kami's Island",
     "series": "One Piece TCG",
     "short": "OP",
-    "setId": "kamis-island",
+    "setId": "op15",
     "phase": "en",
     "live": true
   }
