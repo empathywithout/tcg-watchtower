@@ -178,5 +178,32 @@
     "setId": "me05",
     "phase": "jp",
     "live": true
+  },
+  {
+    "slug": "one-piece/sets/heroines-edition/cards",
+    "name": "Heroines Edition",
+    "series": "One Piece TCG",
+    "short": "OP",
+    "setId": "heroines-edition",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "one-piece/sets/the-azure-seas-seven/cards",
+    "name": "The Azure Seas Seven",
+    "series": "One Piece TCG",
+    "short": "OP",
+    "setId": "the-azure-seas-seven",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "one-piece/sets/kamis-island/cards",
+    "name": "Kami's Island",
+    "series": "One Piece TCG",
+    "short": "OP",
+    "setId": "kamis-island",
+    "phase": "en",
+    "live": true
   }
 ]
