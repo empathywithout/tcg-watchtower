@@ -355,7 +355,13 @@ const SET_PRODUCTS = {
     { tcgpId: '624678', type: 'Booster Box Case',   filterKey: 'case',   badgeClass: 'badge-case',   name: 'Destined Rivals Booster Box Case (6 Boxes)',     q: 'Pokemon Destined Rivals Booster Box Case SV10', noAmazon: true },
     { tcgpId: '625677', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Destined Rivals Build & Battle Box',             q: 'Pokemon Destined Rivals Build Battle Box SV10' },
   ],
-  me05: [],
+  me05: [
+    { tcgpId: '692939', type: 'Booster Box',        filterKey: 'box',    badgeClass: 'badge-box',    name: 'Pitch Black Booster Box (36 Packs)',                 q: 'Pokemon Pitch Black Booster Box ME5' },
+    { tcgpId: '692947', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Pitch Black Elite Trainer Box',                      q: 'Pokemon Pitch Black Elite Trainer Box ME5' },
+    { tcgpId: '692949', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Pitch Black Pokémon Center Elite Trainer Box',       q: 'Pokemon Pitch Black Pokemon Center Elite Trainer Box ME5' },
+    { tcgpId: '692942', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Pitch Black Booster Bundle',                         q: 'Pokemon Pitch Black Booster Bundle ME5' },
+    { tcgpId: '692946', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Pitch Black Build & Battle Box',                     q: 'Pokemon Pitch Black Build Battle Box ME5' },
+  ],
   me04: [
   { tcgpId: '684444', type: 'Booster Box',               filterKey: 'box',    badgeClass: 'badge-box',    name: 'Chaos Rising Booster Box (36 Packs)',                q: 'Pokemon Chaos Rising Booster Box ME4' },
   { tcgpId: '684450', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Elite Trainer Box',                     q: 'Pokemon Chaos Rising Elite Trainer Box ME4' },
