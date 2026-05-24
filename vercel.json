@@ -457,22 +457,6 @@
       "destination": "/one-piece/sets/:set/cards/:slug.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
-      "destination": "/chaos-rising-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product",
-      "destination": "/chaos-rising-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution/pitch-black/cards",
       "destination": "/pitch-black-card-list.html"
     },
@@ -487,6 +471,22 @@
     {
       "source": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards",
       "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product",
+      "destination": "/chaos-rising-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
