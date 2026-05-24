@@ -163,13 +163,12 @@
   },
   {
     "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
-    "name": "Chaos Rising",
+    "name": "Chaos Rising (ME4)",
     "series": "Mega Evolution",
     "short": "ME4",
     "setId": "me04",
     "phase": "en",
-    "live": true,
-    "releaseDate": "May 2026"
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/pitch-black/cards",
@@ -178,33 +177,6 @@
     "short": "ME5",
     "setId": "me05",
     "phase": "jp",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/heroines-edition/cards",
-    "name": "Heroines Edition (EB03)",
-    "series": "One Piece TCG",
-    "short": "EB03",
-    "setId": "eb03",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/the-azure-seas-seven/cards",
-    "name": "The Azure Sea's Seven (OP14)",
-    "series": "One Piece TCG",
-    "short": "OP14",
-    "setId": "op14",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/adventure-on-kamis-island/cards",
-    "name": "Adventure on Kami's Island (OP15)",
-    "series": "One Piece TCG",
-    "short": "OP15",
-    "setId": "op15",
-    "phase": "en",
     "live": true
   }
 ]
