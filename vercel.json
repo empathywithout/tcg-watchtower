@@ -744,6 +744,11 @@
       "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
       "permanent": true
     }
+    {
+      "source": "/one-piece/sets/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "permanent": true
+    }
   ],
   "headers": [
     {
