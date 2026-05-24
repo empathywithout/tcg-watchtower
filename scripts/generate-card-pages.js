@@ -141,21 +141,7 @@ function getRelated(card, allCards) {
   const candidates = allCards.filter((_, i) => i !== idx);
   return nearby.slice(0, 3).length >= 2 ? nearby.slice(0, 3) : candidates.slice(0, 3);
 }
-// ─── vercel.json helper ───────────────────────────────────────────────────────
-const vercelPath = path.join(ROOT, 'vercel.json');
-const CARD_WILDCARD = {
-  source: '/pokemon/sets/:series/:set/cards/:slug',
-  destination: '/pokemon/sets/:series/:set/cards/:slug.html',
-};
-function updateVercel(mutate) {
-  const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
-  vercel.rewrites = vercel.rewrites || [];
-  vercel.redirects = vercel.redirects || [];
-  vercel.rewrites = vercel.rewrites.filter(r => r.source !== CARD_WILDCARD.source);
-  mutate(vercel);
-  vercel.rewrites.push(CARD_WILDCARD);
-  fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
-}
+// vercel.json is managed manually — do not modify from this script
 // ─── Shared page fragments ────────────────────────────────────────────────────
 const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`;
 const seriesUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
@@ -423,22 +409,7 @@ for (const card of cards) {
 }
 console.log(`\n✅ Generated ${generated} card pages`);
 console.log(`📁 Output: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
-// ─── vercel.json ─────────────────────────────────────────────────────────────
-const individualCardPattern = new RegExp(
-  `^/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/[^/]+$`
-);
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    !individualCardPattern.test(r.source) &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards` &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`
-  );
-  vercel.rewrites.push(
-    { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`,          destination: `/${SET_SLUG_FULL}.html` },
-    { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`, destination: `/${SET_SLUG_FULL}.html` },
-  );
-});
-console.log(`✅ vercel.json updated`);
+
 // ─── sitemap.xml ─────────────────────────────────────────────────────────────
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
 const today = new Date().toISOString().split('T')[0];
@@ -629,15 +600,7 @@ fs.writeFileSync(path.join(setDir, 'most-valuable.html'), buildChasePage({
   schemaType: 'CollectionPage',
 }));
 console.log(`✅ Generated most-valuable page`);
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`
-  );
-  vercel.rewrites.push({
-    source:      `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`,
-    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable.html`,
-  });
-});
+
 let sitemap2 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap2 = sitemap2.replace('</urlset>', `  <url>\n    <loc>${mvpUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap2);
@@ -653,15 +616,7 @@ fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
   schemaType: 'CollectionPage',
 }));
 console.log(`✅ Generated top-chase-cards page`);
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`
-  );
-  vercel.rewrites.push({
-    source:      `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`,
-    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards.html`,
-  });
-});
+
 let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
