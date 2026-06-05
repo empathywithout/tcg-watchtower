@@ -85,6 +85,8 @@ const TCGP_SLUG_MAP = {
   'me03':    'me03-perfect-order',
   'me04':    'me04-chaos-rising',
   'me05':    'me05-pitch-black',
+  'zsv10pt5': 'sv-black-bolt',
+  'rsv10pt5': 'sv-white-flare',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
 if (!SET_ID || !SET_FULL_NAME || !SET_SLUG) {
