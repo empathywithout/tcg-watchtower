@@ -126,6 +126,24 @@
     "live": true
   },
   {
+    "slug": "pokemon/sets/scarlet-violet/black-bolt/cards",
+    "name": "Black Bolt",
+    "series": "Scarlet & Violet",
+    "short": "BBT",
+    "setId": "zsv10pt5",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "pokemon/sets/scarlet-violet/white-flare/cards",
+    "name": "White Flare",
+    "series": "Scarlet & Violet",
+    "short": "WHF",
+    "setId": "rsv10pt5",
+    "phase": "en",
+    "live": false
+  },
+  {
     "slug": "pokemon/sets/mega-evolution/base-set/cards",
     "name": "Mega Evolution (ME1)",
     "series": "Mega Evolution",
@@ -177,33 +195,6 @@
     "short": "ME5",
     "setId": "me05",
     "phase": "jp",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/heroines-edition/cards",
-    "name": "Heroines Edition",
-    "series": "One Piece TCG",
-    "short": "OP",
-    "setId": "eb03",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/the-azure-seas-seven/cards",
-    "name": "The Azure Seas Seven",
-    "series": "One Piece TCG",
-    "short": "OP",
-    "setId": "op14",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/kamis-island/cards",
-    "name": "Kami's Island",
-    "series": "One Piece TCG",
-    "short": "OP",
-    "setId": "op15",
-    "phase": "en",
     "live": true
   }
 ]

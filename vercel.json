@@ -493,6 +493,22 @@
       "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/cards",
+      "destination": "/black-bolt-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/sealed-product",
+      "destination": "/black-bolt-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
@@ -751,6 +767,11 @@
     {
       "source": "/pitch-black-card-list",
       "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/black-bolt-card-list",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/cards",
       "permanent": true
     }
   ],
