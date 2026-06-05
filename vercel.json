@@ -509,6 +509,22 @@
       "destination": "/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/scarlet-violet/white-flare/cards",
+      "destination": "/white-flare-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/white-flare/sealed-product",
+      "destination": "/white-flare-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/white-flare/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/white-flare/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/top-chase-cards.html"
+    },
+    {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
       "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
@@ -772,6 +788,11 @@
     {
       "source": "/black-bolt-card-list",
       "destination": "/pokemon/sets/scarlet-violet/black-bolt/cards",
+      "permanent": true
+    },
+    {
+      "source": "/white-flare-card-list",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/cards",
       "permanent": true
     }
   ],

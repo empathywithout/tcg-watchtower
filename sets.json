@@ -141,7 +141,7 @@
     "short": "WHF",
     "setId": "rsv10pt5",
     "phase": "en",
-    "live": false
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/base-set/cards",
