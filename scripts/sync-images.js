@@ -155,6 +155,8 @@ async function fetchEnNameMapFromTCGCSV(setId) {
     'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
     'sv09':'24073','sv10':'24269',
     'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655','me05':'0',
+    'zsv10pt5':'24325',   // Black Bolt
+    'rsv10pt5':'24326',   // White Flare
   };
   const groupId = GROUP_ID_MAP[setId];
   if (!groupId || groupId === '0') return {};
@@ -223,6 +225,8 @@ const SCRYDEX_EN_ID_MAP = {
   'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03',
   'me04':'me4',   // Chaos Rising — Scrydex uses me4 not me04
   'me05':'me5',   // Pitch Black — Scrydex uses me5 not me05
+  'zsv10pt5':'zsv10pt5',   // Black Bolt
+  'rsv10pt5':'rsv10pt5',   // White Flare
 };
 
 async function main() {
