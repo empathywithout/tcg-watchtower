@@ -374,14 +374,14 @@ const SET_PRODUCTS = {
     { tcgpId: '684454', type: 'Build & Battle Box',         filterKey: 'battle', badgeClass: 'badge-battle', name: 'Chaos Rising Build & Battle Box',                    q: 'Pokemon Chaos Rising Build Battle Box ME4' },
   ],
   zsv10pt5: [
-    { tcgpId: '700000', type: 'Booster Box',       filterKey: 'box',    badgeClass: 'badge-box',    name: 'Black Bolt Booster Box (36 Packs)',              q: 'Pokemon Black Bolt Booster Box' },
-    { tcgpId: '700001', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Black Bolt Elite Trainer Box',                   q: 'Pokemon Black Bolt Elite Trainer Box' },
-    { tcgpId: '700002', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Black Bolt Booster Bundle',                      q: 'Pokemon Black Bolt Booster Bundle' },
+    { tcgpId: '630686', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Black Bolt Elite Trainer Box',                            q: 'Pokemon Black Bolt Elite Trainer Box' },
+    { tcgpId: '630687', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Black Bolt Pokémon Center Elite Trainer Box',             q: 'Pokemon Black Bolt Pokemon Center Elite Trainer Box' },
+    { tcgpId: '630431', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Black Bolt Booster Bundle',                               q: 'Pokemon Black Bolt Booster Bundle' },
   ],
   rsv10pt5: [
-    { tcgpId: '700010', type: 'Booster Box',       filterKey: 'box',    badgeClass: 'badge-box',    name: 'White Flare Booster Box (36 Packs)',             q: 'Pokemon White Flare Booster Box' },
-    { tcgpId: '700011', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'White Flare Elite Trainer Box',                  q: 'Pokemon White Flare Elite Trainer Box' },
-    { tcgpId: '700012', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'White Flare Booster Bundle',                     q: 'Pokemon White Flare Booster Bundle' },
+    { tcgpId: '630689', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'White Flare Elite Trainer Box',                           q: 'Pokemon White Flare Elite Trainer Box' },
+    { tcgpId: '630688', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'White Flare Pokémon Center Elite Trainer Box',            q: 'Pokemon White Flare Pokemon Center Elite Trainer Box' },
+    { tcgpId: '630696', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'White Flare Booster Bundle',                              q: 'Pokemon White Flare Booster Bundle' },
   ],
 };
 
