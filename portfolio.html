@@ -144,6 +144,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
   .collection-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .form-row{grid-template-columns:1fr}
   .page-title{font-size:2.2rem}
+  .toolbar{margin-top:0 !important}
 }
 
 /* SET COMPLETION */
@@ -755,6 +756,22 @@ nav.container {
     <button class="btn btn-add" id="open-add-modal">+ Add Card</button>
   </div>
 
+  <!-- SECONDARY FILTERS -->
+  <div class="toolbar" style="margin-top:-12px">
+    <select class="toolbar-select" id="filter-game">
+      <option value="">All Games</option>
+      <option value="pokemon">Pokémon</option>
+      <option value="onepiece">One Piece</option>
+    </select>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:.82rem;color:var(--muted)">Price:</span>
+      <input class="toolbar-search" type="number" id="filter-price-min" placeholder="Min" min="0" step="0.01" style="width:90px;flex:none">
+      <span style="font-size:.82rem;color:var(--muted)">to</span>
+      <input class="toolbar-search" type="number" id="filter-price-max" placeholder="Max" min="0" step="0.01" style="width:90px;flex:none">
+    </div>
+    <button class="btn btn-export" id="clear-filters">Clear Filters</button>
+  </div>
+
   <!-- EXPORT BAR -->
   <div class="export-bar">
     <button class="btn btn-export" id="export-csv">Export CSV</button>
@@ -779,15 +796,15 @@ nav.container {
     <div class="modal-title">Add Card to <span class="gradient-text">Collection</span></div>
 
     <div class="form-group">
-      <label class="form-label">Search Card</label>
-      <input class="form-input" type="text" id="card-search" placeholder="Type card name…" autocomplete="off">
+      <label class="form-label">Search Card by Name</label>
+      <input class="form-input" type="text" id="card-search" placeholder="Type a card name (searches all sets)…" autocomplete="off">
       <div class="search-results" id="search-results"></div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Set</label>
+      <label class="form-label">Filter by Set (optional)</label>
       <select class="form-select" id="add-set">
-        <option value="">Select a set…</option>
+        <option value="">All Sets</option>
       </select>
     </div>
 
@@ -1035,10 +1052,25 @@ function getFiltered() {
   const search = document.getElementById('search-input').value.toLowerCase();
   const setFilter = document.getElementById('filter-set').value;
   const sort   = document.getElementById('sort-select').value;
+  const gameFilter = document.getElementById('filter-game')?.value || '';
+  const priceMin = parseFloat(document.getElementById('filter-price-min')?.value);
+  const priceMax = parseFloat(document.getElementById('filter-price-max')?.value);
 
   let cards = [...portfolio];
   if (search)    cards = cards.filter(c => c.name.toLowerCase().includes(search) || c.setId.toLowerCase().includes(search));
   if (setFilter) cards = cards.filter(c => c.setId === setFilter);
+  if (gameFilter === 'pokemon')  cards = cards.filter(c => !isOnePiece(c.setId));
+  if (gameFilter === 'onepiece') cards = cards.filter(c => isOnePiece(c.setId));
+
+  if (!isNaN(priceMin) || !isNaN(priceMax)) {
+    cards = cards.filter(c => {
+      const p = priceCache[`${c.setId}:${c.localId}`];
+      if (p == null) return false;
+      if (!isNaN(priceMin) && p < priceMin) return false;
+      if (!isNaN(priceMax) && p > priceMax) return false;
+      return true;
+    });
+  }
 
   if (sort === 'name')   cards.sort((a,b) => a.name.localeCompare(b.name));
   if (sort === 'value')  cards.sort((a,b) => (priceCache[`${b.setId}:${b.localId}`] ?? 0) - (priceCache[`${a.setId}:${a.localId}`] ?? 0));
@@ -1416,6 +1448,22 @@ function cycleCondition(idx) {
 /* ===== ADD CARD MODAL ===== */
 let searchTimeout = null;
 
+// Cache of full card lists per set, fetched on demand for global search
+let allSetsCardCache = {};
+
+async function fetchSetCardsForSearch(setId) {
+  if (allSetsCardCache[setId]) return allSetsCardCache[setId];
+  try {
+    const gameParam = isOnePiece(setId) ? '&game=onepiece' : '';
+    const res  = await fetch(`/api/cards?set=${setId}${gameParam}`);
+    const data = await res.json();
+    allSetsCardCache[setId] = data.cards || [];
+  } catch {
+    allSetsCardCache[setId] = [];
+  }
+  return allSetsCardCache[setId];
+}
+
 document.getElementById('card-search').addEventListener('input', async (e) => {
   clearTimeout(searchTimeout);
   const q = e.target.value.trim();
@@ -1423,27 +1471,43 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
   if (q.length < 2) { results.classList.remove('open'); return; }
 
   searchTimeout = setTimeout(async () => {
-    const setId = document.getElementById('add-set').value;
-    if (!setId) { showToast('Please select a set first', 'error'); return; }
+    const setFilter = document.getElementById('add-set').value;
+    const qLower = q.toLowerCase();
+
+    // Determine which sets to search: the filtered one, or all live sets
+    const setIds = setFilter ? [setFilter] : sets.map(s => s.setId);
+
+    results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Searching…</div>';
+    results.classList.add('open');
 
     try {
-      const gameParam = isOnePiece(setId) ? '&game=onepiece' : '';
-      const res  = await fetch(`/api/cards?set=${setId}${gameParam}`);
-      const data = await res.json();
-      const cards = (data.cards || []).filter(c =>
-        c.name.toLowerCase().includes(q.toLowerCase())
-      ).slice(0, 8);
+      // Fetch all needed sets in parallel (cached after first fetch)
+      const lists = await Promise.all(setIds.map(id => fetchSetCardsForSearch(id)));
+
+      // Combine matches with their setId, cap total results
+      const matches = [];
+      setIds.forEach((setId, i) => {
+        for (const c of lists[i]) {
+          if (c.name.toLowerCase().includes(qLower)) {
+            matches.push({ ...c, _setId: setId });
+            if (matches.length >= 30) break;
+          }
+        }
+      });
+      const cards = matches.slice(0, 12);
 
       if (!cards.length) { results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">No cards found</div>'; results.classList.add('open'); return; }
 
       window._searchResultsCache = cards;
       results.innerHTML = cards.map((c, i) => {
-        const img = cardImgPath(setId, c.localId);
-        return `<div class="search-result-item" onclick="selectCardFromCache(${i}, '${setId}')">
+        const img = cardImgPath(c._setId, c.localId);
+        const setMeta = sets.find(s => s.setId === c._setId);
+        const setLabel = setMeta ? setMeta.short : c._setId.toUpperCase();
+        return `<div class="search-result-item" onclick="selectCardFromCache(${i}, '${c._setId}')">
           <img class="search-result-img" src="${img}" alt="${c.name.replace(/"/g, '&quot;')}" onerror="this.style.background='#1e293b'">
           <div class="search-result-info">
             <div class="search-result-name">${c.name}</div>
-            <div class="search-result-meta">#${c.localId} · ${c.rarity || '—'}</div>
+            <div class="search-result-meta">${setLabel} #${c.localId} · ${c.rarity || '—'}</div>
           </div>
         </div>`;
       }).join('');
@@ -1534,6 +1598,18 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 document.getElementById('search-input').addEventListener('input', renderCollection);
 document.getElementById('filter-set').addEventListener('change', renderCollection);
 document.getElementById('sort-select').addEventListener('change', renderCollection);
+document.getElementById('filter-game').addEventListener('change', renderCollection);
+document.getElementById('filter-price-min').addEventListener('input', renderCollection);
+document.getElementById('filter-price-max').addEventListener('input', renderCollection);
+document.getElementById('clear-filters').addEventListener('click', () => {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-set').value = '';
+  document.getElementById('sort-select').value = 'recent';
+  document.getElementById('filter-game').value = '';
+  document.getElementById('filter-price-min').value = '';
+  document.getElementById('filter-price-max').value = '';
+  renderCollection();
+});
 
 /* ===== EXPORT ===== */
 document.getElementById('export-csv').addEventListener('click', () => {
