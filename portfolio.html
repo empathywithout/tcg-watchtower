@@ -167,6 +167,505 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .missing-buy-links{display:flex;gap:6px;flex-shrink:0}
 .missing-buy{padding:5px 10px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;white-space:nowrap}
 .missing-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+
+/* ===== SITE NAV (matches set pages) ===== */
+nav.container {
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+.logo { 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  text-decoration:none; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+}
+.logo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+}
+.logo-icon {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.05);
+}
+@media (max-width: 768px) {
+  .logo {
+    padding: 6px 10px;
+  }
+  .logo-icon img {
+    height: 45px;
+  }
+}
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem; font-weight: bold;
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd, #fda4af);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { width:32px; height:32px; border-radius:8px; object-fit:cover; }
+.nav-logo span { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#f1f5f9; letter-spacing:0.05em; }
+.nav-links { display:flex; gap:32px; align-items:center; }
+.nav-links a { color:var(--text); text-decoration:none; font-weight:500; transition:color 0.3s; }
+.nav-links a:hover { color:white; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color:white; padding:12px 24px; border-radius:8px; text-decoration:none;
+  font-weight:bold; display:inline-flex; align-items:center; gap:8px;
+  transition:transform 0.3s,box-shadow 0.3s; border:none; cursor:pointer;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(168,85,247,0.5); }
+.btn-secondary {
+  background: rgba(255,255,255,0.1); backdrop-filter:blur(10px);
+  border: 2px solid rgba(255,255,255,0.2); color:white;
+  padding:12px 24px; border-radius:8px; text-decoration:none;
+  font-weight:bold; display:inline-flex; align-items:center; gap:8px;
+  transition:all 0.3s; cursor:pointer;
+}
+.btn-secondary:hover { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.4); transform:translateY(-2px); }
+
+/* ===== HERO ===== */
+.set-hero {
+  padding: 60px 0 80px;
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.hamburger:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.hamburger-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2147483646;
+  animation: fadeIn 0.2s;
+}
+.hamburger-overlay.open { display: block; }
+
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  background: #1a1040;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 8px;
+  position: fixed;
+  top: 80px;
+  left: auto;
+  right: 24px;
+  width: 200px;
+  max-width: 400px;
+  z-index: 2147483647;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.9);
+  animation: slideDown 0.3s ease-out;
+}
+.hamburger-menu.open { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hamburger-menu-item {
+  padding: 14px 16px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.15s;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hamburger-menu-item:hover { 
+  background: rgba(59,130,246,0.15); 
+  color: white;
+}
+.hamburger-menu-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 8px 0;
+}
+
+/* Pokemon Sets Grid View */
+.pokemon-sets-view {
+  display: none;
+  flex-direction: column;
+  background: #1a1040;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 20px;
+  position: fixed;
+  top: 80px;
+  left: 16px;
+  right: 16px;
+  bottom: 80px;
+  z-index: 2147483647;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.9);
+  animation: slideDown 0.3s ease-out;
+  overflow-y: auto;
+}
+.pokemon-sets-view.open { display: flex; }
+
+.pokemon-sets-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.back-button {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.back-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.pokemon-sets-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sets-filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-tab:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.filter-tab.active {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-color: transparent;
+  color: white;
+}
+
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.set-card {
+  background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.8));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+.set-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+.set-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.set-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.set-card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.set-card-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+}
+
+.set-card-content {
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.set-card-name {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.set-card-info {
+  color: var(--muted);
+  font-size: 0.7rem;
+  margin-top: auto;
+}
+
+.set-card-soon {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: rgba(255,255,255,0.08);
+  padding: 3px 8px;
+  border-radius: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.series-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 16px 0 8px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.series-label:first-child {
+  margin-top: 0;
+  border-top: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-visual { display:none; }
+  .set-title { font-size:2.5rem; }
+  .section-title { font-size:2rem; }
+  .set-stats { grid-template-columns:repeat(2,1fr); }
+  .modal-inner { grid-template-columns:1fr; }
+  .modal-img { max-width:380px; margin:0 auto; display:block; aspect-ratio:2.5/3.5; object-fit:contain; }
+  .card-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
+  .sets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  .nav-links a:not(.btn-primary) {
+    display: none;
+  }
+  .hamburger-menu {
+    right: 16px;
+  }
+}
+
+@media (min-width: 769px) {
+  .sets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  
+  .pokemon-sets-view {
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 800px;
+    right: auto;
+  }
+}
+
+/* ===== SECTION NAV BAR ===== */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0;
+}
+.section-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  justify-content: center;
+}
+.section-nav-inner::-webkit-scrollbar { display: none; }
+.nav-short { display: none; }
+@media (max-width: 640px) {
+  .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
+  .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
+  .nav-full { display: none; }
+  .nav-short { display: inline; }
+  .nav-home-btn { display: none; }
+}
+.section-nav-btn {
+  flex-shrink: 0;
+  padding: 14px 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.section-nav-btn:hover { color: var(--text); }
+.section-nav-btn.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+
+/* ===== CHASE SLIDER ARROWS ===== */
+.chase-slider-wrap { position:relative; }
+.chase-arrow {
+  position:absolute; top:50%; transform:translateY(-60%);
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(15,23,42,0.85); backdrop-filter:blur(8px);
+  border:1px solid rgba(168,85,247,0.5);
+  color:#c084fc; font-size:1.2rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:10;
+  transition:background 0.2s, border-color 0.2s, opacity 0.2s;
+  opacity:0.85;
+}
+.chase-arrow:hover { background:rgba(168,85,247,0.2); border-color:rgba(168,85,247,0.9); opacity:1; }
+.chase-arrow.hidden { opacity:0; pointer-events:none; }
+.chase-arrow-left  { left:-22px; }
+.chase-arrow-right { right:-22px; }
+
+/* ===== SETS DROPDOWN IN SECTION NAV ===== */
+.section-nav-sets { position: relative; flex-shrink: 0; }
+.section-nav-sets-btn {
+  padding: 14px 20px; font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; transition: color 0.2s; white-space: nowrap; font-family: inherit;
+  display: flex; align-items: center; gap: 6px;
+}
+.section-nav-sets-btn:hover { color: var(--text); }
+.section-nav-sets-btn.open { color: var(--blue); border-bottom-color: var(--blue); }
+.section-nav-dropdown {
+  display: none; position: absolute; right: 0; top: 100%;
+  width: 260px; background: rgba(10,15,30,0.98); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px;
+  z-index: 500; max-height: 400px; overflow-y: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  margin-top: 4px;
+}
+.section-nav-dropdown.open { display: block; }
+.nav-dropdown-set {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 8px; text-decoration: none; color: var(--text);
+  font-size: 0.85rem; transition: background 0.15s;
+}
+.nav-dropdown-set:hover { background: rgba(255,255,255,0.06); }
+.nav-dropdown-set.current { background: rgba(59,130,246,0.15); color: var(--blue); }
+.nav-dropdown-set.disabled { color: var(--muted); pointer-events: none; }
+.nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
+.nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 8px 12px 4px; }
+
 </style>
 </head>
 <body>
@@ -903,13 +1402,217 @@ function showToast(msg, type = '') {
   toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-/* ===== NAV ===== */
+/* ===== HAMBURGER MENU ===== */
+function initNav() {
+(async function() {
+  const hamburger = document.getElementById('hamburger');
+  const hamburgerOverlay = document.getElementById('hamburger-overlay');
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const pokemonMenuItem = document.getElementById('pokemon-menu-item');
+  const onepieceMenuItem = document.getElementById('onepiece-menu-item');
+  const pokemonSetsView = document.getElementById('pokemon-sets-view');
+  const onepieceSetsView = document.getElementById('onepiece-sets-view');
+  const backToMenu = document.getElementById('back-to-menu');
+  const backToMenuOp = document.getElementById('back-to-menu-op');
+  const setsGridContainer = document.getElementById('sets-grid-container');
+  const setsGridContainerOp = document.getElementById('sets-grid-container-op');
+  const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
+  const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+
+  let allSets = [];
+  let currentFilter = 'all';
+  let currentFilterOp = 'all';
+
+  function toggleHamburgerMenu() {
+    const isOpen = hamburgerMenu.classList.contains('open');
+    if (isOpen) { closeAllMenus(); }
+    else {
+      hamburgerMenu.classList.add('open');
+      hamburgerOverlay.classList.add('open');
+      hamburger.classList.add('open');
+    }
+  }
+
+  function closeAllMenus() {
+    hamburgerMenu.classList.remove('open');
+    pokemonSetsView.classList.remove('open');
+    if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+    hamburgerOverlay.classList.remove('open');
+    hamburger.classList.remove('open');
+  }
+
+  function showPokemonSets() {
+    hamburgerMenu.classList.remove('open');
+    pokemonSetsView.classList.add('open');
+  }
+
+  function showOnePieceSets() {
+    hamburgerMenu.classList.remove('open');
+    if (onepieceSetsView) {
+      onepieceSetsView.classList.add('open');
+      renderOnePieceSets();
+    }
+  }
+
+  function backToMainMenu() {
+    pokemonSetsView.classList.remove('open');
+    if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+    hamburgerMenu.classList.add('open');
+  }
+
+  hamburger.addEventListener('click', toggleHamburgerMenu);
+  hamburgerOverlay.addEventListener('click', closeAllMenus);
+  pokemonMenuItem.addEventListener('click', showPokemonSets);
+  if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
+  backToMenu.addEventListener('click', backToMainMenu);
+  if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
+
+  hamburgerMenu.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(link => {
+    link.addEventListener('click', closeAllMenus);
+  });
+
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      renderSets();
+    });
+  });
+
+  filterTabsOp.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabsOp.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilterOp = tab.dataset.filter;
+      renderOnePieceSets();
+    });
+  });
+  
+  async function fetchSets() {
+    try {
+      const res = await fetch('/sets.json');
+      if (!res.ok) {
+        console.error('Failed to fetch sets');
+        return;
+      }
+      allSets = await res.json();
+      renderSets();
+    } catch(e) {
+      console.error('Error fetching sets:', e);
+    }
+  }
+  
+  function renderSets() {
+    if (!allSets || allSets.length === 0) {
+      setsGridContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Loading sets...</div>';
+      return;
+    }
+    
+    let filteredSets = allSets;
+    if (currentFilter === 'live') {
+      filteredSets = allSets.filter(set => set.live);
+    } else if (currentFilter !== 'all') {
+      const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
+      filteredSets = allSets.filter(set => {
+        const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return normalizedSeries === normalizedFilter;
+      });
+    }
+    
+    const groupedSets = {};
+    filteredSets.forEach(set => {
+      if (!groupedSets[set.series]) {
+        groupedSets[set.series] = [];
+      }
+      groupedSets[set.series].push(set);
+    });
+    
+    let html = '';
+    Object.keys(groupedSets).forEach(series => {
+      html += `<div class="series-label">${series}</div>`;
+      html += '<div class="sets-grid">';
+      groupedSets[series].forEach(set => {
+        const isDisabled = !set.live;
+        const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
+        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+        const logoUrl = set.setId ? setLogoPath(set.setId) : null;
+        
+        html += `
+          <a href="${link}" class="${cardClass}">
+            <div class="set-card-image">
+              ${logoUrl ? `
+                <img src="${logoUrl}" 
+                     alt="${set.name}" 
+                     style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="font-size: 3rem; display: none;">🎴</div>
+              ` : `
+                <div style="font-size: 3rem;">🎴</div>
+              `}
+            </div>
+            <div class="set-card-content">
+              <div class="set-card-name">${set.name}</div>
+              <div class="set-card-info">${set.short} • ${set.series}</div>
+              ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+            </div>
+          </a>
+        `;
+      });
+      html += '</div>';
+    });
+    
+    setsGridContainer.innerHTML = html;
+  }
+
+  function renderOnePieceSets() {
+    if (!setsGridContainerOp) return;
+    const opSets = allSets.filter(s => {
+      const id = (s.setId || s.slug || '').toLowerCase();
+      return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
+    });
+    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    if (!filtered.length) {
+      setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
+      return;
+    }
+    let html = '<div class="sets-grid">';
+    filtered.forEach(set => {
+      const isDisabled = !set.live;
+      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+      const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+      const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
+      html += `
+        <a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
+          <div class="set-card-image">
+            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🃏</div>`}
+          </div>
+          <div class="set-card-content">
+            <div class="set-card-name">${set.name}</div>
+            <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+            ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div>
+        </a>`;
+    });
+    html += '</div>';
+    setsGridContainerOp.innerHTML = html;
+  }
+
+  await fetchSets();
+})();
+} // end initNav
+
+
+/* ===== NAV LOADER ===== */
 fetch('/nav.html').then(r => r.text()).then(html => {
   const ph   = document.getElementById('site-nav');
   const temp = document.createElement('div');
   temp.innerHTML = html;
   while (temp.firstChild) ph.parentNode.insertBefore(temp.firstChild, ph);
   ph.remove();
+  requestAnimationFrame(() => {
+    if (typeof initNav === 'function') initNav();
+  });
 });
 
 /* ===== BOOT ===== */
