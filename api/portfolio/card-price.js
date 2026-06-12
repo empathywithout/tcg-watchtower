@@ -23,12 +23,14 @@ const REDIS_TTL_SECONDS = 6 * 60 * 60; // 6 hours — shared across all users
 
 // Our internal setId -> Scrydex EN expansion ID
 // Mirrors SCRYDEX_EN_ID_MAP in api/cards.js and scripts/sync-images.js
+// Per project learnings: ME-series Scrydex IDs drop the leading zero
+// (me04 -> me4, me05 -> me5). Applying the same pattern to me02/me03.
 const SCRYDEX_EN_ID_MAP = {
   'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
   'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
   'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
   'sv09':'sv09','sv10':'sv10',
-  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03',
+  'me01':'me1','me02':'me2','me02pt5':'me2.5','me03':'me3',
   'me04':'me4','me05':'me5',
   'zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
 };
