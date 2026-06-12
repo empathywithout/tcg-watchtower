@@ -3,6 +3,7 @@ import { verifySession } from '../auth/_verify.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const user = await verifySession(req);
@@ -32,6 +33,7 @@ export default async function handler(req, res) {
 async function redisGet(key) {
   const res = await fetch(`${process.env.KV_REST_API_URL}/get/${encodeURIComponent(key)}`, {
     headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}` },
+    cache: 'no-store',
   });
   if (!res.ok) throw new Error(`Redis GET failed: ${res.status}`);
   const { result } = await res.json();

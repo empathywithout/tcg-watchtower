@@ -967,7 +967,7 @@ function showLoggedIn() {
 async function loadCloudPortfolio() {
   try {
     const local = lsLoad();
-    const res   = await fetch('/api/portfolio/get');
+    const res   = await fetch('/api/portfolio/get', { cache: 'no-store' });
     if (!res.ok) throw new Error('cloud fetch failed');
     const cloud = await res.json();
     portfolio   = cloud.cards || [];
