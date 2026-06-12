@@ -9,8 +9,23 @@ export default async function handler(req, res) {
   if (!user) return res.status(401).json({ error: 'Not authenticated' });
 
   try {
-    const data = await redisGet(`portfolio:${user.id}`);
-    res.status(200).json(data ? JSON.parse(data) : { cards: [] });
+    const raw = await redisGet(`portfolio:${user.id}`);
+    if (!raw) return res.status(200).json({ cards: [] });
+
+    // Upstash REST returns { result: "<stringified value>" } — parse twice if needed
+    let parsed = raw;
+    if (typeof parsed === 'string') {
+      try { parsed = JSON.parse(parsed); } catch { /* not JSON, leave as-is */ }
+    }
+    // If parsed is still a string (double-encoded), parse again
+    if (typeof parsed === 'string') {
+      try { parsed = JSON.parse(parsed); } catch { /* give up */ }
+    }
+
+    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.cards)) {
+      return res.status(200).json(parsed);
+    }
+    return res.status(200).json({ cards: [] });
   } catch (e) {
     console.error('Portfolio get error:', e);
     res.status(500).json({ error: 'Failed to load portfolio' });
