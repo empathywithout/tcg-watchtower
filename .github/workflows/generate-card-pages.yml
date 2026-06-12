@@ -33,7 +33,6 @@ on:
       tcgp_group_id:
         description: 'TCGplayer group ID for prices'
         required: false
-
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -42,21 +41,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install dependencies
         run: npm install
-
-      - name: Clean old generated pages
-        env:
-          SET_SLUG: ${{ github.event.inputs.set_slug }}
-          SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug || 'scarlet-violet' }}
-        run: |
-          DIR="pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}"
-          echo "Cleaning $DIR"
-          rm -rf "$DIR"
-          git rm -r --cached --ignore-unmatch "$DIR"
-          echo "Done cleaning"
-
       - name: Generate card pages
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
@@ -68,18 +54,6 @@ jobs:
           TCGP_GROUP_ID: ${{ github.event.inputs.tcgp_group_id }}
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
         run: node scripts/generate-card-pages.js
-
-      - name: Update sets.json
-        env:
-          SET_ID: ${{ github.event.inputs.set_id }}
-          SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
-          SET_SLUG: ${{ github.event.inputs.set_slug }}
-          SET_SERIES_SLUG: ${{ github.event.inputs.set_series_slug || 'scarlet-violet' }}
-          SET_SERIES: ${{ github.event.inputs.set_series || 'Scarlet & Violet' }}
-          SET_SHORT: ${{ github.event.inputs.set_short }}
-          SET_RELEASE_DATE: ${{ github.event.inputs.set_release_date }}
-        run: node scripts/update-sets-json.js
-
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"

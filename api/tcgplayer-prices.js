@@ -2,17 +2,25 @@
 // Fetches accurate TCGplayer market prices via TCGCSV (free, no auth, daily updated)
 // TCGCSV mirrors TCGplayer's API: https://tcgcsv.com/docs
 //
+// Uses undici fetch to ensure User-Agent header is not overridden by Vercel's runtime
+//
 // URL: GET /api/tcgplayer-prices?groupId=22873
 // Debug: GET /api/tcgplayer-prices?groupId=22873&debug=1&card=234
 // Returns: { prices: { "001": 0.50, "199": 59.99, ... }, tcgpUrls: {...} }
+
+import { fetch as undiciFetch } from 'undici';
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
 const ONE_PIECE_CATEGORY  = 68;
 
+const TCGCSV_HEADERS = {
+  'User-Agent': 'TCGWatchtower/1.0',
+};
+
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v2'; // bump to bust in-memory cache
+const CACHE_VERSION = 'v4'; // bumped — full cross-set card number keys
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,16 +51,24 @@ export default async function handler(req, res) {
 
   try {
     const [productsRes, pricesRes] = await Promise.all([
-      fetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
-        signal: AbortSignal.timeout(10000)
+      undiciFetch(`${TCGCSV_BASE}/${category}/${groupId}/products`, {
+        signal: AbortSignal.timeout(10000),
+        headers: TCGCSV_HEADERS,
       }),
-      fetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
-        signal: AbortSignal.timeout(10000)
+      undiciFetch(`${TCGCSV_BASE}/${category}/${groupId}/prices`, {
+        signal: AbortSignal.timeout(10000),
+        headers: TCGCSV_HEADERS,
       })
     ]);
 
-    if (!productsRes.ok) return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}` });
-    if (!pricesRes.ok)   return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}` });
+    if (!productsRes.ok) {
+      const body = await productsRes.text();
+      return res.status(502).json({ error: `TCGCSV products fetch failed: ${productsRes.status}`, body });
+    }
+    if (!pricesRes.ok) {
+      const body = await pricesRes.text();
+      return res.status(502).json({ error: `TCGCSV prices fetch failed: ${pricesRes.status}`, body });
+    }
 
     const [productsData, pricesData] = await Promise.all([
       productsRes.json(),
@@ -101,6 +117,23 @@ export default async function handler(req, res) {
     const tcgpUrls = {};
     const bestProductId = {};
 
+    // Primary set prefix for this group — detect from products
+    // Cards whose rawNumber prefix differs from primary are cross-set cards
+    // and should be keyed by full number (e.g. "OP11-106") not short number ("106")
+    const primaryPrefixCounts = {};
+    for (const product of products) {
+      const extData  = product.extendedData || [];
+      const numEntry = extData.find(e => e.name === 'Number');
+      if (!numEntry) continue;
+      const rawNumber = numEntry.value.split('/')[0].trim();
+      const match = rawNumber.match(/^([A-Z]+\d+)-/);
+      if (match) {
+        primaryPrefixCounts[match[1]] = (primaryPrefixCounts[match[1]] || 0) + 1;
+      }
+    }
+    // The primary prefix is the one with the most cards
+    const primaryPrefix = Object.entries(primaryPrefixCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '';
+
     for (const product of products) {
       const extData  = product.extendedData || [];
       const numEntry = extData.find(e => e.name === 'Number');
@@ -108,8 +141,17 @@ export default async function handler(req, res) {
 
       const rawNumber = numEntry.value.split('/')[0].trim();
       const cardNumber = rawNumber;
-      // Extract numeric suffix and pad: "OP14-120" -> "120", "OP09-051" -> "051", "EB03-061" -> "061"
-      const opLocalId = category === 68 ? rawNumber.split('-').pop().padStart(3, '0') : null;
+
+      // Detect if this is a cross-set card (different prefix from primary)
+      const prefixMatch = rawNumber.match(/^([A-Z]+\d+)-/);
+      const cardPrefix = prefixMatch ? prefixMatch[1] : '';
+      const isCrossSet = cardPrefix && primaryPrefix && cardPrefix !== primaryPrefix;
+
+      // For primary cards: use short padded number e.g. "106"
+      // For cross-set cards: use full number e.g. "OP11-106"
+      const opLocalId = category === 68
+        ? (isCrossSet ? rawNumber : rawNumber.split('-').pop().padStart(3, '0'))
+        : null;
 
       const priceObj = priceByProductId[product.productId];
       if (!priceObj || priceObj.marketPrice == null) continue;
@@ -146,26 +188,20 @@ export default async function handler(req, res) {
         const nameKey = baseName + suffix;
         const numKey  = opLocalId + suffix;
 
-        // FIX: dedup by numKey (card number + variant), not nameKey.
-        // nameKey caused collision: e.g. Uta (003) and Uta Manga Art (061) both
-        // normalized to "uta_mangaaltart", so the lower productId (wrong card) always won.
+        // Dedup by numKey (card number + variant)
         if (bestProductId[numKey] !== undefined) continue;
         bestProductId[numKey] = product.productId;
 
         const productUrl = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
 
-        // Store under numKey as the authoritative entry
-        prices[numKey]  = priceObj.marketPrice;
+        prices[numKey]   = priceObj.marketPrice;
         tcgpUrls[numKey] = productUrl;
 
-        // Also store under nameKey for name-based lookups (may be overwritten by later
-        // products with the same name — numKey is the source of truth for URLs)
         if (!prices[nameKey]) {
           prices[nameKey]   = priceObj.marketPrice;
           tcgpUrls[nameKey] = productUrl;
         }
 
-        // Store base number key (no suffix) for simple lookups, don't overwrite
         if (!prices[opLocalId]) {
           prices[opLocalId]   = priceObj.marketPrice;
           tcgpUrls[opLocalId] = productUrl;

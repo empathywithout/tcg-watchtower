@@ -28,26 +28,27 @@
  *   SET_SLUG_FULL="ascended-heroes-card-list" TCGP_GROUP_ID=24541 \
  *   node scripts/generate-card-pages.js
  *
+ *   SET_ID=me04 SET_FULL_NAME="Chaos Rising" SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" SET_SLUG="chaos-rising" \
+ *   SET_SLUG_FULL="chaos-rising-card-list" TCGP_GROUP_ID=24655 \
+ *   node scripts/generate-card-pages.js
+ *
  * NOTE: SET_SLUG is the URL path segment (e.g. "base-set", "stellar-crown").
  *       SET_SLUG_FULL is the HTML filename without .html (e.g. "mega-evolution-base-set-card-list").
  *       These can differ for sets like me01 where the URL slug is shorter than the filename.
  */
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-
 const SET_ID          = (process.env.SET_ID || '').trim();
 const SET_FULL_NAME   = (process.env.SET_FULL_NAME || '').trim();
-
 // SERIES_SLUG_MAP: guards against GitHub Actions passing empty string for ME sets
 const SERIES_SLUG_MAP_CP = {
   'me01': 'mega-evolution', 'me02': 'mega-evolution',
   'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
-  'me03': 'mega-evolution',
+  'me03': 'mega-evolution', 'me04': 'mega-evolution', 'me05': 'mega-evolution',
 };
 // .trim() guards against GitHub Actions passing empty string instead of omitting the var
 const SET_SERIES      = (process.env.SET_SERIES || '').trim()
@@ -62,7 +63,6 @@ const SET_SLUG_FULL   = (process.env.SET_SLUG_FULL || '').trim() || `${SET_SLUG}
 const TCGP_GROUP_ID   = (process.env.TCGP_GROUP_ID || '').trim();
 const R2_PUBLIC_URL   = (process.env.CF_R2_PUBLIC_URL || '').trim();
 const SITE_URL        = 'https://tcgwatchtower.com';
-
 const TCGP_SLUG_MAP = {
   'sv01':    'sv01-scarlet-and-violet-base-set',
   'sv02':    'sv02-paldea-evolved',
@@ -83,16 +83,17 @@ const TCGP_SLUG_MAP = {
   'me02.5':  'me-ascended-heroes',
   'me02pt5': 'me-ascended-heroes',
   'me03':    'me03-perfect-order',
+  'me04':    'me04-chaos-rising',
+  'me05':    'me05-pitch-black',
+  'zsv10pt5': 'sv-black-bolt',
+  'rsv10pt5': 'sv-white-flare',
 };
 const TCGP_SET_SLUG = TCGP_SLUG_MAP[SET_ID] || SET_SLUG;
-
 if (!SET_ID || !SET_FULL_NAME || !SET_SLUG) {
   console.error('Missing required: SET_ID, SET_FULL_NAME, SET_SLUG');
   process.exit(1);
 }
-
 // ─── Fetch card metadata from R2 ────────────────────────────────────────────
-
 const metaUrl = `${R2_PUBLIC_URL}/data/${SET_ID}.json`;
 console.log(`📋 Fetching card metadata from ${metaUrl}...`);
 const res = await fetch(metaUrl);
@@ -103,33 +104,25 @@ console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 console.log(`🔗 TCGplayer slug: ${TCGP_SET_SLUG} (SET_ID=${SET_ID})`);
 console.log(`📁 URL path: /pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
 console.log(`📄 File slug: ${SET_SLUG_FULL}.html`);
-
 // ─── Output directory ────────────────────────────────────────────────────────
-// Uses SET_SLUG (URL slug) for the directory path, not SET_SLUG_FULL
 const outDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG, 'cards');
 fs.mkdirSync(outDir, { recursive: true });
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
 function toSlug(name) {
   return name.toLowerCase()
     .replace(/['']/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 }
-
 function cardSlug(card) {
   return `${toSlug(card.name)}-${card.localId}`;
 }
-
 function cardUrl(card) {
   return `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(card)}`;
 }
-
 function cardImgUrl(card) {
   return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
 }
-
 function tcgpSearchUrl(card) {
   const baseName = card.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
   const official = metadata.cardCount?.official || '';
@@ -137,12 +130,10 @@ function tcgpSearchUrl(card) {
   const slug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
   return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${slug}`;
 }
-
 function ebaySearchUrl(card) {
   const query = encodeURIComponent(`${card.name} ${card.localId} ${SET_FULL_NAME} Pokemon Card`);
   return `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=2536`;
 }
-
 function getRelated(card, allCards) {
   const idx = allCards.findIndex(c => c.localId === card.localId);
   const nearby = [
@@ -152,45 +143,23 @@ function getRelated(card, allCards) {
   const candidates = allCards.filter((_, i) => i !== idx);
   return nearby.slice(0, 3).length >= 2 ? nearby.slice(0, 3) : candidates.slice(0, 3);
 }
-
-// ─── vercel.json helper ───────────────────────────────────────────────────────
-
-const vercelPath = path.join(ROOT, 'vercel.json');
-
-const CARD_WILDCARD = {
-  source: '/pokemon/sets/:series/:set/cards/:slug',
-  destination: '/pokemon/sets/:series/:set/cards/:slug.html',
-};
-
-function updateVercel(mutate) {
-  const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
-  vercel.rewrites = vercel.rewrites || [];
-  vercel.redirects = vercel.redirects || [];
-  vercel.rewrites = vercel.rewrites.filter(r => r.source !== CARD_WILDCARD.source);
-  mutate(vercel);
-  vercel.rewrites.push(CARD_WILDCARD);
-  fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
-}
-
+// vercel.json is managed manually — do not modify from this script
 // ─── Shared page fragments ────────────────────────────────────────────────────
-
 const cardListUrl = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`;
 const seriesUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}`;
-
 const sharedFonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">`;
-
 const sharedNav = `<nav>
   <a href="/" class="nav-logo">
     <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
     <span>TCG Watchtower</span>
   </a>
   <a href="${cardListUrl}" class="nav-back">← ${SET_FULL_NAME} Card List</a>
-</nav>`;
-
+</nav>
+<div style="padding:3px 16px;text-align:center;font-size:.65rem;color:rgba(148,163,184,.4);letter-spacing:.02em;border-bottom:1px solid rgba(255,255,255,.04);">This site contains affiliate links for which we may be compensated.</div>`;
 function breadcrumb(lastLabel) {
   return `<div class="breadcrumb">
   <a href="/">Home</a><span>›</span>
@@ -200,18 +169,14 @@ function breadcrumb(lastLabel) {
   <span>${lastLabel}</span>
 </div>`;
 }
-
 const impactScript = `<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');<\/script>`;
-
 // ─── Card page template ───────────────────────────────────────────────────────
-
 function generateCardPage(card, allCards) {
   const url         = cardUrl(card);
   const img         = cardImgUrl(card);
   const related     = getRelated(card, allCards);
   const title       = `${card.name} ${card.localId} Price, Rarity & Card Info | Pokémon TCG`;
   const description = `View the price, rarity, and card details for ${card.name} #${card.localId} from the ${SET_FULL_NAME} Pokémon TCG expansion. Current market price and where to buy.`;
-
   return `<!-- Generated: ${new Date().toISOString()} -->
 <!DOCTYPE html>
 <html lang="en">
@@ -436,9 +401,7 @@ ${impactScript}
 </body>
 </html>`;
 }
-
 // ─── Generate all card pages ──────────────────────────────────────────────────
-
 let generated = 0;
 for (const card of cards) {
   const filepath = path.join(outDir, `${cardSlug(card)}.html`);
@@ -449,59 +412,31 @@ for (const card of cards) {
 console.log(`\n✅ Generated ${generated} card pages`);
 console.log(`📁 Output: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
 
-// ─── vercel.json — card list + sealed-product rewrites ───────────────────────
-
-const individualCardPattern = new RegExp(
-  `^/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/[^/]+$`
-);
-
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    !individualCardPattern.test(r.source) &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards` &&
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`
-  );
-  vercel.rewrites.push(
-    { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards`,          destination: `/${SET_SLUG_FULL}.html` },
-    { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/sealed-product`, destination: `/${SET_SLUG_FULL}.html` },
-  );
-});
-console.log(`✅ vercel.json updated with card-list/sealed-product rewrites + wildcard pinned last`);
-
-// ─── sitemap.xml — card pages ─────────────────────────────────────────────────
-
+// ─── sitemap.xml ─────────────────────────────────────────────────────────────
 const sitemapPath = path.join(ROOT, 'sitemap.xml');
 const today = new Date().toISOString().split('T')[0];
-
 const cardEntries = cards.map(c => `  <url>
     <loc>${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(c)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>`).join('\n');
-
 let sitemap = fs.readFileSync(sitemapPath, 'utf8');
 sitemap = sitemap.replace('</urlset>', `${cardEntries}\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap);
 console.log(`✅ sitemap.xml updated with ${cards.length} card URLs`);
-
-// ─── Chase cards shared helpers ───────────────────────────────────────────────
-
+// ─── Chase cards ──────────────────────────────────────────────────────────────
 const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Ultra Rare', 'Illustration Rare'];
 const RARITY_TIER    = { 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
 const RARITY_LABEL   = { 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-
 function normalizeRarity(r) {
   return (r || '').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
 }
-
 const chaseCards = cards
   .filter(c => CHASE_RARITIES.includes(normalizeRarity(c.rarity)))
   .sort((a, b) => (RARITY_TIER[normalizeRarity(a.rarity)] ?? 99) - (RARITY_TIER[normalizeRarity(b.rarity)] ?? 99));
-
 const setDir = path.join(ROOT, 'pokemon', 'sets', SET_SERIES_SLUG, SET_SLUG);
 fs.mkdirSync(setDir, { recursive: true });
-
 const chaseStyles = `*{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;--text:#f1f5f9;--text-muted:#94a3b8;--accent:#3b82f6;--accent-amber:#f59e0b;--green:#22c55e;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
@@ -538,7 +473,6 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
 .set-link:hover{text-decoration:underline}
 footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}`;
-
 const chaseScript = `const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
 async function loadPrices() {
   if (!TCGP_GROUP_ID) return;
@@ -569,7 +503,6 @@ async function loadPrices() {
   } catch(e) {}
 }
 loadPrices();`;
-
 function chaseCardGridItems(cardList) {
   return cardList.map(c => {
     const rarity      = normalizeRarity(c.rarity);
@@ -603,7 +536,6 @@ function chaseCardGridItems(cardList) {
     </div>`;
   }).join('');
 }
-
 function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, schemaType }) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -659,73 +591,35 @@ ${impactScript}
 </body>
 </html>`;
 }
-
 // ─── Most Valuable page ───────────────────────────────────────────────────────
-
 const mvpUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`;
 const mvpTitle = `Most Valuable ${SET_FULL_NAME} Cards | Prices & Rankings | Pokémon TCG`;
 const mvpDesc  = `The most valuable ${SET_FULL_NAME} Pokémon cards ranked by price. See current market prices for all Hyper Rare, Special Illustration Rare, and Ultra Rare cards.`;
-
 fs.writeFileSync(path.join(setDir, 'most-valuable.html'), buildChasePage({
   pageUrl: mvpUrl, pageTitle: mvpTitle, pageDesc: mvpDesc,
   h1: `Most Valuable ${SET_FULL_NAME} Cards`,
   breadcrumbLabel: 'Most Valuable Cards',
   schemaType: 'CollectionPage',
 }));
-console.log(`✅ Generated most-valuable page: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable.html`);
-
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`
-  );
-  vercel.rewrites.push({
-    source:      `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`,
-    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable.html`,
-  });
-});
-console.log(`✅ vercel.json updated with most-valuable rewrite`);
+console.log(`✅ Generated most-valuable page`);
 
 let sitemap2 = fs.readFileSync(sitemapPath, 'utf8');
-sitemap2 = sitemap2.replace('</urlset>', `  <url>
-    <loc>${mvpUrl}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>\n</urlset>`);
+sitemap2 = sitemap2.replace('</urlset>', `  <url>\n    <loc>${mvpUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap2);
 console.log(`✅ sitemap.xml updated with most-valuable URL`);
-
 // ─── Top Chase Cards page ─────────────────────────────────────────────────────
-
 const chaseUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`;
 const chaseTitle = `${SET_FULL_NAME} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`;
 const chaseDesc  = `The most valuable ${SET_FULL_NAME} chase cards ranked by price — every Hyper Rare, Special Illustration Rare, Ultra Rare, and Illustration Rare. See current market prices and where to buy.`;
-
 fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
   pageUrl: chaseUrl, pageTitle: chaseTitle, pageDesc: chaseDesc,
   h1: `${SET_FULL_NAME} Top Chase Cards`,
   breadcrumbLabel: 'Top Chase Cards',
   schemaType: 'CollectionPage',
 }));
-console.log(`✅ Generated top-chase-cards page: pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards.html`);
-
-updateVercel(vercel => {
-  vercel.rewrites = vercel.rewrites.filter(r =>
-    r.source !== `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`
-  );
-  vercel.rewrites.push({
-    source:      `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`,
-    destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards.html`,
-  });
-});
-console.log(`✅ vercel.json updated with top-chase-cards rewrite`);
+console.log(`✅ Generated top-chase-cards page`);
 
 let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
-sitemap3 = sitemap3.replace('</urlset>', `  <url>
-    <loc>${chaseUrl}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>\n</urlset>`);
+sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
 console.log(`✅ sitemap.xml updated with top-chase-cards URL`);

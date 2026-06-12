@@ -1,14 +1,14 @@
 // scripts/sync-images.js
 // Downloads card images + full card metadata for a set, uploads everything to Cloudflare R2.
 //
-// EN phase (default):  pulls from TCGdex EN → uploads to R2 under setId
-// JP phase:            pulls from Scrydex JP → uploads to R2 under setId
+// EN phase (default):  pulls from TCGdex EN -> uploads to R2 under setId
+// JP phase:            pulls from Scrydex JP -> uploads to R2 under setId
 //                      (same R2 slot so the page works seamlessly after EN switch)
 //
 // Usage:
 //   SET_ID=sv07 node scripts/sync-images.js
 //   SET_ID=sv11 PHASE=jp JP_SCRYDEX_ID=sv9b node scripts/sync-images.js
-//   SET_ID=sv11 PHASE=en node scripts/sync-images.js   ← after EN release
+//   SET_ID=sv11 PHASE=en node scripts/sync-images.js   <- after EN release
 
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -22,7 +22,6 @@ const SCRYDEX_API_KEY  = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID  = process.env.SCRYDEX_TEAM_ID || '';
 const SCRYDEX_BASE     = 'https://api.scrydex.com/pokemon/v1';
 
-// Normalize rarity strings from Scrydex (JP codes, JP text, or EN full strings)
 const RARITY_NORM = {
   'C':'Common','U':'Uncommon','R':'Rare','RR':'Double Rare',
   'SR':'Ultra Rare','AR':'Illustration Rare','SAR':'Special Illustration Rare',
@@ -32,7 +31,6 @@ const RARITY_NORM = {
   'ウルトラレア':'Ultra Rare','アートレア':'Illustration Rare',
   'スペシャルアートレア':'Special Illustration Rare',
   'ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare','超ウルトラレア':'Mega Ultra Rare',
-  // Scrydex EN full strings
   'Common':'Common','Uncommon':'Uncommon','Rare':'Rare',
   'Double Rare':'Double Rare','Ultra Rare':'Ultra Rare',
   'Art Rare':'Illustration Rare','Illustration Rare':'Illustration Rare',
@@ -45,11 +43,9 @@ if (!SET_ID) { console.error('❌ SET_ID required'); process.exit(1); }
 if (PHASE === 'jp' && !JP_SCRYDEX_ID) { console.error('❌ JP_SCRYDEX_ID required when PHASE=jp'); process.exit(1); }
 if (PHASE === 'jp' && (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID)) { console.error('❌ SCRYDEX_API_KEY and SCRYDEX_TEAM_ID required when PHASE=jp'); process.exit(1); }
 
-// Card display dimensions — 2× for retina
 const CARD_WIDTH  = 400;
 const CARD_HEIGHT = 557;
 
-// TCGdex dot-notation map
 const TCGDEX_ID_MAP = {
   'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','me02pt5':'me02.5',
 };
@@ -107,11 +103,9 @@ async function fetchWithRetry(url, opts = {}, attempts = 3) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// ── Fetch cards from Scrydex (JP or EN) ─────────────────────────────────────
 async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   console.log(`📋 Fetching ${language} card list from Scrydex (${scrydexId})…`);
   const headers = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
-  // Use /ja/ URL prefix for JP — enables translation.en.name field
   const base    = language === 'JA'
     ? `${SCRYDEX_BASE}/ja/expansions/${scrydexId}/cards?select=id,name,translation,rarity,images&pageSize=100`
     : `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,images&pageSize=100`;
@@ -136,7 +130,6 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   return allCards.map(c => {
     const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
     const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
-    // For JP: use translation.en.name, fall back to stripped JP name
     const name = language === 'JA'
       ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
       : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
@@ -149,24 +142,24 @@ async function fetchCardsFromScrydex(scrydexId, language = 'JA') {
   });
 }
 
-// Known first productId for each set — enables direct card-number → name lookup
-// JP card N maps to TCGCSV card number N (same numbering), confirmed via The Hobby Bin
 const FIRST_PRODUCT_ID = {
-  'me03': 674320,  // Perfect Order: card 001 = product 674320
-  'me04': null,    // Chaos Rising: TBD
+  'me03': 674320,
+  'me04': null,
+  'me05': null,
 };
 
-// ── Fetch EN name map from TCGCSV (most reliable source post-release) ────────
 async function fetchEnNameMapFromTCGCSV(setId) {
   const GROUP_ID_MAP = {
     'sv01':'22873','sv02':'23120','sv03':'23228','sv3pt5':'23237',
     'sv04':'23286','sv4pt5':'23353','sv05':'23381','sv06':'23473',
     'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
     'sv09':'24073','sv10':'24269',
-    'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
+    'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655','me05':'0',
+    'zsv10pt5':'24325',   // Black Bolt
+    'rsv10pt5':'24326',   // White Flare
   };
   const groupId = GROUP_ID_MAP[setId];
-  if (!groupId) return {};
+  if (!groupId || groupId === '0') return {};
   try {
     const res      = await fetchWithRetry(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`);
     const products = res.results || [];
@@ -179,20 +172,15 @@ async function fetchEnNameMapFromTCGCSV(setId) {
       if (!cleanName) continue;
 
       if (numEntry) {
-        // Has card number — use it for precise matching
         const num = numEntry.value.split('/')[0].trim();
         map[num.padStart(3, '0')]      = cleanName;
         map[String(parseInt(num, 10))] = cleanName;
         map[num]                       = cleanName;
       } else {
-        // Pre-release set — no Number in extendedData yet
-        // Store by productId so we can try matching later
         map[`pid_${p.productId}`] = { name: cleanName, productId: p.productId };
       }
     }
 
-    // If no numbered entries found, TCGplayer hasn't assigned numbers yet
-    // Fall back to ordered matching by product name only
     const numberedCount = Object.keys(map).filter(k => !k.startsWith('pid_')).length;
     console.log(`✅ EN name map from TCGCSV: ${numberedCount} numbered cards, ${products.length} total products`);
     return map;
@@ -202,7 +190,6 @@ async function fetchEnNameMapFromTCGCSV(setId) {
   }
 }
 
-// ── EN phase: fetch cards from TCGdex ────────────────────────────────────────
 async function fetchCardsFromTCGdex() {
   console.log(`📋 Fetching EN card list from TCGdex (${TCGDEX_SET_ID})…`);
   const setData    = await fetchWithRetry(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_ID}`);
@@ -228,57 +215,60 @@ async function fetchCardsFromTCGdex() {
   return fullCards;
 }
 
+// Scrydex EN ID map — maps our setId to Scrydex's expansion ID
+// Chaos Rising = me4, Pitch Black = me5 (no leading zero in Scrydex)
+const SCRYDEX_EN_ID_MAP = {
+  'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
+  'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
+  'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
+  'sv09':'sv09','sv10':'sv10',
+  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03',
+  'me04':'me4',   // Chaos Rising — Scrydex uses me4 not me04
+  'me05':'me5',   // Pitch Black — Scrydex uses me5 not me05
+  'zsv10pt5':'zsv10pt5',   // Black Bolt
+  'rsv10pt5':'rsv10pt5',   // White Flare
+};
+
 async function main() {
   console.log(`\n🚀 sync-images — SET_ID=${SET_ID} PHASE=${PHASE}`);
   if (PHASE === 'jp') console.log(`   JP Scrydex ID: ${JP_SCRYDEX_ID}`);
   if (FORCE_RESYNC)   console.log(`   ⚠️  Force resync — all images re-downloaded`);
 
-  // Step 1 — Fetch card list
-  // For JP: always Scrydex, then translate names to English
-  // For EN: try Scrydex first (more complete, faster after release), fall back to TCGdex
   let cards = [];
   if (PHASE === 'jp') {
     cards = await fetchCardsFromScrydex(JP_SCRYDEX_ID);
 
-    // Translate JP names → EN using TCGCSV
     console.log(`\n🔤 Fetching EN names from TCGCSV…`);
     const enMap = await fetchEnNameMapFromTCGCSV(SET_ID);
     const numberedEntries = Object.keys(enMap).filter(k => !k.startsWith('pid_'));
 
     if (numberedEntries.length > 0) {
-      // Build num→name lookup from TCGCSV numbered entries
       const numToName = {};
       for (const k of numberedEntries) {
         if (/^\d{3}$/.test(k)) numToName[parseInt(k, 10)] = enMap[k];
       }
 
       let translated = 0;
-      const firstPid = FIRST_PRODUCT_ID[SET_ID];
 
-      if (firstPid || Object.keys(numToName).length > 0) {
-        // Direct match: JP localId is card number (1-based), EN name is at that same number in TCGCSV
-        cards = cards.map(c => {
-          const cardNum = parseInt(c.localId, 10);
-          if (!cardNum) return c;
-          const name = numToName[cardNum];
-          if (name) { translated++; return { ...c, name }; }
-          return c;
-        });
-        console.log(`\u2705 Translated ${translated}/${cards.length} card names to English (by card number)`);
+      cards = cards.map(c => {
+        const cardNum = parseInt(c.localId, 10);
+        if (!cardNum) return c;
+        const name = numToName[cardNum];
+        if (name) { translated++; return { ...c, name }; }
+        return c;
+      });
+      console.log(`✅ Translated ${translated}/${cards.length} card names to English (by card number)`);
 
-        // If direct match got less than half, fall back to sorted-position
-        if (translated < cards.length / 2) {
-          console.warn('\u26A0\uFE0F  Direct match got few hits — trying sorted-position fallback');
-          const sortedTcgcsv = Object.entries(numToName).sort((a,b) => a[0]-b[0]).map(([,n])=>n);
-          const sortedJP = [...cards].sort((a,b) => parseInt(a.localId)-parseInt(b.localId));
-          const byId = {};
-          sortedJP.forEach((c,i) => { if (sortedTcgcsv[i]) { byId[c.localId]=sortedTcgcsv[i]; translated++; } });
-          cards = cards.map(c => byId[c.localId] ? {...c, name: byId[c.localId]} : c);
-          console.log(`\u2705 Sorted-position fallback: ${Object.keys(byId).length} names mapped`);
-        }
+      if (translated < cards.length / 2) {
+        console.warn('⚠️  Direct match got few hits — trying sorted-position fallback');
+        const sortedTcgcsv = Object.entries(numToName).sort((a,b) => a[0]-b[0]).map(([,n])=>n);
+        const sortedJP = [...cards].sort((a,b) => parseInt(a.localId)-parseInt(b.localId));
+        const byId = {};
+        sortedJP.forEach((c,i) => { if (sortedTcgcsv[i]) { byId[c.localId]=sortedTcgcsv[i]; translated++; } });
+        cards = cards.map(c => byId[c.localId] ? {...c, name: byId[c.localId]} : c);
+        console.log(`✅ Sorted-position fallback: ${Object.keys(byId).length} names mapped`);
       }
     } else if (Object.keys(enMap).length > 0) {
-      // Pre-release: no numbers yet — match by position order
       const pidEntries = Object.values(enMap)
         .filter(v => typeof v === 'object' && v.productId)
         .sort((a, b) => a.productId - b.productId);
@@ -297,14 +287,7 @@ async function main() {
       console.warn(`⚠️  No EN names available yet — keeping JP names as fallback`);
     }
   } else {
-    // Try Scrydex EN first if we have credentials and a mapped ID
-    const SCRYDEX_EN_ID_MAP = {
-      'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
-      'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
-      'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
-      'sv09':'sv09','sv10':'sv10',
-      'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
-    };
+    // EN phase — try Scrydex first, fall back to TCGdex
     const scrydexEnId = SCRYDEX_EN_ID_MAP[SET_ID];
     if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && scrydexEnId) {
       console.log(`📋 Trying Scrydex EN first for ${SET_ID} (${scrydexEnId})…`);
@@ -333,16 +316,11 @@ async function main() {
   let logoUploaded = false;
 
   if (PHASE === 'jp') {
-    // Scrydex JP logo
     try {
       const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
       const raw1 = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${JP_SCRYDEX_ID}`, { headers });
       const expansion = raw1.data || raw1;
-      const logoUrl = expansion.logo
-        || expansion.images?.logo
-        || expansion.images?.symbol
-        || expansion.logoUrl
-        || null;
+      const logoUrl = expansion.logo || expansion.images?.logo || expansion.images?.symbol || expansion.logoUrl || null;
       if (logoUrl) {
         const buf = await downloadImage(logoUrl);
         await uploadToR2(logoR2Key, buf, 'image/png');
@@ -353,26 +331,14 @@ async function main() {
       }
     } catch (e) { console.warn(`⚠️  JP logo failed: ${e.message}`); }
   } else if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
-    // Scrydex EN logo — try this first, more reliable than TCGdex for new sets
-    const SCRYDEX_EN_ID_MAP_LOGO = {
-      'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
-      'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
-      'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
-      'sv09':'sv09','sv10':'sv10',
-      'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04',
-    };
-    const scrydexEnId = SCRYDEX_EN_ID_MAP_LOGO[SET_ID];
+    const scrydexEnId = SCRYDEX_EN_ID_MAP[SET_ID];
     if (scrydexEnId) {
       try {
         const headers   = { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID };
         const raw2 = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexEnId}`, { headers });
         const expansion = raw2.data || raw2;
         console.log(`  Scrydex expansion fields: ${Object.keys(expansion).join(', ')}`);
-        const logoUrl = expansion.logo
-          || expansion.images?.logo
-          || expansion.images?.symbol
-          || expansion.logoUrl
-          || null;
+        const logoUrl = expansion.logo || expansion.images?.logo || expansion.images?.symbol || expansion.logoUrl || null;
         if (logoUrl) {
           const buf = await downloadImage(logoUrl);
           await uploadToR2(logoR2Key, buf, 'image/png');
@@ -386,7 +352,6 @@ async function main() {
   }
 
   if (!logoUploaded) {
-    // TCGdex EN logo fallback
     const stripped  = TCGDEX_SET_ID.replace(/^([a-z]+)0(\d)$/, '$1$2');
     const logoUrls  = [
       `https://assets.tcgdex.net/en/${SERIES_PREFIX}/${TCGDEX_SET_ID}/logo.png`,
@@ -430,7 +395,6 @@ async function main() {
     }
 
     if (!card.image) {
-      // Build fallback URL for EN sets
       const fallbackUrl = `https://assets.tcgdex.net/en/${SERIES_PREFIX}/${TCGDEX_SET_ID}/${card.localId}/high.webp`;
       card.image = fallbackUrl;
     }

@@ -2,8 +2,13 @@
 /**
  * sync-op-images.mjs
  * Syncs One Piece TCG card images and metadata to R2
- * Uses printings filter to get all cards in a set including reprints
- * Expands variants (Alt Art, Manga Alt Art, Special Alt Art) as separate entries
+ *
+ * Strategy:
+ * - Primary expansion (e.g. OP15): full Scrydex fetch using printings filter
+ *   This naturally includes cross-set SP reprints with correct SP art
+ * - EB04: individual fetch for only the specific card numbers in the TCGplayer group
+ *   because EB04 is split across OP14 and OP15 English releases
+ * - SET_OVERRIDES: force specific image URLs for cards Scrydex gets wrong (e.g. Koby MR)
  */
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -13,6 +18,7 @@ const SET_FULL_NAME = (process.env.SET_FULL_NAME || '').trim();
 const PHASE         = (process.env.PHASE || 'en').trim();
 const FORCE_RESYNC  = (process.env.FORCE_RESYNC || '').toLowerCase() === 'true';
 const SKIP_IMAGES   = (process.env.SKIP_IMAGES || '').toLowerCase() === 'true';
+const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID || '').trim();
 
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
@@ -26,7 +32,7 @@ const s3 = new S3Client({
     secretAccessKey: process.env.CF_R2_SECRET_KEY,
   },
 });
-const BUCKET     = process.env.CF_R2_BUCKET;
+const BUCKET      = process.env.CF_R2_BUCKET;
 const CARD_WIDTH  = 400;
 const CARD_HEIGHT = 558;
 
@@ -39,33 +45,83 @@ const SCRYDEX_ID_MAP = {
   'op01':'OP01','op02':'OP02','op03':'OP03','op04':'OP04','op05':'OP05',
   'op06':'OP06','op07':'OP07','op08':'OP08','op09':'OP09','op10':'OP10',
   'op11':'OP11','op12':'OP12','op13':'OP13','op14':'OP14','op15':'OP15',
+  'op16':'OP16',
   'eb01':'EB01','eb02':'EB02','eb03':'EB03','eb04':'EB04',
   'st01':'ST01','st02':'ST02','st03':'ST03','st04':'ST04','st10':'ST10','st13':'ST13',
 };
 
-// Manual card overrides — cards in the TCGplayer group but not in Scrydex
-// (cross-set SP reprints with non-standard set numbers)
+/**
+ * For sets where Scrydex splits EB cards between two English releases,
+ * specify which EB card numbers belong to this set's TCGplayer group.
+ * These are fetched individually from Scrydex and stored with full IDs (e.g. "EB04-044").
+ */
+const EB_SPLIT = {
+  'op15': { 'EB04': [{ start: 1, end: 10 }, { start: 42, end: 61 }] },
+};
+
+/**
+ * Image overrides — direct Scrydex CDN URLs for cards where the API returns wrong art.
+ * localId = as stored in JSON (short number for primary, full ID for EB split cards)
+ */
 const SET_OVERRIDES = {
-  'op14': [
+  'op15': {
+    // Koby Manga Rare — Scrydex API returns wrong image for this variant
+    'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044B/medium',
+    // Zoro Treasure Rare
+    'OP13-037': 'https://images.scrydex.com/onepiece/OP13-037A/medium',
+    // Sabo SP cards — not on Scrydex API, use direct CDN image
+    'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
+    // Cross-set SP reprints — Scrydex individual fetch returns base card image, not SP art
+    'OP11-106': 'https://images.scrydex.com/onepiece/OP11-106B/medium',
+    'OP12-014': 'https://images.scrydex.com/onepiece/OP12-014B/medium',
+    'OP13-031': 'https://images.scrydex.com/onepiece/OP13-031A/medium',
+    'OP13-042': 'https://images.scrydex.com/onepiece/OP13-042B/medium',
+    'EB02-052': 'https://images.scrydex.com/onepiece/EB02-052B/medium',
+    'ST26-005': 'https://images.scrydex.com/onepiece/ST26-005A/medium',
+  },
+};
+
+/**
+ * Manual card entries — cards not on Scrydex that need to be added manually.
+ * These are injected directly into allCards after all Scrydex fetches.
+ */
+const MANUAL_CARDS = {
+  'op15': [
     {
-      localId: '108',
-      name: 'Donquixote Rosinante',
-      rarity: 'Treasure Rare',
-      isVariant: false,
-      imageUrl: 'https://tcgplayer-cdn.tcgplayer.com/product/670876_400w.jpg',
-    },
-    {
-      localId: 'prb02006_specialaltart',
-      name: 'Roronoa Zoro',
-      displayName: 'Roronoa Zoro (SP Alt Art)',
+      localId: 'PRB02-014',
+      name: 'Sabo (PRB02-014)',
       rarity: 'Special',
-      isVariant: true,
-      variantType: 'specialAltArt',
-      baseLocalId: 'prb02006',
-      imageUrl: 'https://images.scrydex.com/onepiece/PRB02-006/large',
+      isVariant: false,
+      variantType: null,
+      baseLocalId: null,
     },
   ],
 };
+
+// Rarity overrides — correct rarities where Scrydex returns wrong value
+const RARITY_OVERRIDES = {
+  'op15': {
+    'OP13-037': 'Treasure Rare',
+    // Cross-set SP cards — Scrydex returns base rarity, override to Special
+    'OP11-106': 'Special',
+    'OP12-014': 'Special',
+    'OP13-031': 'Special',
+    'OP13-042': 'Special',
+    'EB02-052': 'Special',
+    'ST26-005': 'Special',
+    'PRB02-014': 'Special',
+  },
+};
+
+const SCRYDEX_KNOWN_EXPANSIONS = new Set([
+  'OP01','OP02','OP03','OP04','OP05','OP06','OP07','OP08','OP09','OP10',
+  'OP11','OP12','OP13','OP14','OP15','OP16',
+  'EB01','EB02','EB03','EB04',
+  'ST01','ST02','ST03','ST04','ST05','ST06','ST07','ST08','ST09','ST10',
+  'ST11','ST12','ST13','ST14','ST15','ST16','ST17','ST18','ST19','ST20',
+  'ST21','ST22','ST23','ST24','ST25','ST26','ST27','ST28','ST29','ST30',
+  'PRB01','PRB02',
+]);
 
 const RARITY_MAP = {
   'C':'Common','UC':'Uncommon','R':'Rare','SR':'Super Rare',
@@ -79,31 +135,28 @@ const RARITY_MAP = {
 };
 function normalizeRarity(r) { return RARITY_MAP[r?.trim()] || r?.trim() || ''; }
 
-// Variant name → rarity mapping (API uses camelCase names like "mangaAltArt", "altArt", "redMangaAltArt")
 const VARIANT_RARITY = {
-  'normal':          null,           // use base card rarity
-  'altart':          'Alternate Art',
-  'mangaaltart':     'Manga Rare',
-  'specialaltart':   'Special',
-  'parallel':        'Special',
-  'fullart':         'Alternate Art',
-  'promo':           'Special',
+  'normal':        null,
+  'altart':        'Alternate Art',
+  'mangaaltart':   'Manga Rare',
+  'specialaltart': 'Special',
+  'parallel':      'Special',
+  'fullart':       'Alternate Art',
+  'promo':         'Special',
 };
 
 function normalizeVariantName(name) {
-  // Strip color prefixes like "red", "blue", "black" from names like "redMangaAltArt"
   return (name || '').toLowerCase().replace(/^(red|blue|green|black|purple|yellow|pink|white)/, '');
 }
 
 function variantRarityFromName(variantName) {
   const normalized = normalizeVariantName(variantName);
-  // Try exact match first, then partial matches
   if (VARIANT_RARITY[normalized] !== undefined) return VARIANT_RARITY[normalized];
   if (normalized.includes('mangaalt') || normalized.includes('mangaart')) return 'Manga Rare';
   if (normalized.includes('specialalt') || normalized.includes('specialart')) return 'Special';
   if (normalized.includes('alt')) return 'Alternate Art';
   if (normalized.includes('parallel') || normalized.includes('promo')) return 'Special';
-  return undefined; // unknown — use base rarity
+  return undefined;
 }
 
 function variantSuffix(name) {
@@ -142,10 +195,11 @@ async function resizeImage(buffer) {
     .toBuffer();
 }
 
-function parseLocalId(rawId) {
+function parseShortNum(rawId) {
   if (!rawId) return '';
-  const stripped = rawId.split('-').slice(1).join('-');
-  return stripped.includes('/') ? stripped.split('/')[0].trim() : stripped;
+  const parts = rawId.split('-');
+  const num = parts[parts.length - 1];
+  return num.includes('/') ? num.split('/')[0].trim() : num;
 }
 
 function pickImage(images) {
@@ -153,20 +207,12 @@ function pickImage(images) {
   return images[0]?.large || images[0]?.medium || images[0]?.small || null;
 }
 
-async function main() {
-  if (!SET_ID || !SET_FULL_NAME) {
-    console.error('❌ SET_ID and SET_FULL_NAME are required');
-    process.exit(1);
-  }
-
-  const scrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
-  console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Scrydex ID: ${scrydexId}\n`);
-
-  // Fetch all cards printed in this set using the printings filter
-  console.log('📋 Fetching cards from Scrydex (using printings filter)...');
+/** Full Scrydex fetch for the primary expansion using printings filter. */
+async function fetchFullExpansion(expansionId) {
+  console.log(`\n📋 Full fetch: ${expansionId}...`);
   let allRaw = [], page = 1, total = null;
   while (true) {
-    const url = `${SCRYDEX_BASE}/cards?q=printings:${scrydexId}&select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
+    const url = `${SCRYDEX_BASE}/cards?q=printings:${expansionId}&select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
     const data = await fetchWithRetry(url, { headers: HEADERS });
     const batch = data.data || [];
     if (total === null) total = data.totalCount || data.total || null;
@@ -176,203 +222,341 @@ async function main() {
     if (total !== null && allRaw.length >= total) break;
     page++;
   }
-
-  // If printings filter returned nothing, fall back to expansion endpoint
   if (allRaw.length === 0) {
-    console.log('⚠️  printings filter returned 0 cards — trying expansion endpoint as fallback...');
+    console.log(`  ⚠️  printings filter returned 0 — trying expansion endpoint...`);
     page = 1; total = null;
     while (true) {
-      const url = `${SCRYDEX_BASE}/expansions/${scrydexId}/cards?select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
+      const url = `${SCRYDEX_BASE}/expansions/${expansionId}/cards?select=id,name,rarity,variants,images&pageSize=100&page=${page}`;
       const data = await fetchWithRetry(url, { headers: HEADERS });
       const batch = data.data || [];
       if (total === null) total = data.totalCount || data.total || null;
       allRaw = allRaw.concat(batch);
-      console.log(`  Fallback page ${page}: ${batch.length} cards (${allRaw.length}${total ? `/${total}` : ''})`);
       if (batch.length === 0 || batch.length < 100) break;
       if (total !== null && allRaw.length >= total) break;
       page++;
     }
   }
-  console.log(`✅ ${allRaw.length} base cards fetched`);
+  console.log(`  ✅ ${allRaw.length} raw cards`);
+  return allRaw;
+}
 
-  // Expand each base card + its variants printed in this set
+/** Fetch specific EB cards by card number. Returns { raw, cardNum, expansionId } entries. */
+async function fetchEBCards(expansionId, start, end) {
+  const nums = [];
+  for (let i = start; i <= end; i++) nums.push(String(i).padStart(3, '0'));
+  console.log(`\n📋 EB split fetch: ${expansionId} cards ${start.toString().padStart(3,'0')}–${end.toString().padStart(3,'0')} (${nums.length} cards)...`);
+  const results = [];
+  for (const num of nums) {
+    const cardId = `${expansionId}-${num}`;
+    try {
+      const url = `${SCRYDEX_BASE}/cards/${cardId}?select=id,name,rarity,variants,images`;
+      const data = await fetchWithRetry(url, { headers: HEADERS });
+      if (data.data) { results.push({ raw: data.data, cardNum: num, expansionId }); process.stdout.write('.'); }
+    } catch (e) { process.stdout.write('✗'); }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  console.log(` (${results.length}/${nums.length} found)`);
+  return results;
+}
+
+/** Expand primary expansion cards. localId = short number e.g. "118" */
+function expandPrimaryCards(rawCards, expansionId) {
   const cards = [];
-  for (const c of allRaw) {
-    const baseLocalId = parseLocalId(c.id);
+  for (const c of rawCards) {
+    // If Scrydex returned a card from a different expansion (e.g. EB04-044 in OP15 printings),
+    // check if it belongs to our EB split range. If yes, use full ID. If outside range, skip it.
+    const rawScrydexId = (c.id || '').replace(/^onepiece-/i, '');
+    const cardExpansion = rawScrydexId.split('-')[0];
+    const isFromDifferentExpansion = cardExpansion && cardExpansion !== expansionId && /^[A-Z]{2,}\d+$/.test(cardExpansion);
+    if (isFromDifferentExpansion) {
+      // Check if this card is in our EB split range
+      const ebSplitRanges = EB_SPLIT[SET_ID.toLowerCase()] || {};
+      const rangeForExp = ebSplitRanges[cardExpansion];
+      if (rangeForExp) {
+        const cardNumInt = parseInt(rawScrydexId.split('-')[1], 10);
+        const ranges = Array.isArray(rangeForExp) ? rangeForExp : [rangeForExp];
+        const inRange = ranges.some(r => cardNumInt >= r.start && cardNumInt <= r.end);
+        if (!inRange) continue; // outside our range, skip
+      } else {
+        continue; // not in EB_SPLIT at all, skip
+      }
+    }
+    const baseNum = isFromDifferentExpansion ? rawScrydexId : parseShortNum(c.id);
+    const baseRarity = normalizeRarity(c.rarity);
+    const baseImage  = pickImage(c.images);
+    const variants   = c.variants || [];
+
+    if (!variants.length) {
+      cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      continue;
+    }
+    const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
+    cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false });
+
+    for (const v of variants) {
+      const vPrintings = (v.printings || []).map(p => p.toUpperCase());
+      // Skip variant if it belongs to a different expansion entirely
+      if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
+
+      const vType = (v.name || '').trim();
+      const nVType = normalizeVariantName(vType);
+      if (nVType === 'normal' || nVType === 'foil') continue;
+      const nameRarity = variantRarityFromName(vType);
+      const variantRarity = nameRarity !== undefined ? (nameRarity || baseRarity) : (v.rarity ? normalizeRarity(v.rarity) : baseRarity);
+      const suffix = variantSuffix(vType);
+      cards.push({
+        localId: `${baseNum}_${suffix}`,
+        name: `${(c.name||'').trim()} (${vType})`,
+        rarity: variantRarity,
+        image: pickImage(v.images) || baseImage,
+        isVariant: true, variantType: vType, baseLocalId: baseNum,
+      });
+    }
+  }
+  return cards;
+}
+
+/** Expand EB split cards. localId = full card ID e.g. "EB04-044" */
+function expandEBCards(rawCardEntries) {
+  const cards = [];
+  for (const { raw: c, cardNum, expansionId } of rawCardEntries) {
+    const baseLocalId = `${expansionId}-${cardNum}`;
     const baseRarity  = normalizeRarity(c.rarity);
     const baseImage   = pickImage(c.images);
-
-    const variants = c.variants || [];
+    const variants    = c.variants || [];
 
     if (!variants.length) {
       cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
       continue;
     }
-
     const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
-    if (normalV) {
-      const img = pickImage(normalV.images) || baseImage;
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: img, isVariant: false });
-    } else {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
-    }
+    cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false });
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
-      if (vPrintings.length > 0 && !vPrintings.includes(scrydexId.toUpperCase())) continue;
+      // Skip variant if it belongs to a different expansion entirely
+      if (vPrintings.length > 0 && !vPrintings.includes(expansionId.toUpperCase())) continue;
 
       const vType = (v.name || '').trim();
-      const normalizedVType = normalizeVariantName(vType);
-      if (normalizedVType === 'normal' || normalizedVType === 'foil') continue;
-
+      const nVType = normalizeVariantName(vType);
+      if (nVType === 'normal' || nVType === 'foil') continue;
       const nameRarity = variantRarityFromName(vType);
-      let variantRarity;
-      if (nameRarity !== undefined) {
-        variantRarity = nameRarity || baseRarity;
-      } else if (v.rarity) {
-        variantRarity = normalizeRarity(v.rarity);
-      } else {
-        variantRarity = baseRarity;
-      }
-
-      const variantImage = pickImage(v.images) || baseImage;
+      const variantRarity = nameRarity !== undefined ? (nameRarity || baseRarity) : (v.rarity ? normalizeRarity(v.rarity) : baseRarity);
       const suffix = variantSuffix(vType);
-      const variantLocalId = `${baseLocalId}_${suffix}`;
-      const variantName = `${(c.name||'').trim()} (${vType})`;
-
       cards.push({
-        localId: variantLocalId,
-        name: variantName,
+        localId: `${baseLocalId}_${suffix}`,
+        name: `${(c.name||'').trim()} (${vType})`,
         rarity: variantRarity,
-        image: variantImage,
-        isVariant: true,
-        variantType: vType,
-        baseLocalId,
+        image: pickImage(v.images) || baseImage,
+        isVariant: true, variantType: vType, baseLocalId,
       });
     }
   }
+  return cards;
+}
 
-  // Debug: show first few variants to verify structure
-  const sampleVariants = cards.filter(c => c.isVariant).slice(0, 5);
-  if (sampleVariants.length) {
-    console.log('\n🔍 Sample variants:');
-    sampleVariants.forEach(v => console.log(`   ${v.localId} | ${v.name} | rarity: ${v.rarity} | type: ${v.variantType}`));
+/** Fetch TCGplayer group from TCGCSV — returns { prefix -> Set<cardNumber> } for non-primary, non-EB expansions */
+async function getGroupInfo(groupId, primaryId, skipPrefixes) {
+  const url = `https://tcgcsv.com/tcgplayer/68/${groupId}/products`;
+  console.log(`🔍 Fetching TCGplayer group ${groupId} from TCGCSV...`);
+  let data;
+  try {
+    const res = await fetch(url, { headers: { Accept: 'application/json', 'User-Agent': 'TCGWatchtower/1.0' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (e) {
+    console.warn(`⚠️  TCGCSV fetch failed: ${e.message}`);
+    return {};
+  }
+  const products = data.results || [];
+  const prefixMap = {};
+  for (const product of products) {
+    const extData = product.extendedData || [];
+    const numberEntry = extData.find(d => d.name === 'Number');
+    if (!numberEntry) continue;
+    const fullNumber = numberEntry.value;
+    const match = fullNumber.match(/^([A-Z]+\d+)-/);
+    if (!match) continue;
+    const prefix = match[1];
+    if (prefix === primaryId || skipPrefixes.has(prefix)) continue;
+    if (!SCRYDEX_KNOWN_EXPANSIONS.has(prefix)) continue;
+    const cardNum = fullNumber.split('-')[1];
+    // Skip Dash Pack variants — these are reprint promos, not set cards
+    if (product.name && product.name.includes('Dash Pack')) continue;
+    if (!prefixMap[prefix]) prefixMap[prefix] = new Set();
+    prefixMap[prefix].add(cardNum);
+  }
+  const summary = Object.entries(prefixMap).sort((a,b)=>b[1].size-a[1].size).map(([p,s])=>`${p}(${s.size})`).join(', ');
+  if (summary) console.log(`✅ Cross-set SP cards: ${summary}`);
+  return prefixMap;
+}
+
+/** Fetch specific cross-set cards from Scrydex by card ID */
+async function fetchSpecificCards(expansionId, cardNumbers) {
+  const results = [];
+  for (const num of [...cardNumbers].sort()) {
+    const cardId = `${expansionId}-${num}`;
+    try {
+      const url = `${SCRYDEX_BASE}/cards/${cardId}?select=id,name,rarity,variants,images`;
+      const data = await fetchWithRetry(url, { headers: HEADERS });
+      if (data.data) { results.push({ raw: data.data, cardNum: num, expansionId }); process.stdout.write('.'); }
+    } catch (e) { process.stdout.write('✗'); }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return results;
+}
+
+async function main() {
+  if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME are required'); process.exit(1); }
+
+  const primaryScrydexId = SCRYDEX_ID_MAP[SET_ID.toLowerCase()] || SET_ID.toUpperCase();
+  console.log(`\n🏴‍☠️ Syncing One Piece: ${SET_FULL_NAME} (${SET_ID}) — Primary: ${primaryScrydexId}\n`);
+
+  const imageOverrides = SET_OVERRIDES[SET_ID.toLowerCase()] || {};
+  if (Object.keys(imageOverrides).length > 0) {
+    console.log(`📌 Image overrides: ${Object.keys(imageOverrides).join(', ')}`);
   }
 
-  // Log rarity breakdown
+  // Step 1: Full fetch for primary expansion
+  // Scrydex's printings:OP15 filter returns OP15 cards + cross-set SP reprints with correct art
+  let primaryRaw;
+  try { primaryRaw = await fetchFullExpansion(primaryScrydexId); }
+  catch (e) { console.error(`❌ Primary expansion fetch failed: ${e.message}`); process.exit(1); }
+
+  // Use primary fetch as-is — just expand directly
+  const primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
+
+  const seenLocalIds = new Set();
+  let allCards = [];
+  for (const card of primaryExpanded) {
+    seenLocalIds.add(card.localId);
+    allCards.push(card);
+  }
+  console.log(`  Added ${primaryExpanded.length} cards from ${primaryScrydexId} (${seenLocalIds.size} total)`);
+
+  // Step 2: EB split cards — only fetch the specific range for this set
+  const ebSplit = EB_SPLIT[SET_ID.toLowerCase()] || {};
+  for (const [ebExpansionId, rangeOrRanges] of Object.entries(ebSplit)) {
+    const ranges = Array.isArray(rangeOrRanges) ? rangeOrRanges : [rangeOrRanges];
+    let allRawEntries = [];
+    for (const range of ranges) {
+      const entries = await fetchEBCards(ebExpansionId, range.start, range.end);
+      allRawEntries = allRawEntries.concat(entries);
+    }
+    const rawEntries = allRawEntries;
+    const expanded = expandEBCards(rawEntries);
+    let added = 0;
+    for (const card of expanded) {
+      if (seenLocalIds.has(card.localId)) continue;
+      seenLocalIds.add(card.localId);
+      allCards.push(card);
+      added++;
+    }
+    const rangeStr = ranges.map(r=>r.start+'-'+r.end).join(', '); console.log(`  Added ${added} unique cards from ${ebExpansionId} (${rangeStr})`);
+  }
+
+  // Step 3: Fetch cross-set SP cards from TCGCSV + Scrydex
+  // These are SP reprints from other sets included in this English release
+  if (TCGP_GROUP_ID) {
+    const ebPrefixes = new Set(Object.keys(EB_SPLIT[SET_ID.toLowerCase()] || {}));
+    ebPrefixes.add(primaryScrydexId);
+    const crossSetMap = await getGroupInfo(TCGP_GROUP_ID, primaryScrydexId, ebPrefixes);
+    for (const [expId, cardNums] of Object.entries(crossSetMap)) {
+      console.log(`\n📋 Cross-set fetch: ${expId} — ${[...cardNums].join(', ')}`);
+      const rawEntries = await fetchSpecificCards(expId, cardNums);
+      console.log(` (${rawEntries.length}/${cardNums.size} found)`);
+      for (const { raw: c, cardNum, expansionId } of rawEntries) {
+        const localId = `${expansionId}-${cardNum}`;
+        if (seenLocalIds.has(localId)) continue;
+        const baseRarity = normalizeRarity(c.rarity);
+        const baseImage = pickImage(c.images);
+        seenLocalIds.add(localId);
+        allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      }
+    }
+  }
+
+  // Inject manual cards (not on Scrydex)
+  const manualCards = MANUAL_CARDS[SET_ID.toLowerCase()] || [];
+  for (const card of manualCards) {
+    if (!seenLocalIds.has(card.localId)) {
+      seenLocalIds.add(card.localId);
+      allCards.push(card);
+      console.log(`  Injected manual card: ${card.localId} ${card.name}`);
+    }
+  }
+
+  // Apply rarity overrides
+  const rarityOverrides = RARITY_OVERRIDES[SET_ID.toLowerCase()] || {};
+  if (Object.keys(rarityOverrides).length > 0) {
+    allCards.forEach(c => {
+      if (rarityOverrides[c.localId]) {
+        console.log(`  Rarity override: ${c.localId} ${c.rarity} -> ${rarityOverrides[c.localId]}`);
+        c.rarity = rarityOverrides[c.localId];
+      }
+    });
+  }
+
+  // Rarity breakdown
   const rarityCounts = {};
-  cards.forEach(c => { rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1; });
-  const officialCount = cards.filter(c => !c.isVariant).length;
-  console.log(`✅ ${cards.length} total entries (${officialCount} base + ${cards.length - officialCount} variants):`);
+  allCards.forEach(c => { rarityCounts[c.rarity] = (rarityCounts[c.rarity] || 0) + 1; });
+  const officialCount = allCards.filter(c => !c.isVariant).length;
+  console.log(`\n✅ ${allCards.length} total entries (${officialCount} base + ${allCards.length - officialCount} variants):`);
   Object.entries(rarityCounts).sort((a,b) => b[1]-a[1]).forEach(([r,n]) => console.log(`   ${r}: ${n}`));
 
-  // Upload metadata JSON
+  // Step 3: Upload metadata JSON
   console.log('\n📦 Uploading metadata JSON...');
   await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
     setId: SET_ID, game: 'onepiece', phase: PHASE,
-    cardCount: { official: officialCount, total: cards.length },
-    cards: cards.map(c => ({
-      localId: c.localId,
-      name: c.name,
-      rarity: c.rarity,
-      isVariant: c.isVariant || false,
+    cardCount: { official: officialCount, total: allCards.length },
+    cards: allCards.map(c => ({
+      localId:     c.localId,
+      name:        c.name,
+      rarity:      c.rarity,
+      isVariant:   c.isVariant || false,
       variantType: c.variantType || null,
       baseLocalId: c.baseLocalId || null,
     })),
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
 
-  // Apply set-specific overrides (cross-set reprints not in Scrydex expansion)
-  const overrides = SET_OVERRIDES[SET_ID.toLowerCase()] || [];
-  if (overrides.length > 0) {
-    console.log(`\n📎 Applying ${overrides.length} manual override(s)...`);
-    const allCards = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, isVariant: c.isVariant || false, variantType: c.variantType || null, baseLocalId: c.baseLocalId || null }));
-    const existingIds = new Set(allCards.map(c => c.localId));
-    let added = 0;
-    for (const ov of overrides) {
-      const existingIdx = allCards.findIndex(c => c.localId === ov.localId);
-      if (existingIdx === -1) {
-        // Card doesn't exist — add it
-        allCards.push({ localId: ov.localId, name: ov.displayName || ov.name, rarity: ov.rarity, isVariant: ov.isVariant || false, variantType: ov.variantType || null, baseLocalId: ov.baseLocalId || null });
-        existingIds.add(ov.localId);
-        console.log(`  Added: ${ov.localId} | ${ov.displayName || ov.name}`);
-        added++;
-        if (!SKIP_IMAGES && ov.imageUrl) {
-          try {
-            const img = await fetch(ov.imageUrl);
-            if (img.ok) {
-              const buf = await resizeImage(Buffer.from(await img.arrayBuffer()));
-              await uploadToR2(`cards/op/${SET_ID}/${ov.localId}.webp`, buf, 'image/webp');
-              console.log(`  Image uploaded: ${ov.localId}`);
-            }
-          } catch(e) { console.warn(`  Image failed for ${ov.localId}:`, e.message); }
-        }
-      } else {
-        // Card exists — force-update name and rarity from override
-        const existing = allCards[existingIdx];
-        const changed = existing.rarity !== ov.rarity || existing.name !== (ov.displayName || ov.name);
-        if (changed) {
-          allCards[existingIdx] = { ...existing, name: ov.displayName || ov.name, rarity: ov.rarity };
-          console.log(`  Updated: ${ov.localId} | rarity: ${existing.rarity} → ${ov.rarity}`);
-          added++;
-        } else {
-          console.log(`  Skipped (already correct): ${ov.localId} | ${ov.displayName || ov.name}`);
-        }
-      }
-    }
-    if (added > 0) {
-      // Re-upload updated JSON
-      await uploadToR2(`data/op/${SET_ID}.json`, JSON.stringify({
-        setId: SET_ID, game: 'onepiece', phase: PHASE,
-        cardCount: { official: allCards.filter(c => !c.isVariant).length, total: allCards.length },
-        cards: allCards,
-      }), 'application/json');
-      console.log(`✅ data/op/${SET_ID}.json re-uploaded with ${added} override(s)`);
-    }
-  }
+  if (SKIP_IMAGES) { console.log('\n⏭️  Skipping image sync\n🎉 Done!'); return; }
 
-  if (SKIP_IMAGES) {
-    console.log('\n⏭️  Skipping image sync');
-    console.log('\n🎉 Done!');
-    return;
-  }
-
-  // Sync images
-  console.log(`\n🖼️  Syncing ${cards.length} card images...`);
+  // Step 4: Sync images
+  console.log(`\n🖼️  Syncing ${allCards.length} card images...`);
   let uploaded = 0, skipped = 0, failed = 0;
-
-  for (const card of cards) {
+  for (const card of allCards) {
     const r2Key = `cards/op/${SET_ID}/${card.localId}.webp`;
-    if (!FORCE_RESYNC && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
-    if (!card.image) { process.stdout.write('-'); failed++; continue; }
+    const overrideUrl = imageOverrides[card.localId];
+    const forceThis = overrideUrl ? true : FORCE_RESYNC;
+    if (!forceThis && await existsInR2(r2Key)) { process.stdout.write('.'); skipped++; continue; }
+    const imageUrl = overrideUrl || card.image;
+    if (!imageUrl) { process.stdout.write('-'); failed++; continue; }
     try {
-      const res = await fetch(card.image);
+      const res = await fetch(imageUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = await resizeImage(Buffer.from(await res.arrayBuffer()));
       await uploadToR2(r2Key, buf, 'image/webp');
-      process.stdout.write('+');
+      process.stdout.write(overrideUrl ? 'O' : '+');
       uploaded++;
     } catch(e) {
-      process.stdout.write('✗');
+      console.error(`\n  ✗ FAILED: ${card.localId} | ${imageUrl} | ${e.message}`);
       failed++;
     }
     await new Promise(r => setTimeout(r, 50));
   }
   console.log(`\n✅ ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
 
-  // Logo
+  // Step 5: Logo
   try {
-    const res = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${scrydexId}`, { headers: HEADERS });
+    const res = await fetchWithRetry(`${SCRYDEX_BASE}/expansions/${primaryScrydexId}`, { headers: HEADERS });
     const exp = res.data || {};
     const logoUrl = exp.logo || exp.images?.logo || null;
     if (logoUrl) {
       const img = await fetch(logoUrl);
       if (img.ok) {
         const rawBuf = Buffer.from(await img.arrayBuffer());
-        const resizedLogo = await sharp(rawBuf)
-          .resize(300, null, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 85 })
-          .toBuffer();
+        const resizedLogo = await sharp(rawBuf).resize(300, null, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toBuffer();
         await uploadToR2(`logos/op/${SET_ID}.webp`, resizedLogo, 'image/webp');
         await uploadToR2(`logos/op/${SET_ID}.png`, rawBuf, 'image/png');
         console.log(`✅ Logo uploaded (WebP + PNG)`);

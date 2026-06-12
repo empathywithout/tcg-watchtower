@@ -43,7 +43,7 @@ const SET_SERIES       = (process.env.SET_SERIES || '').trim() || (SET_ID?.start
 const SERIES_SLUG_MAP = {
   'me01': 'mega-evolution', 'me02': 'mega-evolution',
   'me02.5': 'mega-evolution', 'me02pt5': 'mega-evolution',
-  'me03': 'mega-evolution',
+  'me03': 'mega-evolution', 'me04': 'mega-evolution', 'me05': 'mega-evolution',
 };
 // .trim() guards against GitHub Actions passing empty string instead of omitting the var
 const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
@@ -98,7 +98,9 @@ const GROUP_ID_MAP = {
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
   'me01': '24380', 'me02': '24448', 'me02.5': '24541', 'me03': '24587',
-  'me04': '24655',
+  'me04': '24655', 'me05': '24688',
+  'zsv10pt5': '24325',   // Black Bolt
+  'rsv10pt5': '24326',   // White Flare
 };
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID && process.env.TCGP_GROUP_ID !== '0')
   ? process.env.TCGP_GROUP_ID
@@ -128,8 +130,6 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
     if (scrydexRes.ok) {
       const raw     = await scrydexRes.json();
       setData       = raw.data || raw;
-      // For JP phase: printedTotal is the official card count (e.g. 088), total includes secret rares
-      // Never use .total (that's DB count) — use printedTotal or cardCount
       officialCount = setData.printedTotal || setData.cardCount || setData.total || 0;
       console.log(`✅  Scrydex JP: ${setData.name || '(jp name)'} — ${officialCount} official cards`);
       setData.name = null; // Never use JP name — always use SET_FULL_NAME
@@ -140,15 +140,44 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
     console.warn(`⚠️  Scrydex metadata failed: ${e.message}`);
   }
 } else {
-  console.log(`📋 Fetching set metadata from TCGdex for ${SET_ID}…`);
-  const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
-  if (!tcgRes.ok) {
-    console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
-    process.exit(1);
+  // For ME sets and sv10pt5 sets, try Scrydex EN first since TCGdex may not have them yet
+  const SCRYDEX_EN_META_MAP = {
+    'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me4','me05':'me5',
+    'zsv10pt5':'zsv10pt5',   // Black Bolt
+    'rsv10pt5':'rsv10pt5',   // White Flare
+  };
+  const scrydexMetaId = SCRYDEX_EN_META_MAP[SET_ID];
+  let scrydexMetaOk = false;
+  if (scrydexMetaId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+    try {
+      console.log(`📋 Fetching EN set metadata from Scrydex (${scrydexMetaId})…`);
+      const scrydexRes = await fetch(`https://api.scrydex.com/pokemon/v1/expansions/${scrydexMetaId}`, {
+        headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+      });
+      if (scrydexRes.ok) {
+        const raw = await scrydexRes.json();
+        setData = raw.data || raw;
+        officialCount = setData.printedTotal || setData.cardCount || setData.total || 0;
+        console.log(`✅  Scrydex EN: ${setData.name || SET_FULL_NAME} — ${officialCount} official cards`);
+        scrydexMetaOk = true;
+      } else {
+        console.warn(`⚠️  Scrydex EN ${scrydexRes.status} — falling back to TCGdex`);
+      }
+    } catch(e) {
+      console.warn(`⚠️  Scrydex EN metadata failed: ${e.message} — falling back to TCGdex`);
+    }
   }
-  setData       = await tcgRes.json();
-  officialCount = setData.cardCount?.official || setData.cards?.length || 0;
-  console.log(`✅  TCGdex: ${setData.name} — ${officialCount} official cards`);
+  if (!scrydexMetaOk) {
+    console.log(`📋 Fetching set metadata from TCGdex for ${SET_ID}…`);
+    const tcgRes = await fetch(`https://api.tcgdex.net/v2/en/sets/${TCGDEX_SET_OVERVIEW_ID}`);
+    if (!tcgRes.ok) {
+      console.error(`❌  TCGdex ${tcgRes.status} for set ${SET_ID}`);
+      process.exit(1);
+    }
+    setData       = await tcgRes.json();
+    officialCount = setData.cardCount?.official || setData.cards?.length || 0;
+    console.log(`✅  TCGdex: ${setData.name} — ${officialCount} official cards`);
+  }
 }
 
 const releaseDate = SET_RELEASE_DATE
@@ -328,6 +357,32 @@ const SET_PRODUCTS = {
     { tcgpId: '624678', type: 'Booster Box Case',   filterKey: 'case',   badgeClass: 'badge-case',   name: 'Destined Rivals Booster Box Case (6 Boxes)',     q: 'Pokemon Destined Rivals Booster Box Case SV10', noAmazon: true },
     { tcgpId: '625677', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Destined Rivals Build & Battle Box',             q: 'Pokemon Destined Rivals Build Battle Box SV10' },
   ],
+  me05: [
+    { tcgpId: '692939', type: 'Booster Box',        filterKey: 'box',    badgeClass: 'badge-box',    name: 'Pitch Black Booster Box (36 Packs)',                 q: 'Pokemon Pitch Black Booster Box ME5' },
+    { tcgpId: '692947', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Pitch Black Elite Trainer Box',                      q: 'Pokemon Pitch Black Elite Trainer Box ME5' },
+    { tcgpId: '692949', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Pitch Black Pokémon Center Elite Trainer Box',       q: 'Pokemon Pitch Black Pokemon Center Elite Trainer Box ME5' },
+    { tcgpId: '692942', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Pitch Black Booster Bundle',                         q: 'Pokemon Pitch Black Booster Bundle ME5' },
+    { tcgpId: '692946', type: 'Build & Battle Box', filterKey: 'battle', badgeClass: 'badge-battle', name: 'Pitch Black Build & Battle Box',                     q: 'Pokemon Pitch Black Build Battle Box ME5' },
+  ],
+  me04: [
+    { tcgpId: '684444', type: 'Booster Box',               filterKey: 'box',    badgeClass: 'badge-box',    name: 'Chaos Rising Booster Box (36 Packs)',                q: 'Pokemon Chaos Rising Booster Box ME4' },
+    { tcgpId: '684450', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Elite Trainer Box',                     q: 'Pokemon Chaos Rising Elite Trainer Box ME4' },
+    { tcgpId: '684452', type: 'Elite Trainer Box',          filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Chaos Rising Pokémon Center Elite Trainer Box',      q: 'Pokemon Chaos Rising Pokemon Center Elite Trainer Box ME4' },
+    { tcgpId: '684456', type: 'Booster Bundle',             filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Chaos Rising Booster Bundle',                        q: 'Pokemon Chaos Rising Booster Bundle ME4' },
+    { tcgpId: '684445', type: 'Booster Box Case',           filterKey: 'case',   badgeClass: 'badge-case',   name: 'Chaos Rising Booster Box Case (6 Boxes)',            q: 'Pokemon Chaos Rising Booster Box Case ME4', noAmazon: true },
+    { tcgpId: '684451', type: 'Booster Box Case',           filterKey: 'case',   badgeClass: 'badge-case',   name: 'Chaos Rising ETB Case',                             q: 'Pokemon Chaos Rising Elite Trainer Box Case ME4', noAmazon: true },
+    { tcgpId: '684454', type: 'Build & Battle Box',         filterKey: 'battle', badgeClass: 'badge-battle', name: 'Chaos Rising Build & Battle Box',                    q: 'Pokemon Chaos Rising Build Battle Box ME4' },
+  ],
+  zsv10pt5: [
+    { tcgpId: '630686', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Black Bolt Elite Trainer Box',                            q: 'Pokemon Black Bolt Elite Trainer Box' },
+    { tcgpId: '630687', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'Black Bolt Pokémon Center Elite Trainer Box',             q: 'Pokemon Black Bolt Pokemon Center Elite Trainer Box' },
+    { tcgpId: '630431', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'Black Bolt Booster Bundle',                               q: 'Pokemon Black Bolt Booster Bundle' },
+  ],
+  rsv10pt5: [
+    { tcgpId: '630689', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'White Flare Elite Trainer Box',                           q: 'Pokemon White Flare Elite Trainer Box' },
+    { tcgpId: '630688', type: 'Elite Trainer Box',  filterKey: 'etb',    badgeClass: 'badge-etb',    name: 'White Flare Pokémon Center Elite Trainer Box',            q: 'Pokemon White Flare Pokemon Center Elite Trainer Box' },
+    { tcgpId: '630696', type: 'Booster Bundle',     filterKey: 'bundle', badgeClass: 'badge-bundle', name: 'White Flare Booster Bundle',                              q: 'Pokemon White Flare Booster Bundle' },
+  ],
 };
 
 if (!productMetaJson) {
@@ -451,6 +506,21 @@ const SEO_DATA = {
     metaDesc: 'Full Chaos Rising ME4 card list with live prices. Every card, Mega Greninja ex chase pulls, Special Illustration Rares, and booster box values updated daily.',
     intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and real-time secondary market prices from TCGplayer that update daily.',
   },
+  'me05': {
+    metaTitle: 'Pitch Black Card List and Prices | TCG Watchtower',
+    metaDesc: 'Full Pitch Black ME5 card list with live prices. Mega Darkrai ex, Mega Zeraora ex, Special Illustration Rares, and booster box values updated daily.',
+    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 17, 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases on July 17, 2026.',
+  },
+  'zsv10pt5': {
+    metaTitle: 'Black Bolt Card List and Prices | TCG Watchtower',
+    metaDesc: 'Complete Black Bolt card list with live TCGplayer prices. Every Unova Pokemon card, Zekrom ex chase pulls, Special Illustration Rares, and sealed product values.',
+    intro: 'Black Bolt is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside White Flare. Together the two sets cover all 156 Pokemon from the Unova region — Black Bolt focuses on the Dark and Lightning types centered around Zekrom ex. Every Pokemon in Black Bolt has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete Black Bolt card list includes every card with rarity filters and live market prices from TCGplayer updated daily.',
+  },
+  'rsv10pt5': {
+    metaTitle: 'White Flare Card List and Prices | TCG Watchtower',
+    metaDesc: 'Complete White Flare card list with live TCGplayer prices. Every Unova Pokemon card, Reshiram ex chase pulls, Special Illustration Rares, and sealed product values.',
+    intro: 'White Flare is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside Black Bolt. Together the two sets cover all 156 Pokemon from the Unova region — White Flare focuses on the Fire and Water types centered around Reshiram ex. Every Pokemon in White Flare has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete White Flare card list includes every card with rarity filters and live market prices from TCGplayer updated daily.',
+  },
 };
 
 const seoData   = SEO_DATA[SET_ID] || {};
@@ -491,7 +561,7 @@ const vars = {
   '{{SEO_META_TITLE}}':     SEO_META_TITLE,
   '{{SEO_META_DESC}}':      SEO_META_DESC,
   '{{SEO_INTRO}}':          SEO_INTRO,
-  '{{BODY_BACKGROUND}}': PHASE === 'jp' ? 'transparent' : 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
+  '{{BODY_BACKGROUND}}': 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
 };
 
 for (const [placeholder, value] of Object.entries(vars)) {
@@ -499,11 +569,9 @@ for (const [placeholder, value] of Object.entries(vars)) {
 }
 
 // ── Handle JP phase conditional blocks ────────────────────────────────────────
-// {{#IF_JP_PHASE}}...{{/IF_JP_PHASE}} blocks are shown only when PHASE=jp
 if (PHASE === 'jp') {
   html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
 
-  // Auto-patch api/cards.js SCRYDEX_JP_ID_MAP with the new JP set ID
   if (JP_SCRYDEX_ID) {
     try {
       const { execSync } = await import('child_process');
@@ -525,7 +593,6 @@ if (r2Url) {
   );
 }
 
-// Handle SEO intro conditional block
 if (SEO_INTRO) {
   html = html.replace(/\{\{#IF_SEO_INTRO\}\}([\s\S]*?)\{\{\/IF_SEO_INTRO\}\}/g, '$1');
 } else {
@@ -578,11 +645,14 @@ const ALL_KNOWN_SETS = [
   { slug: 'prismatic-evolutions-card-list',    name: 'Prismatic Evolutions',            series: 'Scarlet & Violet', short: 'PRE',  setId: 'sv8pt5'  },
   { slug: 'journey-together-card-list',        name: 'Journey Together (SV9)',          series: 'Scarlet & Violet', short: 'SV9',  setId: 'sv09'    },
   { slug: 'destined-rivals-card-list',         name: 'Destined Rivals (SV10)',          series: 'Scarlet & Violet', short: 'SV10', setId: 'sv10'    },
+  { slug: 'pokemon/sets/scarlet-violet/black-bolt/cards', name: 'Black Bolt',           series: 'Scarlet & Violet', short: 'BBT',  setId: 'zsv10pt5'},
+  { slug: 'pokemon/sets/scarlet-violet/white-flare/cards', name: 'White Flare',         series: 'Scarlet & Violet', short: 'WHF',  setId: 'rsv10pt5'},
   { slug: 'pokemon/sets/mega-evolution/base-set/cards',      name: 'Mega Evolution (ME1)', series: 'Mega Evolution', short: 'ME01', setId: 'me01'    },
   { slug: 'phantasmal-flames-card-list',       name: 'Phantasmal Flames',               series: 'Mega Evolution',   short: 'PFL',  setId: 'me02'    },
-  { slug: 'pokemon/sets/mega-evolution/ascended-heroes/cards', name: 'Ascended Heroes',  series: 'Mega Evolution',   short: 'ASC',  setId: 'me02pt5' },
+  { slug: 'pokemon/sets/mega-evolution/ascended-heroes/cards', name: 'Ascended Heroes', series: 'Mega Evolution',   short: 'ASC',  setId: 'me02pt5' },
   { slug: 'perfect-order-card-list',           name: 'Perfect Order (ME3)',             series: 'Mega Evolution',   short: 'ME3',  setId: 'me03'    },
   { slug: 'chaos-rising-card-list',            name: 'Chaos Rising (ME4)',              series: 'Mega Evolution',   short: 'ME4',  setId: 'me04'    },
+  { slug: 'pitch-black-card-list',             name: 'Pitch Black (ME5)',               series: 'Mega Evolution',   short: 'ME5',  setId: 'me05'    },
 ];
 
 const setsPath = 'sets.json';
@@ -628,15 +698,11 @@ const CARD_WILDCARD = {
   destination: '/pokemon/sets/:series/:set/cards/:slug.html',
 };
 
-// Strip wildcard before mutating — always re-pin it last
 vercel.rewrites = vercel.rewrites.filter(r => r.source !== CARD_WILDCARD.source);
-
-// Remove any stale rewrites for this set
 vercel.rewrites = vercel.rewrites.filter(r =>
   !r.source.startsWith(`/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/`)
 );
 
-// Add fresh rewrites for cards, sealed-product, most-valuable, top-chase-cards
 vercel.rewrites.push(
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards`,          destination: `/${SET_SLUG}.html` },
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/sealed-product`, destination: `/${SET_SLUG}.html` },
@@ -644,10 +710,8 @@ vercel.rewrites.push(
   { source: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/top-chase-cards`,destination: `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/top-chase-cards.html` },
 );
 
-// Pin wildcard last
 vercel.rewrites.push(CARD_WILDCARD);
 
-// Add redirect from flat slug → canonical URL (if not already present)
 const flatSource = `/${SET_SLUG}`;
 const flatDest   = `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards`;
 if (!vercel.redirects.find(r => r.source === flatSource)) {
@@ -655,7 +719,6 @@ if (!vercel.redirects.find(r => r.source === flatSource)) {
   console.log(`\n🔀 Added redirect ${flatSource} → ${flatDest}`);
 }
 
-// If SET_URL_SLUG differs from SET_SLUG-without-card-list, also redirect the old long path
 const oldUrlSlug = SET_SLUG.replace('-card-list', '');
 if (oldUrlSlug !== SET_URL_SLUG) {
   const oldSources = [

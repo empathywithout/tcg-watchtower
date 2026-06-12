@@ -1,0 +1,27 @@
+name: List OP15 Cards
+
+on:
+  workflow_dispatch:
+
+jobs:
+  list-cards:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List OP15 cards from TCGplayer
+        run: |
+          node -e "
+          fetch('https://tcgcsv.com/tcgplayer/68/24637/products', {
+            headers: { 'User-Agent': 'TCGWatchtower/1.0', 'Accept': 'application/json' }
+          })
+          .then(r => r.json())
+          .then(j => {
+            const cards = j.results.filter(p => p.extendedData?.find(d => d.name === 'Number'));
+            console.log('Total cards:', cards.length);
+            cards.forEach(p => {
+              const num = p.extendedData.find(d => d.name === 'Number')?.value;
+              const rarity = p.extendedData.find(d => d.name === 'Rarity')?.value;
+              console.log(num + '|' + p.name + '|' + (rarity || ''));
+            });
+          })
+          .catch(e => console.error(e.message));
+          "

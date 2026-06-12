@@ -357,12 +357,52 @@
       "destination": "/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "destination": "/perfect-order-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
+    },
+    {
       "source": "/one-piece",
       "destination": "/sets.html"
     },
     {
       "source": "/one-piece/sets",
       "destination": "/sets.html"
+    },
+    {
+      "source": "/one-piece/sets/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/cards",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/sealed-product",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/the-azure-seas-seven/cards",
+      "destination": "/the-azure-seas-seven-card-list.html"
+    },
+    {
+      "source": "/one-piece/sets/the-azure-seas-seven/top-chase-cards",
+      "destination": "/the-azure-seas-seven-card-list.html"
     },
     {
       "source": "/one-piece/sets/:slug/cards",
@@ -397,6 +437,30 @@
       "destination": "/phantasmal-flames-card-list.html"
     },
     {
+      "source": "/heroines-edition-card-list",
+      "destination": "/heroines-edition-card-list.html"
+    },
+    {
+      "source": "/the-azure-seas-seven-card-list",
+      "destination": "/the-azure-seas-seven-card-list.html"
+    },
+    {
+      "source": "/giveaway",
+      "destination": "/giveaway/index.html"
+    },
+    {
+      "source": "/giveaway/admin",
+      "destination": "/giveaway/admin.html"
+    },
+    {
+      "source": "/one-piece/sets/adventure-on-kamis-island/most-valuable",
+      "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
+    },
+    {
+      "source": "/one-piece/sets/:set/cards/:slug",
+      "destination": "/one-piece/sets/:set/cards/:slug.html"
+    },
+    {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/cards",
       "destination": "/chaos-rising-card-list.html"
     },
@@ -405,68 +469,60 @@
       "destination": "/chaos-rising-card-list.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable.html"
+    },
+    {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards",
-      "destination": "/chaos-rising-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards.html"
     },
     {
-      "source": "/heroines-edition-card-list",
-      "destination": "/heroines-edition-card-list.html"
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "destination": "/pitch-black-card-list.html"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/cards",
-      "destination": "/heroines-edition-card-list.html"
+      "source": "/pokemon/sets/mega-evolution/pitch-black/sealed-product",
+      "destination": "/pitch-black-card-list.html"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/sealed-product",
-      "destination": "/heroines-edition-card-list.html"
+      "source": "/pokemon/sets/mega-evolution/pitch-black/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/most-valuable.html"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
-      "destination": "/heroines-edition-card-list.html"
+      "source": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
     },
     {
-      "source": "/the-azure-seas-seven-card-list",
-      "destination": "/the-azure-seas-seven-card-list.html"
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/cards",
+      "destination": "/black-bolt-card-list.html"
     },
     {
-      "source": "/one-piece/sets/the-azure-seas-seven/cards",
-      "destination": "/the-azure-seas-seven-card-list.html"
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/sealed-product",
+      "destination": "/black-bolt-card-list.html"
     },
     {
-      "source": "/one-piece/sets/the-azure-seas-seven/top-chase-cards",
-      "destination": "/the-azure-seas-seven-card-list.html"
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/most-valuable.html"
     },
     {
-      "source": "/pokemon/sets/perfect-order/perfect-order/cards",
-      "destination": "/perfect-order-card-list.html"
+      "source": "/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/perfect-order/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
+      "source": "/pokemon/sets/scarlet-violet/white-flare/cards",
+      "destination": "/white-flare-card-list.html"
     },
     {
-      "source": "/pokemon/sets/perfect-order/perfect-order/most-valuable",
-      "destination": "/pokemon/sets/perfect-order/perfect-order/most-valuable.html"
+      "source": "/pokemon/sets/scarlet-violet/white-flare/sealed-product",
+      "destination": "/white-flare-card-list.html"
     },
     {
-      "source": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards",
-      "destination": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards.html"
+      "source": "/pokemon/sets/scarlet-violet/white-flare/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/most-valuable.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/cards",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
+      "source": "/pokemon/sets/scarlet-violet/white-flare/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/top-chase-cards.html"
     },
     {
       "source": "/pokemon/sets/:series/:set/cards/:slug",
@@ -672,6 +728,71 @@
     {
       "source": "/perfect-order-card-list",
       "destination": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "permanent": true
+    },
+    {
+      "source": "/chaos-rising-card-list",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "permanent": true
+    },
+    {
+      "source": "/one-piece/sets/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/chaos-rising/chaos-rising/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/perfect-order/perfect-order/cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/perfect-order/perfect-order/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/perfect-order/perfect-order/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/perfect-order/perfect-order/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/pitch-black-card-list",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/black-bolt-card-list",
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/cards",
+      "permanent": true
+    },
+    {
+      "source": "/white-flare-card-list",
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/cards",
       "permanent": true
     }
   ],

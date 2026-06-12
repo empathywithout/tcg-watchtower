@@ -417,7 +417,7 @@ nav.container {
 .buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }
 .buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
 .buy-link {
-  padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700;
+  padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;
   text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
 }
 .buy-amazon { background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.3); color:var(--accent-amber); }
@@ -1322,10 +1322,10 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
-  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare', 'Black White Rare'];
+  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Black White Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
+  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Black White Rare': 'BWR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Black White Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
 
   if (cards && cards.length) {
     currentChaseList = cards
@@ -1392,6 +1392,7 @@ function renderChaseCardsHTML(grid) {
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
+          <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/{{SET_OFFICIAL_COUNT}}', '{{SET_TCGP_SLUG}}')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -1621,7 +1622,7 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      if (SET_PHASE === 'en') loadTCGPlayerPrices();
+      loadTCGPlayerPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
@@ -1709,6 +1710,9 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
       <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
+        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
+          <span>🛒 Find on Amazon</span><span>→</span>
+        </a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
