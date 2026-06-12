@@ -1275,10 +1275,11 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
 
       if (!cards.length) { results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">No cards found</div>'; results.classList.add('open'); return; }
 
-      results.innerHTML = cards.map(c => {
+      window._searchResultsCache = cards;
+      results.innerHTML = cards.map((c, i) => {
         const img = cardImgPath(setId, c.localId);
-        return `<div class="search-result-item" onclick="selectCard(${JSON.stringify(JSON.stringify(c)).slice(1,-1)}, '${setId}')">
-          <img class="search-result-img" src="${img}" alt="${c.name}" onerror="this.style.background='#1e293b'">
+        return `<div class="search-result-item" onclick="selectCardFromCache(${i}, '${setId}')">
+          <img class="search-result-img" src="${img}" alt="${c.name.replace(/"/g, '&quot;')}" onerror="this.style.background='#1e293b'">
           <div class="search-result-info">
             <div class="search-result-name">${c.name}</div>
             <div class="search-result-meta">#${c.localId} · ${c.rarity || '—'}</div>
@@ -1293,8 +1294,9 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
   }, 300);
 });
 
-function selectCard(cardJson, setId) {
-  const card = JSON.parse(cardJson);
+function selectCardFromCache(index, setId) {
+  const card = (window._searchResultsCache || [])[index];
+  if (!card) return;
   pendingCard = { ...card, setId };
   document.getElementById('search-results').classList.remove('open');
   document.getElementById('card-search').value = card.name;
