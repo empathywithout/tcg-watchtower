@@ -47,7 +47,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .sync-indicator.syncing{color:var(--amber)}
 
 /* STATS BAR */
-.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:32px}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.stats-bar.with-week{grid-template-columns:repeat(5,1fr)}
 .stat-box{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-box-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:white}
 .stat-box-val.green{color:#4ade80}
@@ -139,7 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 
 @media(max-width:640px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
-  .stats-bar .stat-box:last-child{grid-column:span 2}
+  .stats-bar.with-week .stat-box:last-child{grid-column:span 2}
   .collection-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .form-row{grid-template-columns:1fr}
   .page-title{font-size:2.2rem}
@@ -724,7 +725,7 @@ nav.container {
       <div class="stat-box-val" id="stat-sets">0</div>
       <div class="stat-box-label">Sets</div>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" id="stat-week-box" style="display:none">
       <div class="stat-box-val" id="stat-week-change">—</div>
       <div class="stat-box-label">This Week</div>
     </div>
@@ -839,6 +840,9 @@ nav.container {
 const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 const LS_KEY = 'tcgw_portfolio_v1';
 
+// Set to true once Scrydex plan includes graded prices + trend data
+const ENABLE_GRADED_PRICING = false;
+
 function isOnePiece(setId) {
   const id = (setId || '').toLowerCase();
   return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
@@ -939,6 +943,12 @@ async function init() {
 
   // Load sets for filter/add dropdown
   await loadSets();
+
+  if (ENABLE_GRADED_PRICING) {
+    document.querySelector('.stats-bar').classList.add('with-week');
+    document.getElementById('stat-week-box').style.display = '';
+  }
+
   renderStats();
   renderCompletion();
 }
@@ -1043,7 +1053,7 @@ function renderCollection() {
   renderStats();
   renderCompletion();
   loadPrices();
-  loadTrends();
+  if (ENABLE_GRADED_PRICING) loadTrends();
 }
 
 function renderCollectionGrid() {
@@ -1082,12 +1092,14 @@ function renderCollectionGrid() {
       ? `<span class="col-card-price">$${displayPrice.toFixed(2)}</span>`
       : `<span class="col-card-price loading">—</span>`;
 
-    const trendBadge = renderTrendBadge(trends);
+    const trendBadge = ENABLE_GRADED_PRICING ? renderTrendBadge(trends) : '';
 
     const gradedLabel = c.graded ? `${c.graded.company} ${c.graded.grade}` : 'Graded';
-    const gradedBadge = `<span class="graded-badge" onclick="toggleGradedPicker(${idx})" title="Set graded value">${c.graded ? '🏆 ' + gradedLabel : '+ Graded'}</span>`;
+    const gradedBadge = ENABLE_GRADED_PRICING
+      ? `<span class="graded-badge" onclick="toggleGradedPicker(${idx})" title="Set graded value">${c.graded ? '🏆 ' + gradedLabel : '+ Graded'}</span>`
+      : '';
 
-    const gradedPicker = `
+    const gradedPicker = ENABLE_GRADED_PRICING ? `
       <div class="graded-picker" id="graded-picker-${idx}" style="display:none">
         <select id="graded-company-${idx}">
           <option value="PSA" ${c.graded?.company==='PSA'?'selected':''}>PSA</option>
@@ -1097,7 +1109,7 @@ function renderCollectionGrid() {
         <input type="number" id="graded-grade-${idx}" min="1" max="10" step="0.5" value="${c.graded?.grade || '10'}" placeholder="Grade">
         <button class="qty-btn" onclick="applyGraded(${idx})" title="Apply">✓</button>
         ${c.graded ? `<button class="gp-clear" onclick="clearGraded(${idx})" title="Remove graded">✕</button>` : ''}
-      </div>`;
+      </div>` : '';
 
     return `
     <div class="col-card" data-idx="${idx}">
