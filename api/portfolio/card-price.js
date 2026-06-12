@@ -1,19 +1,25 @@
 // api/portfolio/card-price.js
 // Returns Scrydex pricing data (raw + trends, optionally graded) for a single card.
-// Used by portfolio.html for per-card trend badges and graded card values.
+// Cached in Upstash Redis (shared across all users/cold starts) for 6 hours
+// to minimize Scrydex API usage.
 //
 // URL: GET /api/portfolio/card-price?set=zsv10pt5&localId=172
 //      GET /api/portfolio/card-price?set=zsv10pt5&localId=172&grade=10&company=PSA
 //
 // Response:
 //   {
-//     raw:    { market, low, currency, trends: { days_7: {...}, days_30: {...} } } | null,
-//     graded: { market, low, mid, high, currency, grade, company } | null
+//     raw:    { condition, market, low, currency, trends } | null,
+//     graded: { grade, company, market, low, mid, high, currency, trends } | null
 //   }
 
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const SCRYDEX_BASE    = 'https://api.scrydex.com/pokemon/v1';
+
+const KV_URL   = process.env.KV_REST_API_URL   || '';
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || '';
+
+const REDIS_TTL_SECONDS = 6 * 60 * 60; // 6 hours — shared across all users
 
 // Our internal setId -> Scrydex EN expansion ID
 // Mirrors SCRYDEX_EN_ID_MAP in api/cards.js and scripts/sync-images.js
@@ -27,8 +33,40 @@ const SCRYDEX_EN_ID_MAP = {
   'zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
 };
 
-const cache = new Map();
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes — prices don't need to be real-time
+// ── In-memory cache (fast path within a warm function instance) ────────────
+const memCache = new Map();
+const MEM_TTL_MS = 30 * 60 * 1000; // 30 min
+
+// ── Redis helpers (shared across instances/cold starts) ────────────────────
+async function redisGet(key) {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const res = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!res.ok) return null;
+    const { result } = await res.json();
+    return result ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function redisSet(key, value, ttlSeconds) {
+  if (!KV_URL || !KV_TOKEN) return;
+  try {
+    await fetch(`${KV_URL}/set/${encodeURIComponent(key)}?EX=${ttlSeconds}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${KV_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ value }),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch { /* best-effort cache write */ }
+}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -45,9 +83,6 @@ export default async function handler(req, res) {
   if (!setId || !localId) {
     return res.status(400).json({ error: 'Missing ?set= or ?localId=' });
   }
-  if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
-    return res.status(503).json({ error: 'Scrydex credentials not configured' });
-  }
 
   const scrydexExpansion = SCRYDEX_EN_ID_MAP[setId];
   if (!scrydexExpansion) {
@@ -55,13 +90,31 @@ export default async function handler(req, res) {
   }
 
   const scrydexCardId = `${scrydexExpansion}-${localId}`;
-  const cacheKey = `${scrydexCardId}:${company}:${grade}`;
+  const cacheKey = `priceData:${scrydexCardId}:${company}:${grade}`;
 
-  const cached = cache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
-    res.setHeader('X-Cache', 'HIT');
+  // 1. In-memory cache (fastest, per warm instance)
+  const mem = memCache.get(cacheKey);
+  if (mem && Date.now() - mem.ts < MEM_TTL_MS) {
+    res.setHeader('X-Cache', 'MEM-HIT');
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
-    return res.status(200).json(cached.data);
+    return res.status(200).json(mem.data);
+  }
+
+  // 2. Redis cache (shared across instances + cold starts)
+  const redisVal = await redisGet(cacheKey);
+  if (redisVal) {
+    try {
+      const data = JSON.parse(redisVal);
+      memCache.set(cacheKey, { ts: Date.now(), data });
+      res.setHeader('X-Cache', 'REDIS-HIT');
+      res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
+      return res.status(200).json(data);
+    } catch { /* fall through to fetch fresh */ }
+  }
+
+  // 3. Fetch fresh from Scrydex
+  if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
+    return res.status(503).json({ error: 'Scrydex credentials not configured' });
   }
 
   try {
@@ -122,7 +175,12 @@ export default async function handler(req, res) {
     }
 
     const data = { raw, graded };
-    cache.set(cacheKey, { ts: Date.now(), data });
+
+    // Write to both caches
+    memCache.set(cacheKey, { ts: Date.now(), data });
+    await redisSet(cacheKey, JSON.stringify(data), REDIS_TTL_SECONDS);
+
+    res.setHeader('X-Cache', 'MISS');
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json(data);
 
