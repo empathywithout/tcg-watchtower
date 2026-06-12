@@ -47,7 +47,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .sync-indicator.syncing{color:var(--amber)}
 
 /* STATS BAR */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:32px}
 .stat-box{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-box-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:white}
 .stat-box-val.green{color:#4ade80}
@@ -79,6 +79,16 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .qty-btn:hover{background:rgba(59,130,246,.3)}
 .qty-val{font-size:.8rem;font-weight:700;font-family:'Space Mono',monospace;min-width:18px;text-align:center}
 .condition-badge{font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:4px;cursor:pointer}
+.trend-badge{font-size:.65rem;font-weight:700;font-family:'Space Mono',monospace;padding:1px 5px;border-radius:4px;margin-left:4px}
+.trend-up{color:#4ade80;background:rgba(74,222,128,.12)}
+.trend-down{color:#f87171;background:rgba(239,68,68,.12)}
+.graded-badge{font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:4px;cursor:pointer;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:#c084fc;white-space:nowrap}
+.graded-badge:hover{background:rgba(168,85,247,.25)}
+.graded-picker{display:flex;gap:4px;align-items:center;margin-top:6px}
+.graded-picker select,.graded-picker input{background:rgba(15,23,42,.8);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:white;font-size:.65rem;padding:2px 4px;font-family:'DM Sans',sans-serif}
+.graded-picker select{flex:1}
+.graded-picker input{width:36px}
+.graded-picker .gp-clear{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:4px;font-size:.65rem;padding:2px 6px;cursor:pointer}
 .cond-NM{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80}
 .cond-LP{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
 .cond-MP{background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);color:#fb923c}
@@ -129,6 +139,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 
 @media(max-width:640px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .stats-bar .stat-box:last-child{grid-column:span 2}
   .collection-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .form-row{grid-template-columns:1fr}
   .page-title{font-size:2.2rem}
@@ -713,6 +724,10 @@ nav.container {
       <div class="stat-box-val" id="stat-sets">0</div>
       <div class="stat-box-label">Sets</div>
     </div>
+    <div class="stat-box">
+      <div class="stat-box-val" id="stat-week-change">—</div>
+      <div class="stat-box-label">This Week</div>
+    </div>
   </div>
 
   <!-- SET COMPLETION -->
@@ -880,6 +895,7 @@ let user        = null;   // Discord user or null
 let portfolio   = [];     // array of card objects
 let sets        = [];     // from sets.json
 let priceCache  = {};     // localId → price
+let trendCache  = {};     // setId:localId(:company:grade) → { raw, graded }
 let pendingCard = null;   // card being added
 
 /* ===== STORAGE ===== */
@@ -1027,6 +1043,7 @@ function renderCollection() {
   renderStats();
   renderCompletion();
   loadPrices();
+  loadTrends();
 }
 
 function renderCollectionGrid() {
@@ -1042,13 +1059,46 @@ function renderCollectionGrid() {
   empty.style.display = 'none';
 
   grid.innerHTML = cards.map((c, i) => {
-    const imgUrl   = c.image || cardImgPath(c.setId, c.localId);
-    const priceKey = `${c.setId}:${c.localId}`;
-    const price    = priceCache[priceKey];
-    const priceHtml = price != null
-      ? `<span class="col-card-price">$${price.toFixed(2)}</span>`
+    const imgUrl    = c.image || cardImgPath(c.setId, c.localId);
+    const priceKey  = `${c.setId}:${c.localId}`;
+    const trendKey  = trendCacheKey(c);
+    const trendData = trendCache[trendKey];
+    const idx       = portfolio.indexOf(c); // real index for mutations
+
+    // Determine displayed price: graded price (if set + available) else TCGCSV market price
+    let displayPrice = priceCache[priceKey];
+    let trends = null;
+    if (trendData) {
+      if (c.graded && trendData.graded) {
+        displayPrice = trendData.graded.market ?? displayPrice;
+        trends = trendData.graded.trends;
+      } else if (trendData.raw) {
+        displayPrice = trendData.raw.market ?? displayPrice;
+        trends = trendData.raw.trends;
+      }
+    }
+
+    const priceHtml = displayPrice != null
+      ? `<span class="col-card-price">$${displayPrice.toFixed(2)}</span>`
       : `<span class="col-card-price loading">—</span>`;
-    const idx = portfolio.indexOf(c); // real index for mutations
+
+    const trendBadge = renderTrendBadge(trends);
+
+    const gradedLabel = c.graded ? `${c.graded.company} ${c.graded.grade}` : 'Graded';
+    const gradedBadge = `<span class="graded-badge" onclick="toggleGradedPicker(${idx})" title="Set graded value">${c.graded ? '🏆 ' + gradedLabel : '+ Graded'}</span>`;
+
+    const gradedPicker = `
+      <div class="graded-picker" id="graded-picker-${idx}" style="display:none">
+        <select id="graded-company-${idx}">
+          <option value="PSA" ${c.graded?.company==='PSA'?'selected':''}>PSA</option>
+          <option value="CGC" ${c.graded?.company==='CGC'?'selected':''}>CGC</option>
+          <option value="BGS" ${c.graded?.company==='BGS'?'selected':''}>BGS</option>
+        </select>
+        <input type="number" id="graded-grade-${idx}" min="1" max="10" step="0.5" value="${c.graded?.grade || '10'}" placeholder="Grade">
+        <button class="qty-btn" onclick="applyGraded(${idx})" title="Apply">✓</button>
+        ${c.graded ? `<button class="gp-clear" onclick="clearGraded(${idx})" title="Remove graded">✕</button>` : ''}
+      </div>`;
+
     return `
     <div class="col-card" data-idx="${idx}">
       <img class="col-card-img" src="${imgUrl}" alt="${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
@@ -1056,7 +1106,7 @@ function renderCollectionGrid() {
         <div class="col-card-name" title="${c.name}">${c.name}</div>
         <div class="col-card-set">${c.setId.toUpperCase()} #${c.localId}</div>
         <div class="col-card-row">
-          ${priceHtml}
+          ${priceHtml}${trendBadge}
           <span class="condition-badge cond-${c.condition}" onclick="cycleCondition(${idx})" title="Click to change">${c.condition}</span>
         </div>
         <div class="col-card-row" style="margin-top:6px">
@@ -1065,7 +1115,9 @@ function renderCollectionGrid() {
             <span class="qty-val">${c.qty}</span>
             <button class="qty-btn" onclick="adjustQty(${idx},+1)">+</button>
           </div>
+          ${gradedBadge}
         </div>
+        ${gradedPicker}
       </div>
     </div>`;
   }).join('');
@@ -1085,6 +1137,31 @@ function renderStats() {
   document.getElementById('stat-unique').textContent  = unique;
   document.getElementById('stat-sets').textContent    = setIds.size;
   document.getElementById('stat-value').textContent   = hasAny ? `$${value.toFixed(2)}` : '—';
+
+  // Weighted 7-day value change across owned cards with trend data
+  let weekChangeTotal = 0;
+  let weekChangeHasAny = false;
+  portfolio.forEach(c => {
+    const key  = trendCacheKey(c);
+    const data = trendCache[key];
+    const priceObj = c.graded ? data?.graded : data?.raw;
+    const t7 = priceObj?.trends?.days_7;
+    if (t7 && t7.price_change != null) {
+      weekChangeTotal += t7.price_change * (c.qty || 1);
+      weekChangeHasAny = true;
+    }
+  });
+  const weekEl = document.getElementById('stat-week-change');
+  if (weekChangeHasAny) {
+    const sign = weekChangeTotal >= 0 ? '+' : '';
+    weekEl.textContent = `${sign}$${weekChangeTotal.toFixed(2)}`;
+    weekEl.className = 'stat-box-val ' + (weekChangeTotal >= 0 ? 'green' : '');
+    weekEl.style.color = weekChangeTotal < 0 ? '#f87171' : '';
+  } else {
+    weekEl.textContent = '—';
+    weekEl.className = 'stat-box-val';
+    weekEl.style.color = '';
+  }
 }
 
 /* ===== SET COMPLETION ===== */
@@ -1227,6 +1304,76 @@ async function loadPrices() {
 
   renderCollectionGrid();
   renderStats();
+}
+
+/* ===== TRENDS & GRADED PRICES (Scrydex) ===== */
+function trendCacheKey(c) {
+  if (c.graded) return `${c.setId}:${c.localId}:${c.graded.company}:${c.graded.grade}`;
+  return `${c.setId}:${c.localId}`;
+}
+
+function renderTrendBadge(trends) {
+  if (!trends) return '';
+  const t = trends.days_7 || trends.days_30;
+  if (!t || t.percent_change == null) return '';
+  const pct = t.percent_change;
+  if (pct === 0) return '';
+  const isUp = pct > 0;
+  const arrow = isUp ? '▲' : '▼';
+  const cls   = isUp ? 'trend-up' : 'trend-down';
+  const period = trends.days_7 ? '7d' : '30d';
+  return `<span class="trend-badge ${cls}">${arrow} ${Math.abs(pct).toFixed(1)}% ${period}</span>`;
+}
+
+// Fetch Scrydex price+trend data for each owned card (one call per unique card/grade combo)
+// Cached client-side for the session — backed by 6hr server-side Redis cache too
+async function loadTrends() {
+  const seen = new Set();
+  const jobs = [];
+
+  for (const c of portfolio) {
+    const key = trendCacheKey(c);
+    if (seen.has(key) || trendCache[key]) continue;
+    seen.add(key);
+
+    let url = `/api/portfolio/card-price?set=${c.setId}&localId=${c.localId}`;
+    if (c.graded) url += `&grade=${encodeURIComponent(c.graded.grade)}&company=${encodeURIComponent(c.graded.company)}`;
+
+    jobs.push(
+      fetch(url).then(r => r.ok ? r.json() : null).then(data => {
+        if (data) trendCache[key] = data;
+      }).catch(() => {})
+    );
+  }
+
+  if (jobs.length === 0) return;
+  await Promise.all(jobs);
+  renderCollectionGrid();
+  renderStats();
+}
+
+function toggleGradedPicker(idx) {
+  const picker = document.getElementById(`graded-picker-${idx}`);
+  if (!picker) return;
+  picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+}
+
+function applyGraded(idx) {
+  const company = document.getElementById(`graded-company-${idx}`)?.value;
+  const grade   = document.getElementById(`graded-grade-${idx}`)?.value;
+  if (!portfolio[idx] || !company || !grade) return;
+
+  portfolio[idx].graded = { company, grade: String(grade) };
+  savePortfolio();
+  renderCollection();
+  loadTrends();
+}
+
+function clearGraded(idx) {
+  if (!portfolio[idx]) return;
+  delete portfolio[idx].graded;
+  savePortfolio();
+  renderCollection();
 }
 
 /* ===== MUTATIONS ===== */
