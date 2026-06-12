@@ -1026,6 +1026,13 @@ function getFiltered() {
 }
 
 function renderCollection() {
+  renderCollectionGrid();
+  renderStats();
+  renderCompletion();
+  loadPrices();
+}
+
+function renderCollectionGrid() {
   const grid   = document.getElementById('collection-grid');
   const empty  = document.getElementById('empty-state');
   const cards  = getFiltered();
@@ -1066,10 +1073,6 @@ function renderCollection() {
       </div>
     </div>`;
   }).join('');
-
-  renderStats();
-  renderCompletion();
-  loadPrices();
 }
 
 function renderStats() {
@@ -1226,7 +1229,8 @@ async function loadPrices() {
     } catch {}
   }
 
-  renderCollection();
+  renderCollectionGrid();
+  renderStats();
 }
 
 /* ===== MUTATIONS ===== */
