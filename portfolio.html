@@ -78,9 +78,6 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .qty-btn{width:22px;height:22px;border-radius:4px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;font-family:inherit}
 .qty-btn:hover{background:rgba(59,130,246,.3)}
 .qty-val{font-size:.8rem;font-weight:700;font-family:'Space Mono',monospace;min-width:18px;text-align:center}
-.col-card-remove{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:.75rem;cursor:pointer;display:none;align-items:center;justify-content:center;transition:background .15s}
-.col-card:hover .col-card-remove{display:flex}
-.col-card-remove:hover{background:rgba(239,68,68,.35)}
 .condition-badge{font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:4px;cursor:pointer}
 .cond-NM{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80}
 .cond-LP{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
@@ -1054,7 +1051,6 @@ function renderCollectionGrid() {
     const idx = portfolio.indexOf(c); // real index for mutations
     return `
     <div class="col-card" data-idx="${idx}">
-      <button class="col-card-remove" onclick="removeCard(${idx})" title="Remove">✕</button>
       <img class="col-card-img" src="${imgUrl}" alt="${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="col-card-info">
         <div class="col-card-name" title="${c.name}">${c.name}</div>
@@ -1236,7 +1232,16 @@ async function loadPrices() {
 /* ===== MUTATIONS ===== */
 function adjustQty(idx, delta) {
   if (!portfolio[idx]) return;
-  portfolio[idx].qty = Math.max(1, (portfolio[idx].qty || 1) + delta);
+  const newQty = (portfolio[idx].qty || 1) + delta;
+  if (newQty <= 0) {
+    const name = portfolio[idx].name;
+    portfolio.splice(idx, 1);
+    savePortfolio();
+    renderCollection();
+    showToast(`Removed ${name} from collection`);
+    return;
+  }
+  portfolio[idx].qty = newQty;
   savePortfolio();
   renderCollection();
 }
@@ -1247,13 +1252,6 @@ function cycleCondition(idx) {
   portfolio[idx].condition = conditions[(conditions.indexOf(cur) + 1) % conditions.length];
   savePortfolio();
   renderCollection();
-}
-
-function removeCard(idx) {
-  portfolio.splice(idx, 1);
-  savePortfolio();
-  renderCollection();
-  showToast('Card removed from collection');
 }
 
 /* ===== ADD CARD MODAL ===== */
