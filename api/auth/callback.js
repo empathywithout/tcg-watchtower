@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         client_secret: process.env.PORTFOLIO_DISCORD_CLIENT_SECRET,
         grant_type:    'authorization_code',
         code,
-        redirect_uri:  process.env.DISCORD_REDIRECT_URI,
+        redirect_uri:  process.env.PORTFOLIO_DISCORD_REDIRECT_URI,
       }),
     });
 
