@@ -12,14 +12,11 @@ export default async function handler(req, res) {
     const raw = await redisGet(`portfolio:${user.id}`);
     if (!raw) return res.status(200).json({ cards: [] });
 
-    // Upstash REST returns { result: "<stringified value>" } — parse twice if needed
-    let parsed = raw;
-    if (typeof parsed === 'string') {
-      try { parsed = JSON.parse(parsed); } catch { /* not JSON, leave as-is */ }
-    }
-    // If parsed is still a string (double-encoded), parse again
-    if (typeof parsed === 'string') {
-      try { parsed = JSON.parse(parsed); } catch { /* give up */ }
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return res.status(200).json({ cards: [] });
     }
 
     if (parsed && typeof parsed === 'object' && Array.isArray(parsed.cards)) {
