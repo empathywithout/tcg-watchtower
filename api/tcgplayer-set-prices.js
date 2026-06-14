@@ -34,27 +34,8 @@ const KNOWN_GROUPS = {
   'xy6':'1703','xy7':'1705','xy8':'1707','xy9':'1708','xy10':'1710',
   'xy11':'1711','xy12':'1712','xyp':'1714',
   // ── Black & White ───────────────────────────────────────────────
-  'bw1':'501','bw2':'502','bw3':'503','bw4':'504','bw5':'505',
-  'bw6':'506','bw7':'507','bw8':'508','bw9':'509','bw10':'510','bw11':'511','bwp':'512',
-  // ── HeartGold & SoulSilver ──────────────────────────────────────
-  'hgss1':'488','hgss2':'489','hgss3':'490','hgss4':'491','hgssp':'492',
-  // ── Platinum ────────────────────────────────────────────────────
-  'pl1':'486','pl2':'487','pl3':'485','pl4':'484','plp':'493',
-  // ── Diamond & Pearl ─────────────────────────────────────────────
-  'dp1':'480','dp2':'481','dp3':'482','dp4':'483','dp5':'479','dp6':'478','dp7':'477','dpp':'494',
-  // ── EX Series ───────────────────────────────────────────────────
-  'ex1':'1415','ex2':'1416','ex3':'1420','ex4':'1421','ex5':'1417',
-  'ex6':'1419','ex7':'1422','ex8':'1423','ex9':'1424','ex10':'1425',
-  'ex11':'1426','ex12':'1427','ex13':'1428','ex14':'1429','ex15':'1430','ex16':'1431',
-  // ── e-Card Series ───────────────────────────────────────────────
-  'ecard1':'1407','ecard2':'1408','ecard3':'1409',
-  // ── Neo ─────────────────────────────────────────────────────────
-  'neo1':'1400','neo2':'1401','neo3':'1402','neo4':'1403',
-  // ── Gym ─────────────────────────────────────────────────────────
-  'gym1':'1411','gym2':'1412',
-  // ── Base/Jungle/Fossil ──────────────────────────────────────────
-  'base1':'1390','base2':'1392','base3':'1391','base4':'1393','base5':'1394',
-  'base6':'1395','basep':'1396',
+  // NOTE: BW and older group IDs need verification from TCGCSV groups list
+  // Using dynamic lookup for anything not confirmed above
   // ── Pokémon GO / McDonald's / Other ─────────────────────────────
   'pgo':'22704','mcd22':'22637','mcd23':'22903','mcd24':'23152',
   // ── Classic & Promos ────────────────────────────────────────────
@@ -106,8 +87,19 @@ async function findGroupIdByName(setName) {
   }
   if (!groups) return null;
 
-  // Strict match only — avoid false positives
-  const nameLower = setName.toLowerCase().trim();
+  // Name corrections: Scrydex name → TCGplayer group name
+  const NAME_CORRECTIONS = {
+    'Scarlet & Violet': 'Scarlet & Violet',
+    'Mega Evolution': 'Mega Evolution',
+    'Base': 'Base Set',
+    'Jungle': 'Jungle',
+    'Fossil': 'Fossil',
+    'Base Set 2': 'Base Set 2',
+    'Team Rocket': 'Team Rocket',
+  };
+
+  const correctedName = NAME_CORRECTIONS[setName] || setName;
+  const nameLower = correctedName.toLowerCase().trim();
   const match = groups.find(g => g.name?.toLowerCase().trim() === nameLower);
   return match ? String(match.groupId) : null;
 }
