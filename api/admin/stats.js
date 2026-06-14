@@ -1,6 +1,4 @@
 // api/admin/stats.js
-// Portfolio admin stats — restricted to owner Discord ID
-
 import { verifySession } from '../auth/_verify.js';
 
 const OWNER_ID = '397593147397636099';
@@ -36,22 +34,19 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // Auth — must be logged in as owner
   const user = await verifySession(req);
-  if (!user || user.id !== OWNER_ID) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!user || user.id !== OWNER_ID) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const now      = Date.now();
     const day7ago  = now - 7  * 24 * 60 * 60 * 1000;
     const day30ago = now - 30 * 24 * 60 * 60 * 1000;
 
-    // Scan all portfolio keys
-    const allKeys   = await kvScan('portfolio:*');
-    const userKeys  = allKeys.filter(k => /^portfolio:\d+$/.test(k));
+    // Scan ALL portfolio keys — Discord (digits) and Google (g_...)
+    const allKeys  = await kvScan('portfolio:*');
+    // Exclude sub-keys that aren't user portfolios
+    const userKeys = allKeys.filter(k => /^portfolio:(\d+|g_[a-zA-Z0-9_]+)$/.test(k));
 
-    // Fetch all portfolios in parallel (batched)
     const BATCH = 20;
     const portfolios = [];
     for (let i = 0; i < userKeys.length; i += BATCH) {
@@ -68,38 +63,39 @@ export default async function handler(req, res) {
     }
 
     const totalUsers  = portfolios.length;
-    const newUsers7d  = portfolios.filter(p => p.updatedAt >= day7ago).length;
-    const newUsers30d = portfolios.filter(p => p.updatedAt >= day30ago).length;
+    const active7d    = portfolios.filter(p => p.updatedAt >= day7ago).length;
+    const active30d   = portfolios.filter(p => p.updatedAt >= day30ago).length;
+    const withCards   = portfolios.filter(p => (p.cards||[]).length > 0).length;
 
-    const cardCounts  = portfolios.map(p => (p.cards || []).reduce((s, c) => s + (c.qty||1), 0));
-    const totalCards  = cardCounts.reduce((s, n) => s + n, 0);
+    const totalCards  = portfolios.reduce((s, p) => s + (p.cards||[]).reduce((a, c) => a + (c.qty||1), 0), 0);
     const avgCards    = totalUsers > 0 ? (totalCards / totalUsers).toFixed(1) : 0;
-    const nonEmpty    = portfolios.filter(p => (p.cards||[]).length > 0).length;
 
     // Top sets
     const setCounts = {};
     portfolios.forEach(p => {
-      (p.cards || []).forEach(c => {
-        if (c.setId) setCounts[c.setId] = (setCounts[c.setId] || 0) + (c.qty||1);
+      (p.cards||[]).forEach(c => {
+        if (c.setId) setCounts[c.setId] = (setCounts[c.setId]||0) + (c.qty||1);
       });
     });
     const topSets = Object.entries(setCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
+      .sort((a, b) => b[1] - a[1]).slice(0, 10)
       .map(([setId, count]) => ({ setId, count }));
 
-    // Activity counters
-    const [dau, wau, mau, totalLogins] = await Promise.all([
+    // Auth breakdown
+    const discordUsers = portfolios.filter(p => /^\d+$/.test(p.userId)).length;
+    const googleUsers  = portfolios.filter(p => p.userId.startsWith('g_')).length;
+
+    // Activity
+    const [dau, wau, mau] = await Promise.all([
       kvGet('stats:dau').then(v => parseInt(v||0)),
       kvGet('stats:wau').then(v => parseInt(v||0)),
       kvGet('stats:mau').then(v => parseInt(v||0)),
-      kvGet('stats:total_logins').then(v => parseInt(v||0)),
     ]);
 
     return res.status(200).json({
       generatedAt: new Date().toISOString(),
-      users: { total: totalUsers, new7d: newUsers7d, new30d: newUsers30d, withCards: nonEmpty, empty: totalUsers - nonEmpty },
-      engagement: { totalCards, avgCardsPerUser: parseFloat(avgCards), dau, wau, mau, totalLogins },
+      users: { total: totalUsers, active7d, active30d, withCards, empty: totalUsers - withCards, discord: discordUsers, google: googleUsers },
+      engagement: { totalCards, avgCardsPerUser: parseFloat(avgCards), dau, wau, mau },
       topSets,
     });
 
