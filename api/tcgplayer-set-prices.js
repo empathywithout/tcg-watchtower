@@ -36,6 +36,9 @@ const KNOWN_GROUPS = {
   'bw1':'501','bw2':'502','bw3':'503','bw4':'504','bw5':'505',
   'bw6':'506','bw7':'507','bw8':'508','bw9':'509','bw10':'510','bw11':'511',
   // Older sets — rely on dynamic lookup if not here
+  // EX Series (verified)
+  'ex6':'1419',
+  // Add more as discovered via dynamic lookup
 };
 
 async function redisGet(key) {
@@ -165,4 +168,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
 
