@@ -1696,42 +1696,43 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
 
   searchTimeout = setTimeout(async () => {
     const setFilter = document.getElementById('add-set').value;
-    const qLower = q.toLowerCase();
-
-    // Determine which sets to search: the filtered one, or all live sets
-    const setIds = setFilter ? [setFilter] : sets.map(s => s.setId);
-
     results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Searching…</div>';
     results.classList.add('open');
 
     try {
-      // Fetch all needed sets in parallel (cached after first fetch)
-      const lists = await Promise.all(setIds.map(id => fetchSetCardsForSearch(id)));
+      let cards;
 
-      // Combine matches with their setId, cap total results
-      const matches = [];
-      setIds.forEach((setId, i) => {
-        for (const c of lists[i]) {
-          if (c.name.toLowerCase().includes(qLower)) {
-            matches.push({ ...c, _setId: setId });
-            if (matches.length >= 30) break;
-          }
-        }
-      });
-      const cards = matches.slice(0, 12);
+      if (setFilter) {
+        // Set selected — fetch that set's full card list and filter client-side
+        const list = await fetchSetCardsForSearch(setFilter);
+        const qLower = q.toLowerCase();
+        cards = list.filter(c => c.name.toLowerCase().includes(qLower)).slice(0, 12)
+          .map(c => ({ ...c, _setId: setFilter }));
+      } else {
+        // No set — use Scrydex global name search (1 credit, searches all sets)
+        const res = await fetch(`/api/scrydex-cards?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        cards = (data.cards || []).slice(0, 12).map(c => ({
+          ...c,
+          _setId: c.expansion?.id || '',
+          localId: c.localId,
+        }));
+      }
 
-      if (!cards.length) { results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">No cards found</div>'; results.classList.add('open'); return; }
+      if (!cards.length) {
+        results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">No cards found</div>';
+        return;
+      }
 
       window._searchResultsCache = cards;
       results.innerHTML = cards.map((c, i) => {
         const img = c.image || cardImgPath(c._setId, c.localId);
         const setMeta  = sets.find(s => s.setId === c._setId);
-        const setLabel = setMeta ? setMeta.short : c._setId.toUpperCase();
+        const setLabel = setMeta ? setMeta.short : (c.expansion?.name || c._setId?.toUpperCase() || '');
         const priceText = c.market != null ? `<span style="color:#4ade80;font-weight:700;font-family:'Space Mono',monospace;font-size:.7rem">$${c.market.toFixed(2)}</span>` : '';
-        const variantText = c.variants?.length > 0
-          ? `<span style="color:#a78bfa;font-size:.68rem"> · ${c.variants.length + 1} variants</span>` : '';
+        const variantText = c.variants?.length > 0 ? `<span style="color:#a78bfa;font-size:.68rem"> · ${c.variants.length + 1} variants</span>` : '';
         return `<div class="search-result-item" onclick="selectCardFromCache(${i}, '${c._setId}')">
-          <img class="search-result-img" src="${img}" alt="${c.name.replace(/"/g, '&quot;')}" onerror="this.style.background='#1e293b'">
+          <img class="search-result-img" src="${img}" alt="${c.name.replace(/"/g,'&quot;')}" onerror="this.style.background='#1e293b'">
           <div class="search-result-info">
             <div class="search-result-name">${c.name}</div>
             <div class="search-result-meta">${setLabel} #${c.localId} · ${c.rarity || '—'}${variantText}</div>
@@ -1744,12 +1745,22 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
       results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Search failed</div>';
       results.classList.add('open');
     }
-  }, 300);
+  }, 350);
 });
 
-function selectCardFromCache(index, setId) {
+function selectCardFromCache(index, scrydexSetId) {
   const card = (window._searchResultsCache || [])[index];
   if (!card) return;
+
+  // Resolve Scrydex short ID (e.g. "me4") back to our internal setId (e.g. "me04")
+  const SCRYDEX_TO_INTERNAL = {
+    'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv3pt5':'sv3pt5',
+    'sv4':'sv04','sv4pt5':'sv4pt5','sv5':'sv05','sv6':'sv06',
+    'sv6pt5':'sv6pt5','sv7':'sv07','sv8':'sv08','sv8pt5':'sv8pt5',
+    'sv9':'sv09','sv10':'sv10','zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
+    'me1':'me01','me2':'me02','me2pt5':'me02pt5','me3':'me03','me4':'me04','me5':'me05',
+  };
+  const setId = SCRYDEX_TO_INTERNAL[scrydexSetId] || scrydexSetId;
   pendingCard = { ...card, setId };
   document.getElementById('search-results').classList.remove('open');
   document.getElementById('card-search').value = card.name;
