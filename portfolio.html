@@ -1589,15 +1589,17 @@ async function loadPrices() {
       const res     = await fetch(`/api/scrydex-cards?set=${setId}&phase=${phase}`);
       if (res.ok) {
         const data = await res.json();
+        let gotPrice = false;
         if (data.cards?.length > 0) {
           data.cards.forEach(c => {
             if (c.market != null) {
               priceCache[`${setId}:${c.localId}`] = c.market;
               priceCache[`${setId}:${c.localId.padStart(3,'0')}`] = c.market;
+              gotPrice = true;
             }
           });
-          return; // Scrydex succeeded, skip TCGplayer
         }
+        if (gotPrice) return; // Scrydex had prices — skip TCGplayer
       }
     } catch {}
 
