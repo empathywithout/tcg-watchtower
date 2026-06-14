@@ -1915,7 +1915,7 @@ async function loadSealedPrices(items) {
     } catch {}
   }
 
-  renderSealedGrid();
+  if (currentView === 'sealed') renderSealedGrid();
   renderStats();
 }
 
