@@ -123,11 +123,23 @@ export default async function handler(req, res) {
 
   // ── Global name search ───────────────────────────────────────────
   if (q && !set) {
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    // Cache by query in Redis 1h — same query = same results within an hour
+    const qCacheKey = `scrydex:search:${q.toLowerCase().trim()}`;
+    const qCached   = await redisGet(qCacheKey);
+    if (qCached) {
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+      res.setHeader('X-Cache', 'HIT');
+      const cards = JSON.parse(qCached);
+      return res.status(200).json({ cards, total: cards.length, cached: true });
+    }
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+    res.setHeader('X-Cache', 'MISS');
     try {
       const url = `${SCRYDEX_BASE}/cards?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20&select=id,name,rarity,images,variants,supertype,expansion`;
       const data = await fetchPage(url);
       const cards = (data.data || []).map(c => normaliseCard(c, c.expansion?.id || '', 'en'));
+      // Cache if we got results
+      if (cards.length > 0) await redisSetEx(qCacheKey, JSON.stringify(cards), 3600);
       return res.status(200).json({ cards, total: cards.length });
     } catch (e) {
       console.error('[scrydex-cards q]', e.message);
@@ -176,3 +188,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
