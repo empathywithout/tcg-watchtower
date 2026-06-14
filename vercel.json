@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/api/admin/track",
+      "destination": "/api/admin/track.js"
+    },
+    {
+      "source": "/api/admin/stats",
+      "destination": "/api/admin/stats.js"
+    },
+    {
+      "source": "/admin/portfolio",
+      "destination": "/admin-portfolio.html"
+    },
+    {
       "source": "/portfolio",
       "destination": "/portfolio.html"
     },
