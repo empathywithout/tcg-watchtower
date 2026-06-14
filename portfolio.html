@@ -1091,7 +1091,7 @@ function lsSealedSave(items) {
 async function init() {
   // Check auth state
   try {
-    const res = await fetch('/api/auth/me');
+    const res = await fetch('/api/auth/me', { cache: 'no-store' });
     if (res.ok) {
       user = await res.json();
       showLoggedIn();
