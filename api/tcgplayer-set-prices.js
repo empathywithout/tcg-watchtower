@@ -125,26 +125,39 @@ async function fetchPrices(groupId) {
   const products   = productsData.results || [];
   const pricesList = pricesData.results   || [];
 
-  // Priority: Normal > Holofoil > anything else; skip Reverse Holofoil
-  // (same logic as tcgplayer-prices.js)
+  // Subtype priority — prefer the most common printing collectors own
+  // Skip: Reverse Holofoil, 1st Edition (rare minority)
+  // Prefer: Unlimited Holofoil > Holofoil > Normal > Unlimited > anything else
+  const subtypePriority = (sub) => {
+    if (sub.includes('reverse'))    return -1; // always skip
+    if (sub.includes('1st edition')) return 1;  // rare — deprioritise
+    if (sub === 'unlimited holofoil') return 10;
+    if (sub === 'holofoil')           return 9;
+    if (sub === 'normal')             return 8;
+    if (sub === 'unlimited')          return 7;
+    return 5;
+  };
+
   const priceByProductId = {};
   for (const p of pricesList) {
-    const subType = (p.subTypeName || '').toLowerCase();
-    if (subType.includes('reverse')) continue;
+    const sub = (p.subTypeName || '').toLowerCase();
+    if (sub.includes('reverse')) continue;
+    if (!p.marketPrice) continue;
     const existing = priceByProductId[p.productId];
     if (!existing) {
       priceByProductId[p.productId] = p;
     } else {
-      const existingSub = (existing.subTypeName || '').toLowerCase();
-      if (subType === 'normal' && existingSub !== 'normal') {
+      if (subtypePriority(sub) > subtypePriority((existing.subTypeName||'').toLowerCase())) {
         priceByProductId[p.productId] = p;
       }
     }
   }
 
-  // Map card number → price — keep lowest productId per card number
-  // (lowest productId = oldest/most common printing, e.g. unlimited over shadowless)
+  // Map card number → price
+  // When multiple products share a card number, prefer highest subtype priority
+  // then lowest productId as tiebreak
   const prices = {};
+  const bestPriority  = {};
   const bestProductId = {};
 
   for (const product of products) {
@@ -154,8 +167,13 @@ async function fetchPrices(groupId) {
     const priceObj   = priceByProductId[product.productId];
     if (!priceObj?.marketPrice) continue;
 
-    // Keep lowest productId per card number
-    if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
+    const prio = subtypePriority((priceObj.subTypeName || '').toLowerCase());
+    const existingPrio = bestPriority[cardNumber] ?? -999;
+
+    // Skip if lower priority, or same priority but higher productId
+    if (prio < existingPrio) continue;
+    if (prio === existingPrio && product.productId >= (bestProductId[cardNumber] ?? Infinity)) continue;
+    bestPriority[cardNumber]  = prio;
     bestProductId[cardNumber] = product.productId;
 
     const market = priceObj.marketPrice;
