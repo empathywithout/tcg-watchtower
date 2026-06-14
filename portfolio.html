@@ -1236,7 +1236,7 @@ async function loadSets() {
     const res = await fetch('/sets.json');
     sets = (await res.json()).filter(s => s.live);
     const filterSetEl = document.getElementById('filter-set');
-    sets.forEach(s => filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId)));
+    sets.forEach(s => filterSetEl.appendChild(new Option(s.name, s.setId)));
   } catch {}
 
   try {
@@ -1452,14 +1452,49 @@ function getFiltered() {
 }
 
 function renderCollection() {
+  updateFilterDropdowns();
   renderCollectionGrid();
   renderStats();
   renderCompletion();
   loadPrices();
   if (ENABLE_GRADED_PRICING) loadTrends();
   updateTabCounts();
-  // Fetch sealed prices in background so stat-sealed-value populates on load
   if (sealedPortfolio.length > 0) loadSealedPrices(sealedPortfolio);
+}
+
+function updateFilterDropdowns() {
+  // Cards filter — only sets in portfolio
+  const cardSetEl  = document.getElementById('filter-set');
+  const curCardSet = cardSetEl.value;
+  cardSetEl.innerHTML = '<option value="">All Sets</option>';
+  const cardSetIds = [...new Set(portfolio.map(c => c.setId))];
+  cardSetIds.forEach(setId => {
+    const name = getSetName(setId);
+    cardSetEl.appendChild(new Option(name, setId));
+  });
+  if (curCardSet && cardSetIds.includes(curCardSet)) cardSetEl.value = curCardSet;
+
+  // Sealed filter — only sets in sealed portfolio
+  const sealedSetEl  = document.getElementById('sealed-filter-set');
+  const curSealedSet = sealedSetEl.value;
+  sealedSetEl.innerHTML = '<option value="">All Sets</option>';
+  const sealedSetIds = [...new Set(sealedPortfolio.map(s => s.setId).filter(Boolean))];
+  sealedSetIds.forEach(setId => {
+    const name = getSetName(setId);
+    sealedSetEl.appendChild(new Option(name, setId));
+  });
+  if (curSealedSet && sealedSetIds.includes(curSealedSet)) sealedSetEl.value = curSealedSet;
+}
+
+function getSetName(setId) {
+  // Check VINTAGE_SETS first, then sets.json, then allScrydexSets
+  const vintage = VINTAGE_SETS.find(s => s.id === setId);
+  if (vintage) return vintage.name;
+  const tracked = sets.find(s => s.setId === setId);
+  if (tracked) return tracked.name;
+  const scrydex = allScrydexSets.find(s => s.id === setId);
+  if (scrydex) return scrydex.name;
+  return setId.toUpperCase();
 }
 
 function renderCollectionGrid() {
@@ -2328,6 +2363,7 @@ function saveSealedPortfolio() {
 
 /* ===== SEALED RENDER ===== */
 function renderSealedGrid() {
+  updateFilterDropdowns();
   const grid  = document.getElementById('sealed-grid');
   const empty = document.getElementById('sealed-empty-state');
   const search    = document.getElementById('sealed-search-input').value.toLowerCase();
