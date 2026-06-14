@@ -519,7 +519,7 @@ fs.mkdirSync(setDir, { recursive: true });
 
 const mvPageUrl   = `${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/most-valuable`;
 const mvTitle     = `Most Valuable ${SET_FULL_NAME} Cards | One Piece TCG Prices`;
-const mvDesc      = `The most valuable ${SET_FULL_NAME} One Piece TCG cards ranked by market price. See current TCGplayer prices for all Manga Rares, Secret Rares, SP cards, and Alternate Arts.`;
+const mvDesc      = `The most valuable ${SET_FULL_NAME} One Piece TCG cards ranked by market price. See current live prices for all Manga Rares, Secret Rares, SP cards, and Alternate Arts.`;
 
 const mvHtml = `<!DOCTYPE html>
 <html lang="en">
