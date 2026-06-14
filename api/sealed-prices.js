@@ -48,6 +48,10 @@ const SET_NAME_MAP = {
   'zsv10pt5':'Black Bolt','rsv10pt5':'White Flare',
   // One Piece
   'op14':'Azure','op15':'Kami','eb03':'Heroines',
+  // Miscellaneous sets — use product name search
+  'miscp':'Miscellaneous','mcd24':'McDonald','mcd23':'McDonald','mcd22':'McDonald',
+  'clv':'Classic Venusaur','clc':'Classic Charizard','clb':'Classic Blastoise',
+  'mep':'Mega Evolution Black Star','svp':'Scarlet Violet Black Star',
 };
 
 /* ── Redis helpers ─────────────────────────────────────────────────────── */
@@ -115,7 +119,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')    return res.status(405).end();
 
-  const { setId, q } = req.query;
+  const { setId, q, productId } = req.query;
 
   if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
     return res.status(500).json({ error: 'Scrydex credentials not configured' });
@@ -124,16 +128,26 @@ export default async function handler(req, res) {
   try {
     let products = [];
 
+    // ── Direct product ID fetch ──────────────────────────────────────
+    if (productId) {
+      const cacheKey = `sealed:product:${productId}`;
+      const cached   = await redisGet(cacheKey);
+      if (cached) {
+        return res.status(200).json({ products: JSON.parse(cached), total: 1, cached: true });
+      }
+      const data = await fetchFromScrydex(`${SCRYDEX_BASE}/sealed/${productId}?include=prices`);
+      products = normaliseProducts([data]);
+      await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
+      return res.status(200).json({ products, total: products.length });
+    }
+
     if (setId) {
       const scrydexId = SCRYDEX_ID_MAP[setId] || setId;
       const setName   = SET_NAME_MAP[setId] || SET_NAME_MAP[scrydexId];
 
-      if (!setName) return res.status(400).json({ error: `Unknown setId: ${setId}` });
-
       // ── Check Redis cache first ──────────────────────────────────────
       const cacheKey = `sealed:prices:${scrydexId}`;
       const cached   = await redisGet(cacheKey);
-
       if (cached) {
         res.setHeader('X-Cache', 'HIT');
         return res.status(200).json({ products: JSON.parse(cached), total: JSON.parse(cached).length, cached: true });
@@ -141,14 +155,28 @@ export default async function handler(req, res) {
 
       // ── Cache miss — fetch from Scrydex (costs 1 credit) ────────────
       res.setHeader('X-Cache', 'MISS');
-      const data = await fetchFromScrydex(
-        `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
-      );
-      products = normaliseProducts(
-        (data.data || []).filter(p => p.expansion?.id === scrydexId)
-      );
 
-      // ── Store in Redis for 6h ────────────────────────────────────────
+      let data;
+      if (setName) {
+        // Search by name filtered by expansion
+        data = await fetchFromScrydex(
+          `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
+        );
+        products = normaliseProducts(
+          (data.data || []).filter(p => p.expansion?.id === scrydexId)
+        );
+      } else {
+        // Unknown set — try expansion endpoint directly
+        try {
+          data = await fetchFromScrydex(
+            `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
+          );
+          products = normaliseProducts(data.data || []);
+        } catch {
+          products = [];
+        }
+      }
+
       await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
 
     } else if (q) {
