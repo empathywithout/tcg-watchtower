@@ -8,11 +8,16 @@ const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 
 // Our internal setId → Scrydex expansion ID
 const SCRYDEX_ID_MAP = {
+  // Full IDs (our internal format)
   'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
   'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
   'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
   'sv09':'sv09','sv10':'sv10','zsv10pt5':'sv10.5-black','rsv10pt5':'sv10.5-white',
   'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04','me05':'me05',
+  // Short IDs (as returned by Scrydex expansion.id — no leading zeros)
+  'me1':'me01','me2':'me02','me3':'me03','me4':'me04','me5':'me05',
+  'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv4':'sv04','sv5':'sv05',
+  'sv6':'sv06','sv7':'sv07','sv8':'sv08','sv9':'sv09',
 };
 
 export default async function handler(req, res) {
