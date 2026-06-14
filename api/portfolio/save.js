@@ -18,13 +18,11 @@ export default async function handler(req, res) {
 
     let finalCards = sanitize(cards);
 
-    // merge=true: called on Discord login to merge localStorage into cloud
     if (merge) {
       const existing = await redisGetParsed(`portfolio:${user.id}`);
       const cloud = existing?.cards || [];
-      // Merge: cloud wins on conflicts (same setId+localId), local adds new entries
-      const cloudKeys = new Set(cloud.map(c => `${c.setId}:${c.localId}`));
-      const newLocal  = finalCards.filter(c => !cloudKeys.has(`${c.setId}:${c.localId}`));
+      const cloudKeys = new Set(cloud.map(c => `${c.setId}:${c.localId}:${c.variant||''}`));
+      const newLocal  = finalCards.filter(c => !cloudKeys.has(`${c.setId}:${c.localId}:${c.variant||''}`));
       finalCards = [...cloud, ...newLocal];
     }
 
@@ -43,26 +41,25 @@ export default async function handler(req, res) {
 function sanitize(cards) {
   return cards.map(c => {
     const out = {
-      setId:     String(c.setId     || ''),
-      localId:   String(c.localId   || ''),
-      name:      String(c.name      || ''),
-      rarity:    String(c.rarity    || ''),
-      image:     String(c.image     || ''),
-      qty:       Math.max(1, parseInt(c.qty) || 1),
-      condition: ['NM','LP','MP','HP','DMG'].includes(c.condition) ? c.condition : 'NM',
-      addedAt:   c.addedAt || Date.now(),
+      setId:        String(c.setId     || ''),
+      localId:      String(c.localId   || ''),
+      name:         String(c.name      || ''),
+      rarity:       String(c.rarity    || ''),
+      image:        String(c.image     || ''),
+      qty:          Math.max(1, parseInt(c.qty) || 1),
+      condition:    ['NM','LP','MP','HP','DMG'].includes(c.condition) ? c.condition : 'NM',
+      addedAt:      c.addedAt || Date.now(),
     };
-    if (c.graded && c.graded.company && c.graded.grade) {
-      out.graded = {
-        company: String(c.graded.company),
-        grade:   String(c.graded.grade),
-      };
+    // Preserve optional fields
+    if (c.variant)       out.variant       = String(c.variant);
+    if (c.expansionName) out.expansionName = String(c.expansionName);
+    if (c.graded?.company && c.graded?.grade) {
+      out.graded = { company: String(c.graded.company), grade: String(c.graded.grade) };
     }
     return out;
   });
 }
 
-// Fetch + parse the stored portfolio JSON
 async function redisGetParsed(key) {
   const res = await fetch(`${process.env.KV_REST_API_URL}/get/${encodeURIComponent(key)}`, {
     headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}` },
@@ -73,20 +70,14 @@ async function redisGetParsed(key) {
   try {
     const parsed = JSON.parse(result);
     return (parsed && typeof parsed === 'object') ? parsed : null;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
-// Upstash REST API: POST body IS the value (raw string), not wrapped in JSON
 async function redisSet(key, value) {
   const res = await fetch(`${process.env.KV_REST_API_URL}/set/${encodeURIComponent(key)}`, {
     method:  'POST',
-    headers: {
-      Authorization:  `Bearer ${process.env.KV_REST_API_TOKEN}`,
-      'Content-Type': 'text/plain',
-    },
-    body: value, // raw JSON string — Upstash stores this directly
+    headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`, 'Content-Type': 'text/plain' },
+    body: value,
   });
   if (!res.ok) throw new Error(`Redis SET failed: ${res.status}`);
 }
