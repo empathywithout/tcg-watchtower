@@ -1169,21 +1169,22 @@ async function loadCloudPortfolio() {
     const res   = await fetch('/api/portfolio/get', { cache: 'no-store' });
     if (!res.ok) throw new Error('cloud fetch failed');
     const cloud = await res.json();
-    portfolio   = cloud.cards || [];
+    const cloudCards = cloud.cards || [];
 
-    if (local.length > 0) {
-      const cloudKeys = new Set(portfolio.map(c => `${c.setId}:${c.localId}`));
-      const newLocal  = local.filter(c => !cloudKeys.has(`${c.setId}:${c.localId}`));
-      if (newLocal.length > 0) {
-        portfolio = [...portfolio, ...newLocal];
-        await savePortfolio();
-        lsSave([]);
-      }
+    // Merge: start with cloud, add any local cards not already in cloud
+    const cloudKeys = new Set(cloudCards.map(c => `${c.setId}:${c.localId}`));
+    const newLocal  = local.filter(c => !cloudKeys.has(`${c.setId}:${c.localId}`));
+
+    portfolio = [...cloudCards, ...newLocal];
+
+    if (newLocal.length > 0) {
+      // Local had cards cloud didn't — sync up
+      await savePortfolio();
+      lsSave([]);
     }
   } catch {
     portfolio = lsLoad();
   }
-  // Sealed always local for now
   sealedPortfolio = lsSealedLoad();
   renderCollection();
 }
@@ -1194,16 +1195,29 @@ async function savePortfolio() {
 
   setSyncStatus('syncing');
   try {
-    await fetch('/api/portfolio/save', {
+    const body = JSON.stringify({ cards: portfolio });
+    // Use sendBeacon as fallback so save completes even on page unload
+    const ok = await fetch('/api/portfolio/save', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ cards: portfolio }),
+      body,
+      keepalive: true, // ensures request completes even if page is closing
     });
     setSyncStatus('synced');
+    window._pendingSave = false;
   } catch {
     setSyncStatus('error');
   }
 }
+
+// Warn if navigating away while save is in progress
+let _savePending = false;
+window.addEventListener('beforeunload', (e) => {
+  if (_savePending) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 function setSyncStatus(state) {
   const el = document.getElementById('sync-status');
