@@ -47,8 +47,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .sync-indicator.syncing{color:var(--amber)}
 
 /* STATS BAR */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
-.stats-bar.with-week{grid-template-columns:repeat(5,1fr)}
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:32px}
+.stats-bar.with-week{grid-template-columns:repeat(6,1fr)}
 .stat-box{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-box-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:white}
 .stat-box-val.green{color:#4ade80}
@@ -131,6 +131,42 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .export-bar{display:flex;gap:10px;justify-content:flex-end;margin-bottom:16px;flex-wrap:wrap}
 .btn-export{background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:8px 16px;font-size:.82rem}
 .btn-export:hover{color:var(--text);border-color:rgba(255,255,255,.25)}
+
+/* VIEW TABS (Cards / Sealed) */
+.view-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:24px}
+.view-tab{padding:10px 24px;font-size:.88rem;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s;display:flex;align-items:center;gap:6px}
+.view-tab:hover{color:var(--text)}
+.view-tab.active{color:white;border-bottom-color:var(--blue)}
+.view-tab.active.sealed-tab{color:#fbbf24;border-bottom-color:#fbbf24}
+.view-tab-count{font-size:.72rem;font-weight:700;padding:1px 6px;border-radius:99px;background:rgba(255,255,255,.08)}
+.view-tab.active .view-tab-count{background:rgba(59,130,246,.2);color:#93c5fd}
+.view-tab.active.sealed-tab .view-tab-count{background:rgba(251,191,36,.15);color:#fbbf24}
+
+/* SEALED GRID */
+.sealed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+.sealed-card{background:rgba(15,23,42,.85);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;position:relative}
+.sealed-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.5);border-color:rgba(251,191,36,.2)}
+.sealed-card-img-wrap{width:100%;background:rgba(30,41,59,.6);display:flex;align-items:center;justify-content:center;padding:16px;min-height:140px}
+.sealed-card-img{max-width:100%;max-height:120px;object-fit:contain;border-radius:4px}
+.sealed-card-placeholder{font-size:2.5rem;text-align:center}
+.sealed-card-info{padding:10px}
+.sealed-card-name{font-size:.82rem;font-weight:600;line-height:1.3;margin-bottom:3px}
+.sealed-card-type{font-size:.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:6px}
+.sealed-card-price{font-size:.78rem;font-weight:700;color:#4ade80;font-family:'Space Mono',monospace}
+.sealed-card-price.loading{color:var(--muted);font-style:italic;font-weight:400}
+.sealed-card-purchase{font-size:.68rem;color:var(--muted);font-family:'Space Mono',monospace}
+.sealed-type-pill{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24;margin-bottom:5px}
+
+/* ADD SEALED MODAL */
+.sealed-search-results{background:rgba(15,23,42,.95);border:1px solid rgba(255,255,255,.1);border-radius:10px;margin-top:6px;max-height:280px;overflow-y:auto;display:none}
+.sealed-search-results.open{display:block}
+.sealed-result-item{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,.05)}
+.sealed-result-item:last-child{border-bottom:none}
+.sealed-result-item:hover{background:rgba(251,191,36,.08)}
+.sealed-result-img{width:44px;height:44px;object-fit:contain;border-radius:4px;background:rgba(30,41,59,.5);flex-shrink:0}
+.sealed-result-name{font-size:.85rem;font-weight:600}
+.sealed-result-meta{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace}
+.sealed-result-price{font-size:.72rem;font-weight:700;color:#4ade80;font-family:'Space Mono',monospace}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,41,59,.95);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 20px;font-size:.88rem;font-weight:600;z-index:2000;transition:transform .3s;white-space:nowrap;backdrop-filter:blur(12px)}
@@ -709,7 +745,7 @@ nav.container {
   </div>
 
   <!-- STATS -->
-  <div class="stats-bar">
+  <div class="stats-bar" id="stats-bar">
     <div class="stat-box">
       <div class="stat-box-val" id="stat-cards">0</div>
       <div class="stat-box-label">Total Cards</div>
@@ -720,7 +756,11 @@ nav.container {
     </div>
     <div class="stat-box">
       <div class="stat-box-val green" id="stat-value">—</div>
-      <div class="stat-box-label">Est. Value</div>
+      <div class="stat-box-label">Cards Value</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-val" style="color:#fbbf24" id="stat-sealed-value">—</div>
+      <div class="stat-box-label">Sealed Value</div>
     </div>
     <div class="stat-box">
       <div class="stat-box-val" id="stat-sets">0</div>
@@ -740,6 +780,19 @@ nav.container {
     </div>
     <div class="completion-grid" id="completion-grid"></div>
   </div>
+
+  <!-- VIEW TABS -->
+  <div class="view-tabs">
+    <button class="view-tab active" id="tab-cards" onclick="switchView('cards')">
+      🃏 Cards <span class="view-tab-count" id="tab-cards-count">0</span>
+    </button>
+    <button class="view-tab sealed-tab" id="tab-sealed" onclick="switchView('sealed')">
+      📦 Sealed Products <span class="view-tab-count" id="tab-sealed-count">0</span>
+    </button>
+  </div>
+
+  <!-- CARDS VIEW -->
+  <div id="cards-view">
 
   <!-- TOOLBAR -->
   <div class="toolbar">
@@ -786,6 +839,36 @@ nav.container {
     <div class="empty-sub">Add your first card to get started tracking your pulls</div>
     <button class="btn btn-add" id="empty-add-btn">+ Add Your First Card</button>
   </div>
+
+  </div><!-- /cards-view -->
+
+  <!-- SEALED VIEW -->
+  <div id="sealed-view" style="display:none">
+
+    <!-- SEALED TOOLBAR -->
+    <div class="toolbar">
+      <input class="toolbar-search" type="text" id="sealed-search-input" placeholder="Search sealed products…">
+      <select class="toolbar-select" id="sealed-filter-set">
+        <option value="">All Sets</option>
+      </select>
+      <select class="toolbar-select" id="sealed-sort-select">
+        <option value="recent">Recently Added</option>
+        <option value="name">Name A–Z</option>
+        <option value="value">Highest Value</option>
+        <option value="type">By Type</option>
+      </select>
+      <button class="btn btn-add" id="open-add-sealed-modal" style="background:linear-gradient(135deg,#b45309,#d97706)">+ Add Sealed</button>
+    </div>
+
+    <div class="sealed-grid" id="sealed-grid"></div>
+    <div id="sealed-empty-state" class="empty-state" style="display:none">
+      <div class="empty-icon">📦</div>
+      <div class="empty-title">No sealed products yet</div>
+      <div class="empty-sub">Add booster boxes, ETBs, and other sealed products to track their value</div>
+      <button class="btn btn-add" id="sealed-empty-add-btn" style="background:linear-gradient(135deg,#b45309,#d97706)">+ Add Sealed Product</button>
+    </div>
+
+  </div><!-- /sealed-view -->
 
 </div><!-- /container -->
 
@@ -852,10 +935,56 @@ nav.container {
 
 <div class="toast" id="toast"></div>
 
+<!-- ADD SEALED MODAL -->
+<div class="modal-overlay" id="sealed-modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="sealed-modal-close">✕</button>
+    <div class="modal-title">Add <span class="gradient-text">Sealed Product</span></div>
+
+    <div class="form-group">
+      <label class="form-label">Filter by Set (optional)</label>
+      <select class="form-select" id="sealed-add-set" onchange="onSealedSetChange()">
+        <option value="">All Sets</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Search Product</label>
+      <input class="form-input" type="text" id="sealed-product-search" placeholder="e.g. Booster Box, Elite Trainer Box…" autocomplete="off">
+      <div class="sealed-search-results" id="sealed-search-results"></div>
+    </div>
+
+    <div id="sealed-preview" style="display:none;margin-bottom:16px">
+      <div style="display:flex;gap:14px;align-items:flex-start;background:rgba(15,23,42,.6);border-radius:10px;padding:12px">
+        <img id="sealed-preview-img" src="" alt="" style="width:60px;height:60px;object-fit:contain;border-radius:6px;background:rgba(30,41,59,.5)">
+        <div>
+          <div id="sealed-preview-name" style="font-weight:700;margin-bottom:4px"></div>
+          <div id="sealed-preview-type" style="font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px"></div>
+          <div id="sealed-preview-price" style="font-size:.85rem;font-weight:700;color:#4ade80"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Quantity</label>
+        <input class="form-input" type="number" id="sealed-add-qty" value="1" min="1" max="99">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Purchase Price (optional)</label>
+        <input class="form-input" type="number" id="sealed-add-purchase" placeholder="$0.00" min="0" step="0.01">
+      </div>
+    </div>
+
+    <button class="btn btn-save" id="sealed-save-btn" style="background:linear-gradient(135deg,#b45309,#d97706)">Add to Collection</button>
+  </div>
+</div>
+
 <script>
 /* ===== CONFIG ===== */
 const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 const LS_KEY = 'tcgw_portfolio_v1';
+const LS_SEALED_KEY = 'tcgw_sealed_v1';
 
 // Set to true once Scrydex plan includes graded prices + trend data
 const ENABLE_GRADED_PRICING = false;
@@ -912,12 +1041,16 @@ const TCGP_GROUP_MAP = {
 };
 
 /* ===== STATE ===== */
-let user        = null;   // Discord user or null
-let portfolio   = [];     // array of card objects
-let sets        = [];     // from sets.json
-let priceCache  = {};     // localId → price
-let trendCache  = {};     // setId:localId(:company:grade) → { raw, graded }
-let pendingCard = null;   // card being added
+let user          = null;   // Discord user or null
+let portfolio     = [];     // array of card objects
+let sealedPortfolio = [];   // array of sealed product objects
+let sets          = [];     // from sets.json
+let priceCache    = {};     // localId → price
+let trendCache    = {};     // setId:localId(:company:grade) → { raw, graded }
+let sealedPriceCache = {};  // scrydex product id → market price
+let pendingCard   = null;   // card being added
+let pendingSealed = null;   // sealed product being added
+let currentView   = 'cards'; // 'cards' | 'sealed'
 
 /* ===== STORAGE ===== */
 function lsLoad() {
@@ -925,6 +1058,12 @@ function lsLoad() {
 }
 function lsSave(cards) {
   localStorage.setItem(LS_KEY, JSON.stringify(cards));
+}
+function lsSealedLoad() {
+  try { return JSON.parse(localStorage.getItem(LS_SEALED_KEY) || '[]'); } catch { return []; }
+}
+function lsSealedSave(items) {
+  localStorage.setItem(LS_SEALED_KEY, JSON.stringify(items));
 }
 
 /* ===== INIT ===== */
@@ -935,19 +1074,18 @@ async function init() {
     if (res.ok) {
       user = await res.json();
       showLoggedIn();
-      // Load cloud portfolio, merge any local cards
       await loadCloudPortfolio();
     } else {
-      // Not logged in — load from localStorage
       portfolio = lsLoad();
+      sealedPortfolio = lsSealedLoad();
       renderCollection();
     }
   } catch {
     portfolio = lsLoad();
+    sealedPortfolio = lsSealedLoad();
     renderCollection();
   }
 
-  // Handle ?auth=success — means we just came back from Discord OAuth
   const params = new URLSearchParams(window.location.search);
   if (params.get('auth') === 'success') {
     showToast('Discord sync enabled! Your collection is saved to the cloud.', 'success');
@@ -958,7 +1096,6 @@ async function init() {
     history.replaceState({}, '', '/portfolio.html');
   }
 
-  // Load sets for filter/add dropdown
   await loadSets();
 
   if (ENABLE_GRADED_PRICING) {
@@ -968,6 +1105,7 @@ async function init() {
 
   renderStats();
   renderCompletion();
+  updateTabCounts();
 }
 
 function showLoggedIn() {
@@ -989,20 +1127,20 @@ async function loadCloudPortfolio() {
     const cloud = await res.json();
     portfolio   = cloud.cards || [];
 
-    // If there are local cards not in cloud, merge them up
     if (local.length > 0) {
       const cloudKeys = new Set(portfolio.map(c => `${c.setId}:${c.localId}`));
       const newLocal  = local.filter(c => !cloudKeys.has(`${c.setId}:${c.localId}`));
       if (newLocal.length > 0) {
         portfolio = [...portfolio, ...newLocal];
         await savePortfolio();
-        lsSave([]); // clear local after merge
+        lsSave([]);
       }
     }
   } catch {
-    // Cloud unavailable — fall back to local
     portfolio = lsLoad();
   }
+  // Sealed always local for now
+  sealedPortfolio = lsSealedLoad();
   renderCollection();
 }
 
@@ -1036,13 +1174,15 @@ async function loadSets() {
   try {
     const res = await fetch('/sets.json');
     sets = (await res.json()).filter(s => s.live);
-    const addSetEl     = document.getElementById('add-set');
-    const filterSetEl  = document.getElementById('filter-set');
+    const addSetEl      = document.getElementById('add-set');
+    const filterSetEl   = document.getElementById('filter-set');
+    const sealedAddSet  = document.getElementById('sealed-add-set');
+    const sealedFilter  = document.getElementById('sealed-filter-set');
     sets.forEach(s => {
-      const o1 = new Option(`${s.name} (${s.short})`, s.setId);
-      const o2 = new Option(`${s.name} (${s.short})`, s.setId);
-      addSetEl.appendChild(o1);
-      filterSetEl.appendChild(o2);
+      addSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
+      filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
+      sealedAddSet.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
+      sealedFilter.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
     });
   } catch {}
 }
@@ -1086,6 +1226,7 @@ function renderCollection() {
   renderCompletion();
   loadPrices();
   if (ENABLE_GRADED_PRICING) loadTrends();
+  updateTabCounts();
 }
 
 function renderCollectionGrid() {
@@ -1177,10 +1318,20 @@ function renderStats() {
     const p = priceCache[`${c.setId}:${c.localId}`];
     if (p != null) { value += p * (c.qty||1); hasAny = true; }
   });
+
+  // Sealed value
+  let sealedValue = 0;
+  let hasSealedAny = false;
+  sealedPortfolio.forEach(s => {
+    const p = sealedPriceCache[s.productId] ?? s.purchasePrice ?? null;
+    if (p != null) { sealedValue += p * (s.qty||1); hasSealedAny = true; }
+  });
+
   document.getElementById('stat-cards').textContent  = total;
   document.getElementById('stat-unique').textContent  = unique;
   document.getElementById('stat-sets').textContent    = setIds.size;
   document.getElementById('stat-value').textContent   = hasAny ? `$${value.toFixed(2)}` : '—';
+  document.getElementById('stat-sealed-value').textContent = hasSealedAny ? `$${sealedValue.toFixed(2)}` : '—';
 
   // Weighted 7-day value change across owned cards with trend data
   let weekChangeTotal = 0;
@@ -1638,6 +1789,290 @@ function showToast(msg, type = '') {
   toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+/* ===== VIEW SWITCHING ===== */
+function switchView(view) {
+  currentView = view;
+  document.getElementById('cards-view').style.display  = view === 'cards'  ? '' : 'none';
+  document.getElementById('sealed-view').style.display = view === 'sealed' ? '' : 'none';
+  document.getElementById('tab-cards').classList.toggle('active', view === 'cards');
+  document.getElementById('tab-sealed').classList.toggle('active', view === 'sealed');
+  if (view === 'sealed') renderSealedGrid();
+}
+
+function updateTabCounts() {
+  document.getElementById('tab-cards-count').textContent  = portfolio.length;
+  document.getElementById('tab-sealed-count').textContent = sealedPortfolio.length;
+}
+
+/* ===== SEALED SAVE ===== */
+function saveSealedPortfolio() {
+  lsSealedSave(sealedPortfolio);
+}
+
+/* ===== SEALED RENDER ===== */
+function renderSealedGrid() {
+  const grid  = document.getElementById('sealed-grid');
+  const empty = document.getElementById('sealed-empty-state');
+  const search    = document.getElementById('sealed-search-input').value.toLowerCase();
+  const setFilter = document.getElementById('sealed-filter-set').value;
+  const sort      = document.getElementById('sealed-sort-select').value;
+
+  let items = [...sealedPortfolio];
+  if (search)    items = items.filter(s => s.name.toLowerCase().includes(search) || (s.type||'').toLowerCase().includes(search));
+  if (setFilter) items = items.filter(s => s.setId === setFilter);
+  if (sort === 'name')   items.sort((a,b) => a.name.localeCompare(b.name));
+  if (sort === 'value')  items.sort((a,b) => (sealedPriceCache[b.productId]||0) - (sealedPriceCache[a.productId]||0));
+  if (sort === 'type')   items.sort((a,b) => (a.type||'').localeCompare(b.type||'') || a.name.localeCompare(b.name));
+  if (sort === 'recent') items.sort((a,b) => (b.addedAt||0) - (a.addedAt||0));
+
+  if (sealedPortfolio.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = items.map((s, i) => {
+    const idx   = sealedPortfolio.indexOf(s);
+    const market = sealedPriceCache[s.productId];
+    const displayPrice = market ?? s.purchasePrice ?? null;
+    const priceHtml = displayPrice != null
+      ? `<div class="sealed-card-price">$${displayPrice.toFixed(2)}</div>`
+      : `<div class="sealed-card-price loading">—</div>`;
+    const purchaseHtml = s.purchasePrice != null
+      ? `<div class="sealed-card-purchase">Paid $${s.purchasePrice.toFixed(2)}</div>`
+      : '';
+    const imgHtml = s.image
+      ? `<img class="sealed-card-img" src="${s.image}" alt="${s.name}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="sealed-card-placeholder">📦</div>`;
+
+    return `
+    <div class="sealed-card" data-idx="${idx}">
+      <div class="sealed-card-img-wrap">${imgHtml}</div>
+      <div class="sealed-card-info">
+        <div class="sealed-type-pill">${s.type || 'Sealed'}</div>
+        <div class="sealed-card-name">${s.name}</div>
+        <div class="sealed-card-type">${s.setName || s.setId?.toUpperCase() || ''}</div>
+        <div class="col-card-row" style="margin-top:6px">
+          <div>
+            ${priceHtml}
+            ${purchaseHtml}
+          </div>
+          <div class="col-card-qty">
+            <button class="qty-btn" onclick="adjustSealedQty(${idx},-1)">−</button>
+            <span class="qty-val">${s.qty||1}</span>
+            <button class="qty-btn" onclick="adjustSealedQty(${idx},+1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Fetch live prices for items we don't have yet
+  loadSealedPrices(items);
+}
+
+/* ===== SEALED PRICES ===== */
+async function loadSealedPrices(items) {
+  const todo = items.filter(s => s.productId && sealedPriceCache[s.productId] == null);
+  if (todo.length === 0) return;
+
+  // Group by setId to batch API calls
+  const bySet = {};
+  todo.forEach(s => {
+    if (!bySet[s.setId]) bySet[s.setId] = [];
+    bySet[s.setId].push(s);
+  });
+
+  for (const [setId, setItems] of Object.entries(bySet)) {
+    try {
+      const res = await fetch(`/api/sealed-prices?setId=${setId}`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      (data.products || []).forEach(p => {
+        if (p.market != null) sealedPriceCache[p.id] = p.market;
+      });
+    } catch {}
+  }
+
+  renderSealedGrid();
+  renderStats();
+}
+
+/* ===== SEALED MUTATIONS ===== */
+function adjustSealedQty(idx, delta) {
+  if (!sealedPortfolio[idx]) return;
+  const newQty = (sealedPortfolio[idx].qty || 1) + delta;
+  if (newQty <= 0) {
+    const name = sealedPortfolio[idx].name;
+    sealedPortfolio.splice(idx, 1);
+    saveSealedPortfolio();
+    renderSealedGrid();
+    renderStats();
+    updateTabCounts();
+    showToast(`Removed ${name} from collection`);
+    return;
+  }
+  sealedPortfolio[idx].qty = newQty;
+  saveSealedPortfolio();
+  renderSealedGrid();
+  renderStats();
+}
+
+/* ===== SEALED SEARCH ===== */
+let sealedSearchTimeout = null;
+let sealedResultsCache  = [];
+
+document.getElementById('sealed-product-search').addEventListener('input', async (e) => {
+  clearTimeout(sealedSearchTimeout);
+  const q = e.target.value.trim();
+  const results = document.getElementById('sealed-search-results');
+  if (q.length < 2) { results.classList.remove('open'); return; }
+
+  sealedSearchTimeout = setTimeout(async () => {
+    const setId = document.getElementById('sealed-add-set').value;
+    results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Searching…</div>';
+    results.classList.add('open');
+
+    try {
+      const url = setId
+        ? `/api/sealed-prices?setId=${setId}`
+        : `/api/sealed-prices?q=${encodeURIComponent(q)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('fetch failed');
+      const data = await res.json();
+      let products = data.products || [];
+
+      // Client-side filter when fetched by set
+      if (setId) {
+        const qLower = q.toLowerCase();
+        products = products.filter(p => p.name.toLowerCase().includes(qLower));
+      }
+
+      sealedResultsCache = products.slice(0, 12);
+
+      if (!sealedResultsCache.length) {
+        results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">No products found</div>';
+        return;
+      }
+
+      results.innerHTML = sealedResultsCache.map((p, i) => {
+        const priceText = p.market != null ? `$${p.market.toFixed(2)}` : '';
+        return `<div class="sealed-result-item" onclick="selectSealedProduct(${i})">
+          <img class="sealed-result-img" src="${p.image || ''}" alt="${p.name}" onerror="this.style.background='#1e293b'">
+          <div style="flex:1;min-width:0">
+            <div class="sealed-result-name">${p.name}</div>
+            <div class="sealed-result-meta">${p.type || ''} · ${p.expansion?.name || ''}</div>
+          </div>
+          ${priceText ? `<div class="sealed-result-price">${priceText}</div>` : ''}
+        </div>`;
+      }).join('');
+    } catch {
+      results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Search failed — try again</div>';
+    }
+  }, 350);
+});
+
+async function onSealedSetChange() {
+  // Clear search and results when set changes
+  document.getElementById('sealed-product-search').value = '';
+  document.getElementById('sealed-search-results').classList.remove('open');
+  document.getElementById('sealed-preview').style.display = 'none';
+  pendingSealed = null;
+}
+
+function selectSealedProduct(index) {
+  const p = sealedResultsCache[index];
+  if (!p) return;
+
+  const setId = document.getElementById('sealed-add-set').value;
+  const setMeta = sets.find(s => s.setId === setId);
+
+  pendingSealed = {
+    productId:   p.id,
+    name:        p.name,
+    type:        p.type || '',
+    image:       p.image || null,
+    setId:       setId || (p.expansion?.id || ''),
+    setName:     setMeta?.name || p.expansion?.name || '',
+    market:      p.market,
+  };
+
+  document.getElementById('sealed-search-results').classList.remove('open');
+  document.getElementById('sealed-product-search').value = p.name;
+
+  const preview = document.getElementById('sealed-preview');
+  preview.style.display = 'block';
+  document.getElementById('sealed-preview-img').src = p.image || '';
+  document.getElementById('sealed-preview-name').textContent = p.name;
+  document.getElementById('sealed-preview-type').textContent = `${p.type || ''} · ${p.expansion?.name || ''}`;
+  document.getElementById('sealed-preview-price').textContent = p.market != null ? `Market: $${p.market.toFixed(2)}` : '';
+
+  // Cache the price
+  if (p.market != null) sealedPriceCache[p.id] = p.market;
+}
+
+/* ===== SEALED MODAL ===== */
+function openSealedModal() {
+  document.getElementById('sealed-modal-overlay').classList.add('open');
+  document.getElementById('sealed-product-search').value = '';
+  document.getElementById('sealed-search-results').classList.remove('open');
+  document.getElementById('sealed-preview').style.display = 'none';
+  document.getElementById('sealed-add-qty').value = 1;
+  document.getElementById('sealed-add-purchase').value = '';
+  pendingSealed = null;
+  setTimeout(() => document.getElementById('sealed-product-search').focus(), 100);
+}
+
+function closeSealedModal() {
+  document.getElementById('sealed-modal-overlay').classList.remove('open');
+}
+
+document.getElementById('open-add-sealed-modal').addEventListener('click', openSealedModal);
+document.getElementById('sealed-empty-add-btn')?.addEventListener('click', openSealedModal);
+document.getElementById('sealed-modal-close').addEventListener('click', closeSealedModal);
+document.getElementById('sealed-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('sealed-modal-overlay')) closeSealedModal();
+});
+
+document.getElementById('sealed-save-btn').addEventListener('click', () => {
+  if (!pendingSealed) { showToast('Please search and select a product first', 'error'); return; }
+
+  const qty      = parseInt(document.getElementById('sealed-add-qty').value) || 1;
+  const purchase = parseFloat(document.getElementById('sealed-add-purchase').value) || null;
+
+  const existing = sealedPortfolio.find(s => s.productId === pendingSealed.productId);
+  if (existing) {
+    existing.qty = (existing.qty || 1) + qty;
+    if (purchase != null) existing.purchasePrice = purchase;
+    showToast(`Updated quantity for ${pendingSealed.name}`);
+  } else {
+    sealedPortfolio.push({
+      productId:     pendingSealed.productId,
+      name:          pendingSealed.name,
+      type:          pendingSealed.type,
+      image:         pendingSealed.image,
+      setId:         pendingSealed.setId,
+      setName:       pendingSealed.setName,
+      qty,
+      purchasePrice: purchase,
+      addedAt:       Date.now(),
+    });
+    showToast(`Added ${pendingSealed.name} ✓`, 'success');
+  }
+
+  saveSealedPortfolio();
+  renderSealedGrid();
+  renderStats();
+  updateTabCounts();
+  closeSealedModal();
+});
+
+// Sealed toolbar event listeners
+document.getElementById('sealed-search-input').addEventListener('input', renderSealedGrid);
+document.getElementById('sealed-filter-set').addEventListener('change', renderSealedGrid);
+document.getElementById('sealed-sort-select').addEventListener('change', renderSealedGrid);
+
 /* ===== HAMBURGER MENU ===== */
 function initNav() {
 (async function() {
@@ -1856,3 +2291,4 @@ init();
 </script>
 </body>
 </html>
+
