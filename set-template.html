@@ -1537,7 +1537,7 @@ function loadTCGPlayerPrices() {
       }
 
     } catch(e) {
-      console.warn('TCGplayer prices unavailable:', e.message);
+      console.warn('live prices unavailable:', e.message);
       _pricesFetchPromise = null;
     }
   })();
