@@ -133,11 +133,18 @@ export default async function handler(req, res) {
       const cacheKey = `sealed:product:${productId}`;
       const cached   = await redisGet(cacheKey);
       if (cached) {
-        return res.status(200).json({ products: JSON.parse(cached), total: 1, cached: true });
+        const p = JSON.parse(cached);
+        // Don't serve cached null-price results
+        if (p.length > 0 && p[0].market != null) {
+          return res.status(200).json({ products: p, total: p.length, cached: true });
+        }
       }
       const data = await fetchFromScrydex(`${SCRYDEX_BASE}/sealed/${productId}?include=prices`);
       products = normaliseProducts([data]);
-      await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
+      // Only cache if price is present
+      if (products[0]?.market != null) {
+        await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
+      }
       return res.status(200).json({ products, total: products.length });
     }
 
@@ -149,8 +156,12 @@ export default async function handler(req, res) {
       const cacheKey = `sealed:prices:${scrydexId}`;
       const cached   = await redisGet(cacheKey);
       if (cached) {
-        res.setHeader('X-Cache', 'HIT');
-        return res.status(200).json({ products: JSON.parse(cached), total: JSON.parse(cached).length, cached: true });
+        const p = JSON.parse(cached);
+        // Don't serve stale null-price cache
+        if (p.length === 0 || p.some(x => x.market != null)) {
+          res.setHeader('X-Cache', 'HIT');
+          return res.status(200).json({ products: p, total: p.length, cached: true });
+        }
       }
 
       // ── Cache miss — fetch from Scrydex (costs 1 credit) ────────────
@@ -158,7 +169,6 @@ export default async function handler(req, res) {
 
       let data;
       if (setName) {
-        // Search by name filtered by expansion
         data = await fetchFromScrydex(
           `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
         );
@@ -166,7 +176,6 @@ export default async function handler(req, res) {
           (data.data || []).filter(p => p.expansion?.id === scrydexId)
         );
       } else {
-        // Unknown set — try expansion endpoint directly
         try {
           data = await fetchFromScrydex(
             `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
@@ -177,7 +186,11 @@ export default async function handler(req, res) {
         }
       }
 
-      await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
+      // Only cache if we got products with prices
+      const hasPrice = products.some(p => p.market != null);
+      if (products.length > 0 && hasPrice) {
+        await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
+      }
 
     } else if (q) {
       // Search — short cache only (no Redis, results vary by query)
