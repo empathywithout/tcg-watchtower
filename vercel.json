@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/portfolio",
+      "destination": "/portfolio.html"
+    },
+    {
       "source": "/sets/one-piece",
       "destination": "/sets-one-piece.html"
     },
