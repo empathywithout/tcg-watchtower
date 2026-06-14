@@ -152,12 +152,11 @@ async function fetchPrices(groupId) {
     }
   }
 
-  // Map card number → price
-  // When multiple products share a card number, prefer highest subtype priority
-  // then lowest productId as tiebreak
-  const prices = {};
-  const bestPriority  = {};
-  const bestProductId = {};
+  // Map card number → best price + all variants
+  const prices     = {};
+  const variants   = {}; // cardNumber → [{name, market}]
+  const bestPrio   = {};
+  const seenVar    = {};
 
   for (const product of products) {
     const numEntry = (product.extendedData || []).find(e => e.name === 'Number');
@@ -166,22 +165,38 @@ async function fetchPrices(groupId) {
     const priceObj   = priceByProductId[product.productId];
     if (!priceObj?.marketPrice) continue;
 
-    const prio = subtypePriority((priceObj.subTypeName || '').toLowerCase());
-    const existingPrio = bestPriority[cardNumber] ?? -999;
+    const subRaw  = priceObj.subTypeName || '';
+    const sub     = subRaw.toLowerCase();
+    const varName = subRaw.replace(/\s+/g, ''); // e.g. "UnlimitedHolofoil"
+    const varKey  = `${cardNumber}:${varName}`;
+    const prio    = subtypePriority(sub);
 
-    // Skip if lower priority, or same priority but higher productId
-    if (prio < existingPrio) continue;
-    if (prio === existingPrio && product.productId >= (bestProductId[cardNumber] ?? Infinity)) continue;
-    bestPriority[cardNumber]  = prio;
-    bestProductId[cardNumber] = product.productId;
+    // Collect all unique variants
+    if (!seenVar[varKey]) {
+      seenVar[varKey] = true;
+      if (!variants[cardNumber]) variants[cardNumber] = [];
+      variants[cardNumber].push({ name: varName, market: priceObj.marketPrice });
+    }
 
-    const market = priceObj.marketPrice;
-    prices[cardNumber]                             = market;
-    prices[cardNumber.padStart(3, '0')]            = market;
-    const parsed = parseInt(cardNumber, 10);
-    if (!isNaN(parsed)) prices[String(parsed)]     = market;
+    // Track best (highest priority) price
+    if (prio > (bestPrio[cardNumber] ?? -999)) {
+      bestPrio[cardNumber] = prio;
+      const market = priceObj.marketPrice;
+      prices[cardNumber]                          = market;
+      prices[cardNumber.padStart(3, '0')]         = market;
+      const parsed = parseInt(cardNumber, 10);
+      if (!isNaN(parsed)) prices[String(parsed)] = market;
+    }
   }
-  return prices;
+
+  // Sort each card's variants by priority (best first)
+  for (const num of Object.keys(variants)) {
+    variants[num].sort((a, b) =>
+      subtypePriority(b.name.toLowerCase()) - subtypePriority(a.name.toLowerCase())
+    );
+  }
+
+  return { prices, variants };
 }
 
 export default async function handler(req, res) {
@@ -195,18 +210,18 @@ export default async function handler(req, res) {
 
   // Check Redis cache
   const cacheKey = `tcgp:prices:${setId}`;
-  const cached   = await redisGet(cacheKey);
+  const cached = await redisGet(cacheKey);
   if (cached) {
-    const prices = JSON.parse(cached);
-    // Validate cache has card-number keys not productId keys
-    const keys = Object.keys(prices);
+    const parsed = JSON.parse(cached);
+    // Handle both old format {key:price} and new format {prices:{}, variants:{}}
+    const prices   = parsed.prices || parsed;
+    const variants = parsed.variants || {};
+    const keys     = Object.keys(prices);
     const looksValid = keys.length === 0 || keys.some(k => k.length <= 4 && !isNaN(parseInt(k)));
     if (looksValid) {
       res.setHeader('X-Cache', 'HIT');
-      return res.status(200).json({ prices, cached: true });
+      return res.status(200).json({ prices, variants, cached: true });
     }
-    // Stale productId-keyed cache — delete and re-fetch
-    console.log(`[tcgplayer-set-prices] Invalidating bad cache for ${setId}`);
   }
 
   res.setHeader('X-Cache', 'MISS');
@@ -220,13 +235,15 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: `No TCGplayer group found for ${setId}` });
     }
 
-    const prices = await fetchPrices(groupId);
+    const result = await fetchPrices(groupId);
+    const { prices, variants } = result;
     if (Object.keys(prices).length > 0) {
-      await redisSetEx(cacheKey, JSON.stringify(prices), 6 * 60 * 60);
+      await redisSetEx(cacheKey, JSON.stringify(result), 6 * 60 * 60);
     }
-    return res.status(200).json({ prices, groupId });
+    return res.status(200).json({ prices, variants, groupId });
   } catch (e) {
     console.error('[tcgplayer-set-prices]', e.message);
     return res.status(500).json({ error: e.message });
   }
 }
+
