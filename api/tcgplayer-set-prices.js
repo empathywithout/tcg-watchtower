@@ -192,8 +192,7 @@ async function fetchPrices(groupId) {
     );
   }
 
-  return { prices, variants };
-}
+  return { prices, variants, _debug: { priceRowCount: pricesList.length, productCount: products.length } };
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
