@@ -47,8 +47,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .sync-indicator.syncing{color:var(--amber)}
 
 /* STATS BAR */
-.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:32px}
-.stats-bar.with-week{grid-template-columns:repeat(6,1fr)}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.stats-bar.with-week{grid-template-columns:repeat(5,1fr)}
 .stat-box{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-box-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:white}
 .stat-box-val.green{color:#4ade80}
@@ -754,13 +754,19 @@ nav.container {
       <div class="stat-box-val" id="stat-unique">0</div>
       <div class="stat-box-label">Unique Cards</div>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" id="stat-value-box" onclick="toggleValueBreakdown()" style="cursor:pointer;position:relative">
       <div class="stat-box-val green" id="stat-value">—</div>
-      <div class="stat-box-label">Cards Value</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-box-val" style="color:#fbbf24" id="stat-sealed-value">—</div>
-      <div class="stat-box-label">Sealed Value</div>
+      <div class="stat-box-label">Total Value <span style="font-size:.6rem;opacity:.5">▼</span></div>
+      <div id="stat-value-breakdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:100;background:rgba(15,23,42,.97);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;margin-top:4px;text-align:left;min-width:160px">
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:6px">
+          <span style="color:var(--muted)">Cards</span>
+          <span style="font-family:'Space Mono',monospace;color:#4ade80" id="stat-value-cards">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem">
+          <span style="color:var(--muted)">Sealed</span>
+          <span style="font-family:'Space Mono',monospace;color:#fbbf24" id="stat-value-sealed">—</span>
+        </div>
+      </div>
     </div>
     <div class="stat-box">
       <div class="stat-box-val" id="stat-sets">0</div>
@@ -1332,8 +1338,13 @@ function renderStats() {
   document.getElementById('stat-cards').textContent  = total;
   document.getElementById('stat-unique').textContent  = unique;
   document.getElementById('stat-sets').textContent    = setIds.size;
-  document.getElementById('stat-value').textContent   = hasAny ? `$${value.toFixed(2)}` : '—';
-  document.getElementById('stat-sealed-value').textContent = hasSealedAny ? `$${sealedValue.toFixed(2)}` : '—';
+
+  // Combined total value
+  const totalValue = (hasAny ? value : 0) + (hasSealedAny ? sealedValue : 0);
+  const hasAnyValue = hasAny || hasSealedAny;
+  document.getElementById('stat-value').textContent = hasAnyValue ? `$${totalValue.toFixed(2)}` : '—';
+  document.getElementById('stat-value-cards').textContent  = hasAny ? `$${value.toFixed(2)}` : '—';
+  document.getElementById('stat-value-sealed').textContent = hasSealedAny ? `$${sealedValue.toFixed(2)}` : '—';
 
   // Weighted 7-day value change across owned cards with trend data
   let weekChangeTotal = 0;
@@ -1790,6 +1801,18 @@ function showToast(msg, type = '') {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
+
+/* ===== VALUE BREAKDOWN TOGGLE ===== */
+function toggleValueBreakdown() {
+  const bd = document.getElementById('stat-value-breakdown');
+  bd.style.display = bd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('stat-value-box')?.contains(e.target)) {
+    const bd = document.getElementById('stat-value-breakdown');
+    if (bd) bd.style.display = 'none';
+  }
+});
 
 /* ===== VIEW SWITCHING ===== */
 function switchView(view) {
