@@ -1244,11 +1244,110 @@ function populateAddSetDropdown(game) {
   addSetEl.innerHTML = '<option value="">All Sets</option>';
 
   const OP_IDS = /^(op|eb|st)\d/i;
+
+  // Vintage sets not in Scrydex but supported via TCGdex + TCGplayer
+  const VINTAGE_SETS = [
+    { id:'swsh9',  name:'Brilliant Stars',        series:'Sword & Shield' },
+    { id:'swsh8',  name:'Fusion Strike',           series:'Sword & Shield' },
+    { id:'swsh7',  name:'Evolving Skies',          series:'Sword & Shield' },
+    { id:'swsh6',  name:'Chilling Reign',          series:'Sword & Shield' },
+    { id:'swsh5',  name:'Battle Styles',           series:'Sword & Shield' },
+    { id:'swsh4',  name:'Vivid Voltage',           series:'Sword & Shield' },
+    { id:'swsh3',  name:'Darkness Ablaze',         series:'Sword & Shield' },
+    { id:'swsh2',  name:'Rebel Clash',             series:'Sword & Shield' },
+    { id:'swsh1',  name:'Sword & Shield',          series:'Sword & Shield' },
+    { id:'sm12',   name:'Cosmic Eclipse',          series:'Sun & Moon' },
+    { id:'sm11',   name:'Unified Minds',           series:'Sun & Moon' },
+    { id:'sm10',   name:'Unbroken Bonds',          series:'Sun & Moon' },
+    { id:'sm9',    name:'Team Up',                 series:'Sun & Moon' },
+    { id:'sm8',    name:'Lost Thunder',            series:'Sun & Moon' },
+    { id:'sm7',    name:'Celestial Storm',         series:'Sun & Moon' },
+    { id:'sm6',    name:'Forbidden Light',         series:'Sun & Moon' },
+    { id:'sm5',    name:'Ultra Prism',             series:'Sun & Moon' },
+    { id:'sm4',    name:'Crimson Invasion',        series:'Sun & Moon' },
+    { id:'sm3',    name:'Burning Shadows',         series:'Sun & Moon' },
+    { id:'sm2',    name:'Guardians Rising',        series:'Sun & Moon' },
+    { id:'sm1',    name:'Sun & Moon',              series:'Sun & Moon' },
+    { id:'xy12',   name:'Evolutions',              series:'XY' },
+    { id:'xy11',   name:'Steam Siege',             series:'XY' },
+    { id:'xy10',   name:'Fates Collide',           series:'XY' },
+    { id:'xy9',    name:'BREAKpoint',              series:'XY' },
+    { id:'xy8',    name:'BREAKthrough',            series:'XY' },
+    { id:'xy7',    name:'Ancient Origins',         series:'XY' },
+    { id:'xy6',    name:'Roaring Skies',           series:'XY' },
+    { id:'xy5',    name:'Primal Clash',            series:'XY' },
+    { id:'xy4',    name:'Phantom Forces',          series:'XY' },
+    { id:'xy3',    name:'Furious Fists',           series:'XY' },
+    { id:'xy2',    name:'Flashfire',               series:'XY' },
+    { id:'xy1',    name:'XY',                      series:'XY' },
+    { id:'bw11',   name:'Legendary Treasures',     series:'Black & White' },
+    { id:'bw10',   name:'Plasma Blast',            series:'Black & White' },
+    { id:'bw9',    name:'Plasma Freeze',           series:'Black & White' },
+    { id:'bw8',    name:'Plasma Storm',            series:'Black & White' },
+    { id:'bw7',    name:'Boundaries Crossed',      series:'Black & White' },
+    { id:'bw6',    name:'Dragons Exalted',         series:'Black & White' },
+    { id:'bw5',    name:'Dark Explorers',          series:'Black & White' },
+    { id:'bw4',    name:'Next Destinies',          series:'Black & White' },
+    { id:'bw3',    name:'Noble Victories',         series:'Black & White' },
+    { id:'bw2',    name:'Emerging Powers',         series:'Black & White' },
+    { id:'bw1',    name:'Black & White',           series:'Black & White' },
+    { id:'hgss4',  name:'HS—Triumphant',           series:'HeartGold SoulSilver' },
+    { id:'hgss3',  name:'HS—Undaunted',            series:'HeartGold SoulSilver' },
+    { id:'hgss2',  name:'HS—Unleashed',            series:'HeartGold SoulSilver' },
+    { id:'hgss1',  name:'HeartGold & SoulSilver',  series:'HeartGold SoulSilver' },
+    { id:'pl4',    name:'Arceus',                  series:'Platinum' },
+    { id:'pl3',    name:'Supreme Victors',         series:'Platinum' },
+    { id:'pl2',    name:'Rising Rivals',           series:'Platinum' },
+    { id:'pl1',    name:'Platinum',                series:'Platinum' },
+    { id:'dp7',    name:'Stormfront',              series:'Diamond & Pearl' },
+    { id:'dp6',    name:'Legends Awakened',        series:'Diamond & Pearl' },
+    { id:'dp5',    name:'Majestic Dawn',           series:'Diamond & Pearl' },
+    { id:'dp4',    name:'Great Encounters',        series:'Diamond & Pearl' },
+    { id:'dp3',    name:'Secret Wonders',          series:'Diamond & Pearl' },
+    { id:'dp2',    name:'Mysterious Treasures',    series:'Diamond & Pearl' },
+    { id:'dp1',    name:'Diamond & Pearl',         series:'Diamond & Pearl' },
+    { id:'ex16',   name:'Power Keepers',           series:'EX' },
+    { id:'ex15',   name:'Dragon Frontiers',        series:'EX' },
+    { id:'ex14',   name:'Crystal Guardians',       series:'EX' },
+    { id:'ex13',   name:'Holon Phantoms',          series:'EX' },
+    { id:'ex12',   name:'Legend Maker',            series:'EX' },
+    { id:'ex11',   name:'Delta Species',           series:'EX' },
+    { id:'ex10',   name:'Unseen Forces',           series:'EX' },
+    { id:'ex9',    name:'Emerald',                 series:'EX' },
+    { id:'ex8',    name:'Deoxys',                  series:'EX' },
+    { id:'ex7',    name:'Team Rocket Returns',     series:'EX' },
+    { id:'ex6',    name:'FireRed & LeafGreen',     series:'EX' },
+    { id:'ex5',    name:'Hidden Legends',          series:'EX' },
+    { id:'ex4',    name:'Team Magma vs Team Aqua', series:'EX' },
+    { id:'ex3',    name:'Dragon',                  series:'EX' },
+    { id:'ex2',    name:'Sandstorm',               series:'EX' },
+    { id:'ex1',    name:'Ruby & Sapphire',         series:'EX' },
+    { id:'neo4',   name:'Neo Destiny',             series:'Neo' },
+    { id:'neo3',   name:'Neo Revelation',          series:'Neo' },
+    { id:'neo2',   name:'Neo Discovery',           series:'Neo' },
+    { id:'neo1',   name:'Neo Genesis',             series:'Neo' },
+    { id:'gym2',   name:'Gym Challenge',           series:'Gym' },
+    { id:'gym1',   name:'Gym Heroes',              series:'Gym' },
+    { id:'base6',  name:'Legendary Collection',    series:'Base' },
+    { id:'base5',  name:'Neo Genesis',             series:'Base' },
+    { id:'base4',  name:'Team Rocket',             series:'Base' },
+    { id:'base3',  name:'Fossil',                  series:'Base' },
+    { id:'base2',  name:'Jungle',                  series:'Base' },
+    { id:'base1',  name:'Base Set',                series:'Base' },
+  ];
+
+  // Merge Scrydex sets + vintage sets, deduplicate by id
+  const scrydexIds = new Set(allScrydexSets.map(s=>s.id));
+  const allSets = [
+    ...allScrydexSets,
+    ...VINTAGE_SETS.filter(s => !scrydexIds.has(s.id)),
+  ];
+
   const filtered = game === 'onepiece'
-    ? allScrydexSets.filter(s => OP_IDS.test(s.id))
+    ? allSets.filter(s => OP_IDS.test(s.id))
     : game === 'pokemon'
-    ? allScrydexSets.filter(s => !OP_IDS.test(s.id))
-    : allScrydexSets;
+    ? allSets.filter(s => !OP_IDS.test(s.id))
+    : allSets;
 
   // Group by series
   const grouped = {};
@@ -1260,9 +1359,7 @@ function populateAddSetDropdown(game) {
   Object.entries(grouped).forEach(([series, seriesSets]) => {
     const group = document.createElement('optgroup');
     group.label = series;
-    seriesSets.forEach(s => {
-      group.appendChild(new Option(s.name, s.id));
-    });
+    seriesSets.forEach(s => group.appendChild(new Option(s.name, s.id)));
     addSetEl.appendChild(group);
   });
 
@@ -1757,20 +1854,35 @@ function cycleCondition(idx) {
 let searchTimeout = null;
 let allSetsCardCache = {};
 
+// Sets Scrydex has card data for (SWSH onwards)
+const SCRYDEX_CARD_SETS = new Set([
+  'me1','me2','me2pt5','me3','me4','me5','mep',
+  'sv1','sv2','sv3','sv3pt5','sv4','sv4pt5','sv5','sv6','sv6pt5',
+  'sv7','sv8','sv8pt5','sv9','sv10','zsv10pt5','rsv10pt5','svp',
+  'swsh1','swsh2','swsh3','swsh35','swsh4','swsh45','swsh5','swsh6',
+  'swsh7','swsh8','swsh9','swsh10','swsh10tg','swsh11','swsh11tg',
+  'swsh12','swsh12tg','swsh12pt5','swsh12pt5gg',
+  'pgo','mcd22','mcd23','mcd24','clv','clc','clb','sve',
+]);
+
 async function fetchSetCardsForSearch(scrydexSetId) {
   if (allSetsCardCache[scrydexSetId]) return allSetsCardCache[scrydexSetId];
-  try {
-    // Fetch from Scrydex using the set ID directly
-    const res = await fetch(`/api/scrydex-cards?set=${scrydexSetId}`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.cards?.length > 0) {
-        allSetsCardCache[scrydexSetId] = data.cards;
-        return data.cards;
+
+  // Try Scrydex for modern sets it supports
+  if (SCRYDEX_CARD_SETS.has(scrydexSetId)) {
+    try {
+      const res = await fetch(`/api/scrydex-cards?set=${scrydexSetId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cards?.length > 0) {
+          allSetsCardCache[scrydexSetId] = data.cards;
+          return data.cards;
+        }
       }
-    }
-  } catch {}
-  // Fallback to /api/cards with internal setId mapping
+    } catch {}
+  }
+
+  // Fallback: TCGdex/R2 via /api/cards (works for vintage sets)
   try {
     const SCRYDEX_TO_INTERNAL = {
       'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv3pt5':'sv3pt5',
@@ -1782,12 +1894,17 @@ async function fetchSetCardsForSearch(scrydexSetId) {
     const internalId = SCRYDEX_TO_INTERNAL[scrydexSetId] || scrydexSetId;
     const gameParam  = isOnePiece(internalId) ? '&game=onepiece' : '';
     const res = await fetch(`/api/cards?set=${internalId}${gameParam}`);
-    const data = await res.json();
-    allSetsCardCache[scrydexSetId] = data.cards || [];
-  } catch {
-    allSetsCardCache[scrydexSetId] = [];
-  }
-  return allSetsCardCache[scrydexSetId];
+    if (res.ok) {
+      const data = await res.json();
+      if (data.cards?.length > 0) {
+        allSetsCardCache[scrydexSetId] = data.cards;
+        return data.cards;
+      }
+    }
+  } catch {}
+
+  allSetsCardCache[scrydexSetId] = [];
+  return [];
 }
 
 document.getElementById('card-search').addEventListener('input', async (e) => {
@@ -1907,26 +2024,26 @@ function selectCardFromCache(index, scrydexSetId) {
     pendingCard._variantIdx = 0;
   }
 
-  // Show price — use Scrydex if available, else fall back to TCGplayer
+  // Show price — Scrydex if available, else TCGplayer
   if (card.market != null) {
     priceEl.textContent = `Market: $${card.market.toFixed(2)}`;
   } else {
-    // Try TCGplayer via universal endpoint
-    const scrydexSetId = card.expansion?.id || setId;
-    const setNameHint  = card.expansion?.name || '';
+    // Use the Scrydex set ID from the dropdown or card expansion
+    const tcgpSetId   = card.expansion?.id || scrydexSetId;
+    const tcgpSetName = card.expansion?.name || allScrydexSets.find(s=>s.id===tcgpSetId)?.name || '';
     priceEl.textContent = 'Loading price…';
-    fetch(`/api/tcgplayer-set-prices?setId=${encodeURIComponent(scrydexSetId)}&setName=${encodeURIComponent(setNameHint)}`)
+    fetch(`/api/tcgplayer-set-prices?setId=${encodeURIComponent(tcgpSetId)}&setName=${encodeURIComponent(tcgpSetName)}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (!data?.prices) { priceEl.textContent = ''; return; }
-        const p = data.prices[card.localId]
-          || data.prices[card.localId.padStart(3,'0')]
-          || data.prices[String(parseInt(card.localId, 10))];
+        const localId = card.localId || card.number || '';
+        const p = data.prices[localId]
+          || data.prices[localId.padStart(3,'0')]
+          || data.prices[String(parseInt(localId, 10))];
         priceEl.textContent = p != null ? `Market: $${p.toFixed(2)} (TCGplayer)` : '';
-        // Cache it for when card is added
         if (p != null) {
-          priceCache[`${setId}:${card.localId}`] = p;
-          priceCache[`${setId}:${card.localId.padStart(3,'0')}`] = p;
+          priceCache[`${setId}:${localId}`] = p;
+          priceCache[`${setId}:${localId.padStart(3,'0')}`] = p;
         }
       }).catch(() => { priceEl.textContent = ''; });
   }
