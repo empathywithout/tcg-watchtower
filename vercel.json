@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/admin/bust-cache",
+      "destination": "/api/admin/bust-cache.js"
+    },
+    {
       "source": "/api/scrydex-cards",
       "destination": "/api/scrydex-cards.js"
     },
