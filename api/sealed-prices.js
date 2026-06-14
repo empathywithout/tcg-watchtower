@@ -14,14 +14,35 @@ const SCRYDEX_ID_MAP = {
   'me01':'me1','me02':'me2','me02pt5':'me2.5','me03':'me3','me04':'me4','me05':'me5',
   // Pass-through short IDs from Scrydex expansion.id
   'me1':'me1','me2':'me2','me3':'me3','me4':'me4','me5':'me5',
+  'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv4':'sv04','sv5':'sv05',
+  'sv6':'sv06','sv7':'sv07','sv8':'sv08','sv9':'sv09',
 };
 
 // Set name keywords for search — used to fetch products when expansion.id filter isn't supported
 const SET_NAME_MAP = {
+  // Mega Evolution
   'me1':'Mega Evolution','me2':'Phantasmal Flames','me3':'Perfect Order',
   'me4':'Chaos Rising','me5':'Pitch Black',
   'me01':'Mega Evolution','me02':'Phantasmal Flames','me03':'Perfect Order',
   'me04':'Chaos Rising','me05':'Pitch Black',
+  // Scarlet & Violet
+  'sv01':'Scarlet Violet','sv1':'Scarlet Violet',
+  'sv02':'Paldea Evolved','sv2':'Paldea Evolved',
+  'sv03':'Obsidian Flames','sv3':'Obsidian Flames',
+  'sv3pt5':'151','sv03.5':'151',
+  'sv04':'Paradox Rift','sv4':'Paradox Rift',
+  'sv4pt5':'Paldean Fates','sv04.5':'Paldean Fates',
+  'sv05':'Temporal Forces','sv5':'Temporal Forces',
+  'sv06':'Twilight Masquerade','sv6':'Twilight Masquerade',
+  'sv6pt5':'Shrouded Fable','sv06.5':'Shrouded Fable',
+  'sv07':'Stellar Crown','sv7':'Stellar Crown',
+  'sv08':'Surging Sparks','sv8':'Surging Sparks',
+  'sv8pt5':'Prismatic Evolutions','sv08.5':'Prismatic Evolutions',
+  'sv09':'Journey Together','sv9':'Journey Together',
+  'sv10':'Destined Rivals',
+  'zsv10pt5':'Black Bolt','rsv10pt5':'White Flare',
+  // One Piece
+  'op14':'Azure','op15':'Kami','eb03':'Heroines',
 };
 
 async function scrydexFetch(url, apiKey, teamId) {
