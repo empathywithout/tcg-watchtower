@@ -10,8 +10,8 @@ const HEADERS     = { 'User-Agent': 'TCGWatchtower/1.0' };
 const KV_URL      = process.env.KV_REST_API_URL;
 const KV_TOKEN    = process.env.KV_REST_API_TOKEN;
 
-// Known Scrydex ID → TCGplayer group ID for common sets
-// Saves a groups lookup on every request for tracked sets
+// Known Scrydex ID → TCGplayer group ID (verified)
+// Only include sets we've confirmed — others use dynamic TCGCSV lookup
 const KNOWN_GROUPS = {
   // Scarlet & Violet
   'sv1':'22873','sv2':'23120','sv3':'23228','sv3pt5':'23237','sv4':'23286',
@@ -35,20 +35,7 @@ const KNOWN_GROUPS = {
   // Black & White
   'bw1':'501','bw2':'502','bw3':'503','bw4':'504','bw5':'505',
   'bw6':'506','bw7':'507','bw8':'508','bw9':'509','bw10':'510','bw11':'511',
-  // HeartGold SoulSilver
-  'hgss1':'1710','hgss2':'1711','hgss3':'1712','hgss4':'1713',
-  // Platinum
-  'pl1':'1604','pl2':'1605','pl3':'1606','pl4':'1607',
-  // Diamond & Pearl
-  'dp1':'1518','dp2':'1519','dp3':'1520','dp4':'1521','dp5':'1522','dp6':'1523','dp7':'1524',
-  // EX Series
-  'ex1':'1','ex2':'2','ex3':'3','ex4':'4','ex5':'5','ex6':'6','ex7':'7',
-  'ex8':'8','ex9':'9','ex10':'10','ex11':'11','ex12':'12','ex13':'13',
-  'ex14':'14','ex15':'15','ex16':'16',
-  // Base/Jungle/Fossil era
-  'base1':'1578','base2':'1582','base3':'1579','base4':'1580','base5':'1581',
-  'base6':'1583','gym1':'1584','gym2':'1585',
-  'neo1':'1586','neo2':'1587','neo3':'1588','neo4':'1589',
+  // Older sets — rely on dynamic lookup if not here
 };
 
 async function redisGet(key) {
@@ -75,22 +62,33 @@ async function redisSetEx(key, value, ttl) {
   } catch {}
 }
 
-async function findGroupId(setName) {
-  // Search TCGCSV groups for a matching set name
-  try {
-    const res = await undiciFetch(`${TCGCSV_BASE}/3/groups`, {
-      headers: HEADERS, signal: AbortSignal.timeout(8000)
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const groups = data.results || [];
-    // Case-insensitive name match
-    const match = groups.find(g =>
-      g.name?.toLowerCase() === setName?.toLowerCase() ||
-      g.abbreviation?.toLowerCase() === setName?.toLowerCase()
-    );
-    return match?.groupId ? String(match.groupId) : null;
-  } catch { return null; }
+async function findGroupId(setId, setName) {
+  // Cache the full groups list in Redis for 24h to avoid repeated fetches
+  const groupsCacheKey = 'tcgp:groups:pokemon';
+  let groups = null;
+  const cachedGroups = await redisGet(groupsCacheKey);
+  if (cachedGroups) {
+    groups = JSON.parse(cachedGroups);
+  } else {
+    try {
+      const res = await undiciFetch(`${TCGCSV_BASE}/3/groups`, {
+        headers: HEADERS, signal: AbortSignal.timeout(8000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        groups = data.results || [];
+        await redisSetEx(groupsCacheKey, JSON.stringify(groups), 24 * 60 * 60);
+      }
+    } catch { return null; }
+  }
+  if (!groups) return null;
+
+  const nameLower = (setName || setId).toLowerCase();
+  // Try exact match first, then partial
+  const exact = groups.find(g => g.name?.toLowerCase() === nameLower);
+  if (exact) return String(exact.groupId);
+  const partial = groups.find(g => g.name?.toLowerCase().includes(nameLower) || nameLower.includes(g.name?.toLowerCase()));
+  return partial ? String(partial.groupId) : null;
 }
 
 async function fetchPrices(groupId) {
@@ -139,8 +137,8 @@ export default async function handler(req, res) {
   try {
     // Get group ID — use known map first, then look up dynamically
     let groupId = KNOWN_GROUPS[setId];
-    if (!groupId && setName) {
-      groupId = await findGroupId(setName);
+    if (!groupId) {
+      groupId = await findGroupId(setId, setName);
     }
     if (!groupId) {
       return res.status(404).json({ error: `No TCGplayer group found for ${setId}` });
@@ -156,3 +154,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
