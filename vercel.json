@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/scrydex-cards",
+      "destination": "/api/scrydex-cards.js"
+    },
+    {
       "source": "/api/auth/me",
       "destination": "/api/auth/me.js"
     },
