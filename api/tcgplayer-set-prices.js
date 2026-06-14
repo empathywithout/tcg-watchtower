@@ -3,8 +3,6 @@
 // Uses known group ID map + dynamic TCGCSV lookup as fallback
 // Redis cached 6h per set
 
-import { fetch as undiciFetch } from 'undici';
-
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const HEADERS     = { 'User-Agent': 'TCGWatchtower/1.0' };
 const KV_URL      = process.env.KV_REST_API_URL;
@@ -78,7 +76,7 @@ async function findGroupIdByName(setName) {
     groups = JSON.parse(cached);
   } else {
     try {
-      const res = await undiciFetch(`${TCGCSV_BASE}/3/groups`, {
+      const res = await fetch(`${TCGCSV_BASE}/3/groups`, {
         headers: HEADERS, signal: AbortSignal.timeout(8000)
       });
       if (res.ok) {
@@ -115,8 +113,8 @@ async function findGroupIdByName(setName) {
 
 async function fetchPrices(groupId) {
   const [prodRes, priceRes] = await Promise.all([
-    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/products`, { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
-    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/prices`,   { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
+    fetch(`${TCGCSV_BASE}/3/${groupId}/products`, { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
+    fetch(`${TCGCSV_BASE}/3/${groupId}/prices`,   { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
   ]);
   if (!prodRes.ok || !priceRes.ok) throw new Error(`TCGCSV ${prodRes.status}/${priceRes.status}`);
   const [productsData, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
@@ -241,4 +239,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
 
