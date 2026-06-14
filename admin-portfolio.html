@@ -192,17 +192,17 @@ function renderDashboard(d) {
         <div class="stat-card">
           <div class="stat-label">Total Users</div>
           <div class="stat-val blue">${fmt(u.total)}</div>
-          <div class="stat-sub">${fmt(u.withCards)} actively tracking</div>
+          <div class="stat-sub">${fmt(u.withCards)} with cards · ${fmt(u.discord||0)} Discord · ${fmt(u.google||0)} Google</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">New — Last 7 days</div>
-          <div class="stat-val green">${fmt(u.new7d)}</div>
-          <div class="stat-sub">${pct(u.new7d, u.total)}% of all users</div>
+          <div class="stat-val green">${fmt(u.active7d)}</div>
+          <div class="stat-sub">${pct(u.active7d, u.total)}% of all users</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">New — Last 30 days</div>
-          <div class="stat-val green">${fmt(u.new30d)}</div>
-          <div class="stat-sub">${pct(u.new30d, u.total)}% of all users</div>
+          <div class="stat-val green">${fmt(u.active30d)}</div>
+          <div class="stat-sub">${pct(u.active30d, u.total)}% of all users</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Empty Portfolios</div>
@@ -298,3 +298,4 @@ init();
 </script>
 </body>
 </html>
+
