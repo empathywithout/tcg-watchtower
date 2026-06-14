@@ -1112,6 +1112,13 @@ async function init() {
   renderStats();
   renderCompletion();
   updateTabCounts();
+
+  // Background activity tracking (silent fail)
+  fetch('/api/admin/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: user?.id || 'anonymous' }),
+  }).catch(() => {});
 }
 
 function showLoggedIn() {
