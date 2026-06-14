@@ -2142,20 +2142,31 @@ async function loadSealedPrices(items) {
       const res = await fetch(`/api/sealed-prices?setId=${encodeURIComponent(setId)}`);
       if (!res.ok) continue;
       const data = await res.json();
-      (data.products || []).forEach(p => {
-        if (p.market != null) sealedPriceCache[p.id] = p.market;
-      });
+      const fetched = data.products || [];
+      // Map prices into cache
+      fetched.forEach(p => { if (p.market != null) sealedPriceCache[p.id] = p.market; });
+      // For any items whose price still isn't found, fetch by productId directly
+      for (const item of setItems) {
+        if (sealedPriceCache[item.productId] != null) continue;
+        try {
+          const r2 = await fetch(`/api/sealed-prices?productId=${encodeURIComponent(item.productId)}`);
+          if (!r2.ok) continue;
+          const d2 = await r2.json();
+          const match = (d2.products || [])[0];
+          if (match?.market != null) sealedPriceCache[match.id] = match.market;
+        } catch {}
+      }
     } catch {}
   }
 
-  // For items with no setId, search by product name as fallback
+  // For items with no setId, fetch by productId directly
   for (const s of noSet) {
     if (sealedPriceCache[s.productId] != null) continue;
     try {
-      const res = await fetch(`/api/sealed-prices?q=${encodeURIComponent(s.name)}`);
+      const res = await fetch(`/api/sealed-prices?productId=${encodeURIComponent(s.productId)}`);
       if (!res.ok) continue;
       const data = await res.json();
-      const match = (data.products || []).find(p => p.id === s.productId);
+      const match = (data.products || [])[0];
       if (match?.market != null) sealedPriceCache[match.id] = match.market;
     } catch {}
   }
