@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/tcgplayer-set-prices",
+      "destination": "/api/tcgplayer-set-prices.js"
+    },
+    {
       "source": "/api/scrydex-sets",
       "destination": "/api/scrydex-sets.js"
     },
