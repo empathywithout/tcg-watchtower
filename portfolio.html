@@ -1879,21 +1879,39 @@ async function loadSealedPrices(items) {
   const todo = items.filter(s => s.productId && sealedPriceCache[s.productId] == null);
   if (todo.length === 0) return;
 
-  // Group by setId to batch API calls
+  // Group by setId — skip items with no setId
   const bySet = {};
+  const noSet = [];
   todo.forEach(s => {
-    if (!bySet[s.setId]) bySet[s.setId] = [];
-    bySet[s.setId].push(s);
+    if (s.setId) {
+      if (!bySet[s.setId]) bySet[s.setId] = [];
+      bySet[s.setId].push(s);
+    } else {
+      noSet.push(s);
+    }
   });
 
+  // Fetch by set
   for (const [setId, setItems] of Object.entries(bySet)) {
     try {
-      const res = await fetch(`/api/sealed-prices?setId=${setId}`);
+      const res = await fetch(`/api/sealed-prices?setId=${encodeURIComponent(setId)}`);
       if (!res.ok) continue;
       const data = await res.json();
       (data.products || []).forEach(p => {
         if (p.market != null) sealedPriceCache[p.id] = p.market;
       });
+    } catch {}
+  }
+
+  // For items with no setId, search by product name as fallback
+  for (const s of noSet) {
+    if (sealedPriceCache[s.productId] != null) continue;
+    try {
+      const res = await fetch(`/api/sealed-prices?q=${encodeURIComponent(s.name)}`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const match = (data.products || []).find(p => p.id === s.productId);
+      if (match?.market != null) sealedPriceCache[match.id] = match.market;
     } catch {}
   }
 
