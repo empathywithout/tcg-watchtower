@@ -163,7 +163,13 @@ export default async function handler(req, res) {
       `${basePrefix}/expansions/${scrydexId}/cards?select=${selectFields}&include=prices&pageSize=100`
     );
     const cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en'));
-    await redisSetEx(cacheKey, JSON.stringify(cards), CACHE_TTL_SEC);
+
+    // Only cache if prices are actually present — prevents stale null-price cache
+    const hasAnyPrice = cards.some(c => c.market != null);
+    if (hasAnyPrice) {
+      await redisSetEx(cacheKey, JSON.stringify(cards), CACHE_TTL_SEC);
+    }
+
     return res.status(200).json({ cards, total: cards.length });
   } catch (e) {
     console.error('[scrydex-cards set]', e.message);
