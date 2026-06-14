@@ -1604,7 +1604,7 @@ async function loadPrices() {
   const setIds = [...new Set(portfolio.map(c => c.setId))];
 
   await Promise.all(setIds.map(async setId => {
-    // Try Scrydex first (richer, cached)
+    // Try Scrydex first (richer, cached) — use internal setId
     try {
       const setMeta = sets.find(s => s.setId === setId);
       const phase   = setMeta?.phase || 'en';
@@ -1621,23 +1621,30 @@ async function loadPrices() {
             }
           });
         }
-        if (gotPrice) return; // Scrydex had prices — skip TCGplayer
+        if (gotPrice) return;
       }
     } catch {}
 
-    // Fallback: TCGplayer via TCGCSV
-    const groupId = TCGP_GROUP_MAP[setId];
-    if (!groupId) return;
+    // Fallback: TCGplayer via universal endpoint
+    // Try our internal setId first, then the Scrydex short ID
+    const INTERNAL_TO_SCRYDEX = {
+      'sv01':'sv1','sv02':'sv2','sv03':'sv3','sv3pt5':'sv3pt5',
+      'sv04':'sv4','sv4pt5':'sv4pt5','sv05':'sv5','sv06':'sv6',
+      'sv6pt5':'sv6pt5','sv07':'sv7','sv08':'sv8','sv8pt5':'sv8pt5',
+      'sv09':'sv9','sv10':'sv10','zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
+      'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'me3','me04':'me4','me05':'me5',
+    };
+    const scrydexId = INTERNAL_TO_SCRYDEX[setId] || setId;
     try {
-      const res = await fetch(`/api/tcgplayer-prices?groupId=${groupId}`);
+      const setMeta  = sets.find(s => s.setId === setId);
+      const nameParam = setMeta?.name ? `&setName=${encodeURIComponent(setMeta.name)}` : '';
+      const res = await fetch(`/api/tcgplayer-set-prices?setId=${scrydexId}${nameParam}`);
       if (!res.ok) return;
       const data = await res.json();
       const prices = data.prices || {};
       Object.entries(prices).forEach(([num, price]) => {
         if (price != null) {
-          priceCache[`${setId}:${num}`]                      = price;
-          priceCache[`${setId}:${num.padStart(3,'0')}`]      = price;
-          priceCache[`${setId}:${String(parseInt(num,10))}`] = price;
+          priceCache[`${setId}:${num}`] = price;
         }
       });
     } catch {}
