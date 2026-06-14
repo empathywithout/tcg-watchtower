@@ -120,18 +120,31 @@ async function fetchPrices(groupId) {
   if (!prodRes.ok || !priceRes.ok) throw new Error(`TCGCSV fetch failed: ${prodRes.status}/${priceRes.status}`);
   const [productsData, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
 
-  // Build price lookup by productId — skip reverse holofoil, prefer Normal
+  // Build price lookup by productId
+  // Priority order for subtype: Holofoil > Unlimited Holofoil > Normal > others
+  // Skip Reverse Holofoil
+  const SUBTYPE_PRIORITY = ['holofoil', 'unlimited holofoil', '1st edition holofoil', 'normal'];
   const priceByProductId = {};
   for (const p of (pricesData.results || [])) {
     const sub = (p.subTypeName || '').toLowerCase();
     if (sub.includes('reverse')) continue;
+    if (!p.marketPrice) continue;
     const existing = priceByProductId[p.productId];
-    if (!existing || (sub === 'normal' && (existing.subTypeName||'').toLowerCase() !== 'normal')) {
+    if (!existing) {
       priceByProductId[p.productId] = p;
+    } else {
+      // Prefer higher-priority subtype, then higher price
+      const newPrio     = SUBTYPE_PRIORITY.indexOf(sub);
+      const existingPrio = SUBTYPE_PRIORITY.indexOf((existing.subTypeName||'').toLowerCase());
+      if (newPrio !== -1 && (existingPrio === -1 || newPrio < existingPrio)) {
+        priceByProductId[p.productId] = p;
+      }
     }
   }
 
-  // Map card number → market price using extendedData
+  // Map card number → market price
+  // When multiple products share a card number (e.g. unlimited vs shadowless),
+  // pick the highest market price
   const prices = {};
   for (const p of (productsData.results || [])) {
     const priceEntry = priceByProductId[p.productId];
@@ -140,6 +153,11 @@ async function fetchPrices(groupId) {
     if (!numEntry) continue;
     const rawNum = numEntry.value.split('/')[0].trim();
     const market = priceEntry.marketPrice;
+
+    // Keep the highest price for this card number
+    const existing = prices[rawNum];
+    if (existing != null && existing >= market) continue;
+
     prices[rawNum]                             = market;
     prices[rawNum.padStart(3,'0')]             = market;
     const parsed = parseInt(rawNum, 10);
