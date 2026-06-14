@@ -137,37 +137,29 @@ async function fetchPrices(groupId) {
     return 5;
   };
 
-  const priceByProductId = {};
+  // Build productId → card number map from products
+  const productCardNum = {};
+  for (const product of products) {
+    const numEntry = (product.extendedData || []).find(e => e.name === 'Number');
+    if (!numEntry) continue;
+    productCardNum[product.productId] = numEntry.value.split('/')[0].trim();
+  }
+
+  // Map card number → all variants with prices, and best price
+  const prices   = {};
+  const variants = {};
+  const bestPrio = {};
+  const seenVar  = {};
+
   for (const p of pricesList) {
     const sub = (p.subTypeName || '').toLowerCase();
     if (sub.includes('reverse')) continue;
     if (!p.marketPrice) continue;
-    const existing = priceByProductId[p.productId];
-    if (!existing) {
-      priceByProductId[p.productId] = p;
-    } else {
-      if (subtypePriority(sub) > subtypePriority((existing.subTypeName||'').toLowerCase())) {
-        priceByProductId[p.productId] = p;
-      }
-    }
-  }
 
-  // Map card number → best price + all variants
-  const prices     = {};
-  const variants   = {}; // cardNumber → [{name, market}]
-  const bestPrio   = {};
-  const seenVar    = {};
+    const cardNumber = productCardNum[p.productId];
+    if (!cardNumber) continue;
 
-  for (const product of products) {
-    const numEntry = (product.extendedData || []).find(e => e.name === 'Number');
-    if (!numEntry) continue;
-    const cardNumber = numEntry.value.split('/')[0].trim();
-    const priceObj   = priceByProductId[product.productId];
-    if (!priceObj?.marketPrice) continue;
-
-    const subRaw  = priceObj.subTypeName || '';
-    const sub     = subRaw.toLowerCase();
-    const varName = subRaw.replace(/\s+/g, ''); // e.g. "UnlimitedHolofoil"
+    const varName = (p.subTypeName || '').replace(/\s+/g, '');
     const varKey  = `${cardNumber}:${varName}`;
     const prio    = subtypePriority(sub);
 
@@ -175,13 +167,13 @@ async function fetchPrices(groupId) {
     if (!seenVar[varKey]) {
       seenVar[varKey] = true;
       if (!variants[cardNumber]) variants[cardNumber] = [];
-      variants[cardNumber].push({ name: varName, market: priceObj.marketPrice });
+      variants[cardNumber].push({ name: varName, market: p.marketPrice });
     }
 
-    // Track best (highest priority) price
+    // Track best price (highest priority)
     if (prio > (bestPrio[cardNumber] ?? -999)) {
       bestPrio[cardNumber] = prio;
-      const market = priceObj.marketPrice;
+      const market = p.marketPrice;
       prices[cardNumber]                          = market;
       prices[cardNumber.padStart(3, '0')]         = market;
       const parsed = parseInt(cardNumber, 10);
@@ -189,7 +181,7 @@ async function fetchPrices(groupId) {
     }
   }
 
-  // Sort each card's variants by priority (best first)
+  // Sort variants: best (highest priority) first
   for (const num of Object.keys(variants)) {
     variants[num].sort((a, b) =>
       subtypePriority(b.name.toLowerCase()) - subtypePriority(a.name.toLowerCase())
