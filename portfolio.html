@@ -1626,7 +1626,6 @@ async function loadPrices() {
     } catch {}
 
     // Fallback: TCGplayer via universal endpoint
-    // Try our internal setId first, then the Scrydex short ID
     const INTERNAL_TO_SCRYDEX = {
       'sv01':'sv1','sv02':'sv2','sv03':'sv3','sv3pt5':'sv3pt5',
       'sv04':'sv4','sv4pt5':'sv4pt5','sv05':'sv5','sv06':'sv6',
@@ -1634,10 +1633,14 @@ async function loadPrices() {
       'sv09':'sv9','sv10':'sv10','zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
       'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'me3','me04':'me4','me05':'me5',
     };
+    // Scrydex setId is either from the map above, or already a Scrydex ID (e.g. "ex6")
     const scrydexId = INTERNAL_TO_SCRYDEX[setId] || setId;
+    // Get expansion name hint from a card in portfolio that has this setId
+    const sampleCard = portfolio.find(c => c.setId === setId);
+    const setMeta    = sets.find(s => s.setId === setId);
+    const nameHint   = setMeta?.name || sampleCard?.expansionName || '';
     try {
-      const setMeta  = sets.find(s => s.setId === setId);
-      const nameParam = setMeta?.name ? `&setName=${encodeURIComponent(setMeta.name)}` : '';
+      const nameParam = nameHint ? `&setName=${encodeURIComponent(nameHint)}` : '';
       const res = await fetch(`/api/tcgplayer-set-prices?setId=${scrydexId}${nameParam}`);
       if (!res.ok) return;
       const data = await res.json();
@@ -1645,6 +1648,7 @@ async function loadPrices() {
       Object.entries(prices).forEach(([num, price]) => {
         if (price != null) {
           priceCache[`${setId}:${num}`] = price;
+          priceCache[`${setId}:${num.padStart(3,'0')}`] = price;
         }
       });
     } catch {}
@@ -1907,16 +1911,24 @@ function selectCardFromCache(index, scrydexSetId) {
   if (card.market != null) {
     priceEl.textContent = `Market: $${card.market.toFixed(2)}`;
   } else {
-    const groupId = TCGP_GROUP_MAP[setId];
-    if (groupId) {
-      priceEl.textContent = 'Loading price…';
-      fetch(`/api/tcgplayer-prices?groupId=${groupId}`)
-        .then(r => r.json())
-        .then(data => {
-          const p = (data.prices||{})[card.localId] || (data.prices||{})[card.localId.padStart(3,'0')];
-          priceEl.textContent = p != null ? `Market: $${p.toFixed(2)}` : '';
-        }).catch(() => { priceEl.textContent = ''; });
-    }
+    // Try TCGplayer via universal endpoint
+    const scrydexSetId = card.expansion?.id || setId;
+    const setNameHint  = card.expansion?.name || '';
+    priceEl.textContent = 'Loading price…';
+    fetch(`/api/tcgplayer-set-prices?setId=${encodeURIComponent(scrydexSetId)}&setName=${encodeURIComponent(setNameHint)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data?.prices) { priceEl.textContent = ''; return; }
+        const p = data.prices[card.localId]
+          || data.prices[card.localId.padStart(3,'0')]
+          || data.prices[String(parseInt(card.localId, 10))];
+        priceEl.textContent = p != null ? `Market: $${p.toFixed(2)} (TCGplayer)` : '';
+        // Cache it for when card is added
+        if (p != null) {
+          priceCache[`${setId}:${card.localId}`] = p;
+          priceCache[`${setId}:${card.localId.padStart(3,'0')}`] = p;
+        }
+      }).catch(() => { priceEl.textContent = ''; });
   }
 }
 
@@ -1972,15 +1984,16 @@ document.getElementById('save-card-btn').addEventListener('click', () => {
     showToast(`Updated quantity for ${pendingCard.name}${variantName ? ` (${variantName})` : ''}`);
   } else {
     portfolio.push({
-      setId:    pendingCard.setId,
-      localId:  pendingCard.localId,
-      name:     pendingCard.name,
-      rarity:   pendingCard.rarity || '',
-      image:    pendingCard.image || cardImgPath(pendingCard.setId, pendingCard.localId),
-      variant:  variantName || undefined,
+      setId:        pendingCard.setId,
+      localId:      pendingCard.localId,
+      name:         pendingCard.name,
+      rarity:       pendingCard.rarity || '',
+      image:        pendingCard.image || cardImgPath(pendingCard.setId, pendingCard.localId),
+      expansionName: pendingCard.expansion?.name || '',
+      variant:      variantName || undefined,
       qty,
       condition,
-      addedAt:  Date.now(),
+      addedAt:      Date.now(),
     });
     showToast(`Added ${pendingCard.name}${variantName ? ` (${variantName})` : ''} ✓`, 'success');
   }
