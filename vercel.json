@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/discord",
+      "destination": "/discord.html"
+    },
+    {
       "source": "/sets",
       "destination": "/sets.html"
     },
