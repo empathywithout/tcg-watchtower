@@ -135,7 +135,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     res.setHeader('X-Cache', 'MISS');
     try {
-      const url = `${SCRYDEX_BASE}/cards?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20&select=id,name,rarity,images,variants,supertype,expansion`;
+      const url = `${SCRYDEX_BASE}/cards?q=name:${encodeURIComponent(q)}* -expansion.id:tcgp*&include=prices&page_size=20&select=id,name,rarity,images,variants,supertype,expansion`;
       const data = await fetchPage(url);
       const cards = (data.data || []).map(c => normaliseCard(c, c.expansion?.id || '', 'en'));
       // Cache if we got results
