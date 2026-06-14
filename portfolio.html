@@ -2182,14 +2182,18 @@ async function loadSealedPrices(items) {
     }
   }
 
-  // For items with no setId
-  for (const s of noSet) {
+  // For items with no setId or still missing after set fetch, try name search
+  const stillMissing = [...noSet, ...Object.values(bySet).flat()].filter(
+    s => sealedPriceCache[s.productId] == null
+  );
+  for (const s of stillMissing) {
     if (sealedPriceCache[s.productId] != null) continue;
     try {
-      const r2 = await fetch(`/api/sealed-prices?productId=${encodeURIComponent(s.productId)}`);
-      if (!r2.ok) continue;
-      const d2 = await r2.json();
-      const match = (d2.products || [])[0];
+      // Use name search — most reliable way to get prices for misc products
+      const res = await fetch(`/api/sealed-prices?q=${encodeURIComponent(s.name)}`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const match = (data.products || []).find(p => p.id === s.productId);
       if (match?.market != null) sealedPriceCache[match.id] = match.market;
     } catch {}
   }
