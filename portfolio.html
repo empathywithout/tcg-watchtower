@@ -1326,7 +1326,7 @@ function renderCollectionGrid() {
       <img class="col-card-img" src="${imgUrl}" alt="${c.name}" loading="lazy" onerror="this.style.background='#1e293b'">
       <div class="col-card-info">
         <div class="col-card-name" title="${c.name}">${c.name}</div>
-        <div class="col-card-set">${c.setId.toUpperCase()} #${c.localId}</div>
+        <div class="col-card-set">${c.setId.toUpperCase()} #${c.localId}${c.variant ? ` · <span style="color:#a78bfa;font-size:.62rem">${c.variant}</span>` : ''}</div>
         <div class="col-card-row">
           ${priceHtml}${trendBadge}
           <span class="condition-badge cond-${c.condition}" onclick="cycleCondition(${idx})" title="Click to change">${c.condition}</span>
@@ -1518,26 +1518,45 @@ document.getElementById('missing-overlay').addEventListener('click', e => {
 
 /* ===== PRICES ===== */
 async function loadPrices() {
-  // Get unique group IDs needed
   const setIds = [...new Set(portfolio.map(c => c.setId))];
 
-  for (const setId of setIds) {
+  await Promise.all(setIds.map(async setId => {
+    // Try Scrydex first (richer, cached)
+    try {
+      const setMeta = sets.find(s => s.setId === setId);
+      const phase   = setMeta?.phase || 'en';
+      const res     = await fetch(`/api/scrydex-cards?set=${setId}&phase=${phase}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cards?.length > 0) {
+          data.cards.forEach(c => {
+            if (c.market != null) {
+              priceCache[`${setId}:${c.localId}`] = c.market;
+              priceCache[`${setId}:${c.localId.padStart(3,'0')}`] = c.market;
+            }
+          });
+          return; // Scrydex succeeded, skip TCGplayer
+        }
+      }
+    } catch {}
+
+    // Fallback: TCGplayer via TCGCSV
     const groupId = TCGP_GROUP_MAP[setId];
-    if (!groupId) continue;
+    if (!groupId) return;
     try {
       const res = await fetch(`/api/tcgplayer-prices?groupId=${groupId}`);
-      if (!res.ok) continue;
+      if (!res.ok) return;
       const data = await res.json();
       const prices = data.prices || {};
       Object.entries(prices).forEach(([num, price]) => {
         if (price != null) {
-          priceCache[`${setId}:${num}`]                          = price;
-          priceCache[`${setId}:${num.padStart(3,'0')}`]          = price;
-          priceCache[`${setId}:${String(parseInt(num,10))}`]     = price;
+          priceCache[`${setId}:${num}`]                      = price;
+          priceCache[`${setId}:${num.padStart(3,'0')}`]      = price;
+          priceCache[`${setId}:${String(parseInt(num,10))}`] = price;
         }
       });
     } catch {}
-  }
+  }));
 
   renderCollectionGrid();
   renderStats();
@@ -1640,12 +1659,24 @@ function cycleCondition(idx) {
 
 /* ===== ADD CARD MODAL ===== */
 let searchTimeout = null;
-
-// Cache of full card lists per set, fetched on demand for global search
 let allSetsCardCache = {};
 
 async function fetchSetCardsForSearch(setId) {
   if (allSetsCardCache[setId]) return allSetsCardCache[setId];
+  try {
+    // Try Scrydex first for richer data (variants, inline prices)
+    const setMeta = sets.find(s => s.setId === setId);
+    const phase   = setMeta?.phase || 'en';
+    const res     = await fetch(`/api/scrydex-cards?set=${setId}&phase=${phase}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.cards?.length > 0) {
+        allSetsCardCache[setId] = data.cards;
+        return data.cards;
+      }
+    }
+  } catch {}
+  // Fallback to existing /api/cards
   try {
     const gameParam = isOnePiece(setId) ? '&game=onepiece' : '';
     const res  = await fetch(`/api/cards?set=${setId}${gameParam}`);
@@ -1693,15 +1724,19 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
 
       window._searchResultsCache = cards;
       results.innerHTML = cards.map((c, i) => {
-        const img = cardImgPath(c._setId, c.localId);
-        const setMeta = sets.find(s => s.setId === c._setId);
+        const img = c.image || cardImgPath(c._setId, c.localId);
+        const setMeta  = sets.find(s => s.setId === c._setId);
         const setLabel = setMeta ? setMeta.short : c._setId.toUpperCase();
+        const priceText = c.market != null ? `<span style="color:#4ade80;font-weight:700;font-family:'Space Mono',monospace;font-size:.7rem">$${c.market.toFixed(2)}</span>` : '';
+        const variantText = c.variants?.length > 0
+          ? `<span style="color:#a78bfa;font-size:.68rem"> · ${c.variants.length + 1} variants</span>` : '';
         return `<div class="search-result-item" onclick="selectCardFromCache(${i}, '${c._setId}')">
           <img class="search-result-img" src="${img}" alt="${c.name.replace(/"/g, '&quot;')}" onerror="this.style.background='#1e293b'">
           <div class="search-result-info">
             <div class="search-result-name">${c.name}</div>
-            <div class="search-result-meta">${setLabel} #${c.localId} · ${c.rarity || '—'}</div>
+            <div class="search-result-meta">${setLabel} #${c.localId} · ${c.rarity || '—'}${variantText}</div>
           </div>
+          ${priceText}
         </div>`;
       }).join('');
       results.classList.add('open');
@@ -1721,21 +1756,75 @@ function selectCardFromCache(index, setId) {
 
   const preview = document.getElementById('card-preview');
   preview.style.display = 'block';
-  document.getElementById('preview-img').src = cardImgPath(setId, card.localId);
+  document.getElementById('preview-img').src = card.image || cardImgPath(setId, card.localId);
   document.getElementById('preview-name').textContent = card.name;
   document.getElementById('preview-meta').textContent = `#${card.localId} · ${setId.toUpperCase()} · ${card.rarity || '—'}`;
 
-  const groupId = TCGP_GROUP_MAP[setId];
   const priceEl = document.getElementById('preview-price');
-  if (groupId) {
-    priceEl.textContent = 'Loading price…';
-    fetch(`/api/tcgplayer-prices?groupId=${groupId}`)
-      .then(r => r.json())
-      .then(data => {
-        const p = (data.prices||{})[card.localId] || (data.prices||{})[card.localId.padStart(3,'0')];
-        priceEl.textContent = p != null ? `Market: $${p.toFixed(2)}` : '';
-      }).catch(() => { priceEl.textContent = ''; });
+
+  // Show variant picker if card has multiple variants
+  let variantPickerEl = document.getElementById('variant-picker');
+  if (!variantPickerEl) {
+    variantPickerEl = document.createElement('div');
+    variantPickerEl.id = 'variant-picker';
+    variantPickerEl.style.cssText = 'margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;';
+    preview.querySelector('div').appendChild(variantPickerEl);
   }
+
+  if (card.variants?.length > 0) {
+    // All variants = normal + extra variants
+    const allVariants = [
+      { name: 'normal', market: card.market },
+      ...card.variants,
+    ];
+    variantPickerEl.innerHTML = allVariants.map((v, i) =>
+      `<button onclick="selectVariant(${i})" id="vbtn-${i}"
+        style="font-size:.7rem;padding:3px 8px;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;
+        border:1px solid rgba(167,139,250,.3);background:${i===0?'rgba(167,139,250,.2)':'rgba(30,41,59,.8)'};
+        color:${i===0?'#c084fc':'var(--muted)'}">
+        ${v.name}${v.market != null ? ` · $${v.market.toFixed(2)}` : ''}
+      </button>`
+    ).join('');
+    pendingCard._variants  = allVariants;
+    pendingCard._variantIdx = 0;
+  } else {
+    variantPickerEl.innerHTML = '';
+    pendingCard._variants   = null;
+    pendingCard._variantIdx = 0;
+  }
+
+  // Show price — use Scrydex if available, else fall back to TCGplayer
+  if (card.market != null) {
+    priceEl.textContent = `Market: $${card.market.toFixed(2)}`;
+  } else {
+    const groupId = TCGP_GROUP_MAP[setId];
+    if (groupId) {
+      priceEl.textContent = 'Loading price…';
+      fetch(`/api/tcgplayer-prices?groupId=${groupId}`)
+        .then(r => r.json())
+        .then(data => {
+          const p = (data.prices||{})[card.localId] || (data.prices||{})[card.localId.padStart(3,'0')];
+          priceEl.textContent = p != null ? `Market: $${p.toFixed(2)}` : '';
+        }).catch(() => { priceEl.textContent = ''; });
+    }
+  }
+}
+
+function selectVariant(idx) {
+  if (!pendingCard?._variants) return;
+  pendingCard._variantIdx = idx;
+  const v = pendingCard._variants[idx];
+  // Update button styles
+  pendingCard._variants.forEach((_, i) => {
+    const btn = document.getElementById(`vbtn-${i}`);
+    if (btn) {
+      btn.style.background = i === idx ? 'rgba(167,139,250,.2)' : 'rgba(30,41,59,.8)';
+      btn.style.color      = i === idx ? '#c084fc' : 'var(--muted)';
+    }
+  });
+  // Update price display
+  const priceEl = document.getElementById('preview-price');
+  priceEl.textContent = v.market != null ? `Market: $${v.market.toFixed(2)}` : '';
 }
 
 document.getElementById('save-card-btn').addEventListener('click', () => {
@@ -1744,23 +1833,46 @@ document.getElementById('save-card-btn').addEventListener('click', () => {
   const qty       = parseInt(document.getElementById('add-qty').value) || 1;
   const condition = document.getElementById('add-condition').value;
 
-  // Check if already in collection — increment qty instead
-  const existing = portfolio.find(c => c.setId === pendingCard.setId && c.localId === pendingCard.localId);
+  // Resolve variant
+  const variant = pendingCard._variants?.[pendingCard._variantIdx || 0];
+  const variantName = variant?.name && variant.name !== 'normal' ? variant.name : null;
+
+  // Cache Scrydex price if available
+  const market = variant?.market ?? pendingCard.market ?? null;
+  if (market != null) {
+    const pk = `${pendingCard.setId}:${pendingCard.localId}`;
+    priceCache[pk] = market;
+    priceCache[`${pendingCard.setId}:${pendingCard.localId.padStart(3,'0')}`] = market;
+  }
+
+  // Unique key includes variant so you can track normal + reverse holo separately
+  const key = variantName
+    ? `${pendingCard.setId}:${pendingCard.localId}:${variantName}`
+    : `${pendingCard.setId}:${pendingCard.localId}`;
+
+  const existing = portfolio.find(c => {
+    const ck = c.variant
+      ? `${c.setId}:${c.localId}:${c.variant}`
+      : `${c.setId}:${c.localId}`;
+    return ck === key;
+  });
+
   if (existing) {
     existing.qty = (existing.qty || 1) + qty;
-    showToast(`Updated quantity for ${pendingCard.name}`);
+    showToast(`Updated quantity for ${pendingCard.name}${variantName ? ` (${variantName})` : ''}`);
   } else {
     portfolio.push({
-      setId:     pendingCard.setId,
-      localId:   pendingCard.localId,
-      name:      pendingCard.name,
-      rarity:    pendingCard.rarity || '',
-      image:     cardImgPath(pendingCard.setId, pendingCard.localId),
+      setId:    pendingCard.setId,
+      localId:  pendingCard.localId,
+      name:     pendingCard.name,
+      rarity:   pendingCard.rarity || '',
+      image:    pendingCard.image || cardImgPath(pendingCard.setId, pendingCard.localId),
+      variant:  variantName || undefined,
       qty,
       condition,
-      addedAt:   Date.now(),
+      addedAt:  Date.now(),
     });
-    showToast(`Added ${pendingCard.name} to collection ✓`, 'success');
+    showToast(`Added ${pendingCard.name}${variantName ? ` (${variantName})` : ''} ✓`, 'success');
   }
 
   savePortfolio();
