@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/sets/one-piece",
+      "destination": "/sets-one-piece.html"
+    },
+    {
+      "source": "/sets/pokemon",
+      "destination": "/sets-pokemon.html"
+    },
+    {
       "source": "/discord",
       "destination": "/discord.html"
     },
