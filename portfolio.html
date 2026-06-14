@@ -1218,21 +1218,15 @@ let allScrydexSets = []; // full set list from Scrydex for add modal
 
 async function loadSets() {
   try {
-    // sets.json — for collection filter + sealed dropdowns (our tracked sets)
+    // sets.json — for card collection filter only (our tracked sets)
     const res = await fetch('/sets.json');
     sets = (await res.json()).filter(s => s.live);
-    const filterSetEl  = document.getElementById('filter-set');
-    const sealedAddSet = document.getElementById('sealed-add-set');
-    const sealedFilter = document.getElementById('sealed-filter-set');
-    sets.forEach(s => {
-      filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
-      sealedAddSet.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
-      sealedFilter.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
-    });
+    const filterSetEl = document.getElementById('filter-set');
+    sets.forEach(s => filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId)));
   } catch {}
 
   try {
-    // Scrydex full set list — for card add modal (all eras)
+    // Scrydex full set list — for card add modal + sealed dropdowns (all eras)
     const res = await fetch('/api/scrydex-sets');
     if (res.ok) {
       const data = await res.json();
@@ -1241,6 +1235,7 @@ async function loadSets() {
   } catch {}
 
   populateAddSetDropdown('');
+  populateSealedSetDropdowns();
 }
 
 function populateAddSetDropdown(game) {
@@ -1281,6 +1276,33 @@ function filterAddSetsByGame() {
   document.getElementById('search-results').classList.remove('open');
   document.getElementById('card-preview').style.display = 'none';
   pendingCard = null;
+}
+
+function populateSealedSetDropdowns() {
+  const OP_IDS = /^(op|eb|st)\d/i;
+  // Sealed shows all Pokémon sets (no One Piece — sealed products are Pokémon only for now)
+  const pokemonSets = allScrydexSets.filter(s => !OP_IDS.test(s.id));
+
+  // Group by series
+  const grouped = {};
+  pokemonSets.forEach(s => {
+    if (!grouped[s.series]) grouped[s.series] = [];
+    grouped[s.series].push(s);
+  });
+
+  ['sealed-add-set', 'sealed-filter-set'].forEach(elId => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const current = el.value;
+    el.innerHTML = '<option value="">All Sets</option>';
+    Object.entries(grouped).forEach(([series, seriesSets]) => {
+      const group = document.createElement('optgroup');
+      group.label = series;
+      seriesSets.forEach(s => group.appendChild(new Option(s.name, s.id)));
+      el.appendChild(group);
+    });
+    if (current && pokemonSets.find(s => s.id === current)) el.value = current;
+  });
 }
 
 /* ===== RENDER ===== */
@@ -2270,7 +2292,6 @@ document.getElementById('sealed-product-search').addEventListener('input', async
 });
 
 async function onSealedSetChange() {
-  // Clear search and results when set changes
   document.getElementById('sealed-product-search').value = '';
   document.getElementById('sealed-search-results').classList.remove('open');
   document.getElementById('sealed-preview').style.display = 'none';
@@ -2282,7 +2303,7 @@ function selectSealedProduct(index) {
   if (!p) return;
 
   const setId = document.getElementById('sealed-add-set').value;
-  const setMeta = sets.find(s => s.setId === setId);
+  const setMeta = allScrydexSets.find(s => s.id === setId);
 
   pendingSealed = {
     productId:   p.id,
