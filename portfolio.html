@@ -1227,6 +1227,8 @@ function renderCollection() {
   loadPrices();
   if (ENABLE_GRADED_PRICING) loadTrends();
   updateTabCounts();
+  // Fetch sealed prices in background so stat-sealed-value populates on load
+  if (sealedPortfolio.length > 0) loadSealedPrices(sealedPortfolio);
 }
 
 function renderCollectionGrid() {
