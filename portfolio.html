@@ -1350,11 +1350,11 @@ function populateAddSetDropdown(game) {
     { id:'base1',  name:'Base Set (Shadowless)',   series:'Base' },
   ];
 
-  // Merge Scrydex sets + vintage sets, deduplicate by id
-  const scrydexIds = new Set(allScrydexSets.map(s=>s.id));
+  // VINTAGE_SETS take priority — they have correct TCGplayer-aligned names
+  const vintageIds = new Set(VINTAGE_SETS.map(s => s.id));
   const allSets = [
-    ...allScrydexSets,
-    ...VINTAGE_SETS.filter(s => !scrydexIds.has(s.id)),
+    ...VINTAGE_SETS,
+    ...allScrydexSets.filter(s => !vintageIds.has(s.id)),
   ];
 
   const filtered = game === 'onepiece'
@@ -1391,8 +1391,10 @@ function filterAddSetsByGame() {
 
 function populateSealedSetDropdowns() {
   const OP_IDS = /^(op|eb|st)\d/i;
-  // Sealed shows all Pokémon sets (no One Piece — sealed products are Pokémon only for now)
-  const pokemonSets = allScrydexSets.filter(s => !OP_IDS.test(s.id));
+  // Merge VINTAGE_SETS (priority) with Scrydex sets
+  const vintageIds  = new Set(VINTAGE_SETS.map(s => s.id));
+  const mergedSets  = [...VINTAGE_SETS, ...allScrydexSets.filter(s => !vintageIds.has(s.id))];
+  const pokemonSets = mergedSets.filter(s => !OP_IDS.test(s.id));
 
   // Group by series
   const grouped = {};
