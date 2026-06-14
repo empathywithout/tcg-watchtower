@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/admin/scrydex-expansions",
+      "destination": "/api/admin/scrydex-expansions.js"
+    },
+    {
       "source": "/api/admin/bust-cache",
       "destination": "/api/admin/bust-cache.js"
     },
