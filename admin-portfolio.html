@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Admin | TCG Watchtower</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#3b82f6;--purple:#a855f7;--amber:#fbbf24;--green:#4ade80;--red:#f87171;--dark:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right,#0f172a,#1e1b4b,#581c87);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,rgba(59,130,246,.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(59,130,246,.06) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* AUTH GATE */
+.auth-gate{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.auth-box{background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px;text-align:center;max-width:360px;width:100%}
+.auth-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:8px}
+.auth-sub{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+.auth-input{width:100%;background:rgba(15,23,42,.8);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 16px;color:white;font-family:'DM Sans',sans-serif;font-size:1rem;outline:none;margin-bottom:12px}
+.auth-input:focus{border-color:rgba(59,130,246,.5)}
+.auth-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer}
+.auth-btn:hover{opacity:.9}
+.auth-error{color:var(--red);font-size:.85rem;margin-top:8px}
+
+/* MAIN */
+#main{display:none}
+.page-header{padding:40px 0 32px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:4px}
+.gradient-text{background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-meta{color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:16px}
+.refresh-btn{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:6px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.refresh-btn:hover{background:rgba(59,130,246,.25)}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:rgba(30,41,59,.7);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
+.stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.stat-val{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:white;line-height:1}
+.stat-val.green{color:var(--green)}
+.stat-val.blue{color:#60a5fa}
+.stat-val.amber{color:var(--amber)}
+.stat-val.purple{color:#c084fc}
+.stat-sub{font-size:.72rem;color:var(--muted);margin-top:6px}
+.stat-delta{font-size:.75rem;font-weight:700;margin-top:6px}
+.stat-delta.up{color:var(--green)}
+.stat-delta.down{color:var(--red)}
+
+/* SECTION */
+.section{margin-bottom:32px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:16px;color:var(--muted)}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;background:rgba(30,41,59,.5);border-radius:12px;overflow:hidden}
+.data-table th{padding:12px 16px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.06);font-weight:700}
+.data-table td{padding:12px 16px;font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.03)}
+.bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:4px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px}
+
+/* ACTIVITY ROW */
+.activity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+
+/* LOADING */
+.loading{text-align:center;padding:60px;color:var(--muted)}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#60a5fa;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#f1f5f9;text-decoration:none}
+.nav-back{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+.nav-back:hover{color:var(--text)}
+
+@media(max-width:640px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .activity-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- AUTH GATE -->
+<div class="auth-gate" id="auth-gate">
+  <div class="auth-box">
+    <div class="auth-title">Admin <span style="color:#60a5fa">Access</span></div>
+    <p class="auth-sub">Enter your admin secret to view portfolio analytics</p>
+    <input class="auth-input" type="password" id="secret-input" placeholder="Admin secret…" autocomplete="off">
+    <button class="auth-btn" id="auth-btn">Access Dashboard</button>
+    <div class="auth-error" id="auth-error" style="display:none"></div>
+  </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="main">
+  <div class="container">
+    <nav>
+      <a href="/" class="nav-logo">TCG Watchtower</a>
+      <a href="/portfolio" class="nav-back">← Portfolio</a>
+    </nav>
+
+    <div class="page-header">
+      <h1 class="page-title">Portfolio <span class="gradient-text">Analytics</span></h1>
+      <div class="page-meta">
+        <span id="generated-at">—</span>
+        <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+      </div>
+    </div>
+
+    <div id="dashboard-content">
+      <div class="loading"><div class="spinner"></div>Loading analytics…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let adminSecret = '';
+
+/* ===== AUTH ===== */
+document.getElementById('auth-btn').addEventListener('click', tryAuth);
+document.getElementById('secret-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryAuth(); });
+
+async function tryAuth() {
+  const secret = document.getElementById('secret-input').value.trim();
+  if (!secret) return;
+
+  const res = await fetch(`/api/admin/stats?secret=${encodeURIComponent(secret)}`);
+  if (res.status === 401) {
+    document.getElementById('auth-error').style.display = 'block';
+    document.getElementById('auth-error').textContent   = 'Incorrect secret';
+    return;
+  }
+
+  adminSecret = secret;
+  sessionStorage.setItem('admin_secret', secret);
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('main').style.display      = 'block';
+  const data = await res.json();
+  renderDashboard(data);
+}
+
+// Auto-fill from session
+const savedSecret = sessionStorage.getItem('admin_secret');
+if (savedSecret) {
+  document.getElementById('secret-input').value = savedSecret;
+  tryAuth();
+}
+
+document.getElementById('refresh-btn')?.addEventListener('click', async () => {
+  document.getElementById('dashboard-content').innerHTML = '<div class="loading"><div class="spinner"></div>Refreshing…</div>';
+  const res  = await fetch(`/api/admin/stats?secret=${encodeURIComponent(adminSecret)}`);
+  const data = await res.json();
+  renderDashboard(data);
+});
+
+/* ===== RENDER ===== */
+function renderDashboard(d) {
+  const u = d.users || {};
+  const e = d.engagement || {};
+  const topSets = d.topSets || [];
+
+  document.getElementById('generated-at').textContent = `Updated ${new Date(d.generatedAt).toLocaleString()}`;
+
+  document.getElementById('dashboard-content').innerHTML = `
+
+    <!-- USER STATS -->
+    <div class="section">
+      <div class="section-title">Users</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-val blue">${fmt(u.total)}</div>
+          <div class="stat-sub">${fmt(u.withCards)} with cards tracked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">New (Last 7 days)</div>
+          <div class="stat-val green">${fmt(u.new7d)}</div>
+          <div class="stat-sub">${pct(u.new7d, u.total)}% of total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">New (Last 30 days)</div>
+          <div class="stat-val green">${fmt(u.new30d)}</div>
+          <div class="stat-sub">${pct(u.new30d, u.total)}% of total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Empty Portfolios</div>
+          <div class="stat-val">${fmt(u.empty)}</div>
+          <div class="stat-sub">${pct(u.empty, u.total)}% signed up but not tracking</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="section">
+      <div class="section-title">Activity</div>
+      <div class="activity-grid">
+        <div class="stat-card">
+          <div class="stat-label">Daily Active Users</div>
+          <div class="stat-val purple">${fmt(e.dau)}</div>
+          <div class="stat-sub">Unique users today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Weekly Active Users</div>
+          <div class="stat-val purple">${fmt(e.wau)}</div>
+          <div class="stat-sub">Unique users this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Monthly Active Users</div>
+          <div class="stat-val purple">${fmt(e.mau)}</div>
+          <div class="stat-sub">Unique users this month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENGAGEMENT -->
+    <div class="section">
+      <div class="section-title">Engagement</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Cards Tracked</div>
+          <div class="stat-val amber">${fmt(e.totalCards)}</div>
+          <div class="stat-sub">Across all portfolios</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Cards / User</div>
+          <div class="stat-val amber">${e.avgCardsPerUser || '—'}</div>
+          <div class="stat-sub">Among users with cards</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Logins</div>
+          <div class="stat-val">${fmt(e.totalLogins)}</div>
+          <div class="stat-sub">All-time Discord logins</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP SETS -->
+    <div class="section">
+      <div class="section-title">Top Tracked Sets</div>
+      ${topSets.length === 0
+        ? '<div style="color:var(--muted);padding:20px">No data yet</div>'
+        : `<table class="data-table">
+            <thead><tr>
+              <th>#</th><th>Set ID</th><th>Cards Tracked</th><th>Share</th>
+            </tr></thead>
+            <tbody>
+              ${topSets.map((s, i) => {
+                const max = topSets[0]?.count || 1;
+                const barW = Math.round((s.count / max) * 100);
+                return `<tr>
+                  <td style="color:var(--muted);font-family:'Space Mono',monospace">${i+1}</td>
+                  <td><strong>${s.setId.toUpperCase()}</strong></td>
+                  <td>
+                    <div>${fmt(s.count)}</div>
+                    <div class="bar"><div class="bar-fill" style="width:${barW}%"></div></div>
+                  </td>
+                  <td style="color:var(--muted)">${pct(s.count, e.totalCards)}%</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>`
+      }
+    </div>
+
+    <!-- NOTES -->
+    <div style="background:rgba(30,41,59,.4);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:32px">
+      <div style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Notes</div>
+      <ul style="color:var(--muted);font-size:.85rem;line-height:1.8;padding-left:16px">
+        <li>DAU/WAU/MAU counters start from when the tracking endpoint was first deployed</li>
+        <li>Portfolio value is not tracked server-side — prices are fetched client-side per session</li>
+        <li>Premium vs free users not yet tracked — add a <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">premium:userId</code> Redis key on upgrade</li>
+        <li>"New users" is based on <code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">updatedAt</code> timestamp — first save after signup</li>
+      </ul>
+    </div>
+  `;
+}
+
+function fmt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Number(n).toLocaleString();
+}
+function pct(n, total) {
+  if (!total || !n) return '0';
+  return ((n / total) * 100).toFixed(1);
+}
+</script>
+</body>
+</html>
