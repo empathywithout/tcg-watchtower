@@ -114,23 +114,55 @@ async function fetchPrices(groupId) {
     }
   }
 
-  const prices = {};
-  const seen   = {};
+  const prices   = {};
+  const variants = {}; // cardNum → [{name, market}]
+  const seen     = {};
+
   for (const product of products) {
     const numEntry = (product.extendedData || []).find(e => e.name === 'Number');
     if (!numEntry) continue;
     const num = numEntry.value.split('/')[0].trim();
-    const po  = priceByProductId[product.productId];
+
+    // Collect ALL price rows for this product (one per subtype)
+    const productPrices = pricesList.filter(p => p.productId === product.productId && p.marketPrice);
+    for (const po of productPrices) {
+      const sub = (po.subTypeName || '').toLowerCase();
+      if (sub.includes('reverse') || sub.includes('jumbo') || sub.includes('metal')) continue;
+
+      const varName = (po.subTypeName || '').replace(/\s+/g, '');
+      const varKey  = `${num}:${varName}`;
+      if (!seen[varKey]) {
+        seen[varKey] = true;
+        if (!variants[num]) variants[num] = [];
+        variants[num].push({ name: varName, market: po.marketPrice });
+        variants[num.padStart(3,'0')] = variants[num];
+        const n = parseInt(num, 10);
+        if (!isNaN(n)) variants[String(n)] = variants[num];
+      }
+    }
+
+    // Best price for this card number
+    const po = priceByProductId[product.productId];
     if (!po?.marketPrice) continue;
-    // Keep highest-ranked price per card number
-    if (seen[num] !== undefined && seen[num] >= po.marketPrice) continue;
-    seen[num]                        = po.marketPrice;
+    const rank = s => s.includes('1st') ? 0 : s === 'unlimited holofoil' ? 5 : s === 'holofoil' ? 4 : s === 'normal' ? 3 : s === 'unlimited' ? 2 : 1;
+    const sub  = (po.subTypeName || '').toLowerCase();
+    if (seen[`${num}_best`] !== undefined && seen[`${num}_best`] >= rank(sub)) continue;
+    seen[`${num}_best`]              = rank(sub);
     prices[num]                      = po.marketPrice;
     prices[num.padStart(3, '0')]     = po.marketPrice;
     const n = parseInt(num, 10);
     if (!isNaN(n)) prices[String(n)] = po.marketPrice;
   }
-  return prices;
+
+  // Sort variants: best first
+  const rank = s => { const t = s.toLowerCase(); return t.includes('1st') ? 0 : t === 'unlimitedholofoil' ? 5 : t === 'holofoil' ? 4 : t === 'normal' ? 3 : t === 'unlimited' ? 2 : 1; };
+  for (const num of Object.keys(variants)) {
+    if (Array.isArray(variants[num])) {
+      variants[num].sort((a, b) => rank(b.name) - rank(a.name));
+    }
+  }
+
+  return { prices, variants };
 }
 
 export default async function handler(req, res) {
@@ -146,7 +178,10 @@ export default async function handler(req, res) {
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('X-Cache', 'HIT');
-    return res.status(200).json({ prices: JSON.parse(cached), cached: true });
+    const parsed   = JSON.parse(cached);
+    const prices   = parsed.prices || parsed;
+    const variants = parsed.variants || {};
+    return res.status(200).json({ prices, variants, cached: true });
   }
 
   res.setHeader('X-Cache', 'MISS');
@@ -155,11 +190,12 @@ export default async function handler(req, res) {
     if (!groupId && setName) groupId = await findGroupByName(setName);
     if (!groupId) return res.status(404).json({ error: `No group found for ${setId}` });
 
-    const prices = await fetchPrices(groupId);
+    const result = await fetchPrices(groupId);
+    const { prices, variants } = result;
     if (Object.keys(prices).length > 0) {
-      await redisSetEx(cacheKey, JSON.stringify(prices), 6 * 60 * 60);
+      await redisSetEx(cacheKey, JSON.stringify(result), 6 * 60 * 60);
     }
-    return res.status(200).json({ prices, groupId });
+    return res.status(200).json({ prices, variants, groupId });
   } catch (e) {
     console.error('[tcgplayer-set-prices]', e.message);
     return res.status(500).json({ error: e.message });
