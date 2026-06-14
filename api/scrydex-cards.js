@@ -140,8 +140,13 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     try {
       const url = `${SCRYDEX_BASE}/cards?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20&select=id,name,rarity,images,variants,supertype,expansion`;
-      const raw = await fetchAllCards(url);
-      const cards = raw.map(c => normaliseCard(c, c.expansion?.id || '', 'en'));
+      const scrydexRes = await fetch(url, {
+        headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!scrydexRes.ok) throw new Error(`Scrydex ${scrydexRes.status}`);
+      const data = await scrydexRes.json();
+      const cards = (data.data || []).map(c => normaliseCard(c, c.expansion?.id || '', 'en'));
       return res.status(200).json({ cards, total: cards.length });
     } catch (e) {
       console.error('[scrydex-cards q]', e.message);
