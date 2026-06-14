@@ -97,21 +97,32 @@ async function fetchPrices(groupId) {
     undiciFetch(`${TCGCSV_BASE}/3/${groupId}/prices`,   { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
   ]);
   if (!prodRes.ok || !priceRes.ok) throw new Error('TCGCSV fetch failed');
-  const [products, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
+  const [productsData, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
 
-  const priceMap = {};
-  (pricesData.results || []).forEach(p => { priceMap[p.productId] = p.marketPrice; });
-
-  const prices = {};
-  (products.results || []).forEach(p => {
-    const market = priceMap[p.productId];
-    if (market != null) {
-      const num = p.number || String(p.productId);
-      prices[num] = market;
-      prices[num.padStart(3,'0')] = market;
-      prices[String(parseInt(num,10) || num)] = market;
+  // Build price lookup by productId — skip reverse holofoil, prefer Normal
+  const priceByProductId = {};
+  for (const p of (pricesData.results || [])) {
+    const sub = (p.subTypeName || '').toLowerCase();
+    if (sub.includes('reverse')) continue;
+    const existing = priceByProductId[p.productId];
+    if (!existing || (sub === 'normal' && (existing.subTypeName||'').toLowerCase() !== 'normal')) {
+      priceByProductId[p.productId] = p;
     }
-  });
+  }
+
+  // Map card number → market price using extendedData
+  const prices = {};
+  for (const p of (productsData.results || [])) {
+    const priceEntry = priceByProductId[p.productId];
+    if (!priceEntry?.marketPrice) continue;
+    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
+    if (!numEntry) continue;
+    const rawNum = numEntry.value.split('/')[0].trim();
+    const market = priceEntry.marketPrice;
+    prices[rawNum]                      = market;
+    prices[rawNum.padStart(3,'0')]      = market;
+    prices[String(parseInt(rawNum,10))] = market;
+  }
   return prices;
 }
 
