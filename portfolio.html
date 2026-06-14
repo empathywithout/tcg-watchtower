@@ -2028,9 +2028,14 @@ function selectCardFromCache(index, scrydexSetId) {
   if (card.market != null) {
     priceEl.textContent = `Market: $${card.market.toFixed(2)}`;
   } else {
-    // Use the Scrydex set ID from the dropdown or card expansion
-    const tcgpSetId   = card.expansion?.id || scrydexSetId;
-    const tcgpSetName = card.expansion?.name || allScrydexSets.find(s=>s.id===tcgpSetId)?.name || '';
+    // Get set name from the dropdown selection (most reliable source)
+    const selectedSetId = document.getElementById('add-set').value || scrydexSetId;
+    const tcgpSetId     = card.expansion?.id || selectedSetId;
+    // Look up name from dropdown option text
+    const addSetEl  = document.getElementById('add-set');
+    const setOption = addSetEl?.querySelector(`option[value="${tcgpSetId}"]`);
+    const tcgpSetName = setOption?.textContent || card.expansion?.name
+      || allScrydexSets.find(s => s.id === tcgpSetId)?.name || '';
     priceEl.textContent = 'Loading price…';
     fetch(`/api/tcgplayer-set-prices?setId=${encodeURIComponent(tcgpSetId)}&setName=${encodeURIComponent(tcgpSetName)}`)
       .then(r => r.ok ? r.json() : null)
