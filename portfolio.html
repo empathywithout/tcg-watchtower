@@ -1214,41 +1214,69 @@ function setSyncStatus(state) {
 }
 
 /* ===== SETS ===== */
+let allScrydexSets = []; // full set list from Scrydex for add modal
+
 async function loadSets() {
   try {
+    // sets.json — for collection filter + sealed dropdowns (our tracked sets)
     const res = await fetch('/sets.json');
     sets = (await res.json()).filter(s => s.live);
-    const filterSetEl   = document.getElementById('filter-set');
-    const sealedAddSet  = document.getElementById('sealed-add-set');
-    const sealedFilter  = document.getElementById('sealed-filter-set');
+    const filterSetEl  = document.getElementById('filter-set');
+    const sealedAddSet = document.getElementById('sealed-add-set');
+    const sealedFilter = document.getElementById('sealed-filter-set');
     sets.forEach(s => {
       filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
       sealedAddSet.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
       sealedFilter.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
     });
-    // Populate add-set with all sets initially
-    populateAddSetDropdown('');
   } catch {}
+
+  try {
+    // Scrydex full set list — for card add modal (all eras)
+    const res = await fetch('/api/scrydex-sets');
+    if (res.ok) {
+      const data = await res.json();
+      allScrydexSets = data.sets || [];
+    }
+  } catch {}
+
+  populateAddSetDropdown('');
 }
 
 function populateAddSetDropdown(game) {
   const addSetEl = document.getElementById('add-set');
   const current  = addSetEl.value;
   addSetEl.innerHTML = '<option value="">All Sets</option>';
-  const filtered = game
-    ? sets.filter(s => game === 'onepiece' ? isOnePiece(s.setId) : !isOnePiece(s.setId))
-    : sets;
+
+  const OP_IDS = /^(op|eb|st)\d/i;
+  const filtered = game === 'onepiece'
+    ? allScrydexSets.filter(s => OP_IDS.test(s.id))
+    : game === 'pokemon'
+    ? allScrydexSets.filter(s => !OP_IDS.test(s.id))
+    : allScrydexSets;
+
+  // Group by series
+  const grouped = {};
   filtered.forEach(s => {
-    addSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
+    if (!grouped[s.series]) grouped[s.series] = [];
+    grouped[s.series].push(s);
   });
-  // Restore selection if still valid
-  if (current && filtered.find(s => s.setId === current)) addSetEl.value = current;
+
+  Object.entries(grouped).forEach(([series, seriesSets]) => {
+    const group = document.createElement('optgroup');
+    group.label = series;
+    seriesSets.forEach(s => {
+      group.appendChild(new Option(s.name, s.id));
+    });
+    addSetEl.appendChild(group);
+  });
+
+  if (current && filtered.find(s => s.id === current)) addSetEl.value = current;
 }
 
 function filterAddSetsByGame() {
   const game = document.getElementById('add-game').value;
   populateAddSetDropdown(game);
-  // Clear search results when game changes
   document.getElementById('card-search').value = '';
   document.getElementById('search-results').classList.remove('open');
   document.getElementById('card-preview').style.display = 'none';
@@ -1694,31 +1722,37 @@ function cycleCondition(idx) {
 let searchTimeout = null;
 let allSetsCardCache = {};
 
-async function fetchSetCardsForSearch(setId) {
-  if (allSetsCardCache[setId]) return allSetsCardCache[setId];
+async function fetchSetCardsForSearch(scrydexSetId) {
+  if (allSetsCardCache[scrydexSetId]) return allSetsCardCache[scrydexSetId];
   try {
-    // Try Scrydex first for richer data (variants, inline prices)
-    const setMeta = sets.find(s => s.setId === setId);
-    const phase   = setMeta?.phase || 'en';
-    const res     = await fetch(`/api/scrydex-cards?set=${setId}&phase=${phase}`);
+    // Fetch from Scrydex using the set ID directly
+    const res = await fetch(`/api/scrydex-cards?set=${scrydexSetId}`);
     if (res.ok) {
       const data = await res.json();
       if (data.cards?.length > 0) {
-        allSetsCardCache[setId] = data.cards;
+        allSetsCardCache[scrydexSetId] = data.cards;
         return data.cards;
       }
     }
   } catch {}
-  // Fallback to existing /api/cards
+  // Fallback to /api/cards with internal setId mapping
   try {
-    const gameParam = isOnePiece(setId) ? '&game=onepiece' : '';
-    const res  = await fetch(`/api/cards?set=${setId}${gameParam}`);
+    const SCRYDEX_TO_INTERNAL = {
+      'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv3pt5':'sv3pt5',
+      'sv4':'sv04','sv4pt5':'sv4pt5','sv5':'sv05','sv6':'sv06',
+      'sv6pt5':'sv6pt5','sv7':'sv07','sv8':'sv08','sv8pt5':'sv8pt5',
+      'sv9':'sv09','sv10':'sv10','zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
+      'me1':'me01','me2':'me02','me2pt5':'me02pt5','me3':'me03','me4':'me04','me5':'me05',
+    };
+    const internalId = SCRYDEX_TO_INTERNAL[scrydexSetId] || scrydexSetId;
+    const gameParam  = isOnePiece(internalId) ? '&game=onepiece' : '';
+    const res = await fetch(`/api/cards?set=${internalId}${gameParam}`);
     const data = await res.json();
-    allSetsCardCache[setId] = data.cards || [];
+    allSetsCardCache[scrydexSetId] = data.cards || [];
   } catch {
-    allSetsCardCache[setId] = [];
+    allSetsCardCache[scrydexSetId] = [];
   }
-  return allSetsCardCache[setId];
+  return allSetsCardCache[scrydexSetId];
 }
 
 document.getElementById('card-search').addEventListener('input', async (e) => {
@@ -1736,7 +1770,8 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
       let cards;
 
       if (setFilter) {
-        // Set selected — fetch that set's full card list and filter client-side
+        // Set selected — fetch that set's cards and filter client-side
+        // setFilter is now a Scrydex ID (e.g. "me4", "sv1") from the new dropdown
         const list = await fetchSetCardsForSearch(setFilter);
         const qLower = q.toLowerCase();
         cards = list.filter(c => c.name.toLowerCase().includes(qLower)).slice(0, 12)
