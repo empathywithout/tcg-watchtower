@@ -37,10 +37,11 @@ export default async function handler(req, res) {
     let url;
 
     if (setId) {
-      // Fetch sealed products for a specific set
+      // Map our internal setId to Scrydex expansion ID
       const scrydexId = SCRYDEX_ID_MAP[setId];
       if (!scrydexId) return res.status(400).json({ error: `Unknown setId: ${setId}` });
-      url = `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`;
+      // Use global search filtered by expansion ID — more reliable than expansion endpoint
+      url = `${SCRYDEX_BASE}/sealed?q=expansion.id:${scrydexId}&include=prices&page_size=100`;
     } else if (q) {
       // Global search by name query
       url = `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20`;
