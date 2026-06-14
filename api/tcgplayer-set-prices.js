@@ -34,8 +34,9 @@ const KNOWN_GROUPS = {
   'xy6':'1703','xy7':'1705','xy8':'1707','xy9':'1708','xy10':'1710',
   'xy11':'1711','xy12':'1712','xyp':'1714',
   // ── Black & White ───────────────────────────────────────────────
-  // NOTE: BW and older group IDs need verification from TCGCSV groups list
-  // Using dynamic lookup for anything not confirmed above
+  // NOTE: BW and older group IDs use dynamic TCGCSV groups lookup
+  // ── Base Set (verified) ──────────────────────────────────────────
+  'base1':'604',   // "Base Set" (unlimited) — most common version
   // ── Pokémon GO / McDonald's / Other ─────────────────────────────
   'pgo':'22704','mcd22':'22637','mcd23':'22903','mcd24':'23152',
   // ── Classic & Promos ────────────────────────────────────────────
