@@ -35,8 +35,10 @@ const KNOWN_GROUPS = {
   'xy11':'1711','xy12':'1712','xyp':'1714',
   // ── Black & White ───────────────────────────────────────────────
   // NOTE: BW and older group IDs use dynamic TCGCSV groups lookup
-  // ── Base Set (verified) ──────────────────────────────────────────
-  'base1':'604',   // "Base Set" (unlimited) — most common version
+  // ── Base era (TCGdex IDs: base1=Base Set, base2=Jungle, base3=Fossil, base4=Base Set 2, base5=Team Rocket)
+  'base1':'604',   // Base Set (unlimited) — ~$619 for Charizard
+  'base4':'605',   // Base Set 2
+  // base2/base3/base5/base6 use dynamic TCGCSV lookup by name
   // ── Pokémon GO / McDonald's / Other ─────────────────────────────
   'pgo':'22704','mcd22':'22637','mcd23':'22903','mcd24':'23152',
   // ── Classic & Promos ────────────────────────────────────────────
@@ -90,13 +92,18 @@ async function findGroupIdByName(setName) {
 
   // Name corrections: Scrydex name → TCGplayer group name
   const NAME_CORRECTIONS = {
-    'Scarlet & Violet': 'Scarlet & Violet',
-    'Mega Evolution': 'Mega Evolution',
-    'Base': 'Base Set',
+    'Base Set': 'Base Set',
+    'Base Set 2': 'Base Set 2',
     'Jungle': 'Jungle',
     'Fossil': 'Fossil',
-    'Base Set 2': 'Base Set 2',
     'Team Rocket': 'Team Rocket',
+    'Gym Heroes': 'Gym Heroes',
+    'Gym Challenge': 'Gym Challenge',
+    'Neo Genesis': 'Neo Genesis',
+    'Neo Discovery': 'Neo Discovery',
+    'Neo Revelation': 'Neo Revelation',
+    'Neo Destiny': 'Neo Destiny',
+    'Legendary Collection': 'Legendary Collection',
   };
 
   const correctedName = NAME_CORRECTIONS[setName] || setName;
