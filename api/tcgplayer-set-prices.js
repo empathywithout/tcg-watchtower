@@ -105,16 +105,57 @@ async function findGroupIdByName(setName) {
   return match ? String(match.groupId) : null;
 }
 
-async function fetchPrices(groupId, req) {
-  // Delegate to tcgplayer-prices which has battle-tested price selection logic
-  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0].trim();
-  const host  = req.headers.host;
-  const res   = await fetch(`${proto}://${host}/api/tcgplayer-prices?groupId=${groupId}`, {
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!res.ok) throw new Error(`tcgplayer-prices ${res.status}`);
-  const data = await res.json();
-  return data.prices || {};
+async function fetchPrices(groupId) {
+  const [prodRes, priceRes] = await Promise.all([
+    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/products`, { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
+    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/prices`,   { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
+  ]);
+  if (!prodRes.ok || !priceRes.ok) throw new Error(`TCGCSV ${prodRes.status}/${priceRes.status}`);
+  const [productsData, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
+
+  const products   = productsData.results || [];
+  const pricesList = pricesData.results   || [];
+
+  // Priority: Normal > Holofoil > anything else; skip Reverse Holofoil
+  // (same logic as tcgplayer-prices.js)
+  const priceByProductId = {};
+  for (const p of pricesList) {
+    const subType = (p.subTypeName || '').toLowerCase();
+    if (subType.includes('reverse')) continue;
+    const existing = priceByProductId[p.productId];
+    if (!existing) {
+      priceByProductId[p.productId] = p;
+    } else {
+      const existingSub = (existing.subTypeName || '').toLowerCase();
+      if (subType === 'normal' && existingSub !== 'normal') {
+        priceByProductId[p.productId] = p;
+      }
+    }
+  }
+
+  // Map card number → price — keep lowest productId per card number
+  // (lowest productId = oldest/most common printing, e.g. unlimited over shadowless)
+  const prices = {};
+  const bestProductId = {};
+
+  for (const product of products) {
+    const numEntry = (product.extendedData || []).find(e => e.name === 'Number');
+    if (!numEntry) continue;
+    const cardNumber = numEntry.value.split('/')[0].trim();
+    const priceObj   = priceByProductId[product.productId];
+    if (!priceObj?.marketPrice) continue;
+
+    // Keep lowest productId per card number
+    if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
+    bestProductId[cardNumber] = product.productId;
+
+    const market = priceObj.marketPrice;
+    prices[cardNumber]                             = market;
+    prices[cardNumber.padStart(3, '0')]            = market;
+    const parsed = parseInt(cardNumber, 10);
+    if (!isNaN(parsed)) prices[String(parsed)]     = market;
+  }
+  return prices;
 }
 
 export default async function handler(req, res) {
@@ -153,7 +194,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: `No TCGplayer group found for ${setId}` });
     }
 
-    const prices = await fetchPrices(groupId, req);
+    const prices = await fetchPrices(groupId);
     if (Object.keys(prices).length > 0) {
       await redisSetEx(cacheKey, JSON.stringify(prices), 6 * 60 * 60);
     }
