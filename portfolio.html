@@ -897,6 +897,15 @@ nav.container {
     </div>
 
     <div class="form-group">
+      <label class="form-label">Game</label>
+      <select class="form-select" id="add-game" onchange="filterAddSetsByGame()">
+        <option value="">All Games</option>
+        <option value="pokemon">Pokémon TCG</option>
+        <option value="onepiece">One Piece TCG</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label class="form-label">Filter by Set (optional)</label>
       <select class="form-select" id="add-set">
         <option value="">All Sets</option>
@@ -1209,17 +1218,41 @@ async function loadSets() {
   try {
     const res = await fetch('/sets.json');
     sets = (await res.json()).filter(s => s.live);
-    const addSetEl      = document.getElementById('add-set');
     const filterSetEl   = document.getElementById('filter-set');
     const sealedAddSet  = document.getElementById('sealed-add-set');
     const sealedFilter  = document.getElementById('sealed-filter-set');
     sets.forEach(s => {
-      addSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
       filterSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
       sealedAddSet.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
       sealedFilter.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
     });
+    // Populate add-set with all sets initially
+    populateAddSetDropdown('');
   } catch {}
+}
+
+function populateAddSetDropdown(game) {
+  const addSetEl = document.getElementById('add-set');
+  const current  = addSetEl.value;
+  addSetEl.innerHTML = '<option value="">All Sets</option>';
+  const filtered = game
+    ? sets.filter(s => game === 'onepiece' ? isOnePiece(s.setId) : !isOnePiece(s.setId))
+    : sets;
+  filtered.forEach(s => {
+    addSetEl.appendChild(new Option(`${s.name} (${s.short})`, s.setId));
+  });
+  // Restore selection if still valid
+  if (current && filtered.find(s => s.setId === current)) addSetEl.value = current;
+}
+
+function filterAddSetsByGame() {
+  const game = document.getElementById('add-game').value;
+  populateAddSetDropdown(game);
+  // Clear search results when game changes
+  document.getElementById('card-search').value = '';
+  document.getElementById('search-results').classList.remove('open');
+  document.getElementById('card-preview').style.display = 'none';
+  pendingCard = null;
 }
 
 /* ===== RENDER ===== */
@@ -1898,6 +1931,8 @@ function openModal() {
   document.getElementById('card-preview').style.display = 'none';
   document.getElementById('add-qty').value = 1;
   document.getElementById('search-results').classList.remove('open');
+  document.getElementById('add-game').value = '';
+  populateAddSetDropdown('');
   pendingCard = null;
   setTimeout(() => document.getElementById('card-search').focus(), 100);
 }
