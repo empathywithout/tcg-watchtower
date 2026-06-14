@@ -124,17 +124,21 @@ async function fetchPrices(groupId) {
   const products   = productsData.results || [];
   const pricesList = pricesData.results   || [];
 
-  // Subtype priority — prefer the most common printing collectors own
-  // Skip: Reverse Holofoil, 1st Edition (rare minority)
-  // Prefer: Unlimited Holofoil > Holofoil > Normal > Unlimited > anything else
+  // Subtype priority — higher = more common/preferred default
+  // Input: raw subTypeName string (mixed case, with spaces)
   const subtypePriority = (sub) => {
-    if (sub.includes('reverse'))    return -1; // always skip
-    if (sub.includes('1st edition')) return 1;  // rare — deprioritise
-    if (sub === 'unlimited holofoil') return 10;
-    if (sub === 'holofoil')           return 9;
-    if (sub === 'normal')             return 8;
-    if (sub === 'unlimited')          return 7;
-    return 5;
+    const s = sub.toLowerCase().replace(/\s+/g, '');
+    if (s.includes('reverse'))             return -1; // always skip
+    if (s.includes('jumbo'))               return -1; // skip promos
+    if (s.includes('metal'))               return -1; // skip special
+    if (s === 'unlimitedholofoil')         return 10; // best for vintage
+    if (s === 'unlimitedshadowlessholofoil') return 9;
+    if (s === 'holofoil')                  return 8;  // modern holo
+    if (s === 'normal')                    return 6;  // modern non-holo
+    if (s === 'unlimited')                 return 7;  // vintage non-holo
+    if (s.includes('1stedition'))          return 3;  // rare — show but not default
+    if (s.includes('shadowless'))          return 2;
+    return 4;
   };
 
   // Build productId → card number map from products
@@ -152,8 +156,8 @@ async function fetchPrices(groupId) {
   const seenVar  = {};
 
   for (const p of pricesList) {
-    const sub = (p.subTypeName || '').toLowerCase();
-    if (sub.includes('reverse')) continue;
+    const sub = (p.subTypeName || '');
+    if (subtypePriority(sub) < 0) continue; // skip reverse, jumbo, metal
     if (!p.marketPrice) continue;
 
     const cardNumber = productCardNum[p.productId];
