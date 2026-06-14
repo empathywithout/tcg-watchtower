@@ -597,6 +597,54 @@ nav.container {
   .hamburger-menu {
     right: 16px;
   }
+
+  /* ── Portfolio mobile ── */
+  .toolbar { gap: 8px; }
+
+  /* Row 1: search takes full width */
+  .toolbar-search { min-width: 0; width: 100%; flex: 1 1 100%; order: 1; }
+
+  /* Set filter + sort on same row */
+  #filter-set  { flex: 1; order: 2; min-width: 0; }
+  #sort-select { flex: 1; order: 3; min-width: 0; }
+
+  /* Add Card button — full width on its own row */
+  #open-add-modal { order: 4; flex: 1 1 100%; text-align: center; }
+
+  /* Second toolbar row */
+  #filter-game { order: 5; flex: 1; min-width: 0; }
+  #filter-price-min, #filter-price-max { flex: 1; min-width: 0; width: auto !important; }
+
+  /* Hide export bar on mobile — not needed */
+  .export-bar { display: none; }
+
+  /* Collection grid — 2 cols */
+  .collection-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+
+  /* Card text smaller on mobile */
+  .col-card-name { font-size: .8rem; }
+  .col-card-set  { font-size: .65rem; }
+  .col-card-price { font-size: .85rem; }
+
+  /* Sealed grid — 2 cols */
+  .sealed-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+
+  /* Stats bar */
+  .stats-bar { gap: 8px; }
+  .stat-item { padding: 10px 12px; }
+  .stat-value { font-size: 1.1rem; }
+
+  /* Modal full screen on mobile */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-box {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  /* Completion section — collapse by default */
+  .completion-grid { grid-template-columns: 1fr !important; }
 }
 
 @media (min-width: 769px) {
