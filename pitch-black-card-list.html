@@ -1030,7 +1030,7 @@ footer {
         <p class="set-desc">
           Complete guide to Pitch Black — full card list, chase cards ranked by market price, and where to buy sealed product.
         </p>
-        <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 17, 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases on July 17, 2026.</p>
+        <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 17, 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and live prices will be added when Pitch Black releases on July 17, 2026.</p>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="Pitch Black Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
@@ -1537,7 +1537,7 @@ function loadTCGPlayerPrices() {
       }
 
     } catch(e) {
-      console.warn('TCGplayer prices unavailable:', e.message);
+      console.warn('live prices unavailable:', e.message);
       _pricesFetchPromise = null;
     }
   })();
