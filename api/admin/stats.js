@@ -85,11 +85,15 @@ export default async function handler(req, res) {
     const discordUsers = portfolios.filter(p => /^\d+$/.test(p.userId)).length;
     const googleUsers  = portfolios.filter(p => p.userId.startsWith('g_')).length;
 
-    // Activity
+    // Activity — use date-scoped keys that auto-reset each period
+    const now2  = new Date();
+    const today = now2.toISOString().slice(0,10);
+    const week  = `${now2.getFullYear()}-W${String(Math.ceil((now2.getDate() + new Date(now2.getFullYear(), now2.getMonth(), 1).getDay()) / 7)).padStart(2,'0')}`;
+    const month = now2.toISOString().slice(0,7);
     const [dau, wau, mau] = await Promise.all([
-      kvGet('stats:dau').then(v => parseInt(v||0)),
-      kvGet('stats:wau').then(v => parseInt(v||0)),
-      kvGet('stats:mau').then(v => parseInt(v||0)),
+      kvGet(`stats:dau:${today}`).then(v => parseInt(v||0)),
+      kvGet(`stats:wau:${week}`).then(v => parseInt(v||0)),
+      kvGet(`stats:mau:${month}`).then(v => parseInt(v||0)),
     ]);
 
     return res.status(200).json({
