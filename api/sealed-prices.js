@@ -138,33 +138,15 @@ export default async function handler(req, res) {
           return res.status(200).json({ products: p, total: p.length, cached: true });
         }
       }
-      // Try direct product endpoint first
+      // Single search by productId — most reliable, 1 credit
       let products = [];
       try {
-        const data = await fetchFromScrydex(`${SCRYDEX_BASE}/sealed/${productId}?include=prices`);
-        products = normaliseProducts([data]);
+        const data = await fetchFromScrydex(
+          `${SCRYDEX_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
+        );
+        const match = (data.data || []).find(p => p.id === productId);
+        if (match) products = normaliseProducts([match]);
       } catch {}
-
-      // If no price from direct fetch, try search by product ID
-      if (!products[0]?.market) {
-        try {
-          const data = await fetchFromScrydex(
-            `${SCRYDEX_BASE}/sealed?q=id:${productId}&include=prices&page_size=1`
-          );
-          if ((data.data || []).length > 0) products = normaliseProducts(data.data);
-        } catch {}
-      }
-
-      // If still no price, try name search using the productId as hint
-      if (!products[0]?.market) {
-        try {
-          const data = await fetchFromScrydex(
-            `${SCRYDEX_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
-          );
-          const match = (data.data || []).find(p => p.id === productId);
-          if (match) products = normaliseProducts([match]);
-        } catch {}
-      }
 
       if (products[0]?.market != null) {
         await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
@@ -217,12 +199,19 @@ export default async function handler(req, res) {
       }
 
     } else if (q) {
-      // Search — short cache only (no Redis, results vary by query)
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+      // Search — Redis cached 1h per query
+      const qKey = `sealed:search:${q.toLowerCase().trim()}`;
+      const qCached = await redisGet(qKey);
+      if (qCached) {
+        res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+        return res.status(200).json({ products: JSON.parse(qCached), total: JSON.parse(qCached).length, cached: true });
+      }
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
       const data = await fetchFromScrydex(
         `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20`
       );
       products = normaliseProducts(data.data || []);
+      if (products.length > 0) await redisSetEx(qKey, JSON.stringify(products), 3600);
 
     } else {
       return res.status(400).json({ error: 'Provide setId or q param' });
@@ -235,3 +224,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
