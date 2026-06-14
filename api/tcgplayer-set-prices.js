@@ -105,72 +105,16 @@ async function findGroupIdByName(setName) {
   return match ? String(match.groupId) : null;
 }
 
-async function fetchPrices(groupId) {
-  const [prodRes, priceRes] = await Promise.all([
-    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/products`, { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
-    undiciFetch(`${TCGCSV_BASE}/3/${groupId}/prices`,   { headers: HEADERS, signal: AbortSignal.timeout(10000) }),
-  ]);
-  if (!prodRes.ok || !priceRes.ok) throw new Error(`TCGCSV fetch failed: ${prodRes.status}/${priceRes.status}`);
-  const [productsData, pricesData] = await Promise.all([prodRes.json(), priceRes.json()]);
-
-  // Subtype priority — prefer the most common/standard printing
-  // For vintage sets: Unlimited > Shadowless > 1st Edition (most collectors have unlimited)
-  // For modern sets: Holofoil > Normal > others
-  // Skip Reverse Holofoil entirely
-  const subtypePriority = (sub) => {
-    if (sub.includes('reverse')) return -1;          // skip
-    if (sub === 'unlimited holofoil') return 10;     // Base era unlimited holo
-    if (sub === 'unlimited') return 9;               // Base era unlimited non-holo
-    if (sub === 'holofoil') return 8;                // Modern holofoil
-    if (sub === 'normal') return 7;                  // Modern normal
-    if (sub === 'shadowless holofoil') return 4;     // Base era shadowless
-    if (sub === 'shadowless') return 3;
-    if (sub.includes('1st edition')) return 2;       // 1st edition — minority
-    return 5;                                        // anything else
-  };
-
-  const priceByProductId = {};
-  for (const p of (pricesData.results || [])) {
-    const sub = (p.subTypeName || '').toLowerCase();
-    if (sub.includes('reverse')) continue;
-    if (!p.marketPrice) continue;
-    const existing = priceByProductId[p.productId];
-    if (!existing) {
-      priceByProductId[p.productId] = p;
-    } else {
-      const newPrio      = subtypePriority(sub);
-      const existingPrio = subtypePriority((existing.subTypeName||'').toLowerCase());
-      if (newPrio > existingPrio) priceByProductId[p.productId] = p;
-    }
-  }
-
-  // Map card number → market price
-  // When multiple products share a card number, pick by subtype priority
-  const prices = {};
-  const priceSubtype = {}; // track which subtype won per card number
-
-  for (const p of (productsData.results || [])) {
-    const priceEntry = priceByProductId[p.productId];
-    if (!priceEntry?.marketPrice) continue;
-    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
-    if (!numEntry) continue;
-    const rawNum = numEntry.value.split('/')[0].trim();
-    const market = priceEntry.marketPrice;
-    const sub    = (priceEntry.subTypeName || '').toLowerCase();
-    const prio   = subtypePriority(sub);
-
-    // Keep highest priority subtype; tie-break on higher price
-    const existingPrio = priceSubtype[rawNum] ?? -999;
-    if (prio < existingPrio) continue;
-    if (prio === existingPrio && (prices[rawNum] ?? 0) >= market) continue;
-
-    priceSubtype[rawNum]                       = prio;
-    prices[rawNum]                             = market;
-    prices[rawNum.padStart(3,'0')]             = market;
-    const parsed = parseInt(rawNum, 10);
-    if (!isNaN(parsed)) prices[String(parsed)] = market;
-  }
-  return prices;
+async function fetchPrices(groupId, req) {
+  // Delegate to tcgplayer-prices which has battle-tested price selection logic
+  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0].trim();
+  const host  = req.headers.host;
+  const res   = await fetch(`${proto}://${host}/api/tcgplayer-prices?groupId=${groupId}`, {
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) throw new Error(`tcgplayer-prices ${res.status}`);
+  const data = await res.json();
+  return data.prices || {};
 }
 
 export default async function handler(req, res) {
@@ -209,7 +153,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: `No TCGplayer group found for ${setId}` });
     }
 
-    const prices = await fetchPrices(groupId);
+    const prices = await fetchPrices(groupId, req);
     if (Object.keys(prices).length > 0) {
       await redisSetEx(cacheKey, JSON.stringify(prices), 6 * 60 * 60);
     }
