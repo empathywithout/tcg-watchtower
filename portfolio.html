@@ -2045,7 +2045,10 @@ function switchView(view) {
   document.getElementById('sealed-view').style.display = view === 'sealed' ? '' : 'none';
   document.getElementById('tab-cards').classList.toggle('active', view === 'cards');
   document.getElementById('tab-sealed').classList.toggle('active', view === 'sealed');
-  if (view === 'sealed') renderSealedGrid();
+  if (view === 'sealed') {
+    renderSealedGrid();
+    loadSealedPrices(sealedPortfolio);
+  }
 }
 
 function updateTabCounts() {
@@ -2116,9 +2119,6 @@ function renderSealedGrid() {
       </div>
     </div>`;
   }).join('');
-
-  // Fetch live prices for items we don't have yet
-  loadSealedPrices(items);
 }
 
 /* ===== SEALED PRICES ===== */
@@ -2126,7 +2126,6 @@ async function loadSealedPrices(items) {
   const todo = items.filter(s => s.productId && sealedPriceCache[s.productId] == null);
   if (todo.length === 0) return;
 
-  // Group by setId — skip items with no setId
   const bySet = {};
   const noSet = [];
   todo.forEach(s => {
@@ -2161,20 +2160,39 @@ async function loadSealedPrices(items) {
     }
   }
 
-  // For items with no setId, fetch by productId directly
+  // For items with no setId
   for (const s of noSet) {
     if (sealedPriceCache[s.productId] != null) continue;
     try {
-      const res = await fetch(`/api/sealed-prices?productId=${encodeURIComponent(s.productId)}`);
-      if (!res.ok) continue;
-      const data = await res.json();
-      const match = (data.products || [])[0];
+      const r2 = await fetch(`/api/sealed-prices?productId=${encodeURIComponent(s.productId)}`);
+      if (!r2.ok) continue;
+      const d2 = await r2.json();
+      const match = (d2.products || [])[0];
       if (match?.market != null) sealedPriceCache[match.id] = match.market;
     } catch {}
   }
 
-  if (currentView === 'sealed') renderSealedGrid();
+  // Update prices in-place on existing DOM cards — no full re-render
+  updateSealedPricesInDOM();
   renderStats();
+}
+
+function updateSealedPricesInDOM() {
+  // Update price elements on already-rendered sealed cards without rebuilding DOM
+  const grid = document.getElementById('sealed-grid');
+  if (!grid) return;
+  grid.querySelectorAll('.sealed-card').forEach(card => {
+    const idx = parseInt(card.dataset.idx);
+    const item = sealedPortfolio[idx];
+    if (!item) return;
+    const market = sealedPriceCache[item.productId];
+    const priceEl = card.querySelector('.sealed-card-price');
+    if (!priceEl) return;
+    if (market != null) {
+      priceEl.textContent = `$${market.toFixed(2)}`;
+      priceEl.classList.remove('loading');
+    }
+  });
 }
 
 /* ===== SEALED MUTATIONS ===== */
