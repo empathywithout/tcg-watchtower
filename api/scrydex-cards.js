@@ -11,15 +11,15 @@ const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
 const CACHE_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 const SCRYDEX_EN_ID_MAP = {
-  'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
-  'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
-  'sv6pt5':'sv06.5','sv07':'sv07','sv08':'sv08','sv8pt5':'sv08.5',
-  'sv09':'sv09','sv10':'sv10','zsv10pt5':'sv10.5-black','rsv10pt5':'sv10.5-white',
-  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'me03','me04':'me04','me05':'me05',
+  'sv01':'sv1','sv02':'sv2','sv03':'sv3','sv3pt5':'sv3.5',
+  'sv04':'sv4','sv4pt5':'sv4.5','sv05':'sv5','sv06':'sv6',
+  'sv6pt5':'sv6.5','sv07':'sv7','sv08':'sv8','sv8pt5':'sv8.5',
+  'sv09':'sv9','sv10':'sv10','zsv10pt5':'sv10.5-black','rsv10pt5':'sv10.5-white',
+  'me01':'me1','me02':'me2','me02pt5':'me2.5','me03':'me3','me04':'me4','me05':'me5',
 };
 
 const SCRYDEX_JP_ID_MAP = {
-  'me01':'me01','me02':'me02','me02pt5':'me02.5','me03':'m3_ja','me04':'m4_ja',
+  'me01':'me1','me02':'me2','me02pt5':'me2.5','me03':'m3_ja','me04':'m4_ja',
 };
 
 /* ── Redis helpers ─────────────────────────────────────────────────── */
