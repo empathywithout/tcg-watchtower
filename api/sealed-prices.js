@@ -134,14 +134,38 @@ export default async function handler(req, res) {
       const cached   = await redisGet(cacheKey);
       if (cached) {
         const p = JSON.parse(cached);
-        // Don't serve cached null-price results
         if (p.length > 0 && p[0].market != null) {
           return res.status(200).json({ products: p, total: p.length, cached: true });
         }
       }
-      const data = await fetchFromScrydex(`${SCRYDEX_BASE}/sealed/${productId}?include=prices`);
-      products = normaliseProducts([data]);
-      // Only cache if price is present
+      // Try direct product endpoint first
+      let products = [];
+      try {
+        const data = await fetchFromScrydex(`${SCRYDEX_BASE}/sealed/${productId}?include=prices`);
+        products = normaliseProducts([data]);
+      } catch {}
+
+      // If no price from direct fetch, try search by product ID
+      if (!products[0]?.market) {
+        try {
+          const data = await fetchFromScrydex(
+            `${SCRYDEX_BASE}/sealed?q=id:${productId}&include=prices&page_size=1`
+          );
+          if ((data.data || []).length > 0) products = normaliseProducts(data.data);
+        } catch {}
+      }
+
+      // If still no price, try name search using the productId as hint
+      if (!products[0]?.market) {
+        try {
+          const data = await fetchFromScrydex(
+            `${SCRYDEX_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
+          );
+          const match = (data.data || []).find(p => p.id === productId);
+          if (match) products = normaliseProducts([match]);
+        } catch {}
+      }
+
       if (products[0]?.market != null) {
         await redisSetEx(cacheKey, JSON.stringify(products), CACHE_TTL_SEC);
       }
