@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/api/auth/me",
+      "destination": "/api/auth/me.js"
+    },
+    {
+      "source": "/api/auth/callback",
+      "destination": "/api/auth/callback.js"
+    },
+    {
+      "source": "/api/auth/discord",
+      "destination": "/api/auth/discord.js"
+    },
+    {
+      "source": "/api/auth/logout",
+      "destination": "/api/auth/logout.js"
+    },
+    {
       "source": "/api/auth/google/callback",
       "destination": "/api/auth/google/callback.js"
     },
