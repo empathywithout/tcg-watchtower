@@ -2042,10 +2042,40 @@ function selectCardFromCache(index, scrydexSetId) {
       .then(data => {
         if (!data?.prices) { priceEl.textContent = ''; return; }
         const localId = card.localId || card.number || '';
+        const cardVariants = data.variants?.[localId]
+          || data.variants?.[localId.padStart(3,'0')]
+          || data.variants?.[String(parseInt(localId,10))];
         const p = data.prices[localId]
           || data.prices[localId.padStart(3,'0')]
           || data.prices[String(parseInt(localId, 10))];
-        priceEl.textContent = p != null ? `Market: $${p.toFixed(2)} (TCGplayer)` : '';
+
+        if (p == null) { priceEl.textContent = ''; return; }
+        priceEl.textContent = `Market: $${p.toFixed(2)} (TCGplayer)`;
+
+        // Show variant picker if multiple TCGplayer variants exist
+        let variantPickerEl = document.getElementById('variant-picker');
+        if (!variantPickerEl) {
+          variantPickerEl = document.createElement('div');
+          variantPickerEl.id = 'variant-picker';
+          variantPickerEl.style.cssText = 'margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;';
+          document.getElementById('card-preview').querySelector('div').appendChild(variantPickerEl);
+        }
+        if (cardVariants?.length > 1) {
+          pendingCard._variants    = cardVariants.map(v => ({ name: v.name, market: v.market }));
+          pendingCard._variantIdx  = 0;
+          variantPickerEl.innerHTML = cardVariants.map((v, i) =>
+            `<button onclick="selectVariant(${i})" id="vbtn-${i}"
+              style="font-size:.7rem;padding:3px 8px;border-radius:4px;cursor:pointer;
+              font-family:'DM Sans',sans-serif;border:1px solid rgba(167,139,250,.3);
+              background:${i===0?'rgba(167,139,250,.2)':'rgba(30,41,59,.8)'};
+              color:${i===0?'#c084fc':'var(--muted)'}">
+              ${v.name}${v.market != null ? ` · $${v.market.toFixed(2)}` : ''}
+            </button>`
+          ).join('');
+        } else {
+          variantPickerEl.innerHTML = '';
+        }
+
         if (p != null) {
           priceCache[`${setId}:${localId}`] = p;
           priceCache[`${setId}:${localId.padStart(3,'0')}`] = p;
