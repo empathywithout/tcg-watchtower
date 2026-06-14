@@ -129,12 +129,27 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')    return res.status(405).end();
 
-  const { set, phase } = req.query;
-  if (!set) return res.status(400).json({ error: 'Provide ?set= param' });
+  const { set, phase, q } = req.query;
 
   if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
     return res.status(500).json({ error: 'Scrydex credentials not configured' });
   }
+
+  // ── Global name search (no set required, 1 credit per search) ────
+  if (q && !set) {
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    try {
+      const url = `${SCRYDEX_BASE}/cards?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20&select=id,name,rarity,images,variants,supertype,expansion`;
+      const raw = await fetchAllCards(url);
+      const cards = raw.map(c => normaliseCard(c, c.expansion?.id || '', 'en'));
+      return res.status(200).json({ cards, total: cards.length });
+    } catch (e) {
+      console.error('[scrydex-cards q]', e.message);
+      return res.status(500).json({ error: e.message });
+    }
+  }
+
+  if (!set) return res.status(400).json({ error: 'Provide ?set= or ?q= param' });
 
   const isJP = phase === 'jp';
   const scrydexId = isJP
