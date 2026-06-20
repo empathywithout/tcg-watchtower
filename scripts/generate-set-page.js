@@ -507,9 +507,9 @@ const SEO_DATA = {
     intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and real-time secondary market prices from TCGplayer that update daily.',
   },
   'me05': {
-    metaTitle: 'Pitch Black Card List and Prices | TCG Watchtower',
-    metaDesc: 'Full Pitch Black ME5 card list with live prices. Mega Darkrai ex, Mega Zeraora ex, Special Illustration Rares, and booster box values updated daily.',
-    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 17, 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases on July 17, 2026.',
+    metaTitle: 'Pitch Black Card List: 118 Cards, Rarity Filter & Prices | TCG Watchtower',
+    metaDesc: 'Complete Pitch Black card list — all 118 ME05 cards with rarity filters, Illustration Rares, Special Illustration Rares, Mega Hyper Rares, chase cards, and live TCGplayer prices. Releases July 2026.',
+    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases.',
   },
   'zsv10pt5': {
     metaTitle: 'Black Bolt Card List and Prices | TCG Watchtower',
@@ -526,6 +526,7 @@ const SEO_DATA = {
 const seoData   = SEO_DATA[SET_ID] || {};
 const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
 const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs. Updated ${releaseDate}.`;
+const SEO_OG_TITLE   = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
 const SEO_INTRO      = seoData.intro     || '';
 
 // ── Fill template ──────────────────────────────────────────────────────────────
@@ -559,6 +560,7 @@ const vars = {
   '{{PRODUCT_META_JSON}}':  productMetaJson,
   '{{CHASE_CARDS_JSON}}':   chaseCardsJson,
   '{{SEO_META_TITLE}}':     SEO_META_TITLE,
+  '{{SEO_OG_TITLE}}':       SEO_OG_TITLE,
   '{{SEO_META_DESC}}':      SEO_META_DESC,
   '{{SEO_INTRO}}':          SEO_INTRO,
   '{{BODY_BACKGROUND}}': 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
@@ -786,5 +788,6 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
 
 
