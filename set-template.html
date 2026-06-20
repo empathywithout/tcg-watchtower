@@ -99,54 +99,7 @@
 }
 </script>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How many cards are in the {{SET_FULL_NAME}} card list?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{SET_FULL_NAME}} contains {{SET_TOTAL_CARDS}} cards in total, including the main set and all secret rare cards."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "When does {{SET_FULL_NAME}} release?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{SET_FULL_NAME}} is scheduled to release on {{SET_RELEASE_DATE_FULL}}."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What are the top chase cards in {{SET_FULL_NAME}}?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "The most valuable {{SET_FULL_NAME}} cards are the Mega Hyper Rares, Special Illustration Rares, and Illustration Rares, ranked by live TCGplayer market price."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Are {{SET_FULL_NAME}} card prices available?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What series is {{SET_FULL_NAME}} part of?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "{{SET_FULL_NAME}} is part of the {{SET_SERIES}} series of the Pokémon Trading Card Game."
-      }
-    }
-  ]
-}
-</script>
+{{FAQ_JSONLD}}
 
 
 <!-- Fonts -->
@@ -1230,34 +1183,7 @@ footer {
 </section>
 
 
-<!-- ===== FAQ ===== -->
-<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
-  <div class="container" style="max-width:800px;">
-    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">{{SET_FULL_NAME}} <span class="gradient-text">FAQ</span></h2>
-    <div style="display:flex;flex-direction:column;gap:24px;">
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the {{SET_FULL_NAME}} card list?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} contains {{SET_TOTAL_CARDS}} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does {{SET_FULL_NAME}} release?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} is scheduled to release on {{SET_RELEASE_DATE_FULL}}. Prerelease events typically begin 1–2 weeks before the official release date.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in {{SET_FULL_NAME}}?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable {{SET_FULL_NAME}} cards are the Mega Hyper Rares, Special Illustration Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are {{SET_FULL_NAME}} card prices available?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is {{SET_FULL_NAME}} part of?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} is part of the {{SET_SERIES}} series of the Pokémon Trading Card Game.</p>
-      </div>
-    </div>
-  </div>
-</section>
+{{FAQ_SECTION}}
 
 <!-- ===== FOOTER ===== -->
 <footer>
@@ -2162,5 +2088,6 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
+
 
 
