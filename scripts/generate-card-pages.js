@@ -587,14 +587,14 @@ ${sharedNav}
 ${breadcrumb(breadcrumbLabel)}
 <div class="container">
   <h1>${h1}</h1>
-  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily from TCGplayer</p>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily on TCG Watchtower</p>
   <div class="cards-grid" id="cards-grid">
     ${chaseCardGridItems(chaseCards)}
   </div>
   <a href="${cardListUrl}" class="set-link">← View Full ${SET_FULL_NAME} Card List</a>
 </div>
 <footer>
-  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices sourced from TCGplayer via TCGCSV.</p>
+  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices sourced from TCGplayer.</p>
 </footer>
 <script>${chaseScript}<\/script>
 ${impactScript}
@@ -633,4 +633,5 @@ let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
 console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
+
 
