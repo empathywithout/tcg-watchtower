@@ -123,8 +123,8 @@ function rarityXf(fillId, type) {
   // Then per-fill: 4 variants each
   // rarityXfBase = 11 + (fillId - FILL_COMMON) * 4 + typeOffset
   const base = 11;
-  const fills = [FILL_COMMON,FILL_UNCOMMON,FILL_RARE,FILL_DR,FILL_IR,FILL_IR,FILL_UR,FILL_SIR,FILL_SIR,FILL_HR,FILL_MHR,FILL_MAR,FILL_TR,FILL_RH];
-  const fillIdx = fills.indexOf(fillId);
+  // fillId ranges from FILL_COMMON(4) to FILL_RH(15) — direct arithmetic, no lookup needed
+  const fillIdx = (fillId >= FILL_COMMON && fillId <= FILL_RH) ? fillId - FILL_COMMON : -1;
   const typeOffset = { num:0, card:1, abbrev:2, blank:3 }[type] || 0;
   if (fillIdx < 0) return XF_CARD;
   return base + fillIdx * 4 + typeOffset;
@@ -503,3 +503,4 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
