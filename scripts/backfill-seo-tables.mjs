@@ -329,11 +329,11 @@ function injectDownloadButtons(html, setId, name) {
         <span>📋</span> Free Master Set Checklist <span style="font-size:0.7rem;opacity:0.7;">▾</span>
       </button>
       <div class="cl-picker" style="display:none;position:absolute;top:calc(100% + 6px);left:0;flex-direction:column;gap:0;background:#1e293b;border:1px solid rgba(74,222,128,0.3);border-radius:10px;overflow:hidden;z-index:100;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
-        <a href="/api/checklist?set=${setId}&type=master&format=xlsx" download style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#4ade80;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.15s;" onmouseover="this.style.background='rgba(74,222,128,0.12)'" onmouseout="this.style.background=''">
+        <a href="/api/checklist?set=${setId}&type=master&format=xlsx" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#4ade80;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.15s;" onmouseover="this.style.background='rgba(74,222,128,0.12)'" onmouseout="this.style.background=''">
           <span style="font-size:1.1rem;">📊</span>
           <span><strong>Google Sheets / Excel</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Dropdowns, color coding, 3 sheets</span></span>
         </a>
-        <a href="/api/checklist?set=${setId}&type=master&format=csv" download style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#86efac;text-decoration:none;font-size:0.82rem;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='rgba(74,222,128,0.08)'" onmouseout="this.style.background=''">
+        <a href="/api/checklist?set=${setId}&type=master&format=csv" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#86efac;text-decoration:none;font-size:0.82rem;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='rgba(74,222,128,0.08)'" onmouseout="this.style.background=''">
           <span style="font-size:1.1rem;">📄</span>
           <span><strong>CSV</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Works everywhere</span></span>
         </a>
@@ -443,6 +443,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
