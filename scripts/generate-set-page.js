@@ -604,6 +604,45 @@ if (remaining.length) {
   console.warn(`⚠️  Unreplaced placeholders: ${[...new Set(remaining)].join(', ')}`);
 }
 
+
+// ── Inject static SEO card table ───────────────────────────────────────────────
+// Fetches card list from R2 metadata JSON and appends a visually-hidden table
+// so Google can index all card names, numbers, and rarities as static HTML.
+try {
+  const metaUrl = `${R2_PUBLIC_URL}/data/${SET_ID}.json`;
+  console.log(`\n📋 Fetching card metadata for SEO table from ${metaUrl}...`);
+  const metaRes = await fetch(metaUrl);
+  if (metaRes.ok) {
+    const metaJson = await metaRes.json();
+    const seoCards = metaJson.cards || [];
+    if (seoCards.length > 0) {
+      const rows = seoCards.map(c => {
+        const cardPath = `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${c.name.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${c.localId}`;
+        return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${c.name}</a></td><td>${c.rarity || ''}</td></tr>`;
+      }).join('\n');
+      const staticTable = `
+<!-- SEO: static card list for search engine indexing -->
+<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0" aria-hidden="true">
+<h2>${SET_FULL_NAME} Card List — All ${seoCards.length} Cards</h2>
+<table>
+<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>`;
+      html = html.replace('</body>', staticTable + '\n</body>');
+      console.log(`✅  Injected static SEO table with ${seoCards.length} cards`);
+    } else {
+      console.warn('⚠️  No cards in metadata JSON — skipping SEO table');
+    }
+  } else {
+    console.warn(`⚠️  Could not fetch card metadata (${metaRes.status}) — skipping SEO table`);
+  }
+} catch (seoErr) {
+  console.warn(`⚠️  SEO table injection failed: ${seoErr.message} — continuing`);
+}
+
 // ── Write output file ──────────────────────────────────────────────────────────
 const outFile = `${SET_SLUG}.html`;
 writeFileSync(outFile, html);
@@ -741,3 +780,4 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
