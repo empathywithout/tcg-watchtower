@@ -435,6 +435,52 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
   );
 
   // ── XML assembly ──
+
+  // ── Legend sheet ─────────────────────────────────────────────────────────
+  const legendRows = [];
+  let lr = 0;
+  function lrow(cells, height=18) { lr++; legendRows.push(`<row r="${lr}" ht="${height}" customHeight="1">${cells}</row>`); }
+  function lc(col, sstIdx, xfId) { return `<c r="${col}${lr+1}" t="s" s="${xfId}"><v>${sstIdx}</v></c>`; }
+  function lb(col, xfId) { return `<c r="${col}${lr+1}" s="${xfId}"/>`; }
+
+  // Header row
+  lrow([lc('A',si('#'),XF_HEADER), lc('B',si('Rarity'),XF_HEADER_L), lc('C',si('Abbrev'),XF_HEADER), lc('D',si('What It Means'),XF_HEADER_L), lb('E',XF_HEADER)].join(''), 20);
+
+  const LEGEND_DESC = {
+    'Common':                  'Circle symbol. ~6-7 per pack. Most common pull.',
+    'Uncommon':                'Diamond symbol. ~2-3 per pack.',
+    'Rare':                    '1 black star. 1 guaranteed per pack.',
+    'Double Rare':             '2 black stars. Regular-art Pokemon ex.',
+    'Illustration Rare':       '1 gold star. Full-art alternate scene, non-Rule Box Pokemon.',
+    'Art Rare':                '1 gold star. Black Bolt / White Flare exclusive.',
+    'Ultra Rare':              '2 foil silver stars. Full-art textured Pokemon ex or Supporter.',
+    'Special Illustration Rare': '2 gold stars. Premium story-scene full art. Top collector target.',
+    'Black White Rare':        '2 gold stars. Black Bolt / White Flare exclusive.',
+    'Hyper Rare':              '3 gold stars. Gold-bordered card.',
+    'Mega Hyper Rare':         '1 gold star (black border). Gold-etched Mega ex. Mega Evolution era only.',
+    'Mega Attack Rare':        'Pink & green stars. Pop-art attack illustrations. Introduced in Ascended Heroes.',
+    'Treasure Rare':           'One Piece TCG exclusive rarity.',
+    'RH':                      'Reverse Holo. Foil on card border/background instead of artwork. Available for C / U / R / DR cards.',
+  };
+  const LEGEND_RARITIES = [...RARITY_ORDER, 'RH'];
+  const LEGEND_ABBREV = { ...RARITY_ABBREV, 'RH': 'RH' };
+
+  for (const rarity of LEGEND_RARITIES) {
+    const fi = RARITY_FILL[rarity] ?? FILL_NONE;
+    const xfNum  = (fi >= FILL_COMMON && fi <= FILL_RH) ? rarityXf(fi, 'num')  : XF_DEFAULT;
+    const xfCard = (fi >= FILL_COMMON && fi <= FILL_RH) ? rarityXf(fi, 'card') : XF_DEFAULT;
+    const xfBlank= (fi >= FILL_COMMON && fi <= FILL_RH) ? rarityXf(fi, 'blank'): XF_DEFAULT;
+    const abbrev = LEGEND_ABBREV[rarity] || '';
+    const desc   = LEGEND_DESC[rarity]   || '';
+    lrow([lc('A',si(abbrev), xfNum), lc('B',si(rarity), xfCard), lc('C',si(abbrev), xfNum), lc('D',si(desc), xfCard), lb('E', xfBlank)].join(''));
+  }
+
+  // Footer
+  lrow([lb('A',XF_DEFAULT), lb('B',XF_DEFAULT), lb('C',XF_DEFAULT), lb('D',XF_DEFAULT), lb('E',XF_DEFAULT)].join(''));
+  lrow([lc('A',si('TCG Watchtower'),XF_BOLD), lc('B',si('tcgwatchtower.com'),XF_LINK), lb('C',XF_DEFAULT), lb('D',XF_DEFAULT), lb('E',XF_DEFAULT)].join(''));
+
+  const legendSheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView tabSelected="0" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols><col min="1" max="1" width="8" customWidth="1"/><col min="2" max="2" width="28" customWidth="1"/><col min="3" max="3" width="8" customWidth="1"/><col min="4" max="4" width="55" customWidth="1"/><col min="5" max="5" width="4" customWidth="1"/></cols><sheetData>${legendRows.join('')}</sheetData></worksheet>`;
+
   const sstXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${sst.length}" uniqueCount="${sst.length}">${sst.map(s=>`<si><t xml:space="preserve">${xmlEsc(s)}</t></si>`).join('')}</sst>`;
 
   const mergeXml = merges.length ? `<mergeCells count="${merges.length}">${merges.join('')}</mergeCells>` : '';
@@ -442,13 +488,13 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
 
   const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView tabSelected="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols><col min="1" max="1" width="8" customWidth="1"/><col min="2" max="2" width="32" customWidth="1"/><col min="3" max="3" width="10" customWidth="1"/><col min="4" max="4" width="11" customWidth="1"/><col min="5" max="5" width="20" customWidth="1"/><col min="6" max="6" width="24" customWidth="1"/></cols><sheetData>${rowsXml.join('')}</sheetData>${mergeXml}${dvXml}</worksheet>`;
 
-  const wbXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Checklist" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+  const wbXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Checklist" sheetId="1" r:id="rId1"/><sheet name="Rarity Legend" sheetId="2" r:id="rId4"/></sheets></workbook>`;
 
-  const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>`;
+  const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>`;
 
   const pkgRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
 
-  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
 
   return buildZip([
     { name: '[Content_Types].xml',         data: contentTypes },
@@ -456,6 +502,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
     { name: 'xl/workbook.xml',             data: wbXml },
     { name: 'xl/_rels/workbook.xml.rels',  data: wbRels },
     { name: 'xl/worksheets/sheet1.xml',    data: sheetXml },
+    { name: 'xl/worksheets/sheet2.xml',    data: legendSheetXml },
     { name: 'xl/sharedStrings.xml',        data: sstXml },
     { name: 'xl/styles.xml',              data: STYLES_XML },
   ]);
@@ -503,5 +550,6 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
 
