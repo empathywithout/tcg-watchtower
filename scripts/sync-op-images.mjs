@@ -152,6 +152,7 @@ function normalizeVariantName(name) {
 function variantRarityFromName(variantName) {
   const normalized = normalizeVariantName(variantName);
   if (VARIANT_RARITY[normalized] !== undefined) return VARIANT_RARITY[normalized];
+  if (normalized.includes('treasure')) return 'Treasure Rare';
   if (normalized.includes('mangaalt') || normalized.includes('mangaart')) return 'Manga Rare';
   if (normalized.includes('specialalt') || normalized.includes('specialart')) return 'Special';
   if (normalized.includes('alt')) return 'Alternate Art';
