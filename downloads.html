@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Stats — TCG Watchtower</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1f2e; --surface2: #222840;
+    --border: rgba(255,255,255,0.08); --green: #4ade80; --green-dim: #86efac;
+    --text: #e2e8f0; --text-muted: #94a3b8; --blue: #60a5fa; --purple: #a78bfa;
+    --orange: #fb923c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  /* Auth gate */
+  #auth-gate {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; gap: 16px; padding: 24px;
+  }
+  #auth-gate h1 { font-size: 1.4rem; color: var(--text); }
+  #auth-gate p { color: var(--text-muted); font-size: 0.9rem; }
+  .discord-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 24px; background: #5865F2; border: none; border-radius: 10px;
+    color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .discord-btn:hover { background: #4752c4; }
+
+  /* Dashboard */
+  #dashboard { display: none; }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .logo { font-size: 1.1rem; font-weight: 800; color: var(--green); }
+  .logo span { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; margin-left: 8px; }
+  .user-badge {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.82rem; color: var(--text-muted);
+  }
+  .user-badge img { width: 28px; height: 28px; border-radius: 50%; }
+  .refresh-btn {
+    padding: 6px 14px; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25);
+    border-radius: 6px; color: var(--green); font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .refresh-btn:hover { background: rgba(74,222,128,0.2); }
+
+  main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+  /* Stat cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+  .stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.blue  { color: var(--blue); }
+  .stat-value.purple{ color: var(--purple); }
+  .stat-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Sections */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px;
+  }
+
+  /* Table */
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    padding: 10px 16px; text-align: left; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+  td { padding: 11px 16px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .rank { color: var(--text-muted); font-weight: 700; font-size: 0.78rem; }
+  .set-name { font-weight: 600; }
+  .num { font-variant-numeric: tabular-nums; }
+  .format-xlsx { color: var(--green); font-weight: 700; }
+  .format-csv  { color: var(--blue); font-weight: 600; }
+
+  /* Bar */
+  .bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar { height: 6px; border-radius: 3px; background: var(--green); transition: width 0.4s; min-width: 2px; }
+
+  /* Daily chart */
+  .daily-grid { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
+  .daily-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .daily-bar { width: 100%; background: rgba(74,222,128,0.3); border-radius: 3px 3px 0 0; min-height: 2px; transition: background 0.2s; cursor: default; }
+  .daily-bar:hover { background: var(--green); }
+  .daily-label { font-size: 0.6rem; color: var(--text-muted); writing-mode: vertical-rl; transform: rotate(180deg); }
+
+  .generated-at { font-size: 0.72rem; color: var(--text-muted); margin-top: 24px; text-align: right; }
+
+  #error-msg { color: #f87171; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; margin-bottom: 20px; display: none; }
+  .loading { color: var(--text-muted); font-size: 0.9rem; padding: 40px; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- Auth gate -->
+<div id="auth-gate">
+  <div class="logo">📊 TCG Watchtower</div>
+  <h1>Download Analytics</h1>
+  <p>Sign in with Discord to view checklist download stats.</p>
+  <a href="/api/auth/discord" class="discord-btn">
+    <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15zM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69z"/></svg>
+    Sign in with Discord
+  </a>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <header>
+    <div>
+      <div class="logo">TCG Watchtower <span>Download Analytics</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="refresh-btn" onclick="loadStats()">↻ Refresh</button>
+      <div class="user-badge" id="user-badge"></div>
+    </div>
+  </header>
+
+  <main>
+    <div id="error-msg"></div>
+
+    <!-- Totals -->
+    <div class="stat-grid" id="stat-grid">
+      <div class="loading">Loading stats…</div>
+    </div>
+
+    <!-- Daily chart -->
+    <div class="section">
+      <div class="section-title">Downloads — Last 30 Days</div>
+      <div class="table-wrap" style="padding:20px 16px 8px;">
+        <div class="daily-grid" id="daily-chart"></div>
+      </div>
+    </div>
+
+    <!-- Per-set table -->
+    <div class="section">
+      <div class="section-title">Downloads by Set</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Set</th>
+              <th>Total</th>
+              <th>📊 Sheets/Excel</th>
+              <th>📄 CSV</th>
+              <th style="width:160px;">Share</th>
+            </tr>
+          </thead>
+          <tbody id="sets-tbody">
+            <tr><td colspan="6" class="loading">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="generated-at" id="generated-at"></div>
+  </main>
+</div>
+
+<script>
+async function checkAuth() {
+  try {
+    const res = await fetch('/api/auth/me');
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+async function loadStats() {
+  document.getElementById('error-msg').style.display = 'none';
+  try {
+    const res = await fetch('/api/admin/downloads');
+    if (res.status === 401) {
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('auth-gate').style.display = 'flex';
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    renderStats(data);
+  } catch (e) {
+    const el = document.getElementById('error-msg');
+    el.textContent = `Failed to load stats: ${e.message}`;
+    el.style.display = 'block';
+  }
+}
+
+function renderStats(data) {
+  const { totals, sets, daily, generatedAt } = data;
+  const xlsxPct = totals.all > 0 ? Math.round(totals.xlsx / totals.all * 100) : 0;
+
+  // Stat cards
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Downloads</div>
+      <div class="stat-value green">${totals.all.toLocaleString()}</div>
+      <div class="stat-sub">All sets, all formats</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📊 Sheets / Excel</div>
+      <div class="stat-value blue">${totals.xlsx.toLocaleString()}</div>
+      <div class="stat-sub">${xlsxPct}% of downloads</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📄 CSV</div>
+      <div class="stat-value purple">${totals.csv.toLocaleString()}</div>
+      <div class="stat-sub">${100 - xlsxPct}% of downloads</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sets Downloaded</div>
+      <div class="stat-value" style="color:var(--orange)">${sets.filter(s=>s.total>0).length}</div>
+      <div class="stat-sub">of ${sets.length + (sets.length === 0 ? 22 : 0)} sets</div>
+    </div>
+  `;
+
+  // Daily chart
+  const maxDay = Math.max(...daily.map(d => d.count), 1);
+  const chartEl = document.getElementById('daily-chart');
+  if (daily.length === 0) {
+    chartEl.innerHTML = '<div style="color:var(--text-muted);font-size:0.8rem;padding:20px;">No daily data yet</div>';
+  } else {
+    chartEl.innerHTML = daily.slice().reverse().map(d => `
+      <div class="daily-bar-wrap" title="${d.date}: ${d.count} downloads">
+        <div class="daily-bar" style="height:${Math.max(4, Math.round(d.count / maxDay * 72))}px"></div>
+        <div class="daily-label">${d.date.slice(5)}</div>
+      </div>
+    `).join('');
+  }
+
+  // Sets table
+  const maxTotal = Math.max(...sets.map(s => s.total), 1);
+  document.getElementById('sets-tbody').innerHTML = sets.length === 0
+    ? '<tr><td colspan="6" style="color:var(--text-muted);text-align:center;padding:32px;">No downloads yet — share the checklist buttons!</td></tr>'
+    : sets.map((s, i) => `
+      <tr>
+        <td class="rank">${i + 1}</td>
+        <td class="set-name">${s.name}</td>
+        <td class="num">${s.total.toLocaleString()}</td>
+        <td class="num format-xlsx">${(s.xlsx||0).toLocaleString()}</td>
+        <td class="num format-csv">${(s.csv||0).toLocaleString()}</td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar" style="width:${Math.round(s.total/maxTotal*120)}px"></div>
+            <span style="font-size:0.72rem;color:var(--text-muted)">${Math.round(s.total/totals.all*100)||0}%</span>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+  document.getElementById('generated-at').textContent =
+    `Last updated: ${new Date(generatedAt).toLocaleString()}`;
+}
+
+async function init() {
+  const user = await checkAuth();
+  if (!user) {
+    document.getElementById('auth-gate').style.display = 'flex';
+    return;
+  }
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  const avatar = user.avatar
+    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=56`
+    : `https://cdn.discordapp.com/embed/avatars/0.png`;
+  document.getElementById('user-badge').innerHTML =
+    `<img src="${avatar}" alt=""> <span>${user.username}</span>`;
+
+  await loadStats();
+}
+
+init();
+</script>
+</body>
+</html>
