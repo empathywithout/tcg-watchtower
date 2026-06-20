@@ -134,6 +134,10 @@ function ebaySearchUrl(card) {
   const query = encodeURIComponent(`${card.name} ${card.localId} ${SET_FULL_NAME} Pokemon Card`);
   return `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=2536`;
 }
+function amazonSearchUrl(card) {
+  const query = encodeURIComponent(`${card.name} ${SET_FULL_NAME} Pokemon Card`);
+  return `https://www.amazon.com/s?k=${query}&linkCode=ll2&tag=cehutto01-20&language=en_US`;
+}
 function getRelated(card, allCards) {
   const idx = allCards.findIndex(c => c.localId === card.localId);
   const nearby = [
@@ -274,6 +278,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 .btn:hover{opacity:0.85}
 .btn-tcgp{background:#1a6ef5;color:#fff}
 .btn-ebay{background:#e43137;color:#fff}
+.btn-amazon{background:#f90;color:#111}
+.btn-amazon{background:#f90;color:#111}
 .btn span:last-child{opacity:0.7}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
 .card-description{font-size:0.95rem;line-height:1.7;color:var(--text-muted);margin-bottom:2rem}
@@ -329,6 +335,9 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
         </a>
         <a class="btn btn-ebay" href="${ebaySearchUrl(card)}" target="_blank" rel="noopener">
           <span>Find on eBay</span><span>→</span>
+        </a>
+        <a class="btn btn-amazon" href="${amazonSearchUrl(card)}" target="_blank" rel="noopener">
+          <span>Find on Amazon</span><span>→</span>
         </a>
       </div>
       <div class="section-title">About This Card</div>
@@ -531,6 +540,7 @@ function chaseCardGridItems(cardList) {
         <div class="buy-btns">
           <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
           <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=${encodeURIComponent(c.name + ' ' + SET_FULL_NAME + ' Pokemon Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
         </div>
       </div>
     </div>`;
@@ -623,3 +633,4 @@ let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
 console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
+
