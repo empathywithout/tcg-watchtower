@@ -26,7 +26,7 @@
   "name": "The Time of Battle Card List and Prices",
   "description": "Complete The Time of Battle card list with live live prices. Every card and booster box value for One Piece TCG OP16.",
   "url": "https://tcgwatchtower.com/one-piece/sets/the-time-of-battle/cards",
-  "datePublished": "Jun 2026",
+  "datePublished": "June 2026",
   "publisher": { "@type": "Organization", "name": "TCG Watchtower", "url": "https://tcgwatchtower.com" },
   "breadcrumb": {
     "@type": "BreadcrumbList",
@@ -292,7 +292,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
             <div class="stat-label">Total Cards</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">Jun 2026</div>
+            <div class="stat-value">June 2026</div>
             <div class="stat-label">Release Date</div>
           </div>
         </div>
@@ -508,6 +508,12 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       <li>Portgas.D.Ace (altArt) OP16-118 Alternate Art</li>
       <li>Marshall.D.Teach OP16-119 Secret Rare</li>
       <li>Marshall.D.Teach (altArt) OP16-119 Alternate Art</li>
+      <li>Tashigi (specialAltArt) OP14-029 Rare</li>
+      <li>Ms. All Sunday (specialAltArt) OP14-084 Super Rare</li>
+      <li>Bartholomew Kuma (specialAltArt) EB04-054 Rare</li>
+      <li>Charlotte Katakuri (specialAltArt) OP11-067 Super Rare</li>
+      <li>Cavendish (specialAltArt) OP10-045 Rare</li>
+      <li>Portgas.D.Ace (specialAltArt) ST15-005 Super Rare</li>
       <li>Tashigi OP14-029 Rare</li>
       <li>Ms. All Sunday OP14-084 Super Rare</li>
       <li>Cavendish OP10-045 Rare</li>
@@ -574,12 +580,11 @@ const EBAY_MKRID = '711-53200-19255-0';
 const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
-// cardImg — all cards including cross-set reprints use the current set's R2 folder
-// Cross-set IDs (e.g. OP14-084) get ?v=3 to bust any stale Cloudflare cache
+// cardImg handles primary ("118") and cross-set ("EB04-044") localIds
+// Cross-set cards get ?v=2 to bust Cloudflare cache of old wrong images
 function cardImg(id) {
-  if (!id) return '';
-  const isCrossSet = /^[A-Z]{2,}\d+-/.test(id);
-  return `${R2}/cards/op/${SET_ID}/${id}.webp${isCrossSet ? '?v=3' : ''}`;
+  const isCrossSet = id && /^[A-Z]{2,}d+-/.test(id);
+  return `${R2}/cards/op/${SET_ID}/${id}.webp${isCrossSet ? '?v=2' : ''}`;
 }
 function toSlug(s) {
   return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -1006,4 +1011,3 @@ function initNav(){
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
-
