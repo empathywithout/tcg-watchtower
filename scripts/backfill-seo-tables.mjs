@@ -222,10 +222,6 @@ function getFAQ(setId) {
   return SET_FAQS[setId] || null;
 }
 
-(setId) {
-  return SET_FAQS[setId] || null;
-}
-
 // ── 4. FAQ section ────────────────────────────────────────────────────────────
 function getDefaultFAQ(name, series, releaseDate, totalCards) {
   return [
@@ -396,6 +392,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
