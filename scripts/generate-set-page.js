@@ -484,23 +484,23 @@ const SEO_DATA = {
   // ── Scarlet & Violet ──────────────────────────────────────────────────────────
   'sv01': {
     metaTitle: 'Scarlet & Violet Base Set Card List: 258 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Scarlet & Violet Base Set card list — all 258 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Scarlet & Violet Base Set launched the modern era of the Pokemon TCG in 2023, introducing the ex mechanic and a new card design. The SV1 card list spans 258 cards including Double Rares, Ultra Rares, Illustration Rares, and Special Illustration Rares. Charizard ex and Miraidon ex headline the set as the most sought-after pulls. This complete Scarlet & Violet card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Scarlet & Violet Base Set card list — all 258 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Scarlet & Violet Base Set launched the modern era of the Pokemon TCG in 2023, introducing the ex mechanic and a new card design. The SV1 card list spans 258 cards including Double Rares, Ultra Rares, Illustration Rares, and Special Illustration Rares. Charizard ex and Miraidon ex headline the set as the most sought-after pulls. This complete Scarlet & Violet card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv02': {
     metaTitle: 'Paldea Evolved Card List: 279 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Paldea Evolved card list — all 279 SV2 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Paldea Evolved is the second Scarlet & Violet expansion, featuring 279 cards and introducing the largest main set card count in the SV era. The SV2 card list is headlined by Iono and multiple Paradox Pokemon ex as top chase pulls. This complete Paldea Evolved card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Paldea Evolved card list — all 279 SV2 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Paldea Evolved is the second Scarlet & Violet expansion, featuring 279 cards and introducing the largest main set card count in the SV era. The SV2 card list is headlined by Iono and multiple Paradox Pokemon ex as top chase pulls. This complete Paldea Evolved card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv03': {
     metaTitle: 'Obsidian Flames Card List: 230 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Obsidian Flames card list — all 230 SV3 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Obsidian Flames introduced Tera-type Charizard ex as one of the most iconic cards of the Scarlet & Violet era. The SV3 card list spans 230 cards with a strong lineup of Special Illustration Rares. This complete Obsidian Flames card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Obsidian Flames card list — all 230 SV3 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Obsidian Flames introduced Tera-type Charizard ex as one of the most iconic cards of the Scarlet & Violet era. The SV3 card list spans 230 cards with a strong lineup of Special Illustration Rares. This complete Obsidian Flames card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv3pt5': {
     metaTitle: 'Pokemon 151 Card List: 207 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Pokemon 151 card list — all 207 SV3.5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Pokemon 151 is the first subset of the Scarlet & Violet era, covering all 151 original Kanto Pokemon. The SV3.5 card list spans 207 cards and is one of the most popular collector sets ever printed, driven by nostalgia and a deep roster of Illustration Rares. This complete Pokemon 151 card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Pokemon 151 card list — all 207 SV3.5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Pokemon 151 is the first subset of the Scarlet & Violet era, covering all 151 original Kanto Pokemon. The SV3.5 card list spans 207 cards and is one of the most popular collector sets ever printed, driven by nostalgia and a deep roster of Illustration Rares. This complete Pokemon 151 card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
     faq: [
       { q: 'What is the most expensive Pokemon 151 card?', a: 'The most expensive Pokemon 151 cards are the Charizard ex SIR, Mew ex SIR, and Alakazam ex SIR. Charizard ex consistently ranks as one of the top market value cards in the entire Scarlet & Violet era.' },
       { q: 'How many cards are in the Pokemon 151 card list?', a: 'Pokemon 151 contains 207 cards in total — 165 main set cards plus 42 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
@@ -511,43 +511,43 @@ const SEO_DATA = {
   },
   'sv04': {
     metaTitle: 'Paradox Rift Card List: 266 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Paradox Rift card list — all 266 SV4 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Paradox Rift introduced Ancient and Future Pokemon ex alongside the Tera mechanic in full force. The SV4 card list spans 266 cards headlined by Roaring Moon ex and Iron Valiant ex. This complete Paradox Rift card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Paradox Rift card list — all 266 SV4 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Paradox Rift introduced Ancient and Future Pokemon ex alongside the Tera mechanic in full force. The SV4 card list spans 266 cards headlined by Roaring Moon ex and Iron Valiant ex. This complete Paradox Rift card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv4pt5': {
     metaTitle: 'Paldean Fates Card List: 245 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Paldean Fates card list — all 245 SV4.5 cards with rarity filters, Shiny Pokemon, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Paldean Fates is the shiny set of the Scarlet & Violet era, featuring Shiny versions of every Paldean Pokemon. The SV4.5 card list spans 245 cards and is heavily collected for its Shiny Charizard ex and full roster of Shiny Special Illustration Rares. This complete Paldean Fates card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Paldean Fates card list — all 245 SV4.5 cards with rarity filters, Shiny Pokemon, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Paldean Fates is the shiny set of the Scarlet & Violet era, featuring Shiny versions of every Paldean Pokemon. The SV4.5 card list spans 245 cards and is heavily collected for its Shiny Charizard ex and full roster of Shiny Special Illustration Rares. This complete Paldean Fates card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv05': {
     metaTitle: 'Temporal Forces Card List: 218 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Temporal Forces card list — all 218 SV5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Temporal Forces introduced ACE SPEC cards back to the competitive format alongside Ancient and Future Pokemon ex. The SV5 card list spans 218 cards headlined by Walking Wake ex and Iron Leaves ex. This complete Temporal Forces card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Temporal Forces card list — all 218 SV5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Temporal Forces introduced ACE SPEC cards back to the competitive format alongside Ancient and Future Pokemon ex. The SV5 card list spans 218 cards headlined by Walking Wake ex and Iron Leaves ex. This complete Temporal Forces card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv06': {
     metaTitle: 'Twilight Masquerade Card List: 226 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Twilight Masquerade card list — all 226 SV6 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Twilight Masquerade is built around Ogerpon ex in all four mask forms, making it one of the most thematically rich sets in the SV era. The SV6 card list spans 226 cards. This complete Twilight Masquerade card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Twilight Masquerade card list — all 226 SV6 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Twilight Masquerade is built around Ogerpon ex in all four mask forms, making it one of the most thematically rich sets in the SV era. The SV6 card list spans 226 cards. This complete Twilight Masquerade card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv6pt5': {
     metaTitle: 'Shrouded Fable Card List: 99 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Shrouded Fable card list — all 99 SV6.5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Shrouded Fable is the second subset of the Scarlet & Violet era, focused on the Mask of Ruin legendaries. Despite being a smaller set at 99 cards, it packs a strong chase lineup. This complete Shrouded Fable card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Shrouded Fable card list — all 99 SV6.5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Shrouded Fable is the second subset of the Scarlet & Violet era, focused on the Mask of Ruin legendaries. Despite being a smaller set at 99 cards, it packs a strong chase lineup. This complete Shrouded Fable card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv07': {
     metaTitle: 'Stellar Crown Card List: 175 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Stellar Crown card list — all 175 SV7 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Stellar Crown introduced Stellar-type Tera Pokemon ex as the headline mechanic. The SV7 card list spans 175 cards headlined by Terapagos ex. This complete Stellar Crown card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Stellar Crown card list — all 175 SV7 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Stellar Crown introduced Stellar-type Tera Pokemon ex as the headline mechanic. The SV7 card list spans 175 cards headlined by Terapagos ex. This complete Stellar Crown card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv08': {
     metaTitle: 'Surging Sparks Card List: 252 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Surging Sparks card list — all 252 SV8 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Surging Sparks is the largest standard set of the Scarlet & Violet era at 252 cards, headlined by Pikachu ex in multiple Special Illustration Rare variants. This complete Surging Sparks card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Surging Sparks card list — all 252 SV8 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Surging Sparks is the largest standard set of the Scarlet & Violet era at 252 cards, headlined by Pikachu ex in multiple Special Illustration Rare variants. This complete Surging Sparks card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv8pt5': {
     metaTitle: 'Prismatic Evolutions Card List: 180 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Prismatic Evolutions card list — all 180 SV8.5 cards with rarity filters, Eevee evolutions, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Prismatic Evolutions is the Eevee-themed subset of the Scarlet & Violet era and one of the most in-demand sets ever printed. The SV8.5 card list spans 180 cards with every Eeveelution featured in multiple art styles including Special Illustration Rares. This complete Prismatic Evolutions card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Prismatic Evolutions card list — all 180 SV8.5 cards with rarity filters, Eevee evolutions, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Prismatic Evolutions is the Eevee-themed subset of the Scarlet & Violet era and one of the most in-demand sets ever printed. The SV8.5 card list spans 180 cards with every Eeveelution featured in multiple art styles including Special Illustration Rares. This complete Prismatic Evolutions card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
     faq: [
       { q: 'What is the most expensive Prismatic Evolutions card?', a: 'The most expensive Prismatic Evolutions cards are the Eevee and Eeveelution Special Illustration Rares. Umbreon ex SIR, Sylveon ex SIR, and Espeon ex SIR consistently rank among the highest market values in the set.' },
       { q: 'How many cards are in the Prismatic Evolutions card list?', a: 'Prismatic Evolutions contains 180 cards in total, including 87 main set cards and 93 secret rares spanning Illustration Rares, Ultra Rares, Special Illustration Rares, and Hyper Rares.' },
@@ -558,44 +558,44 @@ const SEO_DATA = {
   },
   'sv09': {
     metaTitle: 'Journey Together Card List: 190 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Journey Together card list — all 190 SV9 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Journey Together celebrates the bond between trainers and Pokemon with a roster built around iconic partnerships. The SV9 card list spans 190 cards. This complete Journey Together card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Journey Together card list — all 190 SV9 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Journey Together celebrates the bond between trainers and Pokemon with a roster built around iconic partnerships. The SV9 card list spans 190 cards. This complete Journey Together card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'sv10': {
     metaTitle: 'Destined Rivals Card List: 244 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Destined Rivals card list — all 244 SV10 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
-    intro: 'Destined Rivals pits iconic rival duos against each other in a rivalry-themed expansion. The SV10 card list spans 244 cards. This complete Destined Rivals card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    metaDesc: 'Complete Destined Rivals card list — all 244 SV10 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live prices on TCG Watchtower.',
+    intro: 'Destined Rivals pits iconic rival duos against each other in a rivalry-themed expansion. The SV10 card list spans 244 cards. This complete Destined Rivals card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'zsv10pt5': {
     metaTitle: 'Black Bolt Card List: 172 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Black Bolt card list — all 172 cards with rarity filters, Zekrom ex chase pulls, Special Illustration Rares, and live TCGplayer prices.',
-    intro: 'Black Bolt is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside White Flare. Together the two sets cover all 156 Pokemon from the Unova region — Black Bolt focuses on the Dark and Lightning types centered around Zekrom ex. Every Pokemon in Black Bolt has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete Black Bolt card list includes every card with rarity filters and live market prices from TCGplayer updated daily.',
+    metaDesc: 'Complete Black Bolt card list — all 172 cards with rarity filters, Zekrom ex chase pulls, Special Illustration Rares, and live prices on TCG Watchtower.',
+    intro: 'Black Bolt is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside White Flare. Together the two sets cover all 156 Pokemon from the Unova region — Black Bolt focuses on the Dark and Lightning types centered around Zekrom ex. Every Pokemon in Black Bolt has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete Black Bolt card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   'rsv10pt5': {
     metaTitle: 'White Flare Card List: 173 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete White Flare card list — all 173 cards with rarity filters, Reshiram ex chase pulls, Special Illustration Rares, and live TCGplayer prices.',
-    intro: 'White Flare is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside Black Bolt. Together the two sets cover all 156 Pokemon from the Unova region — White Flare focuses on the Fire and Water types centered around Reshiram ex. Every Pokemon in White Flare has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete White Flare card list includes every card with rarity filters and live market prices from TCGplayer updated daily.',
+    metaDesc: 'Complete White Flare card list — all 173 cards with rarity filters, Reshiram ex chase pulls, Special Illustration Rares, and live prices on TCG Watchtower.',
+    intro: 'White Flare is one half of the split Scarlet & Violet expansion released July 18, 2025, alongside Black Bolt. Together the two sets cover all 156 Pokemon from the Unova region — White Flare focuses on the Fire and Water types centered around Reshiram ex. Every Pokemon in White Flare has an Art Rare or Special Illustration Rare variant, making it one of the most collector-friendly sets in the Scarlet & Violet era. This complete White Flare card list includes every card with rarity filters and live prices updated daily on TCG Watchtower.',
   },
   // ── Mega Evolution ────────────────────────────────────────────────────────────
   'me01': {
     metaTitle: 'Mega Evolution Card List: 188 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Mega Evolution Base Set card list — all 188 ME1 cards with rarity filters, Mega Lucario ex, Mega Gardevoir ex, Special Illustration Rares, and live TCGplayer prices.',
+    metaDesc: 'Complete Mega Evolution Base Set card list — all 188 ME1 cards with rarity filters, Mega Lucario ex, Mega Gardevoir ex, Special Illustration Rares, and live prices on TCG Watchtower.',
     intro: 'The Pokemon TCG Mega Evolution set launched the new Mega Evolution series in 2025, introducing Mega Evolution Pokemon ex for the first time in the modern card game era. The set features 88 main set cards plus secret rares, headlined by Mega Lucario ex and Mega Gardevoir ex as the most sought-after pulls. Collectors tracking the Mega Evolution card list will find multiple tiers of rare cards including Ultra Rares, Special Illustration Rares, and the coveted Mega Hyper Rare at the top of the pull sheet. Prices for the top chase cards have remained strong since release. This complete MEG card list includes every card numbered in the set, rarity filters, and daily updated market prices sourced from TCGplayer.',
   },
   'me02': {
     metaTitle: 'Phantasmal Flames Card List: 130 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Phantasmal Flames card list — all 130 ME2 cards with rarity filters, Mega Gengar ex chase pulls, Special Illustration Rares, and live TCGplayer prices.',
-    intro: 'Phantasmal Flames is the second set in the Pokemon TCG Mega Evolution series, released in late 2025. Built around Mega Gengar ex as its flagship card, the set quickly developed a reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block. The ME2 card list spans 88 main set cards plus over 30 secret rares across multiple rarity tiers. Phantasmal Flames booster box prices have held firm among collectors due to the strong hit rate on premium rares. This page covers the full Phantasmal Flames card list with real-time prices from TCGplayer, rarity filters, and links to individual card pages so you can find exactly what you pulled or what you are chasing.',
+    metaDesc: 'Complete Phantasmal Flames card list — all 130 ME2 cards with rarity filters, Mega Gengar ex chase pulls, Special Illustration Rares, and live prices on TCG Watchtower.',
+    intro: 'Phantasmal Flames is the second set in the Pokemon TCG Mega Evolution series, released in late 2025. Built around Mega Gengar ex as its flagship card, the set quickly developed a reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block. The ME2 card list spans 88 main set cards plus over 30 secret rares across multiple rarity tiers. Phantasmal Flames booster box prices have held firm among collectors due to the strong hit rate on premium rares. This page covers the full Phantasmal Flames card list with live prices on TCG Watchtower, rarity filters, and links to individual card pages so you can find exactly what you pulled or what you are chasing.',
   },
   'me02pt5': {
     metaTitle: 'Ascended Heroes Card List: 295 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Ascended Heroes card list — all 295 ME2.5 cards with rarity filters, Special Illustration Rares, and live TCGplayer prices.',
-    intro: 'Ascended Heroes is the ME2.5 subset expansion in the Pokemon TCG Mega Evolution series, released in early 2026. At 295 cards, Ascended Heroes is the largest Pokemon TCG set ever printed, with a massive roster of Mega Evolution Pokemon ex and an exceptional density of premium rarities including Special Illustration Rares across the set. This page provides the complete Ascended Heroes card list with rarity filters, live pricing from TCGplayer, and direct links to individual card pages for every card in the set.',
+    metaDesc: 'Complete Ascended Heroes card list — all 295 ME2.5 cards with rarity filters, Special Illustration Rares, and live prices on TCG Watchtower.',
+    intro: 'Ascended Heroes is the ME2.5 subset expansion in the Pokemon TCG Mega Evolution series, released in early 2026. At 295 cards, Ascended Heroes is the largest Pokemon TCG set ever printed, with a massive roster of Mega Evolution Pokemon ex and an exceptional density of premium rarities including Special Illustration Rares across the set. This page provides the complete Ascended Heroes card list with rarity filters, live prices on TCG Watchtower, and direct links to individual card pages for every card in the set.',
   },
   'me03': {
     metaTitle: 'Perfect Order Card List: 124 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Perfect Order card list — all 124 ME3 cards with rarity filters, Mega Zygarde ex, Special Illustration Rares, Mega Ultra Rare, and live TCGplayer prices.',
-    intro: 'Perfect Order is the third main set in the Pokemon TCG Mega Evolution series, released in March 2026. The ME3 set contains 117 cards and is built around Mega Starmie ex, Mega Zygarde ex, and Mega Clefable ex as its headline Pokemon. The top chase cards include multiple Special Illustration Rares and a Mega Ultra Rare in Mega Zygarde ex at number 117, which sits at the apex of the pull sheet. Rosa\'s Encouragement has emerged as a standout Supporter card driving collector demand. This complete Perfect Order card list includes all ME3 cards with rarity labels, daily updated prices from TCGplayer, and rarity filters so you can quickly locate any card in the set whether you are tracking a recent pull or researching values before buying.',
+    metaDesc: 'Complete Perfect Order card list — all 124 ME3 cards with rarity filters, Mega Zygarde ex, Special Illustration Rares, Mega Ultra Rare, and live prices on TCG Watchtower.',
+    intro: 'Perfect Order is the third main set in the Pokemon TCG Mega Evolution series, released in March 2026. The ME3 set contains 117 cards and is built around Mega Starmie ex, Mega Zygarde ex, and Mega Clefable ex as its headline Pokemon. The top chase cards include multiple Special Illustration Rares and a Mega Ultra Rare in Mega Zygarde ex at number 117, which sits at the apex of the pull sheet. Rosa\'s Encouragement has emerged as a standout Supporter card driving collector demand. This complete Perfect Order card list includes all ME3 cards with rarity labels, live prices updated daily on TCG Watchtower, and rarity filters so you can quickly locate any card in the set whether you are tracking a recent pull or researching values before buying.',
     faq: [
       { q: 'What is the most expensive Perfect Order card?', a: 'The most expensive Perfect Order card is the Mega Zygarde ex Mega Ultra Rare (#117). Rosa\'s Encouragement SIR and Mega Starmie ex SIR are also strong chase pulls by market value.' },
       { q: 'How many cards are in the Perfect Order card list?', a: 'Perfect Order contains 124 cards in total, including 81 main set cards plus secret rares across Illustration Rare, Ultra Rare, Special Illustration Rare, and Mega Ultra Rare tiers.' },
@@ -605,8 +605,8 @@ const SEO_DATA = {
   },
   'me04': {
     metaTitle: 'Chaos Rising Card List: 122 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Chaos Rising card list — all 122 ME4 cards with rarity filters, Mega Greninja ex, Special Illustration Rares, Mega Hyper Rare, and live TCGplayer prices.',
-    intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and real-time secondary market prices from TCGplayer that update daily.',
+    metaDesc: 'Complete Chaos Rising card list — all 122 ME4 cards with rarity filters, Mega Greninja ex, Special Illustration Rares, Mega Hyper Rare, and live prices on TCG Watchtower.',
+    intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and live prices on TCG Watchtower that update daily.',
     faq: [
       { q: 'What is the most expensive Chaos Rising card?', a: 'The most expensive Chaos Rising card is the Mega Greninja ex Mega Hyper Rare (#122). The Mega Greninja ex Special Illustration Rare and supporting SIRs are also among the top chase pulls by market value.' },
       { q: 'How many cards are in the Chaos Rising card list?', a: 'Chaos Rising contains 122 cards in total — 81 main set cards plus secret rares including Illustration Rares, Special Illustration Rares, Ultra Rares, and the Mega Greninja ex Mega Hyper Rare.' },
@@ -617,8 +617,8 @@ const SEO_DATA = {
   },
   'me05': {
     metaTitle: 'Pitch Black Card List: 118 Cards, Rarity Filter & Prices | TCG Watchtower',
-    metaDesc: 'Complete Pitch Black card list — all 118 ME05 cards with rarity filters, Illustration Rares, Special Illustration Rares, Mega Hyper Rares, chase cards, and live TCGplayer prices. Releases July 2026.',
-    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases.',
+    metaDesc: 'Complete Pitch Black card list — all 118 ME05 cards with rarity filters, Illustration Rares, Special Illustration Rares, Mega Hyper Rares, chase cards, and live prices on TCG Watchtower. Releases July 2026.',
+    intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and prices will be added when Pitch Black releases.',
     faq: [
       { q: 'What is the most expensive Pitch Black card?', a: 'The most expensive Pitch Black card is expected to be the Mega Darkrai ex Special Illustration Rare, illustrated by Akira Egawa. Based on its Japanese counterpart in Abyss Eye, it is the top chase pull of the set. Mega Zeraora ex SIR and Gwynn SIR are also expected to command strong prices.' },
       { q: 'How many cards are in the Pitch Black card list?', a: 'Pitch Black contains 118 cards in total — 81 main set cards plus 37 secret rares including Illustration Rares, Special Illustration Rares, Ultra Rares, and the Mega Darkrai ex Mega Hyper Rare at #118.' },
@@ -664,8 +664,8 @@ const SEO_OG_TITLE   = seoData.metaTitle || `${SET_FULL_NAME} Card List and Pric
 const DEFAULT_FAQ = [
   { q: `How many cards are in the ${SET_FULL_NAME} card list?`, a: `${SET_FULL_NAME} contains ${officialCount || 'over 100'} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.` },
   { q: `When did ${SET_FULL_NAME} release?`, a: `${SET_FULL_NAME} released ${releaseDate} as part of the Pokémon TCG ${SET_SERIES} series.` },
-  { q: `What are the top chase cards in ${SET_FULL_NAME}?`, a: `The most valuable ${SET_FULL_NAME} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.` },
-  { q: `Are ${SET_FULL_NAME} card prices available?`, a: `Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.` },
+  { q: `What are the top chase cards in ${SET_FULL_NAME}?`, a: `The most valuable ${SET_FULL_NAME} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live prices on TCG Watchtower.` },
+  { q: `Are ${SET_FULL_NAME} card prices available?`, a: `Yes — live prices on TCG Watchtower are updated daily on this page. Click any card to view current listings and buying options.` },
   { q: `What series is ${SET_FULL_NAME} part of?`, a: `${SET_FULL_NAME} is part of the ${SET_SERIES} series of the Pokémon Trading Card Game, set code ${SET_SHORT_NAME}.` },
 ];
 const FAQ_ITEMS    = seoData.faq || DEFAULT_FAQ;
@@ -936,6 +936,7 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
 
 
 
