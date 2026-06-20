@@ -594,7 +594,7 @@ ${breadcrumb(breadcrumbLabel)}
   <a href="${cardListUrl}" class="set-link">← View Full ${SET_FULL_NAME} Card List</a>
 </div>
 <footer>
-  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices sourced from TCGplayer.</p>
+  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices on TCG Watchtower.</p>
 </footer>
 <script>${chaseScript}<\/script>
 ${impactScript}
