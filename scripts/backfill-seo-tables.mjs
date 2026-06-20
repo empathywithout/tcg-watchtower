@@ -714,14 +714,17 @@ function fixChaseSliderAmazon(html) {
   // Shorten TCGplayer label to TCGp so 3 buttons fit in card width
   html = html.replace('>TCGplayer</a>', '>TCGp</a>');
   // Fix buy-links CSS so 3 buttons fit cleanly — reduce padding + font, allow wrap
-  html = html.replace(
+  // Fix buy-links CSS — handle both original and any previously patched version
+  const BUY_LINKS_FINAL = '.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; max-width:66px; overflow:hidden; }';
+  for (const old of [
     '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
-    '.buy-links { display:flex; gap:4px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:52px; }'
-  );
-  html = html.replace(
+    '.buy-links { display:flex; gap:4px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:52px; }',
+  ]) { if (html.includes(old)) html = html.split(old).join(BUY_LINKS_FINAL); }
+  const BTN_FINAL = 'padding:3px 4px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap;';
+  for (const old of [
     'padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;',
-    'padding:4px 5px; border-radius:6px; font-size:0.63rem; font-weight:700;'
-  );
+    'padding:4px 5px; border-radius:6px; font-size:0.63rem; font-weight:700;',
+  ]) { if (html.includes(old)) html = html.split(old).join(BTN_FINAL); }
   // The HTML file contains real \n and real " chars — match exactly what Node reads
   const OLD = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-ebay\\"';
   const NEW = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-amazon\\" href=\\"${amazonLink(c.searchName)}\\" target=\\"_blank\\" rel=\\"noopener\\" onclick=\\"event.stopPropagation()\\">Amazon</a>\\n          <a class=\\"buy-link buy-ebay\\"';
@@ -868,8 +871,12 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
         let cfHtml = readFileSync(cfPath, 'utf8');
         if (cfHtml.includes('btn-amazon')) continue;
         // Extract card name from title tag for Amazon search
+        // Extract clean card name: title is "Card Name 123 Price, Rarity & Card Info | ..."
+        // We want just "Card Name" without the number or extra text
         const titleMatch = cfHtml.match(/<title>([^|<]+)/);
-        const cardName = titleMatch ? titleMatch[1].trim().replace(/\s+#\d+\s*$/, '').trim() : name;
+        const rawTitle = titleMatch ? titleMatch[1].trim() : name;
+        // Strip trailing number, rarity info etc — keep just the card name
+        const cardName = rawTitle.replace(/\s+#?\d+.*$/, '').replace(/\s+\d+\s+Price.*$/, '').trim() || name;
         const patched = patchCardPageAmazon(cfHtml, cardName, name);
         if (patched !== cfHtml) {
           writeFileSync(cfPath, patched);
@@ -1008,6 +1015,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
