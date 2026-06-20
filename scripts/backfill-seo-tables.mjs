@@ -711,6 +711,15 @@ function fixTCGPlayerText(html) {
 function fixChaseSliderAmazon(html) {
   if (!html.includes('renderChaseCardsHTML')) return html;
   if (html.includes('buy-link buy-amazon')) return html;
+  // Fix buy-links CSS so 3 buttons fit cleanly — reduce padding + font, allow wrap
+  html = html.replace(
+    '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
+    '.buy-links { display:flex; gap:4px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:52px; }'
+  );
+  html = html.replace(
+    'padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;',
+    'padding:4px 5px; border-radius:6px; font-size:0.63rem; font-weight:700;'
+  );
   // The HTML file contains real \n and real " chars — match exactly what Node reads
   const OLD = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-ebay\\"';
   const NEW = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-amazon\\" href=\\"${amazonLink(c.searchName)}\\" target=\\"_blank\\" rel=\\"noopener\\" onclick=\\"event.stopPropagation()\\">Amazon</a>\\n          <a class=\\"buy-link buy-ebay\\"';
