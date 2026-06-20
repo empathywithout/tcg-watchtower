@@ -616,6 +616,8 @@ const vars = {
   '{{SET_SUBTITLE}}':       SET_SUBTITLE,
   '{{SET_SHORT_NAME}}':     SET_SHORT_NAME,
   '{{SET_RELEASE_DATE}}':   releaseDate,
+  '{{SET_RELEASE_DATE_FULL}}': releaseDate,
+  '{{SET_TOTAL_CARDS}}':    String(officialCount) || '118',
   '{{SET_DESCRIPTION}}':    SET_DESCRIPTION || `Complete guide to ${SET_FULL_NAME} — full card list, chase cards ranked by market price, and where to buy sealed product.`,
   '{{SET_OFFICIAL_COUNT}}': String(officialCount),
   '{{SET_SEARCH_NAME}}':    SET_SEARCH_NAME,
