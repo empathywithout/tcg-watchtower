@@ -233,13 +233,20 @@ function getDefaultFAQ(name, series, releaseDate, totalCards) {
   ];
 }
 
-function buildFAQ(name, series, releaseDate, totalCards, setId) {
+function buildFAQ(name, series, releaseDate, totalCards, setId, chaseUrl) {
   const faqs = getFAQ(setId) || getDefaultFAQ(name, series, releaseDate, totalCards);
-  const items = faqs.map(f => `
+  const chaseLink = chaseUrl
+    ? `<a href="${chaseUrl}" style="display:inline-block;margin-top:10px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">See all ${name} chase cards ranked by price →</a>`
+    : '';
+  const items = faqs.map(f => {
+    const isMostExpensive = f.q.toLowerCase().includes('most expensive');
+    return `
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">${f.q}</h3>
         <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${f.a}</p>
-      </div>`).join('\n');
+        ${isMostExpensive ? chaseLink : ''}
+      </div>`;
+  }).join('\n');
   return `<!-- ===== FAQ ===== -->
 <section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
   <div class="container" style="max-width:800px;">
@@ -398,6 +405,53 @@ function fixSectionNav(html, name, short) {
   return html;
 }
 
+
+// ── Inject editorial content into top-chase-cards.html pages ─────────────────
+function injectChaseEditorial(html, cards, name, seriesSlug, urlSlug) {
+  if (html.includes('class="editorial"')) return html; // already injected
+
+  const SECRET = new Set([
+    'Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
+    'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Black White Rare','Treasure Rare',
+  ]);
+  const norm = r => (r||'').split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
+
+  const chaseCards = cards
+    .filter(c => SECRET.has(norm(c.rarity||'')))
+    .sort((a,b) => parseInt(a.localId)-parseInt(b.localId));
+
+  const total = chaseCards.length;
+  const topCard = chaseCards[chaseCards.length - 1]; // highest number = MHR/HR usually
+  // Better: sort by rarity tier for top card
+  const RARITY_TIER = {
+    'Mega Hyper Rare':0,'Hyper Rare':1,'Special Illustration Rare':2,
+    'Black White Rare':2,'Ultra Rare':3,'Illustration Rare':4,'Art Rare':4,
+  };
+  const sorted = [...chaseCards].sort((a,b) =>
+    (RARITY_TIER[norm(a.rarity)]??99) - (RARITY_TIER[norm(b.rarity)]??99)
+  );
+  const top1 = sorted[0];
+  const top2 = sorted[1];
+
+  if (!top1) return html;
+
+  const cardListUrl = `https://tcgwatchtower.com/pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
+
+  const editorial = `
+  <p class="editorial" style="max-width:720px;margin:0 auto 32px;font-size:0.95rem;color:rgba(226,232,240,0.8);line-height:1.7;text-align:center;">
+    ${name} has ${total} chase cards — ${top1.name}${top2 ? ` and ${top2.name}` : ''} lead as the top pulls.
+    All ${total} cards are ranked below by live market price, updated daily.
+    Check live prices on TCG Watchtower or <a href="${cardListUrl}" style="color:#4ade80;text-decoration:none;">browse the full ${name} card list</a>.
+  </p>`;
+
+  // Inject after subtitle p tag and before cards-grid
+  return html.replace(
+    /(<p class="subtitle">.*?<\/p>\s*)/s,
+    `$1${editorial}
+  `
+  );
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -521,6 +575,22 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     if (html !== htmlBefore) changes.push('master set hero');
   }
 
+  // 1c. Chase card page editorial — inject into top-chase-cards.html if it exists
+  if (cards.length > 0) {
+    const chaseFile = file.replace(/([^/]+)\.html$/, 'pokemon/sets/' + seriesSlug + '/' + urlSlug + '/top-chase-cards.html');
+    // Use path relative to repo root
+    const chasePath = `pokemon/sets/${seriesSlug}/${urlSlug}/top-chase-cards.html`;
+    if (existsSync(chasePath)) {
+      let chaseHtml = readFileSync(chasePath, 'utf8');
+      const chaseBefore = chaseHtml;
+      chaseHtml = injectChaseEditorial(chaseHtml, cards, name, seriesSlug, urlSlug);
+      if (chaseHtml !== chaseBefore) {
+        writeFileSync(chasePath, chaseHtml);
+        changes.push('chase editorial');
+      }
+    }
+  }
+
   // 1c. Section nav — strip emojis from nav buttons (unprofessional on authority site)
   const htmlBeforeNav = html;
   html = fixSectionNav(html, name, short);
@@ -552,7 +622,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   // Replace if: no FAQ yet, OR has generic FAQ and we have per-set specific data
   // Always rebuild FAQ fresh every run
   if (true) {
-    const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
+    const chaseUrl = `https://tcgwatchtower.com/pokemon/sets/${seriesSlug}/${urlSlug}/top-chase-cards`;
+    const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId, chaseUrl);
     const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
     if (html.includes('FAQPage')) {
       // Replace existing generic FAQ section and schema
@@ -581,6 +652,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
