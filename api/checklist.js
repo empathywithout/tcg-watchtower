@@ -141,7 +141,7 @@ export default async function handler(req, res) {
 
       rows.push(['', '', '', '', '', '', '']);
       rows.push(['', `${r.toUpperCase()}  (${RARITY_ABBREV[r] || r})  —  ${group.length} card${group.length !== 1 ? 's' : ''}`, '', '', '', '', '']);
-      rows.push(['', '#', 'Card Name', 'Rarity', 'Have (Y/N)', 'Grade (PSA/BGS)', 'Notes']);
+      rows.push(['', '#', 'Card Name', 'Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
 
       for (const card of group) {
         rows.push([
@@ -161,7 +161,7 @@ export default async function handler(req, res) {
       rows.push(['', '', '', '', '', '', '']);
       rows.push(['', `REVERSE HOLOS  (RH)  —  ${rhCards.length} cards`, '', '', '', '', '']);
       rows.push(['', 'Reverse holos are foil versions of all Common, Uncommon, Rare, and Double Rare cards.', '', '', '', '', '']);
-      rows.push(['', '#', 'Card Name', 'Base Rarity', 'Have (Y/N)', 'Grade (PSA/BGS)', 'Notes']);
+      rows.push(['', '#', 'Card Name', 'Base Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
       for (const card of rhCards.sort((a,b) => naturalSort(a.localId, b.localId))) {
         rows.push([
           '',
@@ -219,3 +219,4 @@ function naturalSort(a, b) {
   if (!isNaN(na) && !isNaN(nb)) return na - nb;
   return String(a).localeCompare(String(b));
 }
+
