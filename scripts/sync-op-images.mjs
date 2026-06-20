@@ -288,8 +288,12 @@ function expandPrimaryCards(rawCards, expansionId) {
         // It's a cross-set SP reprint — store under the base cross-set localId (e.g. OP14-084)
         // with the SP art image. No suffix — the page references these by their base cross-set ID.
         const crossImage = pickImage(crossSetVariant.images) || pickImage(c.images);
-        const crossRarity = normalizeRarity(c.rarity);
-        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) → SP art`);
+        // Use variant's rarity if available, fall back to name-derived, then base rarity
+        const crossRarityFromVariant = variantRarityFromName(crossSetVariant.name || '');
+        const crossRarity = crossRarityFromVariant
+          || (crossSetVariant.rarity ? normalizeRarity(crossSetVariant.rarity) : null)
+          || normalizeRarity(c.rarity);
+        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) rarity=${crossRarity} → SP art`);
         cards.push({
           localId: rawScrydexId,
           name: `${(c.name||'').trim()} (${crossSetVariant.name||'SP'})`,
@@ -589,5 +593,6 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
+
 
 
