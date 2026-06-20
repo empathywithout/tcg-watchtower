@@ -2,7 +2,26 @@
 // GET /api/checklist?set=me05&type=master&format=xlsx
 // GET /api/checklist?set=me05&type=master&format=csv
 
-const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+const R2_BASE  = process.env.CF_R2_PUBLIC_URL
+const KV_URL   = process.env.KV_REST_API_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+
+async function trackDownload(set, format) {
+  if (!KV_URL || !KV_TOKEN) return;
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    await Promise.all([
+      fetch(`${KV_URL}/incr/downloads:checklist:${set}:${format}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}` },
+      }),
+      fetch(`${KV_URL}/incr/downloads:daily:${today}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}` },
+      }),
+    ]);
+  } catch (e) {
+    console.error('[checklist] tracking failed:', e.message);
+  }
+} || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
 const SET_NAMES = {
   'sv01':'Scarlet & Violet Base Set','sv02':'Paldea Evolved','sv03':'Obsidian Flames',
@@ -84,7 +103,10 @@ export default async function handler(req, res) {
 
     if (format === 'csv') {
       const csv = buildCSV(setName, set, cards, groups, rhCards, master, today);
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      // Track download (fire and forget)
+    trackDownload(set, 'csv');
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master ? 'master-set-' : ''}checklist.csv"`);
       res.setHeader('Cache-Control', 'public, max-age=3600');
       return res.status(200).send('\uFEFF' + csv);
@@ -99,6 +121,9 @@ export default async function handler(req, res) {
     await buildXLSX(wb, setName, set, cards, groups, rhCards, master, today, ExcelJS);
 
     const buffer = await wb.xlsx.writeBuffer();
+    // Track download (fire and forget)
+    trackDownload(set, 'xlsx');
+
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master ? 'master-set-' : ''}checklist.xlsx"`);
     res.setHeader('Cache-Control', 'public, max-age=3600');
@@ -433,3 +458,4 @@ function naturalSort(a, b) {
   if (!isNaN(na) && !isNaN(nb)) return na - nb;
   return String(a).localeCompare(String(b));
 }
+
