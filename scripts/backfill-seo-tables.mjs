@@ -139,7 +139,7 @@ const SET_FAQS = {
     { q: 'What new mechanics did Scarlet & Violet introduce?', a: "Scarlet & Violet introduced Pokemon ex replacing V cards, plus Illustration Rares and Special Illustration Rares as new chase rarities." },
   ],
   'sv02': [
-    { q: 'What is the most expensive Paldea Evolved card?', a: "The most expensive Paldea Evolved card is the Iono Special Illustration Rare — one of the most iconic Trainer cards of the Scarlet & Violet era. Gardevoir ex SIR is also a strong pull." },
+    { q: 'What is the most expensive Paldea Evolved card?', a: "The most expensive Paldea Evolved card is the Magikarp Illustration Rare (#203) — one of the biggest art-driven anomalies of the Scarlet & Violet era, commanding prices far above the set's SIRs despite being a lower rarity. The Iono SIR is the most iconic Trainer card in the set. Check live prices on TCG Watchtower." },
     { q: 'How many cards are in the Paldea Evolved card list?', a: "Paldea Evolved contains 279 cards — 193 main set cards plus 86 secret rares including Illustration Rares and Special Illustration Rares." },
     { q: 'When did Paldea Evolved release?', a: "Paldea Evolved released June 9, 2023 as the second set in the Scarlet & Violet era." },
     { q: 'Why is the Iono card so valuable?', a: "The Iono Special Illustration Rare depicts the popular streamer character in a stunning full-art style. It became one of the most iconic and sought-after Trainer cards in modern Pokemon TCG history." },
@@ -264,8 +264,7 @@ function buildFAQSchema(name, series, releaseDate, totalCards, setId) {
 // ── Per-set SEO description text ──────────────────────────────────────────────
 const SET_INTROS = {
   'sv01': 'Scarlet &amp; Violet Base Set is the first expansion of the Pokémon TCG Scarlet &amp; Violet era, released March 31, 2023. Based on Japan\'s Scarlet ex and Violet ex sets, it introduced Pokémon ex, Illustration Rares, and Special Illustration Rares as new chase rarities. The 258-card set\'s top chase cards include the Gardevoir ex SIR and a surprisingly deep lineup of Illustration Rares — Drowzee, Ralts, Kirlia, and Slowpoke — that consistently outperform the Charizard ex and Miraidon ex SIRs in secondary market value. This complete Scarlet &amp; Violet Base Set card list includes every card with rarity filters and live prices updated daily.',
-  'sv02': 'Paldea Evolved is the second Scarlet &amp; Violet expansion, released June 9, 2023. Based on Japan\'s Clay Burst and Snow Hazard sets, it features 279 cards with the Iono Special Illustration Rare as the most iconic Trainer card of the era and standout chase pull. Gardevoir ex SIR and Miraidon ex SIR round out the top pulls. The Paldea Evolved card list is one of the deepest in the Scarlet &amp; Violet era for Trainer SIRs. This complete Paldea Evolved card list includes every card with rarity filters and live prices updated daily.',
-  'sv03': 'Obsidian Flames is the third Scarlet &amp; Violet expansion, released August 11, 2023. Based on Japan\'s Ruler of the Black Flame set, it introduced Tera-type Pokémon ex in multiple types across the set. The headline card is Charizard ex SIR — depicting Charizard in its black-and-gold Tera Dragon form — one of the most valuable and iconic cards of the Scarlet &amp; Violet era. The 230-card set also features Tyranitar ex, Revavroom ex, and a strong Trainer SIR lineup. This complete Obsidian Flames card list includes every card with rarity filters and live prices updated daily.',
+  'sv02': 'Paldea Evolved is the second Scarlet &amp; Violet expansion, released June 9, 2023. Based on Japan\'s Clay Burst and Snow Hazard sets, it features 279 cards. The standout chase card is the Magikarp Illustration Rare (#203) — one of the most expensive cards in the entire Scarlet &amp; Violet era despite being an IR, driven purely by iconic artwork. The Iono Special Illustration Rare is the most sought-after Trainer card in the set. This complete Paldea Evolved card list includes every card with rarity filters and live prices updated daily.',  'sv03': 'Obsidian Flames is the third Scarlet &amp; Violet expansion, released August 11, 2023. Based on Japan\'s Ruler of the Black Flame set, it introduced Tera-type Pokémon ex in multiple types across the set. The headline card is Charizard ex SIR — depicting Charizard in its black-and-gold Tera Dragon form — one of the most valuable and iconic cards of the Scarlet &amp; Violet era. The 230-card set also features Tyranitar ex, Revavroom ex, and a strong Trainer SIR lineup. This complete Obsidian Flames card list includes every card with rarity filters and live prices updated daily.',
   'sv04': 'Paradox Rift is the fourth Scarlet &amp; Violet expansion, released November 3, 2023. Based on Japan\'s Ancient Roar and Future Flash sets, it introduced Ancient and Future Pokémon ex as two distinct themed factions. Roaring Moon ex SIR and Iron Valiant ex SIR are the top chase pulls — both competitively viable and visually stunning. The 266-card set spans 182 main set cards plus 84 secret rares. This complete Paradox Rift card list includes every card with rarity filters and live prices updated daily.',
   'sv3pt5': 'Pokémon 151 is the first Scarlet &amp; Violet subset, released September 22, 2023. It covers all 151 original Kanto Pokémon and is one of the most nostalgic and in-demand collector sets of the modern era. The 207-card set spans 165 main set cards plus 42 secret rares, headlined by Charizard ex SIR, Mew ex SIR, and Alakazam ex SIR. Every original Kanto Pokémon appears at least once, and the Illustration Rare lineup is among the deepest in any set. This complete Pokémon 151 card list includes every card with rarity filters and live prices updated daily.',
   'sv4pt5': 'Paldean Fates is the shiny set of the Scarlet &amp; Violet era, released January 26, 2024. Based on Japan\'s Shiny Treasure ex, it features Shiny versions of Paldean Pokémon across 245 cards. Shiny Charizard ex SIR is the headline chase pull. Shiny Gardevoir ex SIR, Shiny Miraidon ex SIR, and Shiny Koraidon ex SIR round out the top tier. The dense Shiny rare lineup makes it one of the most collector-targeted sets in the era. This complete Paldean Fates card list includes every card with rarity filters and live prices updated daily.',
@@ -313,7 +312,12 @@ function injectDownloadButtons(html, setId, name) {
   // Skip if already has download buttons
   // Always replace existing download section with fresh content
   if (html.includes('download-buttons-section')) {
-    html = html.replace(/<div class="download-buttons-section"[\s\S]*?<\/div>\s*<\/div>/, '');
+    // Remove everything from the DOWNLOAD BUTTONS comment to the filter-bar
+    html = html.replace(/<!-- ===== DOWNLOAD BUTTONS ===== -->[\s\S]*?(?=\n    <div class="filter-bar")/, '');
+    // Fallback: try to strip just the section div if comment not found
+    if (html.includes('download-buttons-section')) {
+      html = html.replace(/<div class="download-buttons-section"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/, '');
+    }
   }
 
   const btnHtml = `
@@ -440,6 +444,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
