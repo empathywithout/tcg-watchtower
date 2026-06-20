@@ -674,6 +674,38 @@ function patchCardPageAmazon(html, cardName, setName) {
   return html;
 }
 
+
+// ── Fix user-facing TCGplayer pricing attribution text ───────────────────────
+function fixTCGPlayerText(html) {
+  const REPLACEMENTS = [
+    ['real-time secondary market prices from TCGplayer that update daily', 'live prices updated daily on TCG Watchtower'],
+    ['real-time secondary market prices from TCGplayer', 'live prices on TCG Watchtower'],
+    ['live market prices from TCGplayer updated daily', 'live prices updated daily on TCG Watchtower'],
+    ['live market prices from TCGplayer', 'live prices on TCG Watchtower'],
+    ['live TCGplayer prices updated daily', 'live prices updated daily on TCG Watchtower'],
+    ['live TCGplayer prices', 'live prices on TCG Watchtower'],
+    ['live pricing from TCGplayer', 'live prices on TCG Watchtower'],
+    ['real-time prices from TCGplayer', 'live prices on TCG Watchtower'],
+    ['daily updated prices from TCGplayer', 'live prices updated daily on TCG Watchtower'],
+    ['daily updated market prices sourced from TCGplayer', 'live prices on TCG Watchtower'],
+    ['prices sourced from TCGplayer via TCGCSV', 'prices on TCG Watchtower'],
+    ['prices from TCGplayer updated daily', 'live prices updated daily on TCG Watchtower'],
+    ['updated daily from TCGplayer', 'updated daily on TCG Watchtower'],
+    ['from TCGplayer updated daily', 'updated daily on TCG Watchtower'],
+    ['TCGplayer prices will be added', 'prices will be added'],
+  ];
+  const JS_MARKERS = ['fetch(', 'function ', 'loadTCG', 'console.', 'TCGP_GROUP',
+    'const ', 'let ', 'var ', '//', 'async ', 'await ', '/api/tcgplayer',
+    'tcgplayer.com', 'tcgplayerCard', 'tcgplayerAffiliate', 'partner.tcgplayer'];
+  return html.split('\n').map(line => {
+    if (JS_MARKERS.some(m => line.includes(m))) return line;
+    for (const [old, replacement] of REPLACEMENTS) {
+      if (line.includes(old)) line = line.split(old).join(replacement);
+    }
+    return line;
+  }).join('\n');
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -878,6 +910,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   html = fixSectionNav(html, name, short);
   if (html !== htmlBeforeNav) changes.push('nav');
 
+  // 1c-ii. Fix TCGplayer pricing attribution in user-facing text
+  const htmlBeforeTCGP = html;
+  html = fixTCGPlayerText(html);
+  if (html !== htmlBeforeTCGP) changes.push('tcgp text');
+
   // 2. H1 fix
   if (html.includes(`<span class="gradient-text">${series}</span><br>${name}`)) {
     html = fixH1(html, name, series);
@@ -934,6 +971,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
