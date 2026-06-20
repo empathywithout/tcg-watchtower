@@ -89,63 +89,61 @@ export default async function handler(req, res) {
     const rows = [];
     const SEP = ''; // blank cell used as visual separator
 
-    // ── HEADER ────────────────────────────────────────────────────────────────
-    rows.push(['', '', '', '', '', '', '']);
-    rows.push(['', `${setName}${master ? ' — Master Set Checklist' : ' — Card Checklist'}`, '', '', '', '', '']);
-    rows.push(['', `Set Code: ${set.toUpperCase()}    |    Total Cards: ${totalCards}    |    Generated: ${today}`, '', '', '', '', '']);
-    rows.push(['', 'Source: tcgwatchtower.com  |  Free to use and share', '', '', '', '', '']);
-    rows.push(['', '', '', '', '', '', '']);
-    rows.push(['', 'HOW TO USE:', '', '', '', '', '']);
-    rows.push(['', '1. Print this sheet or use it digitally', '', '', '', '', '']);
-    rows.push(['', '2. Mark "Y" in the Have column when you pull or buy a card', '', '', '', '', '']);
-    rows.push(['', '3. Add a grade (e.g. PSA 10) in the Grade column if graded', '', '', '', '', '']);
-    rows.push(['', '4. The Summary section above the card list auto-updates as you fill in the Have column', '', '', '', '', '']);
-    rows.push(['', '', '', '', '', '', '']);
+    // Column layout: #(A) | Card Name(B) | Rarity(C) | Have(D) | Grade(E) | Notes(F)
+    // Col widths driven by content — Name col has longest values forcing natural sizing
 
-    // ── LEGEND ────────────────────────────────────────────────────────────────
-    rows.push(['', 'RARITY LEGEND', '', '', '', '', '']);
-    rows.push(['', '─'.repeat(60), '', '', '', '', '']);
-    rows.push(['', 'Abbrev', 'Full Name', 'What It Means', '', '', '']);
+    // ── WIDTH HINT ROW (hidden row 1 — sets natural column widths) ────────────
+    rows.push(['###', 'Card Name — Full Name Here          ', 'Rarity           ', 'Have', 'Grade (PSA/BGS/TAG)', 'Notes / Comments        ']);
+
+    // ── HEADER ────────────────────────────────────────────────────────────────
+    rows.push(['', '', '', '', '', '']);
+    rows.push([`${setName}${master ? ' — Master Set Checklist' : ' — Card Checklist'}`, '', '', '', '', '']);
+    rows.push([`Set: ${set.toUpperCase()}`, `${totalCards} total cards`, `Generated: ${today}`, '', '', '']);
+    rows.push(['tcgwatchtower.com', 'Free to use and share', '', '', '', '']);
+    rows.push(['', '', '', '', '', '']);
+    rows.push(['HOW TO USE', '1. Mark Y in Have when you pull or buy a card', '', '', '', '']);
+    rows.push(['', '2. Enter a grade (PSA 10 / BGS 9.5 / TAG 8) in the Grade column', '', '', '', '']);
+    rows.push(['', '3. Use Notes for purchase price, seller, or condition details', '', '', '']);
+    rows.push(['', '', '', '', '', '']);
+
+    // ── RARITY LEGEND ─────────────────────────────────────────────────────────
+    rows.push(['RARITY LEGEND', '', '', '', '', '']);
+    rows.push(['Abbrev', 'Full Name', 'What It Means', '', '', '']);
     for (const r of RARITY_ORDER) {
       const abbrev = RARITY_ABBREV[r];
       const desc   = RARITY_DESC[r];
-      if (abbrev) rows.push(['', abbrev, r, desc, '', '', '']);
+      if (abbrev) rows.push([abbrev, r, desc, '', '', '']);
     }
-    rows.push(['', 'RH', 'Reverse Holo', 'Foil pattern on card border/background instead of artwork. Any C/U/R/DR card can have a RH version.', '', '', '']);
-    rows.push(['', '', '', '', '', '', '']);
+    rows.push(['RH', 'Reverse Holo', 'Foil on card border/background instead of artwork. Available for C / U / R / DR cards.', '', '', '']);
+    rows.push(['', '', '', '', '', '']);
 
-    // ── SUMMARY ───────────────────────────────────────────────────────────────
-    rows.push(['', 'SET SUMMARY', '', '', '', '', '']);
-    rows.push(['', '─'.repeat(60), '', '', '', '', '']);
-    rows.push(['', 'Rarity', 'Abbrev', 'Cards in Set', 'You Have', 'Still Need', '']);
-
-    let summaryStartRow = rows.length + 1;
+    // ── SET SUMMARY ───────────────────────────────────────────────────────────
+    rows.push(['SET SUMMARY', '', '', '', '', '']);
+    rows.push(['Rarity', 'Abbrev', 'Cards in Set', 'You Have', 'Still Need', '']);
     for (const r of RARITY_ORDER) {
       const group = groups[r];
       if (!group || group.length === 0) continue;
-      rows.push(['', r, RARITY_ABBREV[r] || '', group.length, '', '', '']);
+      rows.push([r, RARITY_ABBREV[r] || '', group.length, '', '', '']);
     }
     if (master && rhCards.length > 0) {
-      rows.push(['', 'Reverse Holos', 'RH', rhCards.length, '', '', '']);
+      rows.push(['Reverse Holos', 'RH', rhCards.length, '', '', '']);
     }
-    rows.push(['', 'TOTAL', '', totalCards, '', '', '']);
-    rows.push(['', '', '', '', '', '', '']);
+    rows.push(['TOTAL', '', totalCards, '', '', '']);
+    rows.push(['', '', '', '', '', '']);
 
     // ── CARD LIST ─────────────────────────────────────────────────────────────
-    rows.push(['', 'CARD LIST', '', '', '', '', '']);
-    rows.push(['', '─'.repeat(60), '', '', '', '', '']);
+    rows.push(['CARD LIST', '', '', '', '', '']);
 
     for (const r of RARITY_ORDER) {
       const group = groups[r];
       if (!group || group.length === 0) continue;
 
-      rows.push(['', '', '', '', '', '', '']);
-      rows.push(['', `${r.toUpperCase()}  (${RARITY_ABBREV[r] || r})  —  ${group.length} card${group.length !== 1 ? 's' : ''}`, '', '', '', '', '']);
-      rows.push(['', '#', 'Card Name', 'Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
+      rows.push(['', '', '', '', '', '']);
+      rows.push([`${r}  (${RARITY_ABBREV[r] || r})  —  ${group.length} card${group.length !== 1 ? 's' : ''}`, '', '', '', '', '']);
+      rows.push(['#', 'Card Name', 'Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
 
       for (const card of group) {
         rows.push([
-          '',
           padId(card.localId),
           card.name,
           RARITY_ABBREV[card.rarity] || card.rarity,
@@ -158,13 +156,12 @@ export default async function handler(req, res) {
 
     // ── REVERSE HOLOS ─────────────────────────────────────────────────────────
     if (master && rhCards.length > 0) {
-      rows.push(['', '', '', '', '', '', '']);
-      rows.push(['', `REVERSE HOLOS  (RH)  —  ${rhCards.length} cards`, '', '', '', '', '']);
-      rows.push(['', 'Reverse holos are foil versions of all Common, Uncommon, Rare, and Double Rare cards.', '', '', '', '', '']);
-      rows.push(['', '#', 'Card Name', 'Base Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
+      rows.push(['', '', '', '', '', '']);
+      rows.push([`REVERSE HOLOS  (RH)  —  ${rhCards.length} cards`, '', '', '', '', '']);
+      rows.push(['Foil versions of all C / U / R / DR cards in the set.', '', '', '', '', '']);
+      rows.push(['#', 'Card Name', 'Base Rarity', 'Have (Y/N)', 'Grade (PSA/BGS/TAG)', 'Notes']);
       for (const card of rhCards.sort((a,b) => naturalSort(a.localId, b.localId))) {
         rows.push([
-          '',
           `${padId(card.localId)} RH`,
           card.name,
           RARITY_ABBREV[card.rarity] || card.rarity,
@@ -176,11 +173,9 @@ export default async function handler(req, res) {
     }
 
     // ── FOOTER ────────────────────────────────────────────────────────────────
-    rows.push(['', '', '', '', '', '', '']);
-    rows.push(['', '─'.repeat(60), '', '', '', '', '']);
-    rows.push(['', 'TCG Watchtower — tcgwatchtower.com', '', '', '', '', '']);
-    rows.push(['', 'Live prices, restock alerts, binder placeholders and more for every set.', '', '', '', '', '']);
-    rows.push(['', 'Free to print, share, and use. Please credit TCG Watchtower if sharing online.', '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '']);
+    rows.push(['TCG Watchtower', 'tcgwatchtower.com', 'Live prices  •  Restock alerts  •  Binder placeholders  •  Set guides', '', '', '']);
+    rows.push(['Free to print and share.', 'Please credit TCG Watchtower if sharing online.', '', '', '', '']);
 
     // Encode CSV
     const csv = rows.map(row =>
@@ -219,4 +214,5 @@ function naturalSort(a, b) {
   if (!isNaN(na) && !isNaN(nb)) return na - nb;
   return String(a).localeCompare(String(b));
 }
+
 
