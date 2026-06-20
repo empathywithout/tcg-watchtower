@@ -284,18 +284,17 @@ function expandPrimaryCards(rawCards, expansionId) {
         );
         if (!crossSetVariant) continue; // not a cross-set reprint for our expansion, skip
 
-        // It's a cross-set SP reprint — add it with the correct variant image and full cross-set localId
+        // It's a cross-set SP reprint — store under the base cross-set localId (e.g. OP14-084)
+        // with the SP art image. No suffix — the page references these by their base cross-set ID.
         const crossImage = pickImage(crossSetVariant.images) || pickImage(c.images);
         const crossRarity = normalizeRarity(c.rarity);
-        const suffix = variantSuffix(crossSetVariant.name || '');
-        const localId = suffix ? `${rawScrydexId}_${suffix}` : rawScrydexId;
-        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) → ${localId}`);
+        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) → SP art`);
         cards.push({
-          localId,
-          name: `${(c.name||'').trim()}${suffix ? ' (' + (crossSetVariant.name||'') + ')' : ''}`,
+          localId: rawScrydexId,
+          name: `${(c.name||'').trim()} (${crossSetVariant.name||'SP'})`,
           rarity: crossRarity,
           image: crossImage,
-          isVariant: !!suffix,
+          isVariant: false,
           variantType: crossSetVariant.name || '',
           baseLocalId: rawScrydexId,
         });
@@ -589,4 +588,5 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
+
 
