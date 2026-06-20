@@ -697,6 +697,8 @@ const ALL_KNOWN_SETS = [
 const setsPath = 'sets.json';
 const existingSets = existsSync(setsPath) ? JSON.parse(readFileSync(setsPath, 'utf8')) : [];
 
+const knownSetIds = new Set(ALL_KNOWN_SETS.map(s => s.setId));
+
 const mergedSets = ALL_KNOWN_SETS.map(known => {
   const existing = existingSets.find(s => s.setId === known.setId);
   const isCurrentSet = known.setId === SET_ID;
@@ -708,7 +710,11 @@ const mergedSets = ALL_KNOWN_SETS.map(known => {
   };
 });
 
-writeFileSync(setsPath, JSON.stringify(mergedSets, null, 2));
+// Preserve any sets not in ALL_KNOWN_SETS (e.g. One Piece sets)
+const unknownExisting = existingSets.filter(s => !knownSetIds.has(s.setId));
+const finalSets = [...mergedSets, ...unknownExisting];
+
+writeFileSync(setsPath, JSON.stringify(finalSets, null, 2));
 console.log(`\n📋 sets.json updated — ${SET_SLUG} is now live`);
 
 // ── Update sitemap.xml ─────────────────────────────────────────────────────────
@@ -780,4 +786,5 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
 
