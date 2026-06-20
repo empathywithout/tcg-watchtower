@@ -2047,7 +2047,7 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
   clearTimeout(searchTimeout);
   const q = e.target.value.trim();
   const results = document.getElementById('search-results');
-  if (q.length < 2) { results.classList.remove('open'); return; }
+  if (q.length < 4) { results.classList.remove('open'); return; }
 
   searchTimeout = setTimeout(async () => {
     const setFilter = document.getElementById('add-set').value;
@@ -2101,7 +2101,7 @@ document.getElementById('card-search').addEventListener('input', async (e) => {
       results.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:.85rem">Search failed</div>';
       results.classList.add('open');
     }
-  }, 350);
+  }, 500);
 });
 
 function selectCardFromCache(index, scrydexSetId) {
@@ -2588,7 +2588,7 @@ document.getElementById('sealed-product-search').addEventListener('input', async
   clearTimeout(sealedSearchTimeout);
   const q = e.target.value.trim();
   const results = document.getElementById('sealed-search-results');
-  if (q.length < 2) { results.classList.remove('open'); return; }
+  if (q.length < 4) { results.classList.remove('open'); return; }
 
   sealedSearchTimeout = setTimeout(async () => {
     const setId = document.getElementById('sealed-add-set').value;
@@ -2951,6 +2951,7 @@ init();
 </script>
 </body>
 </html>
+
 
 
 
