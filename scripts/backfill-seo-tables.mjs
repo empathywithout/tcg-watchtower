@@ -859,11 +859,12 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
         writeFileSync(cfg.file, pageHtml);
         changes.push(`generated ${cfg.label}`);
       } else {
-        // Patch existing page — add editorial + Amazon
+        // Patch existing page — add editorial + Amazon + fix TCGplayer text
         let pageHtml = readFileSync(cfg.file, 'utf8');
         const pageBefore = pageHtml;
         pageHtml = injectChaseEditorial(pageHtml, cards, name, seriesSlug, urlSlug);
         pageHtml = injectChasePageAmazon(pageHtml);
+        pageHtml = fixTCGPlayerText(pageHtml);
         if (pageHtml !== pageBefore) {
           writeFileSync(cfg.file, pageHtml);
           changes.push(cfg.isChase ? 'chase page' : 'most-valuable page');
@@ -933,6 +934,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
