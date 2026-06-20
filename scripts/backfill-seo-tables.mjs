@@ -35,6 +35,7 @@ const SETS = [
   { setId: 'me02pt5',  file: 'ascended-heroes-card-list.html',           seriesSlug: 'mega-evolution',  urlSlug: 'ascended-heroes',          name: 'Ascended Heroes',            series: 'Mega Evolution',   short: 'ME2.5',releaseDate: 'Jan 2026', totalCards: '295' },
   { setId: 'me03',     file: 'perfect-order-card-list.html',             seriesSlug: 'mega-evolution',  urlSlug: 'perfect-order',            name: 'Perfect Order',              series: 'Mega Evolution',   short: 'ME3',  releaseDate: 'Mar 2026', totalCards: '124' },
   { setId: 'me04',     file: 'chaos-rising-card-list.html',              seriesSlug: 'mega-evolution',  urlSlug: 'chaos-rising',             name: 'Chaos Rising',               series: 'Mega Evolution',   short: 'ME4',  releaseDate: 'May 2026', totalCards: '122' },
+  { setId: 'me05',     file: 'pitch-black-card-list.html',               seriesSlug: 'mega-evolution',  urlSlug: 'pitch-black',              name: 'Pitch Black',                series: 'Mega Evolution',   short: 'ME5',  releaseDate: 'Jul 2026', totalCards: '118' },
 ];
 
 function toSlug(name) {
@@ -341,6 +342,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
