@@ -98,6 +98,20 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How many cards are in the Ascended Heroes card list?","acceptedAnswer":{"@type":"Answer","text":"Ascended Heroes contains 295 cards in total, including the main set and all secret rare cards."}},
+    {"@type":"Question","name":"When does Ascended Heroes release?","acceptedAnswer":{"@type":"Answer","text":"Ascended Heroes released in Jan 2026 as part of the Pokémon TCG Mega Evolution series."}},
+    {"@type":"Question","name":"What are the top chase cards in Ascended Heroes?","acceptedAnswer":{"@type":"Answer","text":"The most valuable Ascended Heroes cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares, ranked by live TCGplayer market price."}},
+    {"@type":"Question","name":"Are Ascended Heroes card prices available?","acceptedAnswer":{"@type":"Answer","text":"Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."}},
+    {"@type":"Question","name":"What series is Ascended Heroes part of?","acceptedAnswer":{"@type":"Answer","text":"Ascended Heroes is part of the Mega Evolution series of the Pokémon Trading Card Game."}}
+  ]
+}
+</script>
+
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
@@ -1055,7 +1069,10 @@ fetch('/nav.html').then(r => r.text()).then(html => {
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
-          <span class="gradient-text">Mega Evolution</span><br>Ascended Heroes
+          Ascended Heroes Card List
+        </h1>
+        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-blue);margin-top:-8px;margin-bottom:8px;">Mega Evolution</p>
+        <h1 style="display:none">
         </h1>
         <p class="set-desc">
           Complete guide to Ascended Heroes — full card list, chase cards ranked by market price, and where to buy sealed product.
@@ -1111,7 +1128,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <section class="section" id="section-chase">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🔥 Ascended Heroes <span class="gradient-text">Chase Cards</span></h2>
+      <h2 class="section-title">Ascended Heroes <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls from Ascended Heroes — ranked by market price</p>
     </div>
     <div class="chase-slider-wrap">
@@ -1130,7 +1147,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <section class="section" id="section-cards">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">📋 Ascended Heroes <span class="gradient-text">Card List</span></h2>
+      <h2 class="section-title">Ascended Heroes <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete ASC card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
     <div class="filter-bar">
@@ -1182,7 +1199,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <span style="color:var(--accent-amber)">⚡</span>
       <span>Never miss a restock</span>
     </div>
-    <h2 class="section-title">Get Ascended Heroes <span class="gradient-text">Restock Alerts</span></h2>
+    <h2 class="section-title">Ascended Heroes <span class="gradient-text">Restock Alerts</span></h2>
     <p style="color:var(--text-muted);max-width:560px;margin:0 auto 36px">
       Join 1,800+ collectors on Discord and get instant notifications when ASC Booster Boxes, ETBs, and sealed product goes live at major retailers.
     </p>
@@ -1192,6 +1209,36 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         Join Discord — Free
       </a>
       <a href="/" class="btn-secondary">Browse All Alerts</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FAQ ===== -->
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">Ascended Heroes <span class="gradient-text">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the Ascended Heroes card list?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Ascended Heroes contains 295 cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does Ascended Heroes release?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Ascended Heroes released in Jan 2026 as part of the Pokémon TCG Mega Evolution series.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in Ascended Heroes?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable Ascended Heroes cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are Ascended Heroes card prices available?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is Ascended Heroes part of?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Ascended Heroes is part of the Mega Evolution series of the Pokémon Trading Card Game.</p>
+      </div>
     </div>
   </div>
 </section>

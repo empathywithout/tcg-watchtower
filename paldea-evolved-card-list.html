@@ -93,6 +93,20 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How many cards are in the Paldea Evolved card list?","acceptedAnswer":{"@type":"Answer","text":"Paldea Evolved contains 279 cards in total, including the main set and all secret rare cards."}},
+    {"@type":"Question","name":"When does Paldea Evolved release?","acceptedAnswer":{"@type":"Answer","text":"Paldea Evolved released in Jun 2023 as part of the Pokémon TCG Scarlet & Violet series."}},
+    {"@type":"Question","name":"What are the top chase cards in Paldea Evolved?","acceptedAnswer":{"@type":"Answer","text":"The most valuable Paldea Evolved cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares, ranked by live TCGplayer market price."}},
+    {"@type":"Question","name":"Are Paldea Evolved card prices available?","acceptedAnswer":{"@type":"Answer","text":"Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."}},
+    {"@type":"Question","name":"What series is Paldea Evolved part of?","acceptedAnswer":{"@type":"Answer","text":"Paldea Evolved is part of the Scarlet & Violet series of the Pokémon Trading Card Game."}}
+  ]
+}
+</script>
+
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
@@ -1050,7 +1064,10 @@ fetch('/nav.html').then(r => r.text()).then(html => {
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
-          <span class="gradient-text">Scarlet & Violet</span><br>Paldea Evolved
+          Paldea Evolved Card List
+        </h1>
+        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-blue);margin-top:-8px;margin-bottom:8px;">Scarlet & Violet</p>
+        <h1 style="display:none">
         </h1>
         <p class="set-desc">
           Complete guide to Paldea Evolved (SV2) — full card list, chase cards ranked by market price, and where to buy sealed product.
@@ -1150,7 +1167,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <section class="section" id="section-products">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🛒 Buy SV2 <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
+      <h2 class="section-title">Buy Paldea Evolved <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
       <p class="section-sub">Compare Paldea Evolved (SV2) sealed product prices across Amazon, eBay, and TCGplayer</p>
     </div>
     <div class="product-filter-bar" id="product-filters">
@@ -1188,6 +1205,36 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         Join Discord — Free
       </a>
       <a href="/" class="btn-secondary">Browse All Alerts</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FAQ ===== -->
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">Paldea Evolved <span class="gradient-text">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the Paldea Evolved card list?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Paldea Evolved contains 279 cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does Paldea Evolved release?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Paldea Evolved released in Jun 2023 as part of the Pokémon TCG Scarlet & Violet series.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in Paldea Evolved?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable Paldea Evolved cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are Paldea Evolved card prices available?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is Paldea Evolved part of?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Paldea Evolved is part of the Scarlet & Violet series of the Pokémon Trading Card Game.</p>
+      </div>
     </div>
   </div>
 </section>
