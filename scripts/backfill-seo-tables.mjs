@@ -711,6 +711,8 @@ function fixTCGPlayerText(html) {
 function fixChaseSliderAmazon(html) {
   if (!html.includes('renderChaseCardsHTML')) return html;
   if (html.includes('buy-link buy-amazon')) return html;
+  // Shorten TCGplayer label to TCGp so 3 buttons fit in card width
+  html = html.replace('>TCGplayer</a>', '>TCGp</a>');
   // Fix buy-links CSS so 3 buttons fit cleanly — reduce padding + font, allow wrap
   html = html.replace(
     '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
@@ -941,9 +943,13 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   html = fixTCGPlayerText(html);
   if (html !== htmlBeforeTCGP) changes.push('tcgp text');
 
-  // 1c-iii. Add Amazon to chase slider buy-links
+  // 1c-iii. Add Amazon to chase slider buy-links + shorten TCGplayer label
   const htmlBeforeChaseAmazon = html;
   html = fixChaseSliderAmazon(html);
+  // Also shorten on pages that already had Amazon (e.g. me04)
+  if (html.includes('buy-link buy-amazon') && html.includes('>TCGplayer</a>')) {
+    html = html.replace(/>TCGplayer<\/a>/g, '>TCGp</a>');
+  }
   if (html !== htmlBeforeChaseAmazon) changes.push('chase slider amazon');
 
   // 2. H1 fix
