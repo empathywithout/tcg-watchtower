@@ -99,6 +99,56 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many cards are in the {{SET_FULL_NAME}} card list?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{SET_FULL_NAME}} contains {{SET_TOTAL_CARDS}} cards in total, including the main set and all secret rare cards."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When does {{SET_FULL_NAME}} release?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{SET_FULL_NAME}} is scheduled to release on {{SET_RELEASE_DATE_FULL}}."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the top chase cards in {{SET_FULL_NAME}}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The most valuable {{SET_FULL_NAME}} cards are the Mega Hyper Rares, Special Illustration Rares, and Illustration Rares, ranked by live TCGplayer market price."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are {{SET_FULL_NAME}} card prices available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What series is {{SET_FULL_NAME}} part of?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{SET_FULL_NAME}} is part of the {{SET_SERIES}} series of the Pokémon Trading Card Game."
+      }
+    }
+  ]
+}
+</script>
+
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1025,8 +1075,9 @@ footer {
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
-          <span class="gradient-text">{{SET_SERIES}}</span><br>{{SET_SUBTITLE}}
+          {{SET_SUBTITLE}} Card List
         </h1>
+        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-blue);margin-top:-8px;margin-bottom:8px;">{{SET_SERIES}}</p>
         <p class="set-desc">
           {{SET_DESCRIPTION}}
         </p>
@@ -1093,7 +1144,7 @@ footer {
 <section class="section" id="section-chase">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🔥 {{SET_FULL_NAME}} <span class="gradient-text">Chase Cards</span></h2>
+      <h2 class="section-title">{{SET_FULL_NAME}} <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls from {{SET_FULL_NAME}} — ranked by market price</p>
     </div>
     <div class="chase-slider-wrap">
@@ -1112,7 +1163,7 @@ footer {
 <section class="section" id="section-cards">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">📋 {{SET_FULL_NAME}} <span class="gradient-text">Card List</span></h2>
+      <h2 class="section-title">{{SET_FULL_NAME}} <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete {{SET_SHORT_NAME}} card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
     <div class="filter-bar">
@@ -1137,7 +1188,7 @@ footer {
 <section class="section" id="section-products">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🛒 Buy {{SET_SHORT_NAME}} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
+      <h2 class="section-title">Buy {{SET_FULL_NAME}} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
       <p class="section-sub">Compare {{SET_FULL_NAME}} sealed product prices across Amazon, eBay, and TCGplayer</p>
     </div>
     <div class="product-filter-bar" id="product-filters">
@@ -1164,7 +1215,7 @@ footer {
       <span style="color:var(--accent-amber)">⚡</span>
       <span>Never miss a restock</span>
     </div>
-    <h2 class="section-title">Get {{SET_FULL_NAME}} <span class="gradient-text">Restock Alerts</span></h2>
+    <h2 class="section-title">{{SET_FULL_NAME}} <span class="gradient-text">Restock Alerts</span></h2>
     <p style="color:var(--text-muted);max-width:560px;margin:0 auto 36px">
       Join 1,800+ collectors on Discord and get instant notifications when {{SET_SHORT_NAME}} Booster Boxes, ETBs, and sealed product goes live at major retailers.
     </p>
@@ -1174,6 +1225,36 @@ footer {
         Join Discord — Free
       </a>
       <a href="/" class="btn-secondary">Browse All Alerts</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FAQ ===== -->
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">{{SET_FULL_NAME}} <span class="gradient-text">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the {{SET_FULL_NAME}} card list?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} contains {{SET_TOTAL_CARDS}} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does {{SET_FULL_NAME}} release?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} is scheduled to release on {{SET_RELEASE_DATE_FULL}}. Prerelease events typically begin 1–2 weeks before the official release date.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in {{SET_FULL_NAME}}?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable {{SET_FULL_NAME}} cards are the Mega Hyper Rares, Special Illustration Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are {{SET_FULL_NAME}} card prices available?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is {{SET_FULL_NAME}} part of?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">{{SET_FULL_NAME}} is part of the {{SET_SERIES}} series of the Pokémon Trading Card Game.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2081,4 +2162,5 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
+
 
