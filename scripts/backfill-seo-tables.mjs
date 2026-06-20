@@ -8,7 +8,7 @@
  *   5. OG/Twitter/JSON-LD title fix — keyword-first format
  * Safe to re-run — each step checks before applying.
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 
 const R2 = process.env.CF_R2_PUBLIC_URL;
 if (!R2) { console.error('❌ CF_R2_PUBLIC_URL not set'); process.exit(1); }
@@ -654,6 +654,26 @@ if (TCGP_GROUP_ID) {
 </html>`;
 }
 
+
+// ── Patch Amazon into individual card pages ───────────────────────────────────
+function patchCardPageAmazon(html, cardName, setName) {
+  if (html.includes('btn-amazon')) return html; // already done
+
+  // Add CSS
+  html = html.replace(
+    '.btn-ebay{background:#e43137;color:#fff}',
+    '.btn-ebay{background:#e43137;color:#fff}\n.btn-amazon{background:#f90;color:#111}'
+  );
+
+  // Add Amazon button after Find on eBay button
+  const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(cardName + ' ' + setName + ' Pokemon Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US`;
+  html = html.replace(
+    /(<a class="btn btn-ebay"[^>]*>\s*<span>Find on eBay<\/span><span>→<\/span>\s*<\/a>)/,
+    `$1\n        <a class="btn btn-amazon" href="${amazonUrl}" target="_blank" rel="noopener">\n          <span>Find on Amazon</span><span>→</span>\n        </a>`
+  );
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -777,6 +797,29 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     if (html !== htmlBefore) changes.push('master set hero');
   }
 
+  // 1d. Patch Amazon into individual card pages
+  if (cards.length > 0 && phase !== 'jp') {
+    const cardsDir = `pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
+    if (existsSync(cardsDir)) {
+      const cardFiles = readdirSync(cardsDir).filter(f => f.endsWith('.html'));
+      let cardPatched = 0;
+      for (const cf of cardFiles) {
+        const cfPath = `${cardsDir}/${cf}`;
+        let cfHtml = readFileSync(cfPath, 'utf8');
+        if (cfHtml.includes('btn-amazon')) continue;
+        // Extract card name from title tag for Amazon search
+        const titleMatch = cfHtml.match(/<title>([^|<]+)/);
+        const cardName = titleMatch ? titleMatch[1].trim().replace(/\s+#\d+\s*$/, '').trim() : name;
+        const patched = patchCardPageAmazon(cfHtml, cardName, name);
+        if (patched !== cfHtml) {
+          writeFileSync(cfPath, patched);
+          cardPatched++;
+        }
+      }
+      if (cardPatched > 0) changes.push(`${cardPatched} card pages`);
+    }
+  }
+
   // 1c. Chase/most-valuable pages — generate missing, patch existing (EN phase only)
   if (cards.length > 0 && phase !== 'jp') {
     const SITE_URL = 'https://tcgwatchtower.com';
@@ -819,7 +862,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
         // Patch existing page — add editorial + Amazon
         let pageHtml = readFileSync(cfg.file, 'utf8');
         const pageBefore = pageHtml;
-        if (cfg.isChase) pageHtml = injectChaseEditorial(pageHtml, cards, name, seriesSlug, urlSlug);
+        pageHtml = injectChaseEditorial(pageHtml, cards, name, seriesSlug, urlSlug);
         pageHtml = injectChasePageAmazon(pageHtml);
         if (pageHtml !== pageBefore) {
           writeFileSync(cfg.file, pageHtml);
@@ -890,6 +933,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
