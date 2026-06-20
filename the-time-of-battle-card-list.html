@@ -574,17 +574,12 @@ const EBAY_MKRID = '711-53200-19255-0';
 const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
-// cardImg handles primary ("118") and cross-set ("EB04-084") localIds
-// Cross-set IDs like "OP14-084" resolve to their own set's R2 folder
+// cardImg — all cards including cross-set reprints use the current set's R2 folder
+// Cross-set IDs (e.g. OP14-084) get ?v=3 to bust any stale Cloudflare cache
 function cardImg(id) {
   if (!id) return '';
-  const crossMatch = id.match(/^([A-Z]{2,}\d+)-0*(\d+)/);
-  if (crossMatch) {
-    const crossSet = crossMatch[1].toLowerCase(); // e.g. "op14", "eb04", "st15", "op10", "op11"
-    const num      = crossMatch[2];               // e.g. "84", "5"
-    return `${R2}/cards/op/${crossSet}/${num}.webp`;
-  }
-  return `${R2}/cards/op/${SET_ID}/${id}.webp`;
+  const isCrossSet = /^[A-Z]{2,}\d+-/.test(id);
+  return `${R2}/cards/op/${SET_ID}/${id}.webp${isCrossSet ? '?v=3' : ''}`;
 }
 function toSlug(s) {
   return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -1011,3 +1006,4 @@ function initNav(){
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
+
