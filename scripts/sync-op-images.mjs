@@ -111,6 +111,17 @@ const RARITY_OVERRIDES = {
     'ST26-005': 'Special',
     'PRB02-014': 'Special',
   },
+  'op16': {
+    // Vista TR — Scrydex labels the Treasure Rare variant as altArt
+    '11_altart': 'Treasure Rare',
+    // Cross-set SP reprints — Scrydex returns base card rarity, override to Special
+    'OP14-029': 'Special',
+    'OP14-084': 'Special',
+    'OP11-067': 'Special',
+    'EB04-054': 'Special',
+    'OP10-045': 'Special',
+    'ST15-005': 'Special',
+  },
 };
 
 const SCRYDEX_KNOWN_EXPANSIONS = new Set([
@@ -593,6 +604,7 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
+
 
 
 
