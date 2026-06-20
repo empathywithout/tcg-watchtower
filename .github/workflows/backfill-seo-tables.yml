@@ -1,0 +1,23 @@
+name: Backfill SEO Card Tables
+on:
+  workflow_dispatch: {}
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Inject static SEO card tables
+        env:
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+        run: node scripts/backfill-seo-tables.mjs
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "seo: backfill static card tables into all set pages"
+          git push origin main
