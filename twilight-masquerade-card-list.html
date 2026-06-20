@@ -77,6 +77,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1042,18 +1043,29 @@ fetch('/nav.html').then(r => r.text()).then(html => {
           Complete guide to Twilight Masquerade (SV6) — full card list, chase cards ranked by market price, and where to buy sealed product.
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Twilight Masquerade is the sixth Scarlet &amp; Violet expansion, released May 24, 2024. Based on Japan's Mask of Change set, it is built around Ogerpon ex in all four mask forms. The Greninja ex Special Illustration Rare (#214) is the top chase pull of the set — one of the most valuable cards in the Scarlet &amp; Violet era, driven by stunning artwork and competitive playability. The Wellspring Mask Ogerpon ex SIR is also a strong pull. The 226-card set spans 162 main set cards plus 64 secret rares. This complete Twilight Masquerade card list includes every card with rarity filters and live prices updated daily.</p>
-        <div class="set-stats">
+        
+<p class="set-desc set-master-desc" style="font-size:0.88rem;color:rgba(148,163,184,0.9);line-height:1.65;margin-top:0;margin-bottom:24px;border-left:2px solid rgba(74,222,128,0.4);padding-left:12px;">
+  A complete Twilight Masquerade master set contains <strong style="color:#e2e8f0;">393 cards</strong> — 226 main set and secret rare cards plus 167 reverse holos (one for each Common, Uncommon, Rare, and Double Rare). Secret rares do not have reverse holo variants.
+</p>        <div class="set-stats" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" alt="Twilight Masquerade (SV6) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <img id="set-logo-hero" alt="Twilight Masquerade Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
             <div class="stat-label">SV6</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-total-count">…</div>
-            <div class="stat-label">Total Cards</div>
+            <div class="stat-value">167</div>
+            <div class="stat-label">Main Set</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">May 2024</div>
-            <div class="stat-label">Release Date</div>
+            <div class="stat-value" style="color:#fbbf24;">59</div>
+            <div class="stat-label">Secret Rares</div>
+          </div>
+          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
+            <div class="stat-value" style="color:#4ade80;">393</div>
+            <div class="stat-label">Master Set</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">Invalid Date</div>
+            <div class="stat-label">May 2024</div>
           </div>
         </div>
       </div>
@@ -1115,6 +1127,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Twilight Masquerade (SV6) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV6 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     

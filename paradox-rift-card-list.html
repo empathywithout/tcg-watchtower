@@ -77,6 +77,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1042,18 +1043,29 @@ fetch('/nav.html').then(r => r.text()).then(html => {
           Complete guide to Paradox Rift (SV4) — full card list, chase cards ranked by market price, and where to buy sealed product.
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Paradox Rift is the fourth Scarlet &amp; Violet expansion, released November 3, 2023. Based on Japan's Ancient Roar and Future Flash sets, it introduced Ancient and Future Pokémon ex as two distinct themed factions. The Groudon Illustration Rare is the top chase card, commanding prices above all SIRs in the set. Roaring Moon ex SIR and Iron Valiant ex SIR are the top SIR pulls — both competitively viable and visually stunning. The 266-card set spans 182 main set cards plus 84 secret rares. This complete Paradox Rift card list includes every card with rarity filters and live prices updated daily.</p>
-        <div class="set-stats">
+        
+<p class="set-desc set-master-desc" style="font-size:0.88rem;color:rgba(148,163,184,0.9);line-height:1.65;margin-top:0;margin-bottom:24px;border-left:2px solid rgba(74,222,128,0.4);padding-left:12px;">
+  A complete Paradox Rift master set contains <strong style="color:#e2e8f0;">448 cards</strong> — 266 main set and secret rare cards plus 182 reverse holos (one for each Common, Uncommon, Rare, and Double Rare). Secret rares do not have reverse holo variants.
+</p>        <div class="set-stats" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" alt="Paradox Rift (SV4) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <img id="set-logo-hero" alt="Paradox Rift Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
             <div class="stat-label">SV4</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-total-count">…</div>
-            <div class="stat-label">Total Cards</div>
+            <div class="stat-value">182</div>
+            <div class="stat-label">Main Set</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">Nov 2023</div>
-            <div class="stat-label">Release Date</div>
+            <div class="stat-value" style="color:#fbbf24;">84</div>
+            <div class="stat-label">Secret Rares</div>
+          </div>
+          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
+            <div class="stat-value" style="color:#4ade80;">448</div>
+            <div class="stat-label">Master Set</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">Invalid Date</div>
+            <div class="stat-label">Nov 2023</div>
           </div>
         </div>
       </div>
@@ -1115,6 +1127,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Paradox Rift (SV4) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV4 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     
