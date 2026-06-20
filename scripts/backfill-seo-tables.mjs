@@ -72,34 +72,73 @@ function fixH2s(html, name, short) {
              `<h2 class="section-title">${name} <span class="gradient-text">Restock Alerts</span></h2>`);
 }
 
+
+// ── Per-set FAQ data (specific questions beat generic ones for SEO) ────────────
+const SET_FAQS = {
+  'me05': [
+    { q: 'What is the most expensive Pitch Black card?', a: 'The most expensive Pitch Black card is the Mega Darkrai ex Special Illustration Rare, illustrated by Akira Egawa. Mega Zeraora ex SIR and Gwynn SIR are also top chase pulls.' },
+    { q: 'How many cards are in the Pitch Black card list?', a: 'Pitch Black contains 118 cards — 81 main set cards plus 37 secret rares including Illustration Rares, Special Illustration Rares, and the Mega Darkrai ex Mega Hyper Rare at #118.' },
+    { q: 'When does Pitch Black release?', a: 'Pitch Black releases July 26, 2026. Prerelease events begin July 4, 2026 at participating local game stores.' },
+    { q: 'What Mega Pokemon are in Pitch Black?', a: 'Pitch Black features Mega Darkrai ex, Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex as its four confirmed Mega Evolution Pokemon ex.' },
+    { q: 'Is Pitch Black based on a Japanese set?', a: 'Yes — Pitch Black is the English adaptation of the Japanese set Abyss Eye, released May 22, 2026. The sets are nearly identical.' },
+    { q: 'What is the Pitch Black set code?', a: 'The Pitch Black set code is ME05, the fifth expansion in the Pokémon TCG Mega Evolution series.' },
+  ],
+  'me04': [
+    { q: 'What is the most expensive Chaos Rising card?', a: 'The most expensive Chaos Rising card is the Mega Greninja ex Mega Hyper Rare (#122). The Mega Greninja ex SIR is also among the top chase pulls.' },
+    { q: 'How many cards are in the Chaos Rising card list?', a: 'Chaos Rising contains 122 cards in total — 81 main set cards plus secret rares including Illustration Rares, SIRs, and the Mega Greninja ex Mega Hyper Rare.' },
+    { q: 'When did Chaos Rising release?', a: 'Chaos Rising released May 22, 2026 as the fourth set in the Pokémon TCG Mega Evolution series.' },
+    { q: 'What Mega Pokemon are in Chaos Rising?', a: 'Chaos Rising features Mega Greninja ex as the headline card, alongside Mega Gyarados ex, Mega Beedrill ex, Mega Pidgeot ex, and Mega Alakazam ex.' },
+    { q: 'Is Chaos Rising based on a Japanese set?', a: 'Yes — Chaos Rising adapts the Japanese set Ninja Spinner, which introduced Mega Greninja ex.' },
+  ],
+  'me03': [
+    { q: 'What is the most expensive Perfect Order card?', a: 'The most expensive Perfect Order card is the Mega Zygarde ex Mega Ultra Rare (#117). Rosa\'s Encouragement SIR is also a standout chase pull.' },
+    { q: 'How many cards are in the Perfect Order card list?', a: 'Perfect Order contains 124 cards — 81 main set cards plus secret rares across IR, UR, SIR, and Mega Ultra Rare tiers.' },
+    { q: 'When did Perfect Order release?', a: 'Perfect Order released March 2026 as the third set in the Pokémon TCG Mega Evolution series.' },
+    { q: 'What Mega Pokemon are in Perfect Order?', a: 'Perfect Order is headlined by Mega Zygarde ex, Mega Starmie ex, and Mega Clefable ex.' },
+  ],
+  'sv8pt5': [
+    { q: 'What is the most expensive Prismatic Evolutions card?', a: 'The most expensive Prismatic Evolutions cards are the Eeveelution Special Illustration Rares — Umbreon ex SIR, Sylveon ex SIR, and Espeon ex SIR consistently rank highest by market value.' },
+    { q: 'How many cards are in the Prismatic Evolutions card list?', a: 'Prismatic Evolutions contains 180 cards — 87 main set cards plus 93 secret rares including Illustration Rares, Ultra Rares, Special Illustration Rares, and Hyper Rares.' },
+    { q: 'When did Prismatic Evolutions release?', a: 'Prismatic Evolutions released January 17, 2025 as the SV8.5 subset of the Scarlet & Violet era.' },
+    { q: 'Why is Prismatic Evolutions so hard to find?', a: 'Prismatic Evolutions was one of the most in-demand Pokémon TCG sets ever printed. The Eevee theme and high concentration of SIRs drove demand far beyond supply at launch.' },
+    { q: 'Does Prismatic Evolutions have a God Pack?', a: 'Yes — Prismatic Evolutions God Packs contain all Illustration Rares from a single booster pack, making them extremely rare and sought-after.' },
+  ],
+  'sv3pt5': [
+    { q: 'What is the most expensive Pokemon 151 card?', a: 'The most expensive Pokemon 151 cards are the Charizard ex SIR, Mew ex SIR, and Alakazam ex SIR. Charizard ex is consistently one of the highest-valued cards in the Scarlet & Violet era.' },
+    { q: 'How many cards are in the Pokemon 151 card list?', a: 'Pokemon 151 contains 207 cards — 165 main set cards plus 42 secret rares including Illustration Rares and Special Illustration Rares.' },
+    { q: 'When did Pokemon 151 release?', a: 'Pokemon 151 released September 22, 2023 as the SV3.5 subset of the Scarlet & Violet era.' },
+    { q: 'Does Pokemon 151 have all original Kanto Pokemon?', a: 'Yes — all 151 original Kanto Pokemon appear in the set, making it a nostalgia-driven collector favourite.' },
+    { q: 'Is Pokemon 151 a good set to collect?', a: 'Pokemon 151 is one of the most popular Scarlet & Violet sets for collectors due to its nostalgic Kanto theme and deep roster of Illustration Rares covering beloved original Pokemon.' },
+  ],
+};
+
+function getFAQ(setId) {
+  return SET_FAQS[setId] || null;
+}
+
 // ── 4. FAQ section ────────────────────────────────────────────────────────────
-function buildFAQ(name, series, releaseDate, totalCards) {
-  return `
-<!-- ===== FAQ ===== -->
+function getDefaultFAQ(name, series, releaseDate, totalCards) {
+  return [
+    { q: `How many cards are in the ${name} card list?`, a: `${name} contains ${totalCards} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.` },
+    { q: `When did ${name} release?`, a: `${name} released in ${releaseDate} as part of the Pokémon TCG ${series} series.` },
+    { q: `What are the top chase cards in ${name}?`, a: `The most valuable ${name} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.` },
+    { q: `Are ${name} card prices available?`, a: `Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.` },
+    { q: `What series is ${name} part of?`, a: `${name} is part of the ${series} series of the Pokémon Trading Card Game.` },
+  ];
+}
+
+function buildFAQ(name, series, releaseDate, totalCards, setId) {
+  const faqs = getFAQ(setId) || getDefaultFAQ(name, series, releaseDate, totalCards);
+  const items = faqs.map(f => `
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">${f.q}</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${f.a}</p>
+      </div>`).join('\n');
+  return `<!-- ===== FAQ ===== -->
 <section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
   <div class="container" style="max-width:800px;">
     <h2 class="section-title" style="text-align:center;margin-bottom:48px;">${name} <span class="gradient-text">FAQ</span></h2>
-    <div style="display:flex;flex-direction:column;gap:24px;">
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the ${name} card list?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} contains ${totalCards} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does ${name} release?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} released in ${releaseDate} as part of the Pokémon TCG ${series} series.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in ${name}?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable ${name} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are ${name} card prices available?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is ${name} part of?</h3>
-        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} is part of the ${series} series of the Pokémon Trading Card Game.</p>
-      </div>
+    <div style="display:flex;flex-direction:column;gap:24px;">${items}
     </div>
   </div>
 </section>
@@ -107,21 +146,12 @@ function buildFAQ(name, series, releaseDate, totalCards) {
 `;
 }
 
-function buildFAQSchema(name, series, releaseDate, totalCards) {
-  return `<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type":"Question","name":"How many cards are in the ${name} card list?","acceptedAnswer":{"@type":"Answer","text":"${name} contains ${totalCards} cards in total, including the main set and all secret rare cards."}},
-    {"@type":"Question","name":"When does ${name} release?","acceptedAnswer":{"@type":"Answer","text":"${name} released in ${releaseDate} as part of the Pokémon TCG ${series} series."}},
-    {"@type":"Question","name":"What are the top chase cards in ${name}?","acceptedAnswer":{"@type":"Answer","text":"The most valuable ${name} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares, ranked by live TCGplayer market price."}},
-    {"@type":"Question","name":"Are ${name} card prices available?","acceptedAnswer":{"@type":"Answer","text":"Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."}},
-    {"@type":"Question","name":"What series is ${name} part of?","acceptedAnswer":{"@type":"Answer","text":"${name} is part of the ${series} series of the Pokémon Trading Card Game."}}
-  ]
-}
-</script>
-`;
+function buildFAQSchema(name, series, releaseDate, totalCards, setId) {
+  const faqs = getFAQ(setId) || getDefaultFAQ(name, series, releaseDate, totalCards);
+  const entities = faqs.map(f =>
+    `    {"@type":"Question","name":${JSON.stringify(f.q)},"acceptedAnswer":{"@type":"Answer","text":${JSON.stringify(f.a)}}}`
+  ).join(',\n');
+  return `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "FAQPage",\n  "mainEntity": [\n${entities}\n  ]\n}\n<\/script>\n`;
 }
 
 // ── Main loop ─────────────────────────────────────────────────────────────────
@@ -170,8 +200,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
   // 4. FAQ section + schema
   if (!html.includes('FAQPage')) {
-    const faqSection = buildFAQ(name, series, releaseDate, totalCards);
-    const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards);
+    const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
+    const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
     html = html.replace('<!-- ===== FOOTER ===== -->', faqSection + '<!-- ===== FOOTER ===== -->');
     // Insert FAQ schema after first closing </script> of existing JSON-LD
     const ldIdx = html.indexOf('application/ld+json');
@@ -193,3 +223,4 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
