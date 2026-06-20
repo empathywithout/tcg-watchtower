@@ -356,6 +356,48 @@ function injectDownloadButtons(html, setId, name) {
   return html;
 }
 
+
+// ── Fix section nav emojis ────────────────────────────────────────────────────
+function fixSectionNav(html, name, short) {
+  // Replace emoji nav buttons with clean professional text versions
+  // These patterns cover both full and short (mobile) label variants
+  const replacements = [
+    // Home button
+    [`<span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span>`,
+     `<span class="nav-full">Home</span><span class="nav-short">Home</span>`],
+    // Chase Cards
+    [`<span class="nav-full">🔥 Chase Cards</span>`,
+     `<span class="nav-full">Chase Cards</span>`],
+    // Card List
+    [`<span class="nav-full">📋 Card List</span>`,
+     `<span class="nav-full">Card List</span>`],
+    // Sealed Products
+    [`<span class="nav-full">🛒 Sealed Products</span>`,
+     `<span class="nav-full">Sealed Products</span>`],
+    // Sets dropdown
+    [`<span class="nav-full">📦 Sets ▾</span>`,
+     `<span class="nav-full">Sets ▾</span>`],
+    // Short labels
+    [`<span class="nav-short">Chase</span>`, `<span class="nav-short">Chase</span>`],
+    [`<span class="nav-short">Cards</span>`, `<span class="nav-short">Cards</span>`],
+    [`<span class="nav-short">Sealed</span>`, `<span class="nav-short">Sealed</span>`],
+    [`<span class="nav-short">Sets ▾</span>`, `<span class="nav-short">Sets ▾</span>`],
+    // Hero badge — replace emoji with clean text
+    [`<span style="color:var(--accent-amber)">★</span>\n          <span>Complete Set Guide</span>`,
+     `<span>Complete Set Guide</span>`],
+    [`<span style="color:var(--accent-amber)">★</span>\n          <span>Complete Set Guide</span>`,
+     `<span>Complete Set Guide</span>`],
+    // Discord CTA badge
+    [`<span style="color:var(--accent-amber)">⚡</span>\n      <span>Never miss a restock</span>`,
+     `<span>Never miss a restock</span>`],
+  ];
+
+  for (const [from, to] of replacements) {
+    if (from !== to) html = html.replaceAll(from, to);
+  }
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -477,6 +519,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     if (html !== htmlBefore) changes.push('master set hero');
   }
 
+  // 1c. Section nav — strip emojis from nav buttons (unprofessional on authority site)
+  const htmlBeforeNav = html;
+  html = fixSectionNav(html, name, short);
+  if (html !== htmlBeforeNav) changes.push('nav');
+
   // 2. H1 fix
   if (html.includes(`<span class="gradient-text">${series}</span><br>${name}`)) {
     html = fixH1(html, name, series);
@@ -532,6 +579,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
