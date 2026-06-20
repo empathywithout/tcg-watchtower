@@ -139,7 +139,7 @@ export default async function handler(req, res) {
         }
       }
       // Single search by productId — most reliable, 1 credit
-      let products = [];
+      products = [];
       try {
         const data = await fetchFromScrydex(
           `${SCRYDEX_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
@@ -173,22 +173,23 @@ export default async function handler(req, res) {
       // ── Cache miss — fetch from Scrydex (costs 1 credit) ────────────
       res.setHeader('X-Cache', 'MISS');
 
-      let data;
-      if (setName) {
-        data = await fetchFromScrydex(
-          `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
+      // Prefer expansion endpoint (1 credit, precise) — fall back to name search
+      try {
+        const data = await fetchFromScrydex(
+          `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
         );
-        products = normaliseProducts(
-          (data.data || []).filter(p => p.expansion?.id === scrydexId)
-        );
-      } else {
-        try {
-          data = await fetchFromScrydex(
-            `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
-          );
-          products = normaliseProducts(data.data || []);
-        } catch {
-          products = [];
+        products = normaliseProducts(data.data || []);
+      } catch {
+        // Expansion endpoint failed — fall back to name search if we have a keyword
+        if (setName) {
+          try {
+            const data = await fetchFromScrydex(
+              `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
+            );
+            products = normaliseProducts(
+              (data.data || []).filter(p => p.expansion?.id === scrydexId)
+            );
+          } catch { products = []; }
         }
       }
 
@@ -224,4 +225,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+
 
