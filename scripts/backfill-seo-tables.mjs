@@ -724,10 +724,6 @@ function fixChaseSliderAmazon(html) {
       'padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;'
     );
 
-  // 2. Add Amazon button — the file stores JS template literals with escaped quotes
-  // When Node reads the HTML file these appear as literal backslash-quote sequences
-  // Confirmed pattern from file: class=\"buy-links\">
-          <a class=\"buy-link buy-ebay\"
   const EBAY_PAT = 'class=\"buy-links\">\n          <a class=\"buy-link buy-ebay\"';
   const WITH_AMAZON = 'class=\"buy-links\">\n          <a class=\"buy-link buy-amazon\" href=\"${amazonLink(c.searchName)}\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Amazon</a>\n          <a class=\"buy-link buy-ebay\"';
   if (html.includes(EBAY_PAT)) {
