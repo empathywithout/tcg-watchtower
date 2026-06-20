@@ -8,7 +8,7 @@
  *   5. OG/Twitter/JSON-LD title fix — keyword-first format
  * Safe to re-run — each step checks before applying.
  */
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 
 const R2 = process.env.CF_R2_PUBLIC_URL;
 if (!R2) { console.error('❌ CF_R2_PUBLIC_URL not set'); process.exit(1); }
@@ -35,7 +35,7 @@ const SETS = [
   { setId: 'me02pt5',  file: 'ascended-heroes-card-list.html',           seriesSlug: 'mega-evolution',  urlSlug: 'ascended-heroes',          name: 'Ascended Heroes',            series: 'Mega Evolution',   short: 'ME2.5',releaseDate: 'Jan 2026', totalCards: '295' },
   { setId: 'me03',     file: 'perfect-order-card-list.html',             seriesSlug: 'mega-evolution',  urlSlug: 'perfect-order',            name: 'Perfect Order',              series: 'Mega Evolution',   short: 'ME3',  releaseDate: 'Mar 2026', totalCards: '124' },
   { setId: 'me04',     file: 'chaos-rising-card-list.html',              seriesSlug: 'mega-evolution',  urlSlug: 'chaos-rising',             name: 'Chaos Rising',               series: 'Mega Evolution',   short: 'ME4',  releaseDate: 'May 2026', totalCards: '122' },
-  { setId: 'me05',     file: 'pitch-black-card-list.html',               seriesSlug: 'mega-evolution',  urlSlug: 'pitch-black',              name: 'Pitch Black',                series: 'Mega Evolution',   short: 'ME5',  releaseDate: 'Jul 2026', totalCards: '118' },
+  { setId: 'me05',     file: 'pitch-black-card-list.html',               seriesSlug: 'mega-evolution',  urlSlug: 'pitch-black',              name: 'Pitch Black',                series: 'Mega Evolution',   short: 'ME5',  releaseDate: 'Jul 2026', totalCards: '118', phase: 'jp' },
 ];
 
 function toSlug(name) {
@@ -740,7 +740,7 @@ function injectMasterSetHero(html, cards, name, releaseDate, short) {
   return html;
 }
 
-for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate, totalCards } of SETS) {
+for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate, totalCards, phase = 'en' } of SETS) {
   process.stdout.write(`${setId} (${file})... `);
 
   if (!existsSync(file)) {
@@ -777,8 +777,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     if (html !== htmlBefore) changes.push('master set hero');
   }
 
-  // 1c. Chase/most-valuable pages — generate missing, patch existing
-  if (cards.length > 0) {
+  // 1c. Chase/most-valuable pages — generate missing, patch existing (EN phase only)
+  if (cards.length > 0 && phase !== 'jp') {
     const SITE_URL = 'https://tcgwatchtower.com';
     const cardListUrl = `${SITE_URL}/pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
 
@@ -811,6 +811,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
           h1: cfg.h1, breadcrumbLabel: cfg.label,
           cards, name, seriesSlug, urlSlug, setId, series, releaseDate,
         });
+        const pageDir = cfg.file.substring(0, cfg.file.lastIndexOf('/'));
+        if (!existsSync(pageDir)) mkdirSync(pageDir, { recursive: true });
         writeFileSync(cfg.file, pageHtml);
         changes.push(`generated ${cfg.label}`);
       } else {
@@ -888,6 +890,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
