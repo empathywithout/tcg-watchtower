@@ -193,7 +193,7 @@ function buildStylesXml() {
   for (let fillId = FILL_COMMON; fillId <= FILL_RH; fillId++) {
     xfs.push(xf(F_NUM,     fillId, true));        // num
     xfs.push(xf(F_CARD,    fillId, false, true)); // card name
-    xfs.push(xf(F_ABBREV||F_BOLD, fillId, true)); // abbrev
+    xfs.push(xf(F_BOLD, fillId, true)); // abbrev
     xfs.push(xf(F_DEFAULT, fillId, true));        // blank
   }
 
@@ -503,4 +503,5 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
