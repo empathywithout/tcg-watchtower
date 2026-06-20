@@ -306,6 +306,7 @@ function buildZip(files) {
 
 // ── XLSX builder ──────────────────────────────────────────────────────────────
 function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
+  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setId}/cards`;
   const sst = []; const sstMap = {};
   function si(s) {
     const str = String(s??'');
@@ -387,8 +388,9 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
     cell('A',rn+1,si(`Set: ${setId.toUpperCase()}`),XF_MUTED)+
     cell('B',rn+1,si(`${cards.length+(master?rhCards.length:0)} cards`),XF_MUTED)+
     cell('C',rn+1,si(`Generated: ${today}`),XF_MUTED)+
-    blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+
-    cell('F',rn+1,si('tcgwatchtower.com'),XF_LINK)
+    blank('D',rn+1,XF_DEFAULT)+
+    cell('E',rn+1,si('Live prices:'),XF_MUTED)+
+    cell('F',rn+1,si(setUrl),XF_LINK)
   );
 
   addBlank();
@@ -427,11 +429,35 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
   }
 
   addBlank();
+  // Footer separator
+  mergeFull(rn+1);
+  row(cell('A',rn+1,si('━━━ TCG WATCHTOWER ━━━'),XF_HEADER_L)+'BCDEF'.split('').map(c=>blank(c,rn+1,XF_HEADER)).join(''),18);
+
+  // Row 1: brand + homepage
   row(
     cell('A',rn+1,si('TCG Watchtower'),XF_BOLD)+
-    cell('B',rn+1,si('tcgwatchtower.com'),XF_LINK)+
-    cell('C',rn+1,si('Live prices  •  Restock alerts  •  Binder placeholders  •  Set guides'),XF_MUTED)+
+    cell('B',rn+1,si('https://tcgwatchtower.com'),XF_LINK)+
+    cell('C',rn+1,si('Free Pokémon TCG price tracking, restock alerts & collector tools'),XF_MUTED)+
     blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
+  );
+  // Row 2: direct set link
+  row(
+    cell('A',rn+1,si(`${setName} prices:`),XF_BOLD)+
+    cell('B',rn+1,si(setUrl),XF_LINK)+
+    cell('C',rn+1,si('Live card prices updated daily for this set'),XF_MUTED)+
+    blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
+  );
+  // Row 3: other tools
+  row(
+    cell('A',rn+1,si('Free tools:'),XF_BOLD)+
+    cell('B',rn+1,si('Binder placeholders  •  Restock alerts  •  Portfolio tracker  •  Set checklists'),XF_MUTED)+
+    blank('C',rn+1,XF_DEFAULT)+blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
+  );
+  // Row 4: share credit
+  row(
+    cell('A',rn+1,si('Share freely:'),XF_BOLD)+
+    cell('B',rn+1,si('Please credit TCG Watchtower if sharing online — tcgwatchtower.com'),XF_MUTED)+
+    blank('C',rn+1,XF_DEFAULT)+blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
   );
 
   // ── XML assembly ──
@@ -586,6 +612,7 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
 
 
