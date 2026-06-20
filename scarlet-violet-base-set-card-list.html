@@ -78,6 +78,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1064,7 +1065,6 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     <div class="hero-grid">
       <div>
         <div class="hero-badge">
-          <span style="color:var(--accent-amber)">★</span>
           <span>Complete Set Guide</span>
         </div>
         <h1 class="set-title">
@@ -1075,6 +1075,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Scarlet &amp; Violet Base Set is the first expansion of the Pokémon TCG Scarlet &amp; Violet era, released March 31, 2023. Based on Japan's Scarlet ex and Violet ex sets, it introduced Pokémon ex, Illustration Rares, and Special Illustration Rares as new chase rarities. The 258-card set's top chase cards include the Gardevoir ex SIR and a surprisingly deep lineup of Illustration Rares — Drowzee, Ralts, Kirlia, and Slowpoke — that consistently outperform the Charizard ex and Miraidon ex SIRs in secondary market value. This complete Scarlet &amp; Violet Base Set card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 <p class="set-desc set-master-desc" style="font-size:0.88rem;color:rgba(148,163,184,0.9);line-height:1.65;margin-top:0;margin-bottom:24px;border-left:2px solid rgba(74,222,128,0.4);padding-left:12px;">
   A complete Scarlet & Violet Base Set master set contains <strong style="color:#e2e8f0;">456 cards</strong> — 258 main set and secret rare cards plus 198 reverse holos (one for each Common, Uncommon, Rare, and Double Rare). Secret rares do not have reverse holo variants.
 </p>        <div class="set-stats" style="grid-template-columns:repeat(5,1fr);">
@@ -1095,8 +1096,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
             <div class="stat-label">Master Set</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">Invalid Date</div>
-            <div class="stat-label">Mar 2023</div>
+            <div class="stat-value">Mar</div>
+            <div class="stat-label">2023</div>
           </div>
         </div>
       </div>
@@ -1114,12 +1115,12 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <!-- ===== SECTION NAV ===== -->
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/base-set/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/base-set/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/base-set/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">Sealed</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/base-set/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/base-set/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/base-set/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">Sets ▾</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
@@ -1158,6 +1159,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Scarlet & Violet Base Set (SV1) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV1 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     
@@ -1241,7 +1244,6 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <section class="section">
   <div class="container" style="text-align:center">
     <div class="hero-badge" style="justify-content:center;margin:0 auto 24px">
-      <span style="color:var(--accent-amber)">⚡</span>
       <span>Never miss a restock</span>
     </div>
     <h2 class="section-title">Get Scarlet & Violet Base Set (SV1) <span class="gradient-text">Restock Alerts</span></h2>
