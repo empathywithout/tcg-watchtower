@@ -247,7 +247,7 @@ export default async function handler(req, res) {
       const csv = buildCSV(setName, set, cards, groups, rhCards, master, today);
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.csv"`);
-      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.status(200).send('\uFEFF' + csv);
     }
 
@@ -255,7 +255,7 @@ export default async function handler(req, res) {
     const xlsxBuf = buildXLSX(setName, set, cards, groups, rhCards, master, today);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.xlsx"`);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     return res.status(200).send(xlsxBuf);
 
   } catch (e) {
@@ -550,6 +550,7 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
 
 
