@@ -745,7 +745,7 @@ function fixModalLinks(html) {
   // Add Amazon as first button in modal-links, before eBay
   // Pattern: <div class="modal-links">
 
-        <a class="modal-buy-link pl-ebay"
+
   html = html.replace(
     '<div class="modal-links">\n\n        <a class="modal-buy-link pl-ebay"',
     '<div class="modal-links">\n\n        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class="modal-buy-link pl-ebay"'
