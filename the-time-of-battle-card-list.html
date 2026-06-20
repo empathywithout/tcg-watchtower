@@ -371,7 +371,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       <li>Squard OP16-008 Common</li>
       <li>Speed Jil OP16-009 Common</li>
       <li>Namule OP16-010 Uncommon</li>
-      <li>Vista OP16-011 Unknown</li>
+      <li>Vista OP16-011 Treasure Rare</li>
       <li>Vista (altArt) OP16-011 Alternate Art</li>
       <li>Benn.Beckman OP16-012 Rare</li>
       <li>McGuy OP16-013 Common</li>
@@ -508,12 +508,12 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       <li>Portgas.D.Ace (altArt) OP16-118 Alternate Art</li>
       <li>Marshall.D.Teach OP16-119 Secret Rare</li>
       <li>Marshall.D.Teach (altArt) OP16-119 Alternate Art</li>
-      <li>Tashigi (specialAltArt) OP14-029 Special</li>
-      <li>Ms. All Sunday (specialAltArt) OP14-084 Special</li>
-      <li>Bartholomew Kuma (specialAltArt) EB04-054 Special</li>
-      <li>Charlotte Katakuri (specialAltArt) OP11-067 Special</li>
-      <li>Cavendish (specialAltArt) OP10-045 Special</li>
-      <li>Portgas.D.Ace (specialAltArt) ST15-005 Special</li>
+      <li>Tashigi (specialAltArt) OP14-029 Rare</li>
+      <li>Ms. All Sunday (specialAltArt) OP14-084 Super Rare</li>
+      <li>Bartholomew Kuma (specialAltArt) EB04-054 Rare</li>
+      <li>Charlotte Katakuri (specialAltArt) OP11-067 Super Rare</li>
+      <li>Cavendish (specialAltArt) OP10-045 Rare</li>
+      <li>Portgas.D.Ace (specialAltArt) ST15-005 Super Rare</li>
     </ul>
   </div>
 </section>
@@ -651,7 +651,7 @@ function getCached(localId, cardName) {
   return priceCache[key]||priceCache[priceKeyByName(localId,cardName)]||null;
 }
 
-const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
+const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','Treasure Rare':'Treasure Rare','treasureRare':'Treasure Rare','treasure rare':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
 function normalizeRarity(r) { return RARITY_NORMALIZE[r]||r||''; }
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
@@ -718,7 +718,7 @@ function renderChaseCards(cards) {
       rarity:c.rarity,
       rarityClass:RARITY_CLASS[c.rarity]||'rarity-r',
       label:RARITY_LABEL[c.rarity]||c.rarity,
-      img:/^[A-Z]{2,}d+-/.test(c.localId) ? cardImg(c.localId) : (c.image||cardImg(c.localId)),
+      img:/^[A-Z]{2,}\d+-/.test(c.localId) ? cardImg(c.localId) : (c.image||cardImg(c.localId)),
     }));
   renderChaseHTML();
 }
@@ -761,7 +761,7 @@ function renderCards(reset) {
   slice.forEach(card => {
     if (_seenRenderIds.has(card.localId)) return;
     _seenRenderIds.add(card.localId);
-    const imgUrl = /^[A-Z]{2,}d+-/.test(card.localId) ? cardImg(card.localId) : (card.image||cardImg(card.localId));
+    const imgUrl = /^[A-Z]{2,}\d+-/.test(card.localId) ? cardImg(card.localId) : (card.image||cardImg(card.localId));
     const el = document.createElement('div');
     el.className='card-item';
     el.dataset.localId=card.localId;
