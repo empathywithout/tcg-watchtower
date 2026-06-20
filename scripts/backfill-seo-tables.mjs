@@ -706,6 +706,23 @@ function fixTCGPlayerText(html) {
   }).join('\n');
 }
 
+
+// ── Add Amazon to chase slider buy-links ─────────────────────────────────────
+function fixChaseSliderAmazon(html) {
+  if (!html.includes('renderChaseCardsHTML')) return html;
+  if (html.includes('buy-link buy-amazon')) return html;
+  // The HTML file contains real \n and real " chars — match exactly what Node reads
+  const OLD = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-ebay\\"';
+  const NEW = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-amazon\\" href=\\"${amazonLink(c.searchName)}\\" target=\\"_blank\\" rel=\\"noopener\\" onclick=\\"event.stopPropagation()\\">Amazon</a>\\n          <a class=\\"buy-link buy-ebay\\"';
+  // Try both escaped (as stored in file) and unescaped (as read by Node)
+  if (html.includes(OLD)) return html.split(OLD).join(NEW);
+  // Fallback: real newline + real quotes version
+  const OLD2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-ebay\"';
+  const NEW2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-amazon\" href=\"${amazonLink(c.searchName)}\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Amazon</a>\n          <a class=\"buy-link buy-ebay\"';
+  if (html.includes(OLD2)) return html.split(OLD2).join(NEW2);
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -914,6 +931,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   const htmlBeforeTCGP = html;
   html = fixTCGPlayerText(html);
   if (html !== htmlBeforeTCGP) changes.push('tcgp text');
+
+  // 1c-iii. Add Amazon to chase slider buy-links
+  const htmlBeforeChaseAmazon = html;
+  html = fixChaseSliderAmazon(html);
+  if (html !== htmlBeforeChaseAmazon) changes.push('chase slider amazon');
 
   // 2. H1 fix
   if (html.includes(`<span class="gradient-text">${series}</span><br>${name}`)) {
