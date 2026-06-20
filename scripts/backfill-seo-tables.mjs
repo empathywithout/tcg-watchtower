@@ -359,6 +359,84 @@ function injectDownloadButtons(html, setId, name) {
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
+
+// ── Master set hero injection ──────────────────────────────────────────────────
+function injectMasterSetHero(html, cards, name, releaseDate, short) {
+  const SECRET = new Set([
+    'Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
+    'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Black White Rare','Treasure Rare'
+  ]);
+
+  // Normalise rarity capitalisation
+  const norm = r => (r||'').split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
+
+  const total      = cards.length;
+  const secretCards = cards.filter(c => SECRET.has(norm(c.rarity||'')));
+  const mainCards   = cards.filter(c => !SECRET.has(norm(c.rarity||'')));
+  const rhCards     = mainCards; // reverse holos exist for all non-secret cards
+  const masterTotal = total + rhCards.length;
+
+  const releaseYear  = releaseDate ? releaseDate.split('-')[0] : '';
+  const releaseMonth = releaseDate ? new Date(releaseDate + 'T00:00:00').toLocaleString('en-US',{month:'short'}) : '';
+
+  // ── Master set paragraph (SEO text, injected after second set-desc) ──────
+  const masterPara = `
+<p class="set-desc set-master-desc" style="font-size:0.88rem;color:rgba(148,163,184,0.9);line-height:1.65;margin-top:0;margin-bottom:24px;border-left:2px solid rgba(74,222,128,0.4);padding-left:12px;">
+  A complete ${name} master set contains <strong style="color:#e2e8f0;">${masterTotal} cards</strong> — ${total} main set and secret rare cards plus ${rhCards.length} reverse holos (one for each Common, Uncommon, Rare, and Double Rare). Secret rares do not have reverse holo variants.
+</p>`;
+
+  // ── Replace stat bubbles: 3 → 5 ──────────────────────────────────────────
+  // Match the existing set-stats div and replace contents
+  const newStats = `<div class="set-stats" style="grid-template-columns:repeat(5,1fr);">
+          <div class="stat-card stat-card-logo">
+            <img id="set-logo-hero" alt="${name} Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <div class="stat-label">${short || ''}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${mainCards.length}</div>
+            <div class="stat-label">Main Set</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#fbbf24;">${secretCards.length}</div>
+            <div class="stat-label">Secret Rares</div>
+          </div>
+          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
+            <div class="stat-value" style="color:#4ade80;">${masterTotal}</div>
+            <div class="stat-label">Master Set</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${releaseMonth || 'TBD'}</div>
+            <div class="stat-label">${releaseYear || 'Release'}</div>
+          </div>
+        </div>`;
+
+  // Replace old set-stats div
+  const oldStatsRe = /<div class="set-stats">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
+  // More targeted: find set-stats opening and replace until its closing
+  // Use a fixed anchor: replace from <div class="set-stats"> to the </div> that closes the stat-card-logo
+  // Actually safer: replace innerHTML of set-stats by finding the pattern
+  if (html.includes('<div class="set-stats">')) {
+    // Find the set-stats block - it has 3 direct stat-card children
+    // Replace the whole thing using a regex that captures until 4 </div>s deep
+    html = html.replace(
+      /<div class="set-stats">[\s\S]*?<\/div>(\s*<\/div>){2}/,
+      newStats
+    );
+  }
+
+  // Inject master paragraph after the second set-desc paragraph
+  // (second set-desc is the longer intro, we add after it before set-stats)
+  if (!html.includes('set-master-desc')) {
+    // Find position just before <div class="set-stats"
+    const statsPos = html.indexOf('<div class="set-stats"');
+    if (statsPos > 0) {
+      html = html.slice(0, statsPos) + masterPara + '        ' + html.slice(statsPos);
+    }
+  }
+
+  return html;
+}
+
 for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate, totalCards } of SETS) {
   process.stdout.write(`${setId} (${file})... `);
 
@@ -382,6 +460,9 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
         const table = buildTable(cards, name, seriesSlug, urlSlug);
         html = html.replace('</body>', table + '\n</body>');
         changes.push(`${cards.length} cards`);
+        // Inject master set hero (paragraph + expanded stat bubbles)
+        html = injectMasterSetHero(html, cards, name, releaseDate, short);
+        changes.push('master set hero');
       }
     } catch (e) {
       changes.push(`card table FAILED: ${e.message}`);
@@ -443,6 +524,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
