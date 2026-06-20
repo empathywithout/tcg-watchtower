@@ -590,7 +590,7 @@ const SEO_DATA = {
   'me02pt5': {
     metaTitle: 'Ascended Heroes Card List: 295 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Ascended Heroes card list — all 295 ME2.5 cards with rarity filters, Special Illustration Rares, and live TCGplayer prices.',
-    intro: 'Ascended Heroes is the ME2.5 subset expansion in the Pokemon TCG Mega Evolution series, released in early 2026. As a smaller set, Ascended Heroes focuses on a tight selection of Mega Evolution Pokemon ex with a high concentration of premium rarities relative to set size, making it a popular target for collectors focused on pulling Special Illustration Rares. The ME2.5 card list contains fewer common filler cards than a standard main set, which has contributed to strong secondary market prices on its top pulls. This page provides the complete Ascended Heroes card list with rarity filters, live pricing from TCGplayer, and direct links to individual card pages for every card in the set.',
+    intro: 'Ascended Heroes is the ME2.5 subset expansion in the Pokemon TCG Mega Evolution series, released in early 2026. At 295 cards, Ascended Heroes is the largest Pokemon TCG set ever printed, with a massive roster of Mega Evolution Pokemon ex and an exceptional density of premium rarities including Special Illustration Rares across the set. This page provides the complete Ascended Heroes card list with rarity filters, live pricing from TCGplayer, and direct links to individual card pages for every card in the set.',
   },
   'me03': {
     metaTitle: 'Perfect Order Card List: 124 Cards, Rarity Filter & Prices | TCG Watchtower',
@@ -936,6 +936,7 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
 
 
 
