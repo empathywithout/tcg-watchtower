@@ -511,45 +511,82 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
 // ── CSV builder ───────────────────────────────────────────────────────────────
 function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
   const totalCards = cards.length + (master ? rhCards.length : 0);
+  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setId}/cards`;
   const rows = [];
-  rows.push(['###','Card Name — Full Name Here                ','Rarity    ','Have','Grade (PSA/BGS/TAG)','Notes / Comments        ']);
-  rows.push([`${setName}${master?' — Master Set Checklist':' — Checklist'}`,'','','','','']);
-  rows.push([`Set: ${setId.toUpperCase()}`,`${totalCards} total cards`,`Generated: ${today}`,'','','']);
-  rows.push(['tcgwatchtower.com','','','','','']);
-  rows.push(['','','','','','']);
-  rows.push(['RARITY LEGEND','','','','','']);
-  rows.push(['Abbrev','Full Name','What It Means','','','']);
+
+  // Width hint row — forces natural column widths on open
+  rows.push(['###','Card Name — Full Name Here              ','Rarity  ','Have','Grade (PSA/BGS/TAG)','Notes / Comments        ']);
+
+  // Header
+  rows.push(['']);
+  rows.push([`${setName}${master ? ' — Master Set Checklist' : ' — Checklist'}`]);
+  rows.push([`Set: ${setId.toUpperCase()}`, `${totalCards} cards total`, `Generated: ${today}`]);
+  rows.push(['']);
+  rows.push(['=== TCG WATCHTOWER ===', 'Live prices, restock alerts & more']);
+  rows.push(['View this set online:', setUrl]);
+  rows.push(['Binder placeholders:', 'Free PDF on every set page at tcgwatchtower.com']);
+  rows.push(['']);
+
+  // How to use
+  rows.push(['=== HOW TO USE ===']);
+  rows.push(['Have column:', 'Y = I have it   N = I need it   W = Wishlisted']);
+  rows.push(['Grade column:', 'PSA 10 / PSA 9 / PSA 8 / BGS 9.5 / BGS 9 / TAG 8 / TAG 7 / Raw']);
+  rows.push(['Notes column:', 'Purchase price, seller, condition, trade info etc.']);
+  rows.push(['']);
+
+  // Rarity Legend
+  rows.push(['=== RARITY LEGEND ===']);
+  rows.push(['Abbrev', 'Full Rarity Name', 'What It Means']);
+  rows.push(['------', '----------------', '-------------']);
   for (const r of RARITY_ORDER) {
-    if (RARITY_ABBREV[r]) rows.push([RARITY_ABBREV[r],r,RARITY_DESC[r]||'','','','']);
+    if (RARITY_ABBREV[r]) rows.push([RARITY_ABBREV[r], r, RARITY_DESC[r] || '']);
   }
-  rows.push(['RH','Reverse Holo','Foil on card border/background. C/U/R/DR cards only.','','','']);
-  rows.push(['','','','','','']);
-  rows.push(['CARD LIST','','','','','']);
-  rows.push(['Have: Y = have it  |  N = need it  |  W = wishlisted','','','','','']);
+  rows.push(['RH', 'Reverse Holo', 'Foil pattern on card border/background. Any C / U / R / DR card can have a RH version.']);
+  rows.push(['']);
+
+  // Card list
+  rows.push(['=== CARD LIST ===']);
+  rows.push(['']);
+
   for (const rarity of RARITY_ORDER) {
     const group = groups[rarity];
     if (!group?.length) continue;
-    rows.push(['','','','','','']);
-    rows.push([`${rarity} (${RARITY_ABBREV[rarity]||rarity}) — ${group.length} cards`,'','','','','']);
-    rows.push(['#','Card Name','Rarity','Have (Y/N/W)','Grade (PSA/BGS/TAG)','Notes']);
-    for (const card of group) rows.push([padId(card.localId),card.name,RARITY_ABBREV[card.rarity]||card.rarity,'','','']);
+    rows.push([`--- ${rarity.toUpperCase()} (${RARITY_ABBREV[rarity]||rarity}) -- ${group.length} card${group.length!==1?'s':''} ---`]);
+    rows.push(['#', 'Card Name', 'Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
+    for (const card of group) {
+      rows.push([padId(card.localId), card.name, RARITY_ABBREV[card.rarity]||card.rarity, '', '', '']);
+    }
+    rows.push(['']);
   }
+
   if (master && rhCards.length > 0) {
-    rows.push(['','','','','','']);
-    rows.push([`Reverse Holos (RH) — ${rhCards.length} cards`,'','','','','']);
-    rows.push(['#','Card Name','Base Rarity','Have (Y/N/W)','Grade (PSA/BGS/TAG)','Notes']);
-    for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId)))
-      rows.push([padId(card.localId)+' RH',card.name,RARITY_ABBREV[card.rarity]||card.rarity,'','','']);
+    rows.push([`--- REVERSE HOLOS (RH) -- ${rhCards.length} cards ---`]);
+    rows.push(['Foil versions of all Common, Uncommon, Rare, and Double Rare cards.']);
+    rows.push(['#', 'Card Name', 'Base Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
+    for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId))) {
+      rows.push([padId(card.localId)+' RH', card.name, RARITY_ABBREV[card.rarity]||card.rarity, '', '', '']);
+    }
+    rows.push(['']);
   }
-  rows.push(['','','','','','']);
-  rows.push(['TCG Watchtower','tcgwatchtower.com','Live prices  •  Restock alerts  •  Binder placeholders','','','']);
-  return rows.map(r=>r.map(c=>{const s=String(c??'');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;}).join(',')).join('\r\n');
+
+  // Footer
+  rows.push(['=== TCG WATCHTOWER ===']);
+  rows.push(['Website:', 'https://tcgwatchtower.com']);
+  rows.push([`${setName} prices:`, setUrl]);
+  rows.push(['Free tools:', 'Checklists, binder placeholders, restock alerts, card price tracking']);
+  rows.push(['Share freely:', 'Please credit TCG Watchtower if posting online.']);
+
+  return rows.map(r => r.map(c => {
+    const s = String(c ?? '');
+    return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
+  }).join(',')).join('\r\n');
 }
 
 function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
 
 
