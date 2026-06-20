@@ -418,8 +418,10 @@ function injectMasterSetHero(html, cards, name, releaseDate, short) {
   const rhCards     = mainCards; // reverse holos exist for all non-secret cards
   const masterTotal = total + rhCards.length;
 
-  const releaseYear  = releaseDate ? releaseDate.split('-')[0] : '';
-  const releaseMonth = releaseDate ? new Date(releaseDate + 'T00:00:00').toLocaleString('en-US',{month:'short'}) : '';
+  // releaseDate is 'Mar 2023' format — split directly, no Date parsing needed
+  const relParts     = releaseDate ? releaseDate.split(' ') : [];
+  const releaseMonth = relParts[0] || '';
+  const releaseYear  = relParts[1] || '';
 
   // ── Master set paragraph (SEO text, injected after second set-desc) ──────
   const masterPara = `
@@ -579,6 +581,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
