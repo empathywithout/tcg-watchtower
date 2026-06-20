@@ -278,7 +278,28 @@ function expandPrimaryCards(rawCards, expansionId) {
         const inRange = ranges.some(r => cardNumInt >= r.start && cardNumInt <= r.end);
         if (!inRange) continue; // outside our range, skip
       } else {
-        continue; // not in EB_SPLIT at all, skip
+        // Not an EB split card — check if it has a variant printed in our expansion (cross-set SP reprint)
+        const crossSetVariant = (c.variants || []).find(v =>
+          (v.printings || []).map(p => p.toUpperCase()).includes(expansionId.toUpperCase())
+        );
+        if (!crossSetVariant) continue; // not a cross-set reprint for our expansion, skip
+
+        // It's a cross-set SP reprint — add it with the correct variant image and full cross-set localId
+        const crossImage = pickImage(crossSetVariant.images) || pickImage(c.images);
+        const crossRarity = normalizeRarity(c.rarity);
+        const suffix = variantSuffix(crossSetVariant.name || '');
+        const localId = suffix ? `${rawScrydexId}_${suffix}` : rawScrydexId;
+        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) → ${localId}`);
+        cards.push({
+          localId,
+          name: `${(c.name||'').trim()}${suffix ? ' (' + (crossSetVariant.name||'') + ')' : ''}`,
+          rarity: crossRarity,
+          image: crossImage,
+          isVariant: !!suffix,
+          variantType: crossSetVariant.name || '',
+          baseLocalId: rawScrydexId,
+        });
+        continue;
       }
     }
     const baseNum = isFromDifferentExpansion ? rawScrydexId : parseShortNum(c.id);
@@ -568,3 +589,4 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
+
