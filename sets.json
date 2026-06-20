@@ -196,41 +196,5 @@
     "setId": "me05",
     "phase": "jp",
     "live": true
-  },
-  {
-    "slug": "one-piece/sets/heroines-edition/cards",
-    "name": "Heroines Edition (EB03)",
-    "series": "One Piece TCG",
-    "short": "EB03",
-    "setId": "eb03",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/the-azure-seas-seven/cards",
-    "name": "The Azure Seas Seven (OP14)",
-    "series": "One Piece TCG",
-    "short": "OP14",
-    "setId": "op14",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/the-time-of-battle/cards",
-    "name": "The Time of Battle (OP16)",
-    "series": "One Piece TCG",
-    "short": "OP16",
-    "setId": "op16",
-    "phase": "en",
-    "live": true
-  },
-  {
-    "slug": "one-piece/sets/adventure-on-kamis-island/cards",
-    "name": "Adventure on Kami's Island (OP15)",
-    "series": "One Piece TCG",
-    "short": "OP15",
-    "setId": "op15",
-    "phase": "en",
-    "live": true
   }
 ]
