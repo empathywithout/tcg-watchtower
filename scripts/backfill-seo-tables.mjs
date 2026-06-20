@@ -199,15 +199,25 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   }
 
   // 4. FAQ section + schema
-  if (!html.includes('FAQPage')) {
+  // Replace if: no FAQ yet, OR has generic FAQ and we have per-set specific data
+  const hasGenericFAQ = html.includes('highest rarity pulls') || html.includes('scheduled to release on');
+  const hasPerSetFAQ  = !!getFAQ(setId);
+  const needsFAQ = !html.includes('FAQPage') || (hasGenericFAQ && hasPerSetFAQ);
+  if (needsFAQ) {
     const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
     const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
-    html = html.replace('<!-- ===== FOOTER ===== -->', faqSection + '<!-- ===== FOOTER ===== -->');
-    // Insert FAQ schema after first closing </script> of existing JSON-LD
-    const ldIdx = html.indexOf('application/ld+json');
-    const insertAt = html.indexOf('</script>', ldIdx) + '</script>'.length;
-    html = html.slice(0, insertAt) + '\n' + faqSchema + html.slice(insertAt);
-    changes.push('FAQ');
+    if (html.includes('FAQPage')) {
+      // Replace existing generic FAQ section and schema
+      html = html.replace(/<!-- ===== FAQ ===== -->[\s\S]*?<!-- ===== FOOTER ===== -->/, faqSection + '<!-- ===== FOOTER ===== -->');
+      html = html.replace(/<script type="application\/ld\+json">[\s\S]*?"@type": "FAQPage"[\s\S]*?<\/script>/, faqSchema);
+      changes.push('FAQ updated');
+    } else {
+      html = html.replace('<!-- ===== FOOTER ===== -->', faqSection + '<!-- ===== FOOTER ===== -->');
+      const ldIdx = html.indexOf('application/ld+json');
+      const insertAt = html.indexOf('</script>', ldIdx) + '</script>'.length;
+      html = html.slice(0, insertAt) + '\n' + faqSchema + html.slice(insertAt);
+      changes.push('FAQ');
+    }
   }
 
   if (changes.length === 0) {
@@ -223,4 +233,5 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
