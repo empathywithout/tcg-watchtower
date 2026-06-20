@@ -409,6 +409,7 @@ function fixSectionNav(html, name, short) {
 // ── Inject editorial content into top-chase-cards.html pages ─────────────────
 function injectChaseEditorial(html, cards, name, seriesSlug, urlSlug) {
   if (html.includes('class="editorial"')) return html; // already injected
+  const isMostValuable = html.includes('/most-valuable"') || html.includes('Most Valuable');
 
   const SECRET = new Set([
     'Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
@@ -437,10 +438,13 @@ function injectChaseEditorial(html, cards, name, seriesSlug, urlSlug) {
 
   const cardListUrl = `https://tcgwatchtower.com/pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
 
+  const intro = isMostValuable
+    ? `The most valuable ${name} cards ranked by live market price — ${top1.name}${top2 ? ` and ${top2.name}` : ''} lead as the top pulls. Prices updated daily.`
+    : `${name} has ${total} chase cards — ${top1.name}${top2 ? ` and ${top2.name}` : ''} lead as the top pulls. All ${total} cards are ranked below by live market price, updated daily.`;
+
   const editorial = `
   <p class="editorial" style="max-width:720px;margin:0 auto 32px;font-size:0.95rem;color:rgba(226,232,240,0.8);line-height:1.7;text-align:center;">
-    ${name} has ${total} chase cards — ${top1.name}${top2 ? ` and ${top2.name}` : ''} lead as the top pulls.
-    All ${total} cards are ranked below by live market price, updated daily.
+    ${intro}
     Check live prices on TCG Watchtower or <a href="${cardListUrl}" style="color:#4ade80;text-decoration:none;">browse the full ${name} card list</a>.
   </p>`;
 
@@ -450,6 +454,204 @@ function injectChaseEditorial(html, cards, name, seriesSlug, urlSlug) {
     `$1${editorial}
   `
   );
+}
+
+const AMAZON_TAG = 'cehutto01-20';
+
+
+// ── Patch Amazon links into existing chase/most-valuable pages ────────────────
+function injectChasePageAmazon(html) {
+  if (html.includes('btn-amazon')) return html; // already done
+  // Add btn-amazon style after btn-ebay style
+  html = html.replace(
+    '.btn-ebay{background:#e43137;color:#fff}',
+    '.btn-ebay{background:#e43137;color:#fff}\n.btn-amazon{background:#f90;color:#111}'
+  );
+  // Add Amazon button after every eBay button in buy-btns sections
+  // Pattern: <a class="btn btn-ebay" href="...">eBay</a>\n        </div>
+  html = html.replace(
+    /(<a class="btn btn-ebay" href="([^"]+)"[^>]*>eBay<\/a>)\s*<\/div>/g,
+    (match, ebayBtn, ebayUrl) => {
+      // Derive Amazon search from eBay URL's _nkw param
+      const nkwMatch = ebayUrl.match(/_nkw=([^&]+)/);
+      const query = nkwMatch ? nkwMatch[1] : encodeURIComponent('Pokemon Card');
+      const amazonUrl = `https://www.amazon.com/s?k=${query}&linkCode=ll2&tag=${AMAZON_TAG}&language=en_US`;
+      return `${ebayBtn}\n          <a class="btn btn-amazon" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>\n        </div>`;
+    }
+  );
+  return html;
+}
+
+
+// ── Generate missing top-chase-cards / most-valuable pages ───────────────────
+function generateChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel,
+                              cards, name, seriesSlug, urlSlug, setId, series, releaseDate }) {
+  const SITE_URL = 'https://tcgwatchtower.com';
+  const cardListUrl = `${SITE_URL}/pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
+  const seriesUrl   = `${SITE_URL}/pokemon/sets/${seriesSlug}`;
+
+  const SECRET = new Set(['Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
+    'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Black White Rare','Treasure Rare']);
+  const norm = r => (r||'').split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
+  const RARITY_TIER  = {'Mega Hyper Rare':0,'Hyper Rare':1,'Special Illustration Rare':2,'Black White Rare':2,'Ultra Rare':3,'Illustration Rare':4,'Art Rare':4,'Mega Attack Rare':4};
+  const RARITY_LABEL = {'Mega Hyper Rare':'MHR','Hyper Rare':'HR','Special Illustration Rare':'SIR','Black White Rare':'BWR','Ultra Rare':'UR','Illustration Rare':'IR','Art Rare':'AR','Mega Attack Rare':'MAR'};
+  const CHASE_RARITIES = new Set(Object.keys(RARITY_TIER));
+
+  const chaseCards = cards
+    .filter(c => CHASE_RARITIES.has(norm(c.rarity||'')))
+    .sort((a,b) => (RARITY_TIER[norm(a.rarity)]??99)-(RARITY_TIER[norm(b.rarity)]??99) || parseInt(a.localId)-parseInt(b.localId));
+
+  const cardItems = chaseCards.map(c => {
+    const r = norm(c.rarity||'');
+    const rarityClass = (RARITY_TIER[r]<=1)?'rarity-hr':(RARITY_TIER[r]===2)?'rarity-sir':(RARITY_TIER[r]===3)?'rarity-ur':'rarity-ir';
+    const label = RARITY_LABEL[r] || r;
+    const img   = `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/${setId}/${c.localId}.webp`;
+    const slug  = c.name.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + c.localId;
+    const tcgpSlug = urlSlug;
+    const tcgpUrl  = `https://partner.tcgplayer.com/c/7068180/1830156/21018?u=${encodeURIComponent(`https://www.tcgplayer.com/search/pokemon/${tcgpSlug}?productLineName=pokemon&q=${encodeURIComponent(c.name)}&view=grid&Language=English&productTypeName=Cards`)}`;
+    const ebayUrl  = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name+' '+c.localId+' '+name+' Pokemon Card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339145069&customid=&toolid=10001&mkevt=1`;
+    const amazonUrl= `https://www.amazon.com/s?k=${encodeURIComponent(c.name+' '+name+' Pokemon Card')}&linkCode=ll2&tag=${AMAZON_TAG}&language=en_US`;
+    return `
+    <div class="card-item">
+      <a href="/pokemon/sets/${seriesSlug}/${urlSlug}/cards/${slug}">
+        <img src="${img}" alt="${c.name} ${c.localId} ${name} Pokemon Card" width="180" height="251" loading="lazy" onerror="this.style.background='#1e293b'">
+      </a>
+      <div class="card-info">
+        <div class="card-name">${c.name}</div>
+        <div class="card-num">#${c.localId}</div>
+        <span class="card-rarity ${rarityClass}">${label}</span>
+        <div class="card-price loading" data-local-id="${c.localId}">Loading...</div>
+        <div class="buy-btns">
+          <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+          <a class="btn btn-amazon" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const top1 = chaseCards[0];
+  const top2 = chaseCards[1];
+  const editorial = top1 ? `
+  <p class="editorial" style="max-width:720px;margin:0 auto 32px;font-size:0.95rem;color:rgba(226,232,240,0.8);line-height:1.7;text-align:center;">
+    ${pageDesc} ${top1 ? `${top1.name}${top2?' and '+top2.name:''} lead as the top pulls.` : ''} Prices updated daily.
+    <a href="${cardListUrl}" style="color:#4ade80;text-decoration:none;">Browse the full ${name} card list →</a>
+  </p>` : '';
+
+  const TCGP_GROUP = {'me05':'24688','me04':'24655','me03':'24519','me02':'24416','me01':'24290',
+    'sv01':'23055','sv02':'23120','sv03':'23253','sv3pt5':'23364','sv04':'23440','sv4pt5':'23353',
+    'sv05':'23567','sv06':'23714','sv6pt5':'23831','sv07':'23928','sv08':'24073','sv8pt5':'24131',
+    'sv09':'24267','sv10':'24480','zsv10pt5':'24506','rsv10pt5':'24507','me02pt5':'24505'}[setId]||'';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${pageTitle}</title>
+<meta name="description" content="${pageDesc}">
+<link rel="canonical" href="${pageUrl}">
+<meta property="og:title" content="${pageTitle}">
+<meta property="og:description" content="${pageDesc}">
+<meta property="og:url" content="${pageUrl}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"${pageTitle}","description":"${pageDesc}","url":"${pageUrl}","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"${SITE_URL}"},{"@type":"ListItem","position":2,"name":"Pokémon TCG","item":"${SITE_URL}/pokemon"},{"@type":"ListItem","position":3,"name":"${series}","item":"${seriesUrl}"},{"@type":"ListItem","position":4,"name":"${name}","item":"${cardListUrl}"},{"@type":"ListItem","position":5,"name":"${breadcrumbLabel}","item":"${pageUrl}"}]}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap"></noscript>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;--text:#f1f5f9;--text-muted:#94a3b8;--accent:#3b82f6}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.05em}
+.nav-back{color:var(--text-muted);font-size:0.85rem}
+.nav-back:hover{color:var(--text)}
+.breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
+.breadcrumb a:hover{color:var(--text)}
+.breadcrumb span{opacity:0.5}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:0.5rem;letter-spacing:0.02em}
+.subtitle{color:var(--text-muted);font-size:0.95rem;margin-bottom:2rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.card-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
+.card-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card-item img{width:100%;aspect-ratio:245/337;object-fit:contain;background:var(--surface2)}
+.card-info{padding:0.75rem}
+.card-name{font-weight:600;font-size:0.85rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-num{font-size:0.75rem;color:var(--text-muted);margin-bottom:4px}
+.card-rarity{display:inline-block;padding:2px 8px;border-radius:99px;font-size:0.7rem;font-weight:700;margin-bottom:6px}
+.rarity-hr{background:rgba(251,191,36,0.2);color:#fbbf24;border:1px solid rgba(251,191,36,0.4)}
+.rarity-sir{background:rgba(168,85,247,0.2);color:#c084fc;border:1px solid rgba(168,85,247,0.4)}
+.rarity-ur{background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4)}
+.rarity-ir{background:rgba(251,191,36,0.15);color:#fde68a;border:1px solid rgba(251,191,36,0.3)}
+.card-price{font-size:0.8rem;font-weight:700;color:#22c55e;margin-bottom:6px;min-height:1.1rem}
+.card-price.loading{color:var(--text-muted);font-weight:400;font-style:italic}
+.buy-btns{display:flex;gap:4px;flex-wrap:wrap}
+.btn{flex:1;padding:5px 4px;border-radius:6px;font-size:0.7rem;font-weight:600;text-align:center;border:none;cursor:pointer;min-width:0}
+.btn-tcgp{background:#1a6ef5;color:#fff}
+.btn-ebay{background:#e43137;color:#fff}
+.btn-amazon{background:#f90;color:#111}
+.set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:0.9rem;margin-top:1rem}
+.set-link:hover{text-decoration:underline}
+footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <a href="${cardListUrl}" class="nav-back">← ${name} Card List</a>
+</nav>
+<div style="padding:3px 16px;text-align:center;font-size:.65rem;color:rgba(148,163,184,.4);letter-spacing:.02em;border-bottom:1px solid rgba(255,255,255,.04);">This site contains affiliate links for which we may be compensated.</div>
+<div class="breadcrumb">
+  <a href="/">Home</a><span>›</span>
+  <a href="/pokemon">Pokémon TCG</a><span>›</span>
+  <a href="${seriesUrl}">${series}</a><span>›</span>
+  <a href="${cardListUrl}">${name}</a><span>›</span>
+  <span>${breadcrumbLabel}</span>
+</div>
+<div class="container">
+  <h1>${h1}</h1>
+  <p class="subtitle">${chaseCards.length} cards ranked by market price — updated daily</p>
+  ${editorial}
+  <div class="cards-grid" id="cards-grid">
+    ${cardItems}
+  </div>
+  <a href="${cardListUrl}" class="set-link">← View Full ${name} Card List</a>
+</div>
+<footer>
+  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.</p>
+</footer>
+<script>
+const TCGP_GROUP_ID = '${TCGP_GROUP}';
+if (TCGP_GROUP_ID) {
+  fetch('/api/tcgplayer-prices?groupId=' + TCGP_GROUP_ID)
+    .then(r => r.ok ? r.json() : null).then(data => {
+      if (!data) return;
+      const prices = data.prices || {};
+      document.querySelectorAll('[data-local-id]').forEach(el => {
+        const id = el.dataset.localId;
+        const p  = prices[id.padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+        if (p != null) { el.textContent = '$' + p.toFixed(2); el.classList.remove('loading'); }
+        else { el.textContent = ''; el.classList.remove('loading'); }
+      });
+    }).catch(() => {});
+}
+</script>
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+</body>
+</html>`;
 }
 
 // ── Main loop ─────────────────────────────────────────────────────────────────
@@ -575,18 +777,52 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     if (html !== htmlBefore) changes.push('master set hero');
   }
 
-  // 1c. Chase card page editorial — inject into top-chase-cards.html if it exists
+  // 1c. Chase/most-valuable pages — generate missing, patch existing
   if (cards.length > 0) {
-    const chaseFile = file.replace(/([^/]+)\.html$/, 'pokemon/sets/' + seriesSlug + '/' + urlSlug + '/top-chase-cards.html');
-    // Use path relative to repo root
-    const chasePath = `pokemon/sets/${seriesSlug}/${urlSlug}/top-chase-cards.html`;
-    if (existsSync(chasePath)) {
-      let chaseHtml = readFileSync(chasePath, 'utf8');
-      const chaseBefore = chaseHtml;
-      chaseHtml = injectChaseEditorial(chaseHtml, cards, name, seriesSlug, urlSlug);
-      if (chaseHtml !== chaseBefore) {
-        writeFileSync(chasePath, chaseHtml);
-        changes.push('chase editorial');
+    const SITE_URL = 'https://tcgwatchtower.com';
+    const cardListUrl = `${SITE_URL}/pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
+
+    const pageConfigs = [
+      {
+        file: `pokemon/sets/${seriesSlug}/${urlSlug}/top-chase-cards.html`,
+        url:  `${SITE_URL}/pokemon/sets/${seriesSlug}/${urlSlug}/top-chase-cards`,
+        title: `${name} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`,
+        desc:  `The most valuable ${name} chase cards ranked by price — Illustration Rares, Special Illustration Rares, Hyper Rares and more. Prices updated daily.`,
+        h1: `${name} Top Chase Cards`,
+        label: 'Top Chase Cards',
+        isChase: true,
+      },
+      {
+        file: `pokemon/sets/${seriesSlug}/${urlSlug}/most-valuable.html`,
+        url:  `${SITE_URL}/pokemon/sets/${seriesSlug}/${urlSlug}/most-valuable`,
+        title: `Most Valuable ${name} Cards | Prices & Rankings | Pokémon TCG`,
+        desc:  `The most valuable ${name} Pokémon cards ranked by price. See current market prices for all Hyper Rare, Special Illustration Rare, and Ultra Rare cards.`,
+        h1: `Most Valuable ${name} Cards`,
+        label: 'Most Valuable Cards',
+        isChase: false,
+      },
+    ];
+
+    for (const cfg of pageConfigs) {
+      if (!existsSync(cfg.file)) {
+        // Generate missing page from scratch
+        const pageHtml = generateChasePage({
+          pageUrl: cfg.url, pageTitle: cfg.title, pageDesc: cfg.desc,
+          h1: cfg.h1, breadcrumbLabel: cfg.label,
+          cards, name, seriesSlug, urlSlug, setId, series, releaseDate,
+        });
+        writeFileSync(cfg.file, pageHtml);
+        changes.push(`generated ${cfg.label}`);
+      } else {
+        // Patch existing page — add editorial + Amazon
+        let pageHtml = readFileSync(cfg.file, 'utf8');
+        const pageBefore = pageHtml;
+        if (cfg.isChase) pageHtml = injectChaseEditorial(pageHtml, cards, name, seriesSlug, urlSlug);
+        pageHtml = injectChasePageAmazon(pageHtml);
+        if (pageHtml !== pageBefore) {
+          writeFileSync(cfg.file, pageHtml);
+          changes.push(cfg.isChase ? 'chase page' : 'most-valuable page');
+        }
       }
     }
   }
@@ -652,6 +888,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
