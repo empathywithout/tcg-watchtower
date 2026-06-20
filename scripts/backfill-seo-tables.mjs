@@ -711,29 +711,28 @@ function fixTCGPlayerText(html) {
 function fixChaseSliderAmazon(html) {
   if (!html.includes('renderChaseCardsHTML')) return html;
   if (html.includes('buy-link buy-amazon')) return html;
-  // Shorten TCGplayer label to TCGp so 3 buttons fit in card width
-  html = html.replace('>TCGplayer</a>', '>TCGp</a>');
-  // Fix buy-links CSS so 3 buttons fit cleanly — reduce padding + font, allow wrap
-  // Fix buy-links CSS — handle both original and any previously patched version
-  const BUY_LINKS_FINAL = '.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; max-width:66px; overflow:hidden; }';
-  for (const old of [
-    '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
-    '.buy-links { display:flex; gap:4px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:52px; }',
-  ]) { if (html.includes(old)) html = html.split(old).join(BUY_LINKS_FINAL); }
-  const BTN_FINAL = 'padding:3px 4px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap;';
-  for (const old of [
-    'padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;',
-    'padding:4px 5px; border-radius:6px; font-size:0.63rem; font-weight:700;',
-  ]) { if (html.includes(old)) html = html.split(old).join(BTN_FINAL); }
-  // The HTML file contains real \n and real " chars — match exactly what Node reads
-  const OLD = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-ebay\\"';
-  const NEW = 'class=\\"buy-links\\">\\n          <a class=\\"buy-link buy-amazon\\" href=\\"${amazonLink(c.searchName)}\\" target=\\"_blank\\" rel=\\"noopener\\" onclick=\\"event.stopPropagation()\\">Amazon</a>\\n          <a class=\\"buy-link buy-ebay\\"';
-  // Try both escaped (as stored in file) and unescaped (as read by Node)
-  if (html.includes(OLD)) return html.split(OLD).join(NEW);
-  // Fallback: real newline + real quotes version
-  const OLD2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-ebay\"';
-  const NEW2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-amazon\" href=\"${amazonLink(c.searchName)}\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Amazon</a>\n          <a class=\"buy-link buy-ebay\"';
-  if (html.includes(OLD2)) return html.split(OLD2).join(NEW2);
+
+  // 1. Fix CSS — the file has real newlines so use \n in the strings
+  // Original values confirmed from live file inspection
+  html = html
+    .replace(
+      '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
+      '.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }'
+    )
+    .replace(
+      'padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;',
+      'padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;'
+    );
+
+  // 2. Add Amazon button — the file stores JS template literals with escaped quotes
+  // When Node reads the HTML file these appear as literal backslash-quote sequences
+  // Confirmed pattern from file: class=\"buy-links\">
+          <a class=\"buy-link buy-ebay\"
+  const EBAY_PAT = 'class=\"buy-links\">\n          <a class=\"buy-link buy-ebay\"';
+  const WITH_AMAZON = 'class=\"buy-links\">\n          <a class=\"buy-link buy-amazon\" href=\"${amazonLink(c.searchName)}\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Amazon</a>\n          <a class=\"buy-link buy-ebay\"';
+  if (html.includes(EBAY_PAT)) {
+    html = html.split(EBAY_PAT).join(WITH_AMAZON);
+  }
   return html;
 }
 
@@ -1046,6 +1045,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
