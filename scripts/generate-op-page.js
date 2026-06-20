@@ -64,6 +64,7 @@ if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME req
 
 // Fetch card data from R2 to bake into static HTML for SEO
 let CARD_LIST_HTML = '';
+let autoHero1 = HERO_CARD_1, autoHero2 = HERO_CARD_2, autoHero3 = HERO_CARD_3;
 try {
   const r2Url = `${R2_PUBLIC_URL}/data/op/${SET_ID}.json`;
   const r2Res = await fetch(r2Url);
@@ -76,6 +77,23 @@ try {
       return `      <li>${c.name} ${setShortId} ${c.rarity || ''}</li>`;
     }).join('\n');
     console.log(`✅ Baked ${r2Cards.length} card names into static HTML for SEO`);
+
+    // Auto-select hero cards from top chase cards by rarity tier (if not manually specified)
+    const HERO_RARITY_TIER = {
+      'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2,
+      'Alternate Art': 3, 'Special': 4, 'Super Rare': 5,
+    };
+    const manuallySet = process.env.HERO_CARD_1 || process.env.HERO_CARD_2 || process.env.HERO_CARD_3;
+    if (!manuallySet) {
+      const chaseCards = r2Cards
+        .filter(c => HERO_RARITY_TIER[c.rarity] !== undefined)
+        .sort((a, b) => (HERO_RARITY_TIER[a.rarity] ?? 99) - (HERO_RARITY_TIER[b.rarity] ?? 99))
+        .slice(0, 3);
+      if (chaseCards[0]) autoHero1 = chaseCards[0].localId;
+      if (chaseCards[1]) autoHero2 = chaseCards[1].localId;
+      if (chaseCards[2]) autoHero3 = chaseCards[2].localId;
+      console.log(`✅ Auto hero cards: ${autoHero1}, ${autoHero2}, ${autoHero3}`);
+    }
   }
 } catch(e) {
   console.warn('⚠️  Could not fetch R2 card data for SEO bake-in:', e.message);
@@ -395,9 +413,9 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-id="${HERO_CARD_1}" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
-          <img data-id="${HERO_CARD_2}" alt="Top chase card 2" width="245" height="337" loading="lazy">
-          <img data-id="${HERO_CARD_3}" alt="Top chase card 3" width="245" height="337" loading="lazy">
+          <img data-id="${autoHero1}" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
+          <img data-id="${autoHero2}" alt="Top chase card 2" width="245" height="337" loading="lazy">
+          <img data-id="${autoHero3}" alt="Top chase card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -951,3 +969,4 @@ function initNav(){
 writeFileSync(`${SET_SLUG}.html`, html);
 console.log(`✅ Generated ${SET_SLUG}.html`);
 console.log(`   URL: https://tcgwatchtower.com/${SET_SEO_PATH}`);
+
