@@ -311,7 +311,10 @@ function injectIntro(html, setId, name) {
 // ── Download buttons ──────────────────────────────────────────────────────────
 function injectDownloadButtons(html, setId, name) {
   // Skip if already has download buttons
-  if (html.includes('download-buttons-section') || html.includes('/api/checklist?set=')) return html;
+  // Always replace existing download section with fresh content
+  if (html.includes('download-buttons-section')) {
+    html = html.replace(/<div class="download-buttons-section"[\s\S]*?<\/div>\s*<\/div>/, '');
+  }
 
   const btnHtml = `
 <!-- ===== DOWNLOAD BUTTONS ===== -->
@@ -425,6 +428,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
