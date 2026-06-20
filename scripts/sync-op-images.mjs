@@ -112,8 +112,10 @@ const RARITY_OVERRIDES = {
     'PRB02-014': 'Special',
   },
   'op16': {
-    // Vista TR — Scrydex labels the Treasure Rare variant as altArt
-    '11_altart': 'Treasure Rare',
+    // Vista base — Scrydex returns null rarity, should be Rare
+    '011': 'Rare',
+    // Vista TR — Scrydex labels the Treasure Rare variant as altArt, localId is 011_altart
+    '011_altart': 'Treasure Rare',
     // Cross-set SP reprints — Scrydex returns base card rarity, override to Special
     'OP14-029': 'Special',
     'OP14-084': 'Special',
@@ -604,6 +606,7 @@ async function main() {
 }
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
+
 
 
 
