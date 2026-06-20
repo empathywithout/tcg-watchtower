@@ -263,6 +263,46 @@ function buildFAQSchema(name, series, releaseDate, totalCards, setId) {
   return `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "FAQPage",\n  "mainEntity": [\n${entities}\n  ]\n}\n<\/script>\n`;
 }
 
+
+// ── Per-set SEO description text ──────────────────────────────────────────────
+const SET_INTROS = {
+  'sv01': 'Scarlet &amp; Violet Base Set launched the modern era of the Pokémon TCG in March 2023, introducing Pokémon ex and a bold new card design. The SV1 card list spans 258 cards headlined by Charizard ex and Miraidon ex as the top chase pulls. This complete Scarlet &amp; Violet card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv02': 'Paldea Evolved is the second Scarlet &amp; Violet expansion, featuring 279 cards and the most sought-after Trainer card of the era — the Iono Special Illustration Rare. The SV2 card list covers the full Paldea Pokédex with a deep roster of Illustration Rares. This complete Paldea Evolved card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv03': 'Obsidian Flames introduced the iconic black-and-gold Tera Charizard ex SIR — one of the most valuable cards of the Scarlet &amp; Violet era. The SV3 card list spans 230 cards with a strong lineup of Special Illustration Rares. This complete Obsidian Flames card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv04': 'Paradox Rift introduced Ancient and Future Pokémon ex to the Scarlet &amp; Violet era. The SV4 card list spans 266 cards headlined by Roaring Moon ex and Iron Valiant ex as the top chase SIRs. This complete Paradox Rift card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv3pt5': 'Pokémon 151 covers all 151 original Kanto Pokémon and is one of the most popular collector sets ever printed. The SV3.5 card list spans 207 cards driven by nostalgia and a deep roster of Illustration Rares led by Charizard ex SIR. This complete Pokémon 151 card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv4pt5': 'Paldean Fates is the shiny set of the Scarlet &amp; Violet era, featuring Shiny versions of every Paldean Pokémon. The SV4.5 card list spans 245 cards headlined by Shiny Charizard ex as the top chase pull. This complete Paldean Fates card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv05': 'Temporal Forces brought ACE SPEC cards back to the Pokémon TCG for the first time since the Black &amp; White era. The SV5 card list spans 218 cards headlined by Walking Wake ex and Iron Leaves ex alongside powerful new ACE SPEC Trainer cards. This complete Temporal Forces card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv06': 'Twilight Masquerade is built around Ogerpon ex in all four mask forms, making it one of the most thematically rich sets of the Scarlet &amp; Violet era. The SV6 card list spans 226 cards with the Wellspring Mask Ogerpon ex SIR as the standout chase pull. This complete Twilight Masquerade card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv6pt5': 'Shrouded Fable is the second subset of the Scarlet &amp; Violet era, focused on the Mask of Ruin legendaries. Despite its smaller 99-card set size, Shrouded Fable packs a strong SIR lineup led by Pecharunt ex. This complete Shrouded Fable card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv07': 'Stellar Crown introduced Stellar-type Tera Pokémon ex and Terapagos ex as the headline mechanic and chase card of the set. The SV7 card list spans 175 cards. This complete Stellar Crown card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv08': 'Surging Sparks is the largest standard set of the Scarlet &amp; Violet era at 252 cards, headlined by multiple Pikachu ex Special Illustration Rare variants that became some of the most popular cards of 2024. This complete Surging Sparks card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv8pt5': 'Prismatic Evolutions is the Eevee-themed subset of the Scarlet &amp; Violet era and one of the most in-demand Pokémon TCG sets ever printed. The SV8.5 card list spans 180 cards with every Eeveelution featured in multiple art styles including Special Illustration Rares. This complete Prismatic Evolutions card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv09': 'Journey Together celebrates the bond between trainers and Pokémon with a roster built around iconic partnerships. The SV9 card list spans 190 cards with a strong lineup of trainer-focused Illustration Rares and Special Illustration Rares. This complete Journey Together card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'sv10': 'Destined Rivals pits iconic rival duos against each other in a rivalry-themed expansion. The SV10 card list spans 244 cards with high-demand SIRs featuring memorable trainer rivalries from across Pokémon history. This complete Destined Rivals card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'zsv10pt5': 'Black Bolt is one half of the split Scarlet &amp; Violet expansion released July 18, 2025, alongside White Flare. Together they cover all 156 Unova Pokémon — Black Bolt focuses on Dark and Lightning types centered around Zekrom ex, with the ultra-rare Red Victini Black &amp; White Rare as its most valuable pull. Every Pokémon has an Art Rare or SIR variant.',
+  'rsv10pt5': 'White Flare is one half of the split Scarlet &amp; Violet expansion released July 18, 2025, alongside Black Bolt. White Flare focuses on Fire and Water types centered around Reshiram ex and Keldeo ex, with the ultra-rare Red Victini Black &amp; White Rare as its rarest pull. Every Pokémon has an Art Rare or SIR variant.',
+  'me01': 'Mega Evolution Base Set launched the new Mega Evolution series in September 2025, introducing Mega Evolution Pokémon ex to the modern card game for the first time. The ME1 card list spans 188 cards headlined by Mega Lucario ex and Mega Gardevoir ex as the top chase pulls. This complete Mega Evolution card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'me02': 'Phantasmal Flames is the second set in the Pokémon TCG Mega Evolution series, released in late 2025. Built around Mega Gengar ex as its flagship card, the set quickly developed a reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block. This complete Phantasmal Flames card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'me02pt5': 'Ascended Heroes is the ME2.5 subset expansion in the Pokémon TCG Mega Evolution series, released in early 2026. As a smaller set, Ascended Heroes focuses on a tight selection of Mega Evolution Pokémon ex with a high concentration of premium rarities relative to set size, making it a popular target for collectors pulling Special Illustration Rares. This complete Ascended Heroes card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+};
+
+function injectIntro(html, setId, name) {
+  const intro = SET_INTROS[setId];
+  if (!intro) return html; // skip — me03/me04/me05 handled by sync workflow
+
+  // Skip if a real SEO intro already exists
+  if (html.includes('margin-top:12px;font-size:0.95rem')) return html;
+
+  // Inject after the generic set-desc paragraph
+  const genericDesc = `Complete guide to ${name} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
+  const target = `<p class="set-desc">\n          ${genericDesc}\n        </p>`;
+  const replacement = `<p class="set-desc">\n          ${genericDesc}\n        </p>\n        <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">${intro}</p>`;
+
+  if (html.includes(target)) return html.replace(target, replacement);
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -300,6 +340,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
     html = fixH1(html, name, series);
     changes.push('H1');
   }
+
+  // 2b. Description text injection
+  const htmlBeforeIntro = html;
+  html = injectIntro(html, setId, name);
+  if (html !== htmlBeforeIntro) changes.push('intro');
 
   // 3. H2 emoji cleanup
   if (html.includes(`🔥 ${name}`) || html.includes(`📋 ${name}`) || html.includes(`🛒 Buy ${short}`)) {
@@ -342,6 +387,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
