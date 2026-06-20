@@ -288,7 +288,6 @@ function injectIntro(html, setId, name) {
   const intro = SET_INTROS[setId];
   if (!intro) return html; // skip — me03/me04/me05 handled by sync workflow
 
-  const genericDesc = `Complete guide to ${name} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
   const introTag = `<p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">`;
 
   // Always replace existing intro with fresh content
@@ -297,10 +296,48 @@ function injectIntro(html, setId, name) {
     return html;
   }
 
-  // Inject after the generic set-desc paragraph if not present yet
-  const target = `<p class="set-desc">\n          ${genericDesc}\n        </p>`;
-  const replacement = `<p class="set-desc">\n          ${genericDesc}\n        </p>\n        ${introTag}${intro}</p>`;
-  if (html.includes(target)) return html.replace(target, replacement);
+  // Find the last set-desc paragraph (regardless of content) and inject after it
+  // Handles: standard generic, set-code variants like "(SV2)", and any custom text
+  const lastSetDescMatch = [...html.matchAll(/<p class="set-desc"[^>]*>[\s\S]*?<\/p>/g)].pop();
+  if (lastSetDescMatch) {
+    const insertAt = lastSetDescMatch.index + lastSetDescMatch[0].length;
+    html = html.slice(0, insertAt) + `\n        ${introTag}${intro}</p>` + html.slice(insertAt);
+    return html;
+  }
+
+  return html;
+}
+
+// ── Download buttons ──────────────────────────────────────────────────────────
+function injectDownloadButtons(html, setId, name) {
+  // Skip if already has download buttons
+  if (html.includes('download-buttons-section') || html.includes('/api/checklist?set=')) return html;
+
+  const btnHtml = `
+<!-- ===== DOWNLOAD BUTTONS ===== -->
+<div class="download-buttons-section" style="margin:0 0 32px;padding:20px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;">
+  <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:14px;">Free Downloads</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <a href="/api/checklist?set=${setId}" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:8px;color:#4ade80;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(74,222,128,0.2)'" onmouseout="this.style.background='rgba(74,222,128,0.1)'">
+      <span>📋</span> Checklist CSV
+    </a>
+    <a href="/api/binder-pdf?set=${setId}&size=9" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
+      <span>📄</span> 9-Pocket Binder PDF
+    </a>
+    <a href="/api/binder-pdf?set=${setId}&size=12" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
+      <span>📄</span> 12-Pocket Binder PDF
+    </a>
+    <a href="/api/checklist?set=${setId}&type=master" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:8px;color:#fbbf24;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(251,191,36,0.2)'" onmouseout="this.style.background='rgba(251,191,36,0.1)'">
+      <span>⭐</span> Master Set Checklist
+    </a>
+  </div>
+</div>`;
+
+  // Insert before the card grid filter bar
+  if (html.includes('class="filter-bar"')) {
+    html = html.replace('<div class="filter-bar">', btnHtml + '\n    <div class="filter-bar">');
+    return html;
+  }
   return html;
 }
 
@@ -347,6 +384,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   html = injectIntro(html, setId, name);
   if (html !== htmlBeforeIntro) changes.push('intro');
 
+  // 2c. Download buttons injection
+  const htmlBeforeDownload = html;
+  html = injectDownloadButtons(html, setId, name);
+  if (html !== htmlBeforeDownload) changes.push('download buttons');
+
   // 3. H2 emoji cleanup
   if (html.includes(`🔥 ${name}`) || html.includes(`📋 ${name}`) || html.includes(`🛒 Buy ${short}`)) {
     html = fixH2s(html, name, short);
@@ -386,6 +428,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
