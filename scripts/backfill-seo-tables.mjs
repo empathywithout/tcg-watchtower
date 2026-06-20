@@ -291,14 +291,20 @@ function injectIntro(html, setId, name) {
   const intro = SET_INTROS[setId];
   if (!intro) return html; // skip — me03/me04/me05 handled by sync workflow
 
-  // Skip if a real SEO intro already exists
-  if (html.includes('margin-top:12px;font-size:0.95rem')) return html;
+  const genericDesc = `Complete guide to ${name} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
+  const introTag = `<p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">`;
+
+  // If intro exists, replace it with updated content
+  if (html.includes(introTag)) {
+    return html.replace(
+      new RegExp(`${introTag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^<]*</p>`),
+      `${introTag}${intro}</p>`
+    );
+  }
 
   // Inject after the generic set-desc paragraph
-  const genericDesc = `Complete guide to ${name} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
   const target = `<p class="set-desc">\n          ${genericDesc}\n        </p>`;
-  const replacement = `<p class="set-desc">\n          ${genericDesc}\n        </p>\n        <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">${intro}</p>`;
-
+  const replacement = `<p class="set-desc">\n          ${genericDesc}\n        </p>\n        ${introTag}${intro}</p>`;
   if (html.includes(target)) return html.replace(target, replacement);
   return html;
 }
@@ -354,9 +360,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
   // 4. FAQ section + schema
   // Replace if: no FAQ yet, OR has generic FAQ and we have per-set specific data
-  const hasGenericFAQ = html.includes('highest rarity pulls') || html.includes('scheduled to release on');
+  const hasGenericFAQ = html.includes('highest rarity pulls') || html.includes('scheduled to release on') || html.includes('What series is');
   const hasPerSetFAQ  = !!getFAQ(setId);
-  const needsFAQ = !html.includes('FAQPage') || (hasGenericFAQ && hasPerSetFAQ);
+  const perSetQ = getFAQ(setId)?.[0]?.q || '';
+  const alreadyHasPerSet = perSetQ && html.includes(perSetQ);
+  const needsFAQ = !html.includes('FAQPage') || ((hasGenericFAQ || !alreadyHasPerSet) && hasPerSetFAQ);
   if (needsFAQ) {
     const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
     const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
@@ -387,6 +395,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
