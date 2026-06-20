@@ -1,68 +1,133 @@
 /**
  * backfill-seo-tables.mjs
- * Injects a visually-hidden static card table into every set HTML page
- * so Google can index all card names, numbers, and rarities as static HTML.
- * Safe to re-run — skips files that already have the table.
+ * Applies all SEO improvements to existing set HTML pages:
+ *   1. Static hidden card table (for Google indexing)
+ *   2. H1 fix — "Pitch Black Card List" not "Mega EvolutionPitch Black"
+ *   3. H2 cleanup — remove emojis
+ *   4. FAQ section — 5 questions with JSON-LD FAQPage schema
+ *   5. OG/Twitter/JSON-LD title fix — keyword-first format
+ * Safe to re-run — each step checks before applying.
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
 
 const R2 = process.env.CF_R2_PUBLIC_URL;
 if (!R2) { console.error('❌ CF_R2_PUBLIC_URL not set'); process.exit(1); }
 
 const SETS = [
-  { setId: 'sv01',     file: 'scarlet-violet-base-set-card-list.html',  seriesSlug: 'scarlet-violet',  urlSlug: 'scarlet-violet-base-set',  name: 'Scarlet & Violet Base Set' },
-  { setId: 'sv02',     file: 'paldea-evolved-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'paldea-evolved',           name: 'Paldea Evolved' },
-  { setId: 'sv03',     file: 'obsidian-flames-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'obsidian-flames',          name: 'Obsidian Flames' },
-  { setId: 'sv04',     file: 'paradox-rift-card-list.html',              seriesSlug: 'scarlet-violet',  urlSlug: 'paradox-rift',             name: 'Paradox Rift' },
-  { setId: 'sv3pt5',   file: 'scarlet-violet-151-card-list.html',        seriesSlug: 'scarlet-violet',  urlSlug: '151',                      name: 'Scarlet & Violet 151' },
-  { setId: 'sv4pt5',   file: 'paldean-fates-card-list.html',             seriesSlug: 'scarlet-violet',  urlSlug: 'paldean-fates',            name: 'Paldean Fates' },
-  { setId: 'sv05',     file: 'temporal-forces-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'temporal-forces',          name: 'Temporal Forces' },
-  { setId: 'sv06',     file: 'twilight-masquerade-card-list.html',       seriesSlug: 'scarlet-violet',  urlSlug: 'twilight-masquerade',      name: 'Twilight Masquerade' },
-  { setId: 'sv6pt5',   file: 'shrouded-fable-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'shrouded-fable',           name: 'Shrouded Fable' },
-  { setId: 'sv07',     file: 'stellar-crown-card-list.html',             seriesSlug: 'scarlet-violet',  urlSlug: 'stellar-crown',            name: 'Stellar Crown' },
-  { setId: 'sv08',     file: 'surging-sparks-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'surging-sparks',           name: 'Surging Sparks' },
-  { setId: 'sv8pt5',   file: 'prismatic-evolutions-card-list.html',      seriesSlug: 'scarlet-violet',  urlSlug: 'prismatic-evolutions',     name: 'Prismatic Evolutions' },
-  { setId: 'sv09',     file: 'journey-together-card-list.html',          seriesSlug: 'scarlet-violet',  urlSlug: 'journey-together',         name: 'Journey Together' },
-  { setId: 'sv10',     file: 'destined-rivals-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'destined-rivals',          name: 'Destined Rivals' },
-  { setId: 'zsv10pt5', file: 'black-bolt-card-list.html',                seriesSlug: 'scarlet-violet',  urlSlug: 'black-bolt',               name: 'Black Bolt' },
-  { setId: 'rsv10pt5', file: 'white-flare-card-list.html',               seriesSlug: 'scarlet-violet',  urlSlug: 'white-flare',              name: 'White Flare' },
-  { setId: 'me01',     file: 'mega-evolution-base-set-card-list.html',   seriesSlug: 'mega-evolution',  urlSlug: 'base-set',                 name: 'Mega Evolution' },
-  { setId: 'me02',     file: 'phantasmal-flames-card-list.html',         seriesSlug: 'mega-evolution',  urlSlug: 'phantasmal-flames',        name: 'Phantasmal Flames' },
-  { setId: 'me02pt5',  file: 'ascended-heroes-card-list.html',           seriesSlug: 'mega-evolution',  urlSlug: 'ascended-heroes',          name: 'Ascended Heroes' },
-  { setId: 'me03',     file: 'perfect-order-card-list.html',             seriesSlug: 'mega-evolution',  urlSlug: 'perfect-order',            name: 'Perfect Order' },
-  { setId: 'me04',     file: 'chaos-rising-card-list.html',              seriesSlug: 'mega-evolution',  urlSlug: 'chaos-rising',             name: 'Chaos Rising' },
+  { setId: 'sv01',     file: 'scarlet-violet-base-set-card-list.html',  seriesSlug: 'scarlet-violet',  urlSlug: 'scarlet-violet-base-set',  name: 'Scarlet & Violet Base Set',  series: 'Scarlet & Violet', short: 'SV1',  releaseDate: 'Mar 2023', totalCards: '258' },
+  { setId: 'sv02',     file: 'paldea-evolved-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'paldea-evolved',           name: 'Paldea Evolved',             series: 'Scarlet & Violet', short: 'SV2',  releaseDate: 'Jun 2023', totalCards: '279' },
+  { setId: 'sv03',     file: 'obsidian-flames-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'obsidian-flames',          name: 'Obsidian Flames',            series: 'Scarlet & Violet', short: 'SV3',  releaseDate: 'Aug 2023', totalCards: '230' },
+  { setId: 'sv04',     file: 'paradox-rift-card-list.html',              seriesSlug: 'scarlet-violet',  urlSlug: 'paradox-rift',             name: 'Paradox Rift',               series: 'Scarlet & Violet', short: 'SV4',  releaseDate: 'Nov 2023', totalCards: '266' },
+  { setId: 'sv3pt5',   file: 'scarlet-violet-151-card-list.html',        seriesSlug: 'scarlet-violet',  urlSlug: '151',                      name: 'Pokémon 151',                series: 'Scarlet & Violet', short: 'SV3.5',releaseDate: 'Sep 2023', totalCards: '207' },
+  { setId: 'sv4pt5',   file: 'paldean-fates-card-list.html',             seriesSlug: 'scarlet-violet',  urlSlug: 'paldean-fates',            name: 'Paldean Fates',              series: 'Scarlet & Violet', short: 'SV4.5',releaseDate: 'Jan 2024', totalCards: '245' },
+  { setId: 'sv05',     file: 'temporal-forces-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'temporal-forces',          name: 'Temporal Forces',            series: 'Scarlet & Violet', short: 'SV5',  releaseDate: 'Mar 2024', totalCards: '218' },
+  { setId: 'sv06',     file: 'twilight-masquerade-card-list.html',       seriesSlug: 'scarlet-violet',  urlSlug: 'twilight-masquerade',      name: 'Twilight Masquerade',        series: 'Scarlet & Violet', short: 'SV6',  releaseDate: 'May 2024', totalCards: '226' },
+  { setId: 'sv6pt5',   file: 'shrouded-fable-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'shrouded-fable',           name: 'Shrouded Fable',             series: 'Scarlet & Violet', short: 'SV6.5',releaseDate: 'Aug 2024', totalCards: '99'  },
+  { setId: 'sv07',     file: 'stellar-crown-card-list.html',             seriesSlug: 'scarlet-violet',  urlSlug: 'stellar-crown',            name: 'Stellar Crown',              series: 'Scarlet & Violet', short: 'SV7',  releaseDate: 'Sep 2024', totalCards: '175' },
+  { setId: 'sv08',     file: 'surging-sparks-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'surging-sparks',           name: 'Surging Sparks',             series: 'Scarlet & Violet', short: 'SV8',  releaseDate: 'Nov 2024', totalCards: '252' },
+  { setId: 'sv8pt5',   file: 'prismatic-evolutions-card-list.html',      seriesSlug: 'scarlet-violet',  urlSlug: 'prismatic-evolutions',     name: 'Prismatic Evolutions',       series: 'Scarlet & Violet', short: 'SV8.5',releaseDate: 'Jan 2025', totalCards: '180' },
+  { setId: 'sv09',     file: 'journey-together-card-list.html',          seriesSlug: 'scarlet-violet',  urlSlug: 'journey-together',         name: 'Journey Together',           series: 'Scarlet & Violet', short: 'SV9',  releaseDate: 'Mar 2025', totalCards: '190' },
+  { setId: 'sv10',     file: 'destined-rivals-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'destined-rivals',          name: 'Destined Rivals',            series: 'Scarlet & Violet', short: 'SV10', releaseDate: 'May 2025', totalCards: '244' },
+  { setId: 'zsv10pt5', file: 'black-bolt-card-list.html',                seriesSlug: 'scarlet-violet',  urlSlug: 'black-bolt',               name: 'Black Bolt',                 series: 'Scarlet & Violet', short: 'BBT',  releaseDate: 'Jul 2025', totalCards: '172' },
+  { setId: 'rsv10pt5', file: 'white-flare-card-list.html',               seriesSlug: 'scarlet-violet',  urlSlug: 'white-flare',              name: 'White Flare',                series: 'Scarlet & Violet', short: 'WHF',  releaseDate: 'Jul 2025', totalCards: '173' },
+  { setId: 'me01',     file: 'mega-evolution-base-set-card-list.html',   seriesSlug: 'mega-evolution',  urlSlug: 'base-set',                 name: 'Mega Evolution',             series: 'Mega Evolution',   short: 'ME1',  releaseDate: 'Sep 2025', totalCards: '188' },
+  { setId: 'me02',     file: 'phantasmal-flames-card-list.html',         seriesSlug: 'mega-evolution',  urlSlug: 'phantasmal-flames',        name: 'Phantasmal Flames',          series: 'Mega Evolution',   short: 'ME2',  releaseDate: 'Nov 2025', totalCards: '130' },
+  { setId: 'me02pt5',  file: 'ascended-heroes-card-list.html',           seriesSlug: 'mega-evolution',  urlSlug: 'ascended-heroes',          name: 'Ascended Heroes',            series: 'Mega Evolution',   short: 'ME2.5',releaseDate: 'Jan 2026', totalCards: '295' },
+  { setId: 'me03',     file: 'perfect-order-card-list.html',             seriesSlug: 'mega-evolution',  urlSlug: 'perfect-order',            name: 'Perfect Order',              series: 'Mega Evolution',   short: 'ME3',  releaseDate: 'Mar 2026', totalCards: '124' },
+  { setId: 'me04',     file: 'chaos-rising-card-list.html',              seriesSlug: 'mega-evolution',  urlSlug: 'chaos-rising',             name: 'Chaos Rising',               series: 'Mega Evolution',   short: 'ME4',  releaseDate: 'May 2026', totalCards: '122' },
 ];
 
 function toSlug(name) {
-  return name.toLowerCase()
-    .replace(/['']/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+  return name.toLowerCase().replace(/['']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+// ── 1. Static card table ─────────────────────────────────────────────────────
 function buildTable(cards, setName, seriesSlug, urlSlug) {
   const rows = cards.map(c => {
     const cardPath = `/pokemon/sets/${seriesSlug}/${urlSlug}/cards/${toSlug(c.name)}-${c.localId}`;
     return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${c.name}</a></td><td>${c.rarity || ''}</td></tr>`;
   }).join('\n');
-
-  return `
-<!-- SEO: static card list for search engine indexing -->
-<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0" aria-hidden="true">
-<h2>${setName} Card List — All ${cards.length} Cards</h2>
-<table>
-<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>
-<tbody>
-${rows}
-</tbody>
-</table>
-</div>`;
+  return `\n<!-- SEO: static card list for search engine indexing -->\n<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0" aria-hidden="true">\n<h2>${setName} Card List — All ${cards.length} Cards</h2>\n<table>\n<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>\n<tbody>\n${rows}\n</tbody>\n</table>\n</div>`;
 }
 
+// ── 2. H1 fix ────────────────────────────────────────────────────────────────
+function fixH1(html, name, series) {
+  // Pattern: <h1 class="set-title">\n          <span class="gradient-text">SERIES</span><br>NAME
+  const oldH1 = `<h1 class="set-title">\n          <span class="gradient-text">${series}</span><br>${name}`;
+  if (!html.includes(oldH1)) return html;
+  const newH1 = `<h1 class="set-title">\n          ${name} Card List\n        </h1>\n        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-blue);margin-top:-8px;margin-bottom:8px;">${series}</p>\n        <h1 style="display:none">`;
+  return html.replace(oldH1, newH1);
+}
+
+// ── 3. H2 emoji cleanup ───────────────────────────────────────────────────────
+function fixH2s(html, name, short) {
+  return html
+    .replace(`<h2 class="section-title">🔥 ${name} <span class="gradient-text">Chase Cards</span></h2>`,
+             `<h2 class="section-title">${name} <span class="gradient-text">Chase Cards</span></h2>`)
+    .replace(`<h2 class="section-title">📋 ${name} <span class="gradient-text">Card List</span></h2>`,
+             `<h2 class="section-title">${name} <span class="gradient-text">Card List</span></h2>`)
+    .replace(`<h2 class="section-title">🛒 Buy ${short} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>`,
+             `<h2 class="section-title">Buy ${name} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>`)
+    .replace(`<h2 class="section-title">Get ${name} <span class="gradient-text">Restock Alerts</span></h2>`,
+             `<h2 class="section-title">${name} <span class="gradient-text">Restock Alerts</span></h2>`);
+}
+
+// ── 4. FAQ section ────────────────────────────────────────────────────────────
+function buildFAQ(name, series, releaseDate, totalCards) {
+  return `
+<!-- ===== FAQ ===== -->
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">${name} <span class="gradient-text">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">How many cards are in the ${name} card list?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} contains ${totalCards} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">When does ${name} release?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} released in ${releaseDate} as part of the Pokémon TCG ${series} series.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What are the top chase cards in ${name}?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most valuable ${name} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">Are ${name} card prices available?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What series is ${name} part of?</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${name} is part of the ${series} series of the Pokémon Trading Card Game.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+`;
+}
+
+function buildFAQSchema(name, series, releaseDate, totalCards) {
+  return `<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How many cards are in the ${name} card list?","acceptedAnswer":{"@type":"Answer","text":"${name} contains ${totalCards} cards in total, including the main set and all secret rare cards."}},
+    {"@type":"Question","name":"When does ${name} release?","acceptedAnswer":{"@type":"Answer","text":"${name} released in ${releaseDate} as part of the Pokémon TCG ${series} series."}},
+    {"@type":"Question","name":"What are the top chase cards in ${name}?","acceptedAnswer":{"@type":"Answer","text":"The most valuable ${name} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares, ranked by live TCGplayer market price."}},
+    {"@type":"Question","name":"Are ${name} card prices available?","acceptedAnswer":{"@type":"Answer","text":"Yes — live market prices from TCGplayer are updated daily on TCG Watchtower."}},
+    {"@type":"Question","name":"What series is ${name} part of?","acceptedAnswer":{"@type":"Answer","text":"${name} is part of the ${series} series of the Pokémon Trading Card Game."}}
+  ]
+}
+</script>
+`;
+}
+
+// ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
-for (const { setId, file, seriesSlug, urlSlug, name } of SETS) {
+for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate, totalCards } of SETS) {
   process.stdout.write(`${setId} (${file})... `);
 
   if (!existsSync(file)) {
@@ -72,37 +137,59 @@ for (const { setId, file, seriesSlug, urlSlug, name } of SETS) {
   }
 
   let html = readFileSync(file, 'utf8');
+  let changes = [];
 
-  if (html.includes('SEO: static card list')) {
-    const existing = (html.match(/<tr><td>/g) || []).length;
-    console.log(`✓ already has table (${existing} cards) — skipping`);
+  // 1. Static card table
+  if (!html.includes('SEO: static card list')) {
+    try {
+      const res = await fetch(`${R2}/data/${setId}.json`);
+      if (!res.ok) throw new Error(`R2 ${res.status}`);
+      const json = await res.json();
+      const cards = json.cards || [];
+      if (cards.length > 0) {
+        const table = buildTable(cards, name, seriesSlug, urlSlug);
+        html = html.replace('</body>', table + '\n</body>');
+        changes.push(`${cards.length} cards`);
+      }
+    } catch (e) {
+      changes.push(`card table FAILED: ${e.message}`);
+    }
+  }
+
+  // 2. H1 fix
+  if (html.includes(`<span class="gradient-text">${series}</span><br>${name}`)) {
+    html = fixH1(html, name, series);
+    changes.push('H1');
+  }
+
+  // 3. H2 emoji cleanup
+  if (html.includes(`🔥 ${name}`) || html.includes(`📋 ${name}`) || html.includes(`🛒 Buy ${short}`)) {
+    html = fixH2s(html, name, short);
+    changes.push('H2s');
+  }
+
+  // 4. FAQ section + schema
+  if (!html.includes('FAQPage')) {
+    const faqSection = buildFAQ(name, series, releaseDate, totalCards);
+    const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards);
+    html = html.replace('<!-- ===== FOOTER ===== -->', faqSection + '<!-- ===== FOOTER ===== -->');
+    // Insert FAQ schema after first closing </script> of existing JSON-LD
+    const ldIdx = html.indexOf('application/ld+json');
+    const insertAt = html.indexOf('</script>', ldIdx) + '</script>'.length;
+    html = html.slice(0, insertAt) + '\n' + faqSchema + html.slice(insertAt);
+    changes.push('FAQ');
+  }
+
+  if (changes.length === 0) {
+    console.log(`✓ already up to date — skipping`);
     skipped++;
     continue;
   }
 
-  try {
-    const res = await fetch(`${R2}/data/${setId}.json`);
-    if (!res.ok) throw new Error(`R2 returned ${res.status}`);
-    const json = await res.json();
-    const cards = json.cards || [];
-
-    if (cards.length === 0) {
-      console.log(`⚠️  0 cards in R2 metadata — skipping`);
-      skipped++;
-      continue;
-    }
-
-    const table = buildTable(cards, name, seriesSlug, urlSlug);
-    html = html.replace('</body>', table + '\n</body>');
-    writeFileSync(file, html);
-    console.log(`✓ ${cards.length} cards injected`);
-    passed++;
-
-  } catch (e) {
-    console.log(`✗ FAILED: ${e.message}`);
-    failed++;
-  }
+  writeFileSync(file, html);
+  console.log(`✓ ${changes.join(', ')}`);
+  passed++;
 }
 
-console.log(`\n✅ Done — ${passed} injected, ${skipped} skipped, ${failed} failed`);
+console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
