@@ -20,12 +20,12 @@ const RARITY_ORDER = [
   'Illustration Rare','Art Rare',
   'Ultra Rare',
   'Special Illustration Rare','Black White Rare',
-  'Hyper Rare','Mega Hyper Rare','Mega Ultra Rare','Treasure Rare',
+  'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Treasure Rare',
 ];
 
 const SECRET_RARITIES = new Set([
   'Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
-  'Hyper Rare','Mega Hyper Rare','Mega Ultra Rare','Black White Rare','Treasure Rare',
+  'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Black White Rare','Treasure Rare',
 ]);
 
 const RARITY_EMOJI = {
@@ -40,7 +40,7 @@ const RARITY_EMOJI = {
   'Black White Rare':        'BWR',
   'Hyper Rare':              'HR',
   'Mega Hyper Rare':         'MHR',
-  'Mega Ultra Rare':         'MUR',
+  'Mega Attack Rare':        'MAR',
   'Treasure Rare':           'TR',
 };
 
@@ -91,19 +91,19 @@ export default async function handler(req, res) {
     // ── Legend ─────────────────────────────────────────────────────────────────
     rows.push(['LEGEND']);
     rows.push(['Abbrev', 'Rarity', 'Pulls per box (approx)']);
-    rows.push(['C',   'Common',                   '~36']);
-    rows.push(['U',   'Uncommon',                 '~18']);
-    rows.push(['R',   'Rare',                     '~9']);
-    rows.push(['DR',  'Double Rare',              '~5']);
-    rows.push(['IR',  'Illustration Rare',        '1 per 3-4 packs']);
-    rows.push(['AR',  'Art Rare',                 '1 per 3-4 packs']);
-    rows.push(['UR',  'Ultra Rare',               '1-2 per box']);
-    rows.push(['SIR', 'Special Illustration Rare','1 per 2 boxes']);
-    rows.push(['BWR', 'Black White Rare',         '1 per 2 boxes']);
-    rows.push(['HR',  'Hyper Rare',               '1 per 2-3 boxes']);
-    rows.push(['MHR', 'Mega Hyper Rare',          '~1 per 35 boxes']);
-    rows.push(['MUR', 'Mega Ultra Rare',          '~1 per 35 boxes']);
-    rows.push(['TR',  'Treasure Rare',            'Very rare']);
+    rows.push(['C',   'Common',                   'Circle symbol — ~6-7 per pack']);
+    rows.push(['U',   'Uncommon',                 'Diamond symbol — ~2-3 per pack']);
+    rows.push(['R',   'Rare',                     '1 black star — guaranteed 1 per pack']);
+    rows.push(['DR',  'Double Rare',              '2 black stars — regular-art Pokemon ex']);
+    rows.push(['IR',  'Illustration Rare',        '1 gold star — full-art non-Rule Box Pokemon']);
+    rows.push(['AR',  'Art Rare',                 '1 gold star — used in Black Bolt/White Flare']);
+    rows.push(['UR',  'Ultra Rare',               '2 foil stars — full-art textured Pokemon ex & Supporters']);
+    rows.push(['SIR', 'Special Illustration Rare','2 gold stars — premium story-scene full art']);
+    rows.push(['BWR', 'Black White Rare',         '2 gold stars — Black Bolt/White Flare exclusive']);
+    rows.push(['HR',  'Hyper Rare',               '3 gold stars — gold-bordered cards']);
+    rows.push(['MHR', 'Mega Hyper Rare',          'Gold star (black border) — gold-etched Mega ex, ~1 per 35 boxes']);
+    rows.push(['MAR', 'Mega Attack Rare',         'Pink & green stars — pop-art attack illustrations, intro in Ascended Heroes']);
+    rows.push(['TR',  'Treasure Rare',            'One Piece TCG exclusive rarity']);
     rows.push([]);
 
     // ── Summary ────────────────────────────────────────────────────────────────
@@ -202,3 +202,4 @@ function naturalSort(a, b) {
   if (!isNaN(na) && !isNaN(nb)) return na - nb;
   return String(a).localeCompare(String(b));
 }
+
