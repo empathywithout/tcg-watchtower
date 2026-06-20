@@ -284,7 +284,7 @@ const SET_INTROS = {
   'rsv10pt5': 'White Flare is one half of the split Scarlet &amp; Violet expansion released July 18, 2025, alongside Black Bolt. White Flare focuses on Fire and Water types centered around Reshiram ex and Keldeo ex, with the ultra-rare Red Victini Black &amp; White Rare as its rarest pull. Every Pokémon has an Art Rare or SIR variant.',
   'me01': 'Mega Evolution Base Set launched the new Mega Evolution series in September 2025, introducing Mega Evolution Pokémon ex to the modern card game for the first time. The ME1 card list spans 188 cards headlined by Mega Lucario ex and Mega Gardevoir ex as the top chase pulls. This complete Mega Evolution card list includes every card with rarity filters and live TCGplayer prices updated daily.',
   'me02': 'Phantasmal Flames is the second set in the Pokémon TCG Mega Evolution series, released in late 2025. Built around Mega Gengar ex as its flagship card, the set quickly developed a reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block. This complete Phantasmal Flames card list includes every card with rarity filters and live TCGplayer prices updated daily.',
-  'me02pt5': 'Ascended Heroes is the ME2.5 subset expansion in the Pokémon TCG Mega Evolution series, released in early 2026. As a smaller set, Ascended Heroes focuses on a tight selection of Mega Evolution Pokémon ex with a high concentration of premium rarities relative to set size, making it a popular target for collectors pulling Special Illustration Rares. This complete Ascended Heroes card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+  'me02pt5': 'Ascended Heroes is the ME2.5 subset expansion in the Pokémon TCG Mega Evolution series, released in early 2026. At 295 cards, Ascended Heroes is the largest Pokémon TCG set ever printed, with a massive roster of Mega Evolution Pokémon ex and an exceptional density of premium rarities including Special Illustration Rares across the set. This complete Ascended Heroes card list includes every card with rarity filters and live TCGplayer prices updated daily.',
 };
 
 function injectIntro(html, setId, name) {
@@ -387,6 +387,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
