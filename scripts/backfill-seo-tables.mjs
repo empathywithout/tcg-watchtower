@@ -358,10 +358,17 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   // 4. FAQ section + schema
   // Replace if: no FAQ yet, OR has generic FAQ and we have per-set specific data
   const hasGenericFAQ = html.includes('highest rarity pulls') || html.includes('scheduled to release on') || html.includes('What series is');
+  // Detect known-wrong FAQ answers that need replacing
+  const hasWrongAnswer = html.includes('Mega Gengar ex is the headline chase pull of the set') ||
+                         html.includes('Mega Gyarados ex') ||
+                         html.includes('88 main set cards plus over 40 secret rares') ||
+                         html.includes('Phantasmal Flames released November 2025') ||
+                         html.includes('supported by additional Mega Evolution ex cards');
   const hasPerSetFAQ  = !!getFAQ(setId);
   const perSetQ = getFAQ(setId)?.[0]?.q || '';
-  const alreadyHasPerSet = perSetQ && html.includes(perSetQ);
-  const needsFAQ = !html.includes('FAQPage') || ((hasGenericFAQ || !alreadyHasPerSet) && hasPerSetFAQ);
+  const correctA = getFAQ(setId)?.[0]?.a || '';
+  const alreadyHasPerSet = perSetQ && html.includes(perSetQ) && correctA && html.includes(correctA.slice(0, 40));
+  const needsFAQ = !html.includes('FAQPage') || ((hasGenericFAQ || hasWrongAnswer || !alreadyHasPerSet) && hasPerSetFAQ);
   if (needsFAQ) {
     const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
     const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
@@ -392,6 +399,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
