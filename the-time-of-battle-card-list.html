@@ -371,8 +371,8 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       <li>Squard OP16-008 Common</li>
       <li>Speed Jil OP16-009 Common</li>
       <li>Namule OP16-010 Uncommon</li>
-      <li>Vista OP16-011 Unknown</li>
-      <li>Vista (altArt) OP16-011 Alternate Art</li>
+      <li>Vista OP16-011 Rare</li>
+      <li>Vista (Treasure Rare) OP16-011 Treasure Rare</li>
       <li>Benn.Beckman OP16-012 Rare</li>
       <li>McGuy OP16-013 Common</li>
       <li>Marco OP16-014 Rare</li>
@@ -651,7 +651,7 @@ function getCached(localId, cardName) {
   return priceCache[key]||priceCache[priceKeyByName(localId,cardName)]||null;
 }
 
-const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','ALT':'Alternate Art','SP':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
+const RARITY_NORMALIZE = {'MR':'Manga Rare','SEC':'Secret Rare','TR':'Treasure Rare','Treasure Rare':'Treasure Rare','treasureRare':'Treasure Rare','ALT':'Alternate Art','SP':'Special','Special':'Special','SR':'Super Rare','R':'Rare','UC':'Uncommon','C':'Common','L':'Leader'};
 function normalizeRarity(r) { return RARITY_NORMALIZE[r]||r||''; }
 const CHASE_RARITIES = ['Manga Rare','Secret Rare','Treasure Rare','Alternate Art','Special','Super Rare'];
 const RARITY_TIER = {'Manga Rare':0,'Secret Rare':1,'Treasure Rare':2,'Alternate Art':3,'Special':4,'Super Rare':5,'Rare':6};
