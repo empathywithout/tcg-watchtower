@@ -39,20 +39,12 @@ const RARITY_ABBREV = {
   'Hyper Rare':'HR','Mega Hyper Rare':'MHR','Mega Attack Rare':'MAR','Treasure Rare':'TR',
 };
 
-// Subtle rarity row colors (ARGB hex, no #)
-const RARITY_COLOR = {
-  'Common':'FFFFFFFF','Uncommon':'FFF0F4FF','Rare':'FFE8F5E9','Double Rare':'FFE3F2FD',
-  'Illustration Rare':'FFFFF8E1','Art Rare':'FFFFF8E1','Ultra Rare':'FFFCE4EC',
-  'Special Illustration Rare':'FFF3E5F5','Black White Rare':'FFF3E5F5',
-  'Hyper Rare':'FFFFF3E0','Mega Hyper Rare':'FFFFE0B2','Mega Attack Rare':'FFF0FFF0','Treasure Rare':'FFE8EAF6',
-};
-
 const RARITY_DESC = {
-  'Common':'Circle symbol. ~6-7 per pack. Most common pull.',
+  'Common':'Circle symbol. ~6-7 per pack.',
   'Uncommon':'Diamond symbol. ~2-3 per pack.',
-  'Rare':'1 black star. Guaranteed 1 per pack. Holo or non-holo.',
+  'Rare':'1 black star. 1 guaranteed per pack.',
   'Double Rare':'2 black stars. Regular-art Pokemon ex.',
-  'Illustration Rare':'1 gold star. Full-art alternate scene of a non-Rule Box Pokemon.',
+  'Illustration Rare':'1 gold star. Full-art alternate scene, non-Rule Box Pokemon.',
   'Art Rare':'1 gold star. Black Bolt / White Flare exclusive.',
   'Ultra Rare':'2 foil silver stars. Full-art textured Pokemon ex or Supporter.',
   'Special Illustration Rare':'2 gold stars. Premium story-scene full art. Top collector target.',
@@ -63,21 +55,167 @@ const RARITY_DESC = {
   'Treasure Rare':'One Piece TCG exclusive rarity.',
 };
 
+// ── Fixed style index map ─────────────────────────────────────────────────────
+// Excel requires fills[0]=none, fills[1]=gray125, then custom fills from index 2
+// We define a fixed palette so indices are stable
+
+// FONT indices
+const F_DEFAULT  = 0;  // Calibri 11
+const F_HEADER   = 1;  // Calibri 11 bold white
+const F_SECTION  = 2;  // Calibri 10 bold dark
+const F_CARD     = 3;  // Calibri 10 normal
+const F_NUM      = 4;  // Courier New 10 muted
+const F_MUTED    = 5;  // Calibri 10 muted grey
+const F_LINK     = 6;  // Calibri 10 blue italic
+const F_BOLD     = 7;  // Calibri 10 bold dark
+
+// FILL indices (0 & 1 are reserved by Excel spec)
+const FILL_NONE      = 0;
+const FILL_GRAY125   = 1;
+const FILL_HEADER    = 2;  // dark blue #1A237E
+const FILL_SECTION   = 3;  // light grey #E0E0E0
+const FILL_COMMON    = 4;  // white
+const FILL_UNCOMMON  = 5;  // #F0F4FF
+const FILL_RARE      = 6;  // #E8F5E9
+const FILL_DR        = 7;  // #E3F2FD
+const FILL_IR        = 8;  // #FFF8E1
+const FILL_UR        = 9;  // #FCE4EC
+const FILL_SIR       = 10; // #F3E5F5
+const FILL_HR        = 11; // #FFF3E0
+const FILL_MHR       = 12; // #FFE0B2
+const FILL_MAR       = 13; // #F0FFF0
+const FILL_TR        = 14; // #E8EAF6
+const FILL_RH        = 15; // #F9F9F9
+
+const RARITY_FILL = {
+  'Common': FILL_COMMON, 'Uncommon': FILL_UNCOMMON,
+  'Rare': FILL_RARE, 'Double Rare': FILL_DR,
+  'Illustration Rare': FILL_IR, 'Art Rare': FILL_IR,
+  'Ultra Rare': FILL_UR,
+  'Special Illustration Rare': FILL_SIR, 'Black White Rare': FILL_SIR,
+  'Hyper Rare': FILL_HR, 'Mega Hyper Rare': FILL_MHR,
+  'Mega Attack Rare': FILL_MAR, 'Treasure Rare': FILL_TR,
+};
+
+// XF (cell format) indices — each is a combo of font + fill + alignment
+const XF_DEFAULT    = 0;
+const XF_HEADER     = 1;  // bold white on dark blue, center
+const XF_HEADER_L   = 2;  // bold white on dark blue, left
+const XF_SECTION    = 3;  // bold dark on grey, left
+const XF_NUM        = 4;  // monospace muted, center — card number
+const XF_CARD       = 5;  // normal, left
+const XF_ABBREV     = 6;  // bold dark, center
+const XF_BLANK      = 7;  // default, center (have/grade cells)
+const XF_MUTED      = 8;  // muted, left (sub-labels)
+const XF_LINK       = 9;  // blue italic, left
+const XF_BOLD       = 10; // bold, left
+
+// Rarity-tinted cell formats: card number, name, abbrev, blank for each rarity
+// We'll generate them dynamically per row using inline style or just use a few base styles
+// and skip per-rarity coloring to keep the style table manageable & valid
+// (Excel has no issues with many xfs, just needs correct fill refs)
+
+// Build rarity XF sets: for each fill we need num/card/abbrev/blank variants
+// fillId offset from FILL_COMMON (4)
+function rarityXf(fillId, type) {
+  // Returns xf index for this rarity+type combo
+  // Base XF count is 11 (XF_DEFAULT..XF_BOLD)
+  // Then per-fill: 4 variants each
+  // rarityXfBase = 11 + (fillId - FILL_COMMON) * 4 + typeOffset
+  const base = 11;
+  const fills = [FILL_COMMON,FILL_UNCOMMON,FILL_RARE,FILL_DR,FILL_IR,FILL_IR,FILL_UR,FILL_SIR,FILL_SIR,FILL_HR,FILL_MHR,FILL_MAR,FILL_TR,FILL_RH];
+  const fillIdx = fills.indexOf(fillId);
+  const typeOffset = { num:0, card:1, abbrev:2, blank:3 }[type] || 0;
+  if (fillIdx < 0) return XF_CARD;
+  return base + fillIdx * 4 + typeOffset;
+}
+
+const STYLES_XML = buildStylesXml();
+
+function buildStylesXml() {
+  const fonts = [
+    `<font><sz val="11"/><name val="Calibri"/></font>`,
+    `<font><b/><sz val="11"/><name val="Calibri"/><color rgb="FFFFFFFF"/></font>`,
+    `<font><b/><sz val="10"/><name val="Calibri"/><color rgb="FF37474F"/></font>`,
+    `<font><sz val="10"/><name val="Calibri"/></font>`,
+    `<font><sz val="10"/><name val="Courier New"/><color rgb="FF607D8B"/></font>`,
+    `<font><sz val="10"/><name val="Calibri"/><color rgb="FF78909C"/></font>`,
+    `<font><i/><sz val="10"/><name val="Calibri"/><color rgb="FF1565C0"/></font>`,
+    `<font><b/><sz val="10"/><name val="Calibri"/></font>`,
+  ];
+
+  const fillDefs = [
+    ['none', ''],
+    ['gray125', ''],
+    ['solid', 'FF1A237E'], // FILL_HEADER
+    ['solid', 'FFE0E0E0'], // FILL_SECTION
+    ['solid', 'FFFFFFFF'], // FILL_COMMON
+    ['solid', 'FFF0F4FF'], // FILL_UNCOMMON
+    ['solid', 'FFE8F5E9'], // FILL_RARE
+    ['solid', 'FFE3F2FD'], // FILL_DR
+    ['solid', 'FFFFF8E1'], // FILL_IR
+    ['solid', 'FFFCE4EC'], // FILL_UR
+    ['solid', 'FFF3E5F5'], // FILL_SIR
+    ['solid', 'FFFFF3E0'], // FILL_HR
+    ['solid', 'FFFFE0B2'], // FILL_MHR
+    ['solid', 'FFF0FFF0'], // FILL_MAR
+    ['solid', 'FFE8EAF6'], // FILL_TR
+    ['solid', 'FFF9F9F9'], // FILL_RH
+  ];
+
+  const fills = fillDefs.map(([pat, color]) =>
+    pat === 'none' ? `<fill><patternFill patternType="none"/></fill>` :
+    pat === 'gray125' ? `<fill><patternFill patternType="gray125"/></fill>` :
+    `<fill><patternFill patternType="solid"><fgColor rgb="${color}"/><bgColor indexed="64"/></patternFill></fill>`
+  );
+
+  const border = `<border><left/><right/><top/><bottom/><diagonal/></border>`;
+
+  // Build xf list
+  const xfs = [];
+  const xf = (fontId, fillId, center=false, left=false) =>
+    `<xf numFmtId="0" fontId="${fontId}" fillId="${fillId}" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="${center?'center':left?'left':'general'}" vertical="center"/></xf>`;
+
+  // Fixed XFs 0-10
+  xfs.push(xf(F_DEFAULT, FILL_NONE));         // 0 default
+  xfs.push(xf(F_HEADER,  FILL_HEADER, true)); // 1 header center
+  xfs.push(xf(F_HEADER,  FILL_HEADER, false, true)); // 2 header left
+  xfs.push(xf(F_SECTION, FILL_SECTION, false, true)); // 3 section
+  xfs.push(xf(F_NUM,     FILL_NONE, true));   // 4 card# (no fill, added per row)
+  xfs.push(xf(F_CARD,    FILL_NONE, false, true)); // 5 card name
+  xfs.push(xf(F_BOLD,    FILL_NONE, true));   // 6 abbrev center
+  xfs.push(xf(F_DEFAULT, FILL_NONE, true));   // 7 blank center
+  xfs.push(xf(F_MUTED,   FILL_NONE, false, true)); // 8 muted left
+  xfs.push(xf(F_LINK,    FILL_NONE, false, true)); // 9 link
+  xfs.push(xf(F_BOLD,    FILL_NONE, false, true)); // 10 bold left
+
+  // Per-rarity XFs (fillId 4..15, 4 variants each = 48 more)
+  for (let fillId = FILL_COMMON; fillId <= FILL_RH; fillId++) {
+    xfs.push(xf(F_NUM,     fillId, true));        // num
+    xfs.push(xf(F_CARD,    fillId, false, true)); // card name
+    xfs.push(xf(F_ABBREV||F_BOLD, fillId, true)); // abbrev
+    xfs.push(xf(F_DEFAULT, fillId, true));        // blank
+  }
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="${fonts.length}">${fonts.join('')}</fonts>
+  <fills count="${fills.length}">${fills.join('')}</fills>
+  <borders count="1">${border}</borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="${xfs.length}">${xfs.join('')}</cellXfs>
+</styleSheet>`;
+}
+
 async function trackDownload(set, format) {
   if (!KV_URL || !KV_TOKEN) return;
   const today = new Date().toISOString().slice(0, 10);
   try {
     await Promise.all([
-      fetch(`${KV_URL}/incr/downloads:checklist:${set}:${format}`, {
-        method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}` },
-      }),
-      fetch(`${KV_URL}/incr/downloads:daily:${today}`, {
-        method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}` },
-      }),
+      fetch(`${KV_URL}/incr/downloads:checklist:${set}:${format}`, { method:'POST', headers:{Authorization:`Bearer ${KV_TOKEN}`} }),
+      fetch(`${KV_URL}/incr/downloads:daily:${today}`,             { method:'POST', headers:{Authorization:`Bearer ${KV_TOKEN}`} }),
     ]);
-  } catch (e) {
-    console.error('[checklist] tracking failed:', e.message);
-  }
+  } catch {}
 }
 
 export default async function handler(req, res) {
@@ -91,40 +229,32 @@ export default async function handler(req, res) {
   try {
     const r2Res = await fetch(`${R2_BASE}/data/${set}.json`);
     if (!r2Res.ok) throw new Error(`R2 ${r2Res.status}`);
-    const data  = await r2Res.json();
-    const cards = (data.cards || []).map(c => ({
-      ...c, rarity: normalizeRarity(c.rarity || ''),
-    }));
-    if (cards.length === 0) throw new Error('No cards found');
+    const { cards: rawCards = [] } = await r2Res.json();
+    if (!rawCards.length) throw new Error('No cards found');
+
+    const cards = rawCards.map(c => ({ ...c, rarity: normalizeRarity(c.rarity || '') }));
 
     const groups = {};
     for (const r of RARITY_ORDER) groups[r] = [];
-    for (const card of cards) {
-      const r = card.rarity || 'Unknown';
-      if (!groups[r]) groups[r] = [];
-      groups[r].push(card);
-    }
-    for (const r of Object.keys(groups)) {
-      groups[r].sort((a, b) => naturalSort(a.localId, b.localId));
-    }
+    for (const c of cards) { const r = c.rarity || 'Unknown'; (groups[r] = groups[r]||[]).push(c); }
+    for (const r of Object.keys(groups)) groups[r].sort((a,b) => naturalSort(a.localId, b.localId));
 
-    const rhCards  = master ? cards.filter(c => !SECRET_RARITIES.has(c.rarity)) : [];
-    const slug     = setName.replace(/[^a-z0-9]/gi, '-').toLowerCase().replace(/-+/g, '-');
+    const rhCards = master ? cards.filter(c => !SECRET_RARITIES.has(c.rarity)) : [];
+    const slug = setName.replace(/[^a-z0-9]/gi,'-').toLowerCase().replace(/-+/g,'-');
 
     if (format === 'csv') {
       trackDownload(set, 'csv');
       const csv = buildCSV(setName, set, cards, groups, rhCards, master, today);
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master ? 'master-set-' : ''}checklist.csv"`);
+      res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.csv"`);
       res.setHeader('Cache-Control', 'public, max-age=3600');
       return res.status(200).send('\uFEFF' + csv);
     }
 
-    // XLSX — zero external deps
     trackDownload(set, 'xlsx');
     const xlsxBuf = buildXLSX(setName, set, cards, groups, rhCards, master, today);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master ? 'master-set-' : ''}checklist.xlsx"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.xlsx"`);
     res.setHeader('Cache-Control', 'public, max-age=3600');
     return res.status(200).send(xlsxBuf);
 
@@ -134,276 +264,200 @@ export default async function handler(req, res) {
   }
 }
 
-// ── ZIP / xlsx builder ────────────────────────────────────────────────────────
+// ── ZIP builder ───────────────────────────────────────────────────────────────
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
-  for (let i = 0; i < 256; i++) {
-    let c = i;
-    for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-    t[i] = c;
-  }
+  for (let i=0;i<256;i++){let c=i;for(let j=0;j<8;j++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}
   return t;
 })();
-
-function crc32(buf) {
-  let crc = 0xFFFFFFFF;
-  for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ CRC_TABLE[(crc ^ buf[i]) & 0xFF];
-  return (crc ^ 0xFFFFFFFF) >>> 0;
-}
+function crc32(buf){let c=0xFFFFFFFF;for(let i=0;i<buf.length;i++)c=(c>>>8)^CRC_TABLE[(c^buf[i])&0xFF];return(c^0xFFFFFFFF)>>>0;}
 
 function buildZip(files) {
-  const now = new Date();
-  const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
-  const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
-
-  const entries = [];
-  let offset = 0;
-
-  for (const { name, data } of files) {
-    const nameBytes = Buffer.from(name, 'utf8');
-    const compressed = deflateRawSync(Buffer.from(data), { level: 6 });
-    const crc = crc32(Buffer.from(data));
-
-    const local = Buffer.alloc(30 + nameBytes.length);
-    local.writeUInt32LE(0x04034B50, 0);
-    local.writeUInt16LE(20, 4); local.writeUInt16LE(0, 6); local.writeUInt16LE(8, 8);
-    local.writeUInt16LE(dosTime, 10); local.writeUInt16LE(dosDate, 12);
-    local.writeUInt32LE(crc, 14);
-    local.writeUInt32LE(compressed.length, 18);
-    local.writeUInt32LE(data.length, 22);
-    local.writeUInt16LE(nameBytes.length, 26); local.writeUInt16LE(0, 28);
-    nameBytes.copy(local, 30);
-
-    entries.push({ nameBytes, crc, compressed, uncompLen: data.length, local, offset, dosDate, dosTime });
-    offset += local.length + compressed.length;
+  const now=new Date();
+  const dd=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  const dt=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1);
+  const entries=[]; let offset=0;
+  for(const {name,data} of files){
+    const nb=Buffer.from(name,'utf8'),db=Buffer.from(data);
+    const comp=deflateRawSync(db,{level:6}),crc=crc32(db);
+    const loc=Buffer.alloc(30+nb.length);
+    loc.writeUInt32LE(0x04034B50,0);loc.writeUInt16LE(20,4);loc.writeUInt16LE(0,6);loc.writeUInt16LE(8,8);
+    loc.writeUInt16LE(dt,10);loc.writeUInt16LE(dd,12);loc.writeUInt32LE(crc,14);
+    loc.writeUInt32LE(comp.length,18);loc.writeUInt32LE(db.length,22);
+    loc.writeUInt16LE(nb.length,26);loc.writeUInt16LE(0,28);nb.copy(loc,30);
+    entries.push({nb,crc,comp,ul:db.length,loc,offset,dd,dt});
+    offset+=loc.length+comp.length;
   }
-
-  const cdParts = entries.map(e => {
-    const cd = Buffer.alloc(46 + e.nameBytes.length);
-    cd.writeUInt32LE(0x02014B50, 0);
-    cd.writeUInt16LE(20, 4); cd.writeUInt16LE(20, 6); cd.writeUInt16LE(0, 8); cd.writeUInt16LE(8, 10);
-    cd.writeUInt16LE(e.dosTime, 12); cd.writeUInt16LE(e.dosDate, 14);
-    cd.writeUInt32LE(e.crc, 16); cd.writeUInt32LE(e.compressed.length, 20); cd.writeUInt32LE(e.uncompLen, 24);
-    cd.writeUInt16LE(e.nameBytes.length, 28); cd.writeUInt16LE(0, 30); cd.writeUInt16LE(0, 32);
-    cd.writeUInt16LE(0, 34); cd.writeUInt16LE(0, 36); cd.writeUInt32LE(0, 38); cd.writeUInt32LE(e.offset, 42);
-    e.nameBytes.copy(cd, 46);
-    return cd;
+  const cds=entries.map(e=>{
+    const cd=Buffer.alloc(46+e.nb.length);
+    cd.writeUInt32LE(0x02014B50,0);cd.writeUInt16LE(20,4);cd.writeUInt16LE(20,6);
+    cd.writeUInt16LE(0,8);cd.writeUInt16LE(8,10);cd.writeUInt16LE(e.dt,12);cd.writeUInt16LE(e.dd,14);
+    cd.writeUInt32LE(e.crc,16);cd.writeUInt32LE(e.comp.length,20);cd.writeUInt32LE(e.ul,24);
+    cd.writeUInt16LE(e.nb.length,28);cd.writeUInt16LE(0,30);cd.writeUInt16LE(0,32);
+    cd.writeUInt16LE(0,34);cd.writeUInt16LE(0,36);cd.writeUInt32LE(0,38);cd.writeUInt32LE(e.offset,42);
+    e.nb.copy(cd,46);return cd;
   });
-
-  const cdBuf = Buffer.concat(cdParts);
-  const eocd = Buffer.alloc(22);
-  eocd.writeUInt32LE(0x06054B50, 0); eocd.writeUInt16LE(0, 4); eocd.writeUInt16LE(0, 6);
-  eocd.writeUInt16LE(entries.length, 8); eocd.writeUInt16LE(entries.length, 10);
-  eocd.writeUInt32LE(cdBuf.length, 12); eocd.writeUInt32LE(offset, 16); eocd.writeUInt16LE(0, 20);
-
-  return Buffer.concat([...entries.flatMap(e => [e.local, e.compressed]), cdBuf, eocd]);
+  const cdb=Buffer.concat(cds),eocd=Buffer.alloc(22);
+  eocd.writeUInt32LE(0x06054B50,0);eocd.writeUInt16LE(0,4);eocd.writeUInt16LE(0,6);
+  eocd.writeUInt16LE(entries.length,8);eocd.writeUInt16LE(entries.length,10);
+  eocd.writeUInt32LE(cdb.length,12);eocd.writeUInt32LE(offset,16);eocd.writeUInt16LE(0,20);
+  return Buffer.concat([...entries.flatMap(e=>[e.loc,e.comp]),cdb,eocd]);
 }
 
+// ── XLSX builder ──────────────────────────────────────────────────────────────
 function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
-  // Shared string table — collect all unique strings
-  const sst = [];
-  const sstMap = {};
+  const sst = []; const sstMap = {};
   function si(s) {
-    const str = String(s ?? '');
-    if (sstMap[str] === undefined) { sstMap[str] = sst.length; sst.push(str); }
+    const str = String(s??'');
+    if (sstMap[str]===undefined){sstMap[str]=sst.length;sst.push(str);}
     return sstMap[str];
   }
 
-  // Pre-register all strings
-  const HDR_COLOR = '1A237E'; // dark blue header
-  const SECTION_COLOR = 'E0E0E0';
+  const rowsXml = [];
+  const dvs = [];
+  let rn = 0;
 
-  // Build sheet rows: [{cells: [{v, t, bold, bg, color, italic}]}]
-  const rows = [];
-
-  function addHeader(label, bg = HDR_COLOR) {
-    rows.push({ type: 'header', cells: [
-      { v: si(label), t:'s', bold:true, color:'FFFFFF', bg },
-      { v: si(''), t:'s', bg }, { v: si(''), t:'s', bg },
-      { v: si(''), t:'s', bg }, { v: si(''), t:'s', bg }, { v: si(''), t:'s', bg },
-    ], merge: true });
+  function row(cells, height=18) {
+    rn++;
+    rowsXml.push(`<row r="${rn}" ht="${height}" customHeight="1">${cells}</row>`);
+    return rn;
   }
 
-  function addColHeaders() {
-    rows.push({ type: 'colheader', cells: [
-      { v: si('#'),       t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR, center:true },
-      { v: si('Card Name'), t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR },
-      { v: si('Rarity'),  t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR, center:true },
-      { v: si('Have ✓'), t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR, center:true },
-      { v: si('Grade'),   t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR, center:true },
-      { v: si('Notes'),   t:'s', bold:true, color:'FFFFFF', bg: HDR_COLOR },
-    ]});
+  function cell(col, rowNum, sstIdx, xfId) {
+    return `<c r="${col}${rowNum}" t="s" s="${xfId}"><v>${sstIdx}</v></c>`;
+  }
+  function blank(col, rowNum, xfId) {
+    return `<c r="${col}${rowNum}" s="${xfId}"/>`;
   }
 
-  function addBlank() { rows.push({ cells: Array(6).fill({ v: si(''), t:'s' }) }); }
+  function addTitleRow(text) {
+    const r = row(
+      cell('A',rn+1,si(text),XF_HEADER_L) +
+      'BCDEF'.split('').map(c=>blank(c,rn+1,XF_HEADER)).join(''),
+      22
+    );
+    // merge A:F
+    return r;
+  }
 
-  // Title
-  addHeader(`${setName}${master ? ' — Master Set Checklist' : ' — Checklist'}`);
-  rows.push({ cells: [
-    { v: si(`Set: ${setId.toUpperCase()}`), t:'s', color:'78909C' },
-    { v: si(`${cards.length + (master ? rhCards.length : 0)} cards`), t:'s', color:'78909C' },
-    { v: si(`Generated: ${today}`), t:'s', color:'78909C' },
-    { v: si(''), t:'s' }, { v: si(''), t:'s' }, { v: si('tcgwatchtower.com'), t:'s', color:'1565C0', italic:true },
-  ]});
+  function addSectionRow(text) {
+    const r = row(
+      cell('A',rn+1,si(text),XF_SECTION) +
+      'BCDEF'.split('').map(c=>blank(c,rn+1,XF_SECTION)).join(''),
+      18
+    );
+    return r;
+  }
+
+  function addColHeaderRow() {
+    const labels = ['#','Card Name','Rarity','Have ✓','Grade','Notes'];
+    const xfs = [XF_HEADER,XF_HEADER_L,XF_HEADER,XF_HEADER,XF_HEADER,XF_HEADER_L];
+    row(labels.map((l,i)=>cell('ABCDEF'[i],rn+1,si(l),xfs[i])).join(''), 20);
+  }
+
+  function addBlank() {
+    row('ABCDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+  }
+
+  function addCardRow(localId, name, rarityAbbrev, rarity) {
+    const fi = RARITY_FILL[rarity] ?? FILL_COMMON;
+    const xfNum    = rarityXf(fi, 'num');
+    const xfCard   = rarityXf(fi, 'card');
+    const xfAbbrev = rarityXf(fi, 'abbrev');
+    const xfBlank  = rarityXf(fi, 'blank');
+    const r = rn + 1;
+    dvs.push(`<dataValidation type="list" allowBlank="1" showDropDown="0" sqref="D${r}"><formula1>"Y,N,W"</formula1></dataValidation>`);
+    dvs.push(`<dataValidation type="list" allowBlank="1" showDropDown="0" sqref="E${r}"><formula1>"PSA 10,PSA 9,PSA 8,BGS 9.5,BGS 9,TAG 8,TAG 7,Raw"</formula1></dataValidation>`);
+    row(
+      cell('A',r,si(localId),   xfNum)  +
+      cell('B',r,si(name),      xfCard) +
+      cell('C',r,si(rarityAbbrev),xfAbbrev)+
+      blank('D',r,xfBlank)+blank('E',r,xfBlank)+blank('F',r,xfBlank)
+    );
+  }
+
+  const merges = [];
+  function mergeFull(r) { merges.push(`<mergeCell ref="A${r}:F${r}"/>`); }
+
+  // ── Title ──
+  mergeFull(rn+1);
+  addTitleRow(`${setName}${master?' — Master Set Checklist':' — Checklist'}`);
+
+  row(
+    cell('A',rn+1,si(`Set: ${setId.toUpperCase()}`),XF_MUTED)+
+    cell('B',rn+1,si(`${cards.length+(master?rhCards.length:0)} cards`),XF_MUTED)+
+    cell('C',rn+1,si(`Generated: ${today}`),XF_MUTED)+
+    blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+
+    cell('F',rn+1,si('tcgwatchtower.com'),XF_LINK)
+  );
+
   addBlank();
 
-  // How to use
-  rows.push({ cells: [{ v: si('HOW TO USE'), t:'s', bold:true }, { v: si(''), t:'s'}, { v: si(''), t:'s'}, { v: si(''), t:'s'}, { v: si(''), t:'s'}, { v: si(''), t:'s'}] });
-  rows.push({ cells: [{ v: si('Have column:'), t:'s', bold:true, color:'455A64' }, { v: si('Y = have it  |  N = need it  |  W = wishlisted'), t:'s', color:'607D8B' }, ...Array(4).fill({v:si(''),t:'s'})] });
-  rows.push({ cells: [{ v: si('Grade column:'), t:'s', bold:true, color:'455A64' }, { v: si('PSA 10 / PSA 9 / BGS 9.5 / TAG 8 / Raw — pick from dropdown'), t:'s', color:'607D8B' }, ...Array(4).fill({v:si(''),t:'s'})] });
+  // ── How to use ──
+  row(cell('A',rn+1,si('HOW TO USE'),XF_BOLD)+'BCDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+  row(cell('A',rn+1,si('Have column:'),XF_BOLD)+cell('B',rn+1,si('Y = have it  |  N = need it  |  W = wishlisted'),XF_MUTED)+'CDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+  row(cell('A',rn+1,si('Grade column:'),XF_BOLD)+cell('B',rn+1,si('PSA 10 / PSA 9 / BGS 9.5 / TAG 8 / Raw — pick from dropdown'),XF_MUTED)+'CDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+
   addBlank();
 
-  // Card list
-  addColHeaders();
+  // ── Card list ──
+  addColHeaderRow();
 
   for (const rarity of RARITY_ORDER) {
     const group = groups[rarity];
-    if (!group || group.length === 0) continue;
-
+    if (!group?.length) continue;
     addBlank();
-    // Section header
-    rows.push({ type:'section', cells: [
-      { v: si(`${rarity}  (${RARITY_ABBREV[rarity] || rarity})  —  ${group.length} card${group.length !== 1 ? 's' : ''}`),
-        t:'s', bold:true, color:'37474F', bg: SECTION_COLOR },
-      ...Array(5).fill({ v: si(''), t:'s', bg: SECTION_COLOR }),
-    ], merge: true });
-
-    const rowBg = (RARITY_COLOR[rarity] || 'FFFFFFFF').slice(2); // strip FF alpha prefix
+    const secR = rn+1; mergeFull(secR);
+    addSectionRow(`${rarity}  (${RARITY_ABBREV[rarity]||rarity})  —  ${group.length} card${group.length!==1?'s':''}`);
     for (const card of group) {
-      rows.push({ rarity, cells: [
-        { v: si(padId(card.localId)), t:'s', color:'607D8B', center:true, mono:true, bg: rowBg },
-        { v: si(card.name),           t:'s', bg: rowBg },
-        { v: si(RARITY_ABBREV[card.rarity] || card.rarity), t:'s', bold:true, color:'455A64', center:true, bg: rowBg },
-        { v: si(''), t:'s', center:true, bg: rowBg, dropdown:'have' },
-        { v: si(''), t:'s', center:true, bg: rowBg, dropdown:'grade' },
-        { v: si(''), t:'s', bg: rowBg },
-      ]});
+      addCardRow(padId(card.localId), card.name, RARITY_ABBREV[card.rarity]||card.rarity, card.rarity);
     }
   }
 
+  // ── Reverse holos ──
   if (master && rhCards.length > 0) {
     addBlank();
-    rows.push({ type:'section', cells: [
-      { v: si(`Reverse Holos  (RH)  —  ${rhCards.length} cards`), t:'s', bold:true, color:'37474F', bg: SECTION_COLOR },
-      ...Array(5).fill({ v: si(''), t:'s', bg: SECTION_COLOR }),
-    ], merge: true });
-    rows.push({ cells: [
-      { v: si('Foil versions of all C / U / R / DR cards.'), t:'s', color:'78909C', italic:true },
-      ...Array(5).fill({ v: si(''), t:'s' }),
-    ]});
-    addColHeaders();
-    for (const card of rhCards.sort((a,b) => naturalSort(a.localId, b.localId))) {
-      rows.push({ cells: [
-        { v: si(padId(card.localId) + ' RH'), t:'s', color:'607D8B', center:true, mono:true, bg:'F9F9F9' },
-        { v: si(card.name),  t:'s', bg:'F9F9F9' },
-        { v: si('RH'),       t:'s', bold:true, color:'455A64', center:true, bg:'F9F9F9' },
-        { v: si(''), t:'s', center:true, bg:'F9F9F9', dropdown:'have' },
-        { v: si(''), t:'s', center:true, bg:'F9F9F9', dropdown:'grade' },
-        { v: si(''), t:'s', bg:'F9F9F9' },
-      ]});
+    const rhSecR = rn+1; mergeFull(rhSecR);
+    addSectionRow(`Reverse Holos  (RH)  —  ${rhCards.length} cards`);
+    row(cell('A',rn+1,si('Foil versions of all Common, Uncommon, Rare, and Double Rare cards.'),XF_MUTED)+'BCDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+    addColHeaderRow();
+    for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId))) {
+      addCardRow(padId(card.localId)+' RH', card.name, 'RH', card.rarity);
     }
   }
 
   addBlank();
-  rows.push({ cells: [
-    { v: si('TCG Watchtower'), t:'s', bold:true, color:'1565C0' },
-    { v: si('tcgwatchtower.com'), t:'s', color:'1565C0', italic:true },
-    { v: si('Live prices  •  Restock alerts  •  Binder placeholders  •  Set guides'), t:'s', color:'78909C' },
-    ...Array(3).fill({ v: si(''), t:'s' }),
-  ]});
-
-  // ── Build styles ──────────────────────────────────────────────────────────
-  // Collect unique style combos
-  const styleKeys = [];
-  const styleMap = {};
-  function getStyle(cell) {
-    const key = JSON.stringify({ bold: !!cell.bold, color: cell.color||'', bg: cell.bg||'', center: !!cell.center, italic: !!cell.italic, mono: !!cell.mono });
-    if (styleMap[key] === undefined) { styleMap[key] = styleKeys.length; styleKeys.push(JSON.parse(key)); }
-    return styleMap[key];
-  }
-
-  // Assign style IDs
-  for (const row of rows) {
-    for (const cell of row.cells) cell.xf = getStyle(cell);
-  }
-
-  // Build styles XML
-  const numFmts = '';
-  const fonts = styleKeys.map(s => `<font>${s.bold ? '<b/>' : ''}${s.italic ? '<i/>' : ''}${s.mono ? '<name val="Courier New"/>' : '<name val="Calibri"/>'}${s.color ? `<color rgb="FF${s.color}"/>` : ''}<sz val="10"/></font>`);
-  const fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>',
-    ...styleKeys.map(s => s.bg ? `<fill><patternFill patternType="solid"><fgColor rgb="FF${s.bg}"/></patternFill></fill>` : '<fill><patternFill patternType="none"/></fill>')
-  ];
-  const borders = '<border><left/><right/><top/><bottom/><diagonal/></border>';
-  const xfs = styleKeys.map((s, i) =>
-    `<xf numFmtId="0" fontId="${i}" fillId="${s.bg ? i + 2 : 0}" borderId="0" xfId="0"${s.center ? ' applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>' : ' applyAlignment="1"><alignment vertical="center"/></xf>'}`
+  row(
+    cell('A',rn+1,si('TCG Watchtower'),XF_BOLD)+
+    cell('B',rn+1,si('tcgwatchtower.com'),XF_LINK)+
+    cell('C',rn+1,si('Live prices  •  Restock alerts  •  Binder placeholders  •  Set guides'),XF_MUTED)+
+    blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
   );
 
-  const stylesXml = `<?xml version="1.0" encoding="UTF-8"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="${fonts.length}">${fonts.join('')}</fonts><fills count="${fills.length}">${fills.join('')}</fills><borders count="1">${borders}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join('')}</cellXfs></styleSheet>`;
-
-  // ── Build sheet XML ───────────────────────────────────────────────────────
-  const cols = `<cols><col min="1" max="1" width="7" customWidth="1"/><col min="2" max="2" width="32" customWidth="1"/><col min="3" max="3" width="10" customWidth="1"/><col min="4" max="4" width="11" customWidth="1"/><col min="5" max="5" width="20" customWidth="1"/><col min="6" max="6" width="24" customWidth="1"/></cols>`;
-
-  const merges = [];
-  const dvList = [];
-  let rowXml = '';
-  let dataRowStart = 0;
-  let inDataSection = false;
-
-  for (let ri = 0; ri < rows.length; ri++) {
-    const row = rows[ri];
-    const rn = ri + 1;
-    if (row.merge) merges.push(`<mergeCell ref="A${rn}:F${rn}"/>`);
-
-    let cellXml = '';
-    for (let ci = 0; ci < row.cells.length; ci++) {
-      const cell = row.cells[ci];
-      const colLetter = 'ABCDEF'[ci];
-      const ref = `${colLetter}${rn}`;
-      const s = cell.xf || 0;
-      if (cell.t === 's') {
-        cellXml += `<c r="${ref}" t="s" s="${s}"><v>${cell.v}</v></c>`;
-      } else {
-        cellXml += `<c r="${ref}" s="${s}"/>`;
-      }
-
-      // Data validations for have/grade dropdowns
-      if (cell.dropdown === 'have') {
-        dvList.push(`<dataValidation type="list" allowBlank="1" showDropDown="0" sqref="${ref}"><formula1>"Y,N,W"</formula1></dataValidation>`);
-      } else if (cell.dropdown === 'grade') {
-        dvList.push(`<dataValidation type="list" allowBlank="1" showDropDown="0" sqref="${ref}"><formula1>"PSA 10,PSA 9,PSA 8,BGS 9.5,BGS 9,TAG 8,TAG 7,Raw"</formula1></dataValidation>`);
-      }
-    }
-    rowXml += `<row r="${rn}" ht="18" customHeight="1">${cellXml}</row>`;
-  }
-
-  // Freeze first row
-  const sheetView = `<sheetViews><sheetView tabSelected="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`;
+  // ── XML assembly ──
+  const sstXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${sst.length}" uniqueCount="${sst.length}">${sst.map(s=>`<si><t xml:space="preserve">${xmlEsc(s)}</t></si>`).join('')}</sst>`;
 
   const mergeXml = merges.length ? `<mergeCells count="${merges.length}">${merges.join('')}</mergeCells>` : '';
-  const dvXml    = dvList.length ? `<dataValidations count="${dvList.length}">${dvList.join('')}</dataValidations>` : '';
+  const dvXml = dvs.length ? `<dataValidations count="${dvs.length}">${dvs.join('')}</dataValidations>` : '';
 
-  const sheetXml = `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetFormatPr defaultRowHeight="18"/>${sheetView}${cols}<sheetData>${rowXml}</sheetData>${mergeXml}${dvXml}</worksheet>`;
+  const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView tabSelected="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols><col min="1" max="1" width="8" customWidth="1"/><col min="2" max="2" width="32" customWidth="1"/><col min="3" max="3" width="10" customWidth="1"/><col min="4" max="4" width="11" customWidth="1"/><col min="5" max="5" width="20" customWidth="1"/><col min="6" max="6" width="24" customWidth="1"/></cols><sheetData>${rowsXml.join('')}</sheetData>${mergeXml}${dvXml}</worksheet>`;
 
-  // ── Shared strings XML ────────────────────────────────────────────────────
-  const sstXml = `<?xml version="1.0" encoding="UTF-8"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${sst.length}" uniqueCount="${sst.length}">${sst.map(s => `<si><t xml:space="preserve">${xmlEsc(s)}</t></si>`).join('')}</sst>`;
+  const wbXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Checklist" sheetId="1" r:id="rId1"/></sheets></workbook>`;
 
-  // ── Workbook ──────────────────────────────────────────────────────────────
-  const wbXml = `<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Checklist" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+  const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>`;
 
-  const wbRels = `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const pkgRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
 
-  const pkgRels = `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
-
-  const contentTypes = `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
 
   return buildZip([
-    { name: '[Content_Types].xml',          data: contentTypes },
-    { name: '_rels/.rels',                   data: pkgRels },
-    { name: 'xl/workbook.xml',              data: wbXml },
-    { name: 'xl/_rels/workbook.xml.rels',   data: wbRels },
-    { name: 'xl/worksheets/sheet1.xml',     data: sheetXml },
-    { name: 'xl/sharedStrings.xml',         data: sstXml },
-    { name: 'xl/styles.xml',               data: stylesXml },
+    { name: '[Content_Types].xml',         data: contentTypes },
+    { name: '_rels/.rels',                 data: pkgRels },
+    { name: 'xl/workbook.xml',             data: wbXml },
+    { name: 'xl/_rels/workbook.xml.rels',  data: wbRels },
+    { name: 'xl/worksheets/sheet1.xml',    data: sheetXml },
+    { name: 'xl/sharedStrings.xml',        data: sstXml },
+    { name: 'xl/styles.xml',              data: STYLES_XML },
   ]);
 }
 
@@ -411,60 +465,41 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
 function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
   const totalCards = cards.length + (master ? rhCards.length : 0);
   const rows = [];
-  rows.push(['###', 'Card Name — Full Name Here                ', 'Rarity    ', 'Have', 'Grade (PSA/BGS/TAG)', 'Notes / Comments        ']);
-  rows.push([`${setName}${master ? ' — Master Set Checklist' : ' — Checklist'}`, '', '', '', '', '']);
-  rows.push([`Set: ${setId.toUpperCase()}`, `${totalCards} total cards`, `Generated: ${today}`, '', '', '']);
-  rows.push(['tcgwatchtower.com', '', '', '', '', '']);
-  rows.push(['', '', '', '', '', '']);
-  rows.push(['RARITY LEGEND', '', '', '', '', '']);
-  rows.push(['Abbrev', 'Full Name', 'What It Means', '', '', '']);
+  rows.push(['###','Card Name — Full Name Here                ','Rarity    ','Have','Grade (PSA/BGS/TAG)','Notes / Comments        ']);
+  rows.push([`${setName}${master?' — Master Set Checklist':' — Checklist'}`,'','','','','']);
+  rows.push([`Set: ${setId.toUpperCase()}`,`${totalCards} total cards`,`Generated: ${today}`,'','','']);
+  rows.push(['tcgwatchtower.com','','','','','']);
+  rows.push(['','','','','','']);
+  rows.push(['RARITY LEGEND','','','','','']);
+  rows.push(['Abbrev','Full Name','What It Means','','','']);
   for (const r of RARITY_ORDER) {
-    if (RARITY_ABBREV[r]) rows.push([RARITY_ABBREV[r], r, RARITY_DESC[r] || '', '', '', '']);
+    if (RARITY_ABBREV[r]) rows.push([RARITY_ABBREV[r],r,RARITY_DESC[r]||'','','','']);
   }
-  rows.push(['RH', 'Reverse Holo', 'Foil on card border/background. Available for C/U/R/DR cards.', '', '', '']);
-  rows.push(['', '', '', '', '', '']);
-  rows.push(['CARD LIST', '', '', '', '', '']);
-  rows.push(['Have: Y = have it  |  N = need it  |  W = wishlisted', '', '', '', '', '']);
+  rows.push(['RH','Reverse Holo','Foil on card border/background. C/U/R/DR cards only.','','','']);
+  rows.push(['','','','','','']);
+  rows.push(['CARD LIST','','','','','']);
+  rows.push(['Have: Y = have it  |  N = need it  |  W = wishlisted','','','','','']);
   for (const rarity of RARITY_ORDER) {
     const group = groups[rarity];
-    if (!group || group.length === 0) continue;
-    rows.push(['', '', '', '', '', '']);
-    rows.push([`${rarity} (${RARITY_ABBREV[rarity] || rarity}) — ${group.length} cards`, '', '', '', '', '']);
-    rows.push(['#', 'Card Name', 'Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
-    for (const card of group) {
-      rows.push([padId(card.localId), card.name, RARITY_ABBREV[card.rarity] || card.rarity, '', '', '']);
-    }
+    if (!group?.length) continue;
+    rows.push(['','','','','','']);
+    rows.push([`${rarity} (${RARITY_ABBREV[rarity]||rarity}) — ${group.length} cards`,'','','','','']);
+    rows.push(['#','Card Name','Rarity','Have (Y/N/W)','Grade (PSA/BGS/TAG)','Notes']);
+    for (const card of group) rows.push([padId(card.localId),card.name,RARITY_ABBREV[card.rarity]||card.rarity,'','','']);
   }
   if (master && rhCards.length > 0) {
-    rows.push(['', '', '', '', '', '']);
-    rows.push([`Reverse Holos (RH) — ${rhCards.length} cards`, '', '', '', '', '']);
-    rows.push(['#', 'Card Name', 'Base Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
-    for (const card of rhCards.sort((a,b) => naturalSort(a.localId, b.localId))) {
-      rows.push([`${padId(card.localId)} RH`, card.name, RARITY_ABBREV[card.rarity] || card.rarity, '', '', '']);
-    }
+    rows.push(['','','','','','']);
+    rows.push([`Reverse Holos (RH) — ${rhCards.length} cards`,'','','','','']);
+    rows.push(['#','Card Name','Base Rarity','Have (Y/N/W)','Grade (PSA/BGS/TAG)','Notes']);
+    for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId)))
+      rows.push([padId(card.localId)+' RH',card.name,RARITY_ABBREV[card.rarity]||card.rarity,'','','']);
   }
-  rows.push(['', '', '', '', '', '']);
-  rows.push(['TCG Watchtower', 'tcgwatchtower.com', 'Live prices  •  Restock alerts  •  Binder placeholders', '', '', '']);
-  return rows.map(row =>
-    row.map(cell => {
-      const s = String(cell ?? '');
-      return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
-    }).join(',')
-  ).join('\r\n');
+  rows.push(['','','','','','']);
+  rows.push(['TCG Watchtower','tcgwatchtower.com','Live prices  •  Restock alerts  •  Binder placeholders','','','']);
+  return rows.map(r=>r.map(c=>{const s=String(c??'');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;}).join(',')).join('\r\n');
 }
 
-function xmlEsc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
-}
-function normalizeRarity(r) {
-  return r.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
-}
-function padId(id) {
-  const n = parseInt(id, 10);
-  return isNaN(n) ? id : String(n).padStart(3, '0');
-}
-function naturalSort(a, b) {
-  const na = parseInt(a, 10), nb = parseInt(b, 10);
-  if (!isNaN(na) && !isNaN(nb)) return na - nb;
-  return String(a).localeCompare(String(b));
-}
+function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
+function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
+function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
