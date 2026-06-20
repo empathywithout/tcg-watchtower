@@ -410,28 +410,31 @@ function injectMasterSetHero(html, cards, name, releaseDate, short) {
           </div>
         </div>`;
 
-  // Replace old set-stats div
-  const oldStatsRe = /<div class="set-stats">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
-  // More targeted: find set-stats opening and replace until its closing
-  // Use a fixed anchor: replace from <div class="set-stats"> to the </div> that closes the stat-card-logo
-  // Actually safer: replace innerHTML of set-stats by finding the pattern
-  if (html.includes('<div class="set-stats">')) {
-    // Find the set-stats block - it has 3 direct stat-card children
-    // Replace the whole thing using a regex that captures until 4 </div>s deep
+  // Always replace set-stats div (handles 3-col original and 5-col updated)
+  if (html.includes('<div class="set-stats"')) {
+    // Match from <div class="set-stats" to the closing of the last stat-card </div></div>
+    // Works for both 3-col and 5-col versions
     html = html.replace(
-      /<div class="set-stats">[\s\S]*?<\/div>(\s*<\/div>){2}/,
+      /<div class="set-stats"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/,
       newStats
     );
+    // Fallback for 3-col version (3 stat-cards = 3 inner divs)
+    if (html.includes('<div class="set-stats">') || html.includes('<div class="set-stats" ')) {
+      html = html.replace(
+        /<div class="set-stats"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/,
+        newStats
+      );
+    }
   }
 
-  // Inject master paragraph after the second set-desc paragraph
-  // (second set-desc is the longer intro, we add after it before set-stats)
-  if (!html.includes('set-master-desc')) {
-    // Find position just before <div class="set-stats"
-    const statsPos = html.indexOf('<div class="set-stats"');
-    if (statsPos > 0) {
-      html = html.slice(0, statsPos) + masterPara + '        ' + html.slice(statsPos);
-    }
+  // Always refresh master paragraph (remove old one first, then re-inject)
+  if (html.includes('set-master-desc')) {
+    html = html.replace(/<p class="set-desc set-master-desc"[\s\S]*?<\/p>\s*/, '');
+  }
+  // Inject master paragraph just before set-stats
+  const statsPos = html.indexOf('<div class="set-stats"');
+  if (statsPos > 0) {
+    html = html.slice(0, statsPos) + masterPara + '        ' + html.slice(statsPos);
   }
 
   return html;
@@ -449,24 +452,29 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   let html = readFileSync(file, 'utf8');
   let changes = [];
 
-  // 1. Static card table
-  if (!html.includes('SEO: static card list')) {
-    try {
-      const res = await fetch(`${R2}/data/${setId}.json`);
-      if (!res.ok) throw new Error(`R2 ${res.status}`);
-      const json = await res.json();
-      const cards = json.cards || [];
-      if (cards.length > 0) {
-        const table = buildTable(cards, name, seriesSlug, urlSlug);
-        html = html.replace('</body>', table + '\n</body>');
-        changes.push(`${cards.length} cards`);
-        // Inject master set hero (paragraph + expanded stat bubbles)
-        html = injectMasterSetHero(html, cards, name, releaseDate, short);
-        changes.push('master set hero');
-      }
-    } catch (e) {
-      changes.push(`card table FAILED: ${e.message}`);
-    }
+  // 1. Fetch card data (used for static table + master set hero)
+  let cards = [];
+  try {
+    const res = await fetch(`${R2}/data/${setId}.json`);
+    if (!res.ok) throw new Error(`R2 ${res.status}`);
+    const json = await res.json();
+    cards = json.cards || [];
+  } catch (e) {
+    changes.push(`R2 fetch FAILED: ${e.message}`);
+  }
+
+  // 1a. Static card table (only inject once)
+  if (cards.length > 0 && !html.includes('SEO: static card list')) {
+    const table = buildTable(cards, name, seriesSlug, urlSlug);
+    html = html.replace('</body>', table + '\n</body>');
+    changes.push(`${cards.length} cards`);
+  }
+
+  // 1b. Master set hero — always update (paragraph + expanded stat bubbles)
+  if (cards.length > 0) {
+    const htmlBefore = html;
+    html = injectMasterSetHero(html, cards, name, releaseDate, short);
+    if (html !== htmlBefore) changes.push('master set hero');
   }
 
   // 2. H1 fix
@@ -524,6 +532,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
