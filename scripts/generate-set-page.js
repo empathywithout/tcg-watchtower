@@ -501,6 +501,13 @@ const SEO_DATA = {
     metaTitle: 'Pokemon 151 Card List: 207 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Pokemon 151 card list — all 207 SV3.5 cards with rarity filters, Illustration Rares, Special Illustration Rares, chase cards, and live TCGplayer prices.',
     intro: 'Pokemon 151 is the first subset of the Scarlet & Violet era, covering all 151 original Kanto Pokemon. The SV3.5 card list spans 207 cards and is one of the most popular collector sets ever printed, driven by nostalgia and a deep roster of Illustration Rares. This complete Pokemon 151 card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    faq: [
+      { q: 'What is the most expensive Pokemon 151 card?', a: 'The most expensive Pokemon 151 cards are the Charizard ex SIR, Mew ex SIR, and Alakazam ex SIR. Charizard ex consistently ranks as one of the top market value cards in the entire Scarlet & Violet era.' },
+      { q: 'How many cards are in the Pokemon 151 card list?', a: 'Pokemon 151 contains 207 cards in total — 165 main set cards plus 42 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+      { q: 'When did Pokemon 151 release?', a: 'Pokemon 151 released September 22, 2023 as the SV3.5 subset of the Scarlet & Violet era.' },
+      { q: 'Does Pokemon 151 have all original Kanto Pokemon?', a: 'Yes — Pokemon 151 features all 151 original Kanto Pokemon with each one appearing at least once in the set, making it a nostalgia-driven collector favourite.' },
+      { q: 'Is Pokemon 151 a good investment?', a: 'Pokemon 151 is one of the most collector-friendly sets in recent years due to its nostalgic appeal and high concentration of Illustration Rares. Sealed product and high-grade raw cards have maintained strong secondary market demand.' },
+    ],
   },
   'sv04': {
     metaTitle: 'Paradox Rift Card List: 266 Cards, Rarity Filter & Prices | TCG Watchtower',
@@ -541,6 +548,13 @@ const SEO_DATA = {
     metaTitle: 'Prismatic Evolutions Card List: 180 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Prismatic Evolutions card list — all 180 SV8.5 cards with rarity filters, Eevee evolutions, Special Illustration Rares, chase cards, and live TCGplayer prices.',
     intro: 'Prismatic Evolutions is the Eevee-themed subset of the Scarlet & Violet era and one of the most in-demand sets ever printed. The SV8.5 card list spans 180 cards with every Eeveelution featured in multiple art styles including Special Illustration Rares. This complete Prismatic Evolutions card list includes every card with rarity filters and live TCGplayer prices updated daily.',
+    faq: [
+      { q: 'What is the most expensive Prismatic Evolutions card?', a: 'The most expensive Prismatic Evolutions cards are the Eevee and Eeveelution Special Illustration Rares. Umbreon ex SIR, Sylveon ex SIR, and Espeon ex SIR consistently rank among the highest market values in the set.' },
+      { q: 'How many cards are in the Prismatic Evolutions card list?', a: 'Prismatic Evolutions contains 180 cards in total, including 87 main set cards and 93 secret rares spanning Illustration Rares, Ultra Rares, Special Illustration Rares, and Hyper Rares.' },
+      { q: 'When did Prismatic Evolutions release?', a: 'Prismatic Evolutions released January 17, 2025 as the SV8.5 subset of the Scarlet & Violet era.' },
+      { q: 'Why is Prismatic Evolutions so hard to find?', a: 'Prismatic Evolutions was one of the most in-demand Pokémon TCG sets ever printed due to the Eevee theme and high concentration of Special Illustration Rares. Initial supply sold out almost instantly and restocks remained scarce for months.' },
+      { q: 'Does Prismatic Evolutions have a God Pack?', a: 'Yes — Prismatic Evolutions features God Packs containing all Illustration Rares from a single booster pack, making them extremely rare and sought-after pulls.' },
+    ],
   },
   'sv09': {
     metaTitle: 'Journey Together Card List: 190 Cards, Rarity Filter & Prices | TCG Watchtower',
@@ -582,23 +596,81 @@ const SEO_DATA = {
     metaTitle: 'Perfect Order Card List: 124 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Perfect Order card list — all 124 ME3 cards with rarity filters, Mega Zygarde ex, Special Illustration Rares, Mega Ultra Rare, and live TCGplayer prices.',
     intro: 'Perfect Order is the third main set in the Pokemon TCG Mega Evolution series, released in March 2026. The ME3 set contains 117 cards and is built around Mega Starmie ex, Mega Zygarde ex, and Mega Clefable ex as its headline Pokemon. The top chase cards include multiple Special Illustration Rares and a Mega Ultra Rare in Mega Zygarde ex at number 117, which sits at the apex of the pull sheet. Rosa\'s Encouragement has emerged as a standout Supporter card driving collector demand. This complete Perfect Order card list includes all ME3 cards with rarity labels, daily updated prices from TCGplayer, and rarity filters so you can quickly locate any card in the set whether you are tracking a recent pull or researching values before buying.',
+    faq: [
+      { q: 'What is the most expensive Perfect Order card?', a: 'The most expensive Perfect Order card is the Mega Zygarde ex Mega Ultra Rare (#117). Rosa\'s Encouragement SIR and Mega Starmie ex SIR are also strong chase pulls by market value.' },
+      { q: 'How many cards are in the Perfect Order card list?', a: 'Perfect Order contains 124 cards in total, including 81 main set cards plus secret rares across Illustration Rare, Ultra Rare, Special Illustration Rare, and Mega Ultra Rare tiers.' },
+      { q: 'When did Perfect Order release?', a: 'Perfect Order released March 2026 as the third set in the Pokémon TCG Mega Evolution series.' },
+      { q: 'What Mega Pokemon are in Perfect Order?', a: 'Perfect Order is headlined by Mega Zygarde ex, Mega Starmie ex, and Mega Clefable ex as its three flagship Mega Evolution Pokemon ex.' },
+    ],
   },
   'me04': {
     metaTitle: 'Chaos Rising Card List: 122 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Chaos Rising card list — all 122 ME4 cards with rarity filters, Mega Greninja ex, Special Illustration Rares, Mega Hyper Rare, and live TCGplayer prices.',
     intro: 'Chaos Rising is the fourth set in the Pokemon TCG Mega Evolution series, releasing May 22 2026. Based on the Japanese Ninja Spinner set, ME4 is headlined by Mega Greninja ex as the most anticipated pull in the set. The Chaos Rising card list contains 122 cards including five Mega Evolution Pokemon ex, six Special Illustration Rares, and a Mega Hyper Rare of Mega Greninja ex at the top of the rarity ladder. Pre-release pricing has already put the Mega Greninja ex Mega Hyper Rare among the most valuable cards in the entire Mega Evolution block. This page tracks the full Chaos Rising card list with EN names, rarity filters, and real-time secondary market prices from TCGplayer that update daily.',
+    faq: [
+      { q: 'What is the most expensive Chaos Rising card?', a: 'The most expensive Chaos Rising card is the Mega Greninja ex Mega Hyper Rare (#122). The Mega Greninja ex Special Illustration Rare and supporting SIRs are also among the top chase pulls by market value.' },
+      { q: 'How many cards are in the Chaos Rising card list?', a: 'Chaos Rising contains 122 cards in total — 81 main set cards plus secret rares including Illustration Rares, Special Illustration Rares, Ultra Rares, and the Mega Greninja ex Mega Hyper Rare.' },
+      { q: 'When did Chaos Rising release?', a: 'Chaos Rising released May 22, 2026 as the fourth set in the Pokémon TCG Mega Evolution series.' },
+      { q: 'What Mega Pokemon are in Chaos Rising?', a: 'Chaos Rising features Mega Greninja ex as its headline card, alongside Mega Gyarados ex, Mega Beedrill ex, Mega Pidgeot ex, and Mega Alakazam ex.' },
+      { q: 'Is Chaos Rising based on a Japanese set?', a: 'Yes — Chaos Rising is the English adaptation of the Japanese set Ninja Spinner, which introduced Mega Greninja ex as the chase pull of the Mega Evolution series.' },
+    ],
   },
   'me05': {
     metaTitle: 'Pitch Black Card List: 118 Cards, Rarity Filter & Prices | TCG Watchtower',
     metaDesc: 'Complete Pitch Black card list — all 118 ME05 cards with rarity filters, Illustration Rares, Special Illustration Rares, Mega Hyper Rares, chase cards, and live TCGplayer prices. Releases July 2026.',
     intro: 'Pitch Black is the fifth set in the Pokemon TCG Mega Evolution series, releasing July 2026. Based on the Japanese Abyss Eye set, ME5 is headlined by Mega Darkrai ex as the top chase pull alongside Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. This page currently shows the Japanese Abyss Eye card list — English names and TCGplayer prices will be added when Pitch Black releases.',
+    faq: [
+      { q: 'What is the most expensive Pitch Black card?', a: 'The most expensive Pitch Black card is expected to be the Mega Darkrai ex Special Illustration Rare, illustrated by Akira Egawa. Based on its Japanese counterpart in Abyss Eye, it is the top chase pull of the set. Mega Zeraora ex SIR and Gwynn SIR are also expected to command strong prices.' },
+      { q: 'How many cards are in the Pitch Black card list?', a: 'Pitch Black contains 118 cards in total — 81 main set cards plus 37 secret rares including Illustration Rares, Special Illustration Rares, Ultra Rares, and the Mega Darkrai ex Mega Hyper Rare at #118.' },
+      { q: 'When does Pitch Black release?', a: 'Pitch Black releases July 26, 2026. Prerelease events begin July 4, 2026 at participating local game stores, giving collectors early access to booster packs before the official launch.' },
+      { q: 'What Mega Pokemon are in Pitch Black?', a: 'Pitch Black features four confirmed Mega Evolution Pokemon ex: Mega Darkrai ex, Mega Zeraora ex, Mega Chandelure ex, and Mega Excadrill ex. Mega Darkrai ex is the headline card and primary chase target.' },
+      { q: 'Is Pitch Black based on a Japanese set?', a: 'Yes — Pitch Black is the English adaptation of the Japanese set Abyss Eye, released May 22, 2026. The English set is a near 1:1 translation with the same card list, artwork, and rarities.' },
+      { q: 'What is the Pitch Black set code?', a: 'The Pitch Black set code is ME05, as it is the fifth expansion in the Pokémon TCG Mega Evolution series.' },
+    ],
   },
 };
+
+
+// ── FAQ builder ────────────────────────────────────────────────────────────────
+function buildFAQSection(faqs, setName) {
+  const items = faqs.map(f => `
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">${f.q}</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">${f.a}</p>
+      </div>`).join('\n');
+  return `<!-- ===== FAQ ===== -->
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">${setName} <span class="gradient-text">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">${items}
+    </div>
+  </div>
+</section>`;
+}
+
+function buildFAQJsonLD(faqs) {
+  const entities = faqs.map(f =>
+    `    {\n      "@type": "Question",\n      "name": ${JSON.stringify(f.q)},\n      "acceptedAnswer": {\n        "@type": "Answer",\n        "text": ${JSON.stringify(f.a)}\n      }\n    }`
+  ).join(',\n');
+  return `<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@type": "FAQPage",\n  "mainEntity": [\n${entities}\n  ]\n}\n<\/script>`;
+}
 
 const seoData   = SEO_DATA[SET_ID] || {};
 const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
 const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} guide — full card list, top chase cards ranked by rarity, booster box prices, and where to buy ETBs. Updated ${releaseDate}.`;
 const SEO_OG_TITLE   = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
+
+// ── Build FAQ content ─────────────────────────────────────────────────────────
+const DEFAULT_FAQ = [
+  { q: `How many cards are in the ${SET_FULL_NAME} card list?`, a: `${SET_FULL_NAME} contains ${officialCount || 'over 100'} cards in total, including the main set and all secret rare cards. Use the rarity filter above to browse by type.` },
+  { q: `When did ${SET_FULL_NAME} release?`, a: `${SET_FULL_NAME} released ${releaseDate} as part of the Pokémon TCG ${SET_SERIES} series.` },
+  { q: `What are the top chase cards in ${SET_FULL_NAME}?`, a: `The most valuable ${SET_FULL_NAME} cards are the highest rarity pulls — Special Illustration Rares, Hyper Rares, and Illustration Rares. See the Chase Cards section above for a complete ranked list with live TCGplayer prices.` },
+  { q: `Are ${SET_FULL_NAME} card prices available?`, a: `Yes — live market prices from TCGplayer are updated daily on this page. Click any card to view current listings and buying options.` },
+  { q: `What series is ${SET_FULL_NAME} part of?`, a: `${SET_FULL_NAME} is part of the ${SET_SERIES} series of the Pokémon Trading Card Game, set code ${SET_SHORT_NAME}.` },
+];
+const FAQ_ITEMS    = seoData.faq || DEFAULT_FAQ;
+const FAQ_SECTION  = buildFAQSection(FAQ_ITEMS, SET_FULL_NAME);
+const FAQ_JSONLD   = buildFAQJsonLD(FAQ_ITEMS);
 const SEO_INTRO      = seoData.intro     || '';
 
 // ── Fill template ──────────────────────────────────────────────────────────────
@@ -635,6 +707,8 @@ const vars = {
   '{{CHASE_CARDS_JSON}}':   chaseCardsJson,
   '{{SEO_META_TITLE}}':     SEO_META_TITLE,
   '{{SEO_OG_TITLE}}':       SEO_OG_TITLE,
+  '{{FAQ_SECTION}}':        FAQ_SECTION,
+  '{{FAQ_JSONLD}}':         FAQ_JSONLD,
   '{{SEO_META_DESC}}':      SEO_META_DESC,
   '{{SEO_INTRO}}':          SEO_INTRO,
   '{{BODY_BACKGROUND}}': 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
@@ -862,6 +936,7 @@ writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
 console.log(`✅  vercel.json updated`);
 
 console.log(`\n🎉 Done! Deploy ${outFile} — live at ${newUrl}`);
+
 
 
 
