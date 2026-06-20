@@ -291,15 +291,13 @@ function injectIntro(html, setId, name) {
   const genericDesc = `Complete guide to ${name} — full card list, chase cards ranked by market price, and where to buy sealed product.`;
   const introTag = `<p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">`;
 
-  // If intro exists, replace it with updated content
+  // Always replace existing intro with fresh content
   if (html.includes(introTag)) {
-    return html.replace(
-      new RegExp(`${introTag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^<]*</p>`),
-      `${introTag}${intro}</p>`
-    );
+    html = html.replace(/<p class="set-desc" style="margin-top:12px;font-size:0\.95rem;opacity:0\.85;">[\s\S]*?<\/p>/, `${introTag}${intro}</p>`);
+    return html;
   }
 
-  // Inject after the generic set-desc paragraph
+  // Inject after the generic set-desc paragraph if not present yet
   const target = `<p class="set-desc">\n          ${genericDesc}\n        </p>`;
   const replacement = `<p class="set-desc">\n          ${genericDesc}\n        </p>\n        ${introTag}${intro}</p>`;
   if (html.includes(target)) return html.replace(target, replacement);
@@ -357,19 +355,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
   // 4. FAQ section + schema
   // Replace if: no FAQ yet, OR has generic FAQ and we have per-set specific data
-  const hasGenericFAQ = html.includes('highest rarity pulls') || html.includes('scheduled to release on') || html.includes('What series is');
-  // Detect known-wrong FAQ answers that need replacing
-  const hasWrongAnswer = html.includes('Mega Gengar ex is the headline chase pull of the set') ||
-                         html.includes('Mega Gyarados ex') ||
-                         html.includes('88 main set cards plus over 40 secret rares') ||
-                         html.includes('Phantasmal Flames released November 2025') ||
-                         html.includes('supported by additional Mega Evolution ex cards');
-  const hasPerSetFAQ  = !!getFAQ(setId);
-  const perSetQ = getFAQ(setId)?.[0]?.q || '';
-  const correctA = getFAQ(setId)?.[0]?.a || '';
-  const alreadyHasPerSet = perSetQ && html.includes(perSetQ) && correctA && html.includes(correctA.slice(0, 40));
-  const needsFAQ = !html.includes('FAQPage') || ((hasGenericFAQ || hasWrongAnswer || !alreadyHasPerSet) && hasPerSetFAQ);
-  if (needsFAQ) {
+  // Always rebuild FAQ fresh every run
+  if (true) {
     const faqSection = buildFAQ(name, series, releaseDate, totalCards, setId);
     const faqSchema  = buildFAQSchema(name, series, releaseDate, totalCards, setId);
     if (html.includes('FAQPage')) {
@@ -399,6 +386,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
