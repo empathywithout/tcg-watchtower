@@ -110,6 +110,114 @@ const SET_FAQS = {
     { q: 'Does Pokemon 151 have all original Kanto Pokemon?', a: 'Yes — all 151 original Kanto Pokemon appear in the set, making it a nostalgia-driven collector favourite.' },
     { q: 'Is Pokemon 151 a good set to collect?', a: 'Pokemon 151 is one of the most popular Scarlet & Violet sets for collectors due to its nostalgic Kanto theme and deep roster of Illustration Rares covering beloved original Pokemon.' },
   ],
+  'me01': [
+    { q: 'What is the most expensive Mega Evolution card?', a: 'The most expensive Mega Evolution Base Set cards are the Mega Lucario ex Mega Hyper Rare and the Mega Gardevoir ex Special Illustration Rare. These are the top chase pulls of the set and command the highest secondary market prices.' },
+    { q: 'How many cards are in the Mega Evolution card list?', a: 'Mega Evolution Base Set contains 188 cards in total — 88 main set cards plus 100 secret rares including Illustration Rares, Ultra Rares, Special Illustration Rares, and the Mega Hyper Rare.' },
+    { q: 'When did Mega Evolution release?', a: 'Mega Evolution Base Set released September 2025 as the first set in the new Pokémon TCG Mega Evolution series.' },
+    { q: 'What Mega Pokemon are in Mega Evolution Base Set?', a: 'Mega Evolution Base Set features Mega Lucario ex and Mega Gardevoir ex as its headline Mega Evolution Pokemon ex, introducing the Mega Evolution mechanic to the modern Scarlet & Violet era.' },
+    { q: 'What is the Mega Evolution set code?', a: 'The Mega Evolution Base Set code is ME1, the first expansion in the Pokémon TCG Mega Evolution series.' },
+  ],
+  'me02': [
+    { q: 'What is the most expensive Phantasmal Flames card?', a: 'The most expensive Phantasmal Flames cards are the Mega Gengar ex Special Illustration Rare and Mega Gengar ex Mega Hyper Rare. Mega Gengar ex is the headline chase pull of the set.' },
+    { q: 'How many cards are in the Phantasmal Flames card list?', a: 'Phantasmal Flames contains 130 cards in total — 88 main set cards plus over 40 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Phantasmal Flames release?', a: 'Phantasmal Flames released November 2025 as the second set in the Pokémon TCG Mega Evolution series.' },
+    { q: 'What Mega Pokemon are in Phantasmal Flames?', a: 'Phantasmal Flames is headlined by Mega Gengar ex as its flagship Mega Evolution Pokemon ex, supported by additional Mega Evolution ex cards.' },
+    { q: 'Is Phantasmal Flames worth collecting?', a: 'Yes — Phantasmal Flames has developed a strong collector reputation for producing some of the highest-valued Special Illustration Rares in the Mega Evolution block, with Mega Gengar ex SIR as the standout pull.' },
+  ],
+  'me02pt5': [
+    { q: 'What is the most expensive Ascended Heroes card?', a: 'The most expensive Ascended Heroes cards are the Special Illustration Rares and Ultra Rares. As a subset with a smaller card pool, the hit rate on premium rares is higher than a standard main set.' },
+    { q: 'How many cards are in the Ascended Heroes card list?', a: 'Ascended Heroes contains 295 cards in total, making it a large subset with a high concentration of premium rarities relative to its set size.' },
+    { q: 'When did Ascended Heroes release?', a: 'Ascended Heroes released January 2026 as the ME2.5 subset in the Pokémon TCG Mega Evolution series.' },
+    { q: 'What is Ascended Heroes set code?', a: 'The Ascended Heroes set code is ME2.5, a subset expansion in the Pokémon TCG Mega Evolution series between Phantasmal Flames and Perfect Order.' },
+    { q: 'Is Ascended Heroes a good set to pull from?', a: 'Yes — Ascended Heroes has a high concentration of premium rarities relative to set size, making it a popular target for collectors who want better odds at pulling Special Illustration Rares.' },
+  ],
+  'sv01': [
+    { q: 'What is the most expensive Scarlet & Violet Base Set card?', a: 'The most expensive Scarlet & Violet Base Set cards are the Charizard ex Special Illustration Rare and Miraidon ex SIR. Charizard ex is consistently one of the most sought-after cards in the entire Scarlet & Violet era.' },
+    { q: 'How many cards are in the Scarlet & Violet Base Set card list?', a: 'Scarlet & Violet Base Set contains 258 cards in total — 198 main set cards plus 60 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Scarlet & Violet Base Set release?', a: 'Scarlet & Violet Base Set released March 31, 2023 as the first expansion of the Scarlet & Violet era, introducing the ex mechanic and a new card design.' },
+    { q: 'What new mechanics did Scarlet & Violet introduce?', a: 'Scarlet & Violet introduced Pokémon ex as the new mechanic replacing V cards, along with Illustration Rares and Special Illustration Rares as new chase rarities.' },
+    { q: 'Is Scarlet & Violet Base Set still worth buying?', a: 'Scarlet & Violet Base Set booster boxes have held collector demand well due to Charizard ex and the strong SIR lineup. It remains a popular pick for collectors hunting the flagship Charizard card.' },
+  ],
+  'sv04': [
+    { q: 'What is the most expensive Paradox Rift card?', a: 'The most expensive Paradox Rift cards are the Roaring Moon ex SIR and Iron Valiant ex SIR. Both are powerful competitive cards with stunning artwork that command strong secondary market prices.' },
+    { q: 'How many cards are in the Paradox Rift card list?', a: 'Paradox Rift contains 266 cards in total — 182 main set cards plus 84 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Paradox Rift release?', a: 'Paradox Rift released November 3, 2023 as the fourth set in the Scarlet & Violet era.' },
+    { q: 'What are Ancient and Future Pokemon in Paradox Rift?', a: 'Paradox Rift introduced Ancient Pokemon (prehistoric forms like Roaring Moon ex) and Future Pokemon (futuristic forms like Iron Valiant ex) as the two themed factions of the set.' },
+  ],
+  'sv4pt5': [
+    { q: 'What is the most expensive Paldean Fates card?', a: 'The most expensive Paldean Fates cards are the Shiny Charizard ex SIR and Shiny Gardevoir ex SIR. The Shiny Charizard ex is the headline chase pull and consistently one of the most valuable cards in the set.' },
+    { q: 'How many cards are in the Paldean Fates card list?', a: 'Paldean Fates contains 245 cards in total, including Shiny versions of Paldean Pokemon and a full roster of Special Illustration Rares.' },
+    { q: 'When did Paldean Fates release?', a: 'Paldean Fates released January 26, 2024 as the SV4.5 shiny subset of the Scarlet & Violet era.' },
+    { q: 'Does Paldean Fates have Shiny Pokemon?', a: 'Yes — Paldean Fates is the shiny set of the Scarlet & Violet era, featuring Shiny versions of every Paldean Pokemon including Shiny Charizard ex as the headline pull.' },
+  ],
+  'sv06': [
+    { q: 'What is the most expensive Twilight Masquerade card?', a: 'The most expensive Twilight Masquerade cards are the Ogerpon ex Special Illustration Rares in all four mask forms. The Wellspring Mask Ogerpon ex SIR is particularly sought after for its competitive viability.' },
+    { q: 'How many cards are in the Twilight Masquerade card list?', a: 'Twilight Masquerade contains 226 cards in total — 162 main set cards plus 64 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Twilight Masquerade release?', a: 'Twilight Masquerade released May 24, 2024 as the sixth set in the Scarlet & Violet era.' },
+    { q: 'What Pokemon headline Twilight Masquerade?', a: 'Twilight Masquerade is built around Ogerpon ex in all four mask forms — Hearthflame, Cornerstone, Wellspring, and Teal Mask — as the defining theme of the set.' },
+  ],
+  'sv07': [
+    { q: 'What is the most expensive Stellar Crown card?', a: 'The most expensive Stellar Crown cards are the Terapagos ex Special Illustration Rare and Stellar-type Tera Pokemon ex SIRs. Terapagos ex is the headline chase pull of the set.' },
+    { q: 'How many cards are in the Stellar Crown card list?', a: 'Stellar Crown contains 175 cards in total — 142 main set cards plus 33 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Stellar Crown release?', a: 'Stellar Crown released September 13, 2024 as the seventh set in the Scarlet & Violet era.' },
+    { q: 'What is the Stellar-type mechanic in Stellar Crown?', a: 'Stellar Crown introduced Stellar-type Tera Pokemon ex — a special rainbow type that can use any type of Energy — headlined by Terapagos ex as the iconic Stellar-type card.' },
+  ],
+  'sv08': [
+    { q: 'What is the most expensive Surging Sparks card?', a: 'The most expensive Surging Sparks cards are the Pikachu ex Special Illustration Rares. Multiple Pikachu ex SIR variants were printed and all command strong secondary market prices as one of the most popular Pokemon.' },
+    { q: 'How many cards are in the Surging Sparks card list?', a: 'Surging Sparks contains 252 cards in total — the largest standard set of the Scarlet & Violet era — including 191 main set cards plus 61 secret rares.' },
+    { q: 'When did Surging Sparks release?', a: 'Surging Sparks released November 8, 2024 as the eighth set in the Scarlet & Violet era.' },
+    { q: 'Why does Surging Sparks have so many cards?', a: 'Surging Sparks is the largest standard set in the Scarlet & Violet era at 252 cards, driven by a massive roster of Pikachu ex variants and a deep lineup of Illustration Rares covering popular Pokemon.' },
+  ],
+  'sv09': [
+    { q: 'What is the most expensive Journey Together card?', a: 'The most expensive Journey Together cards are the Special Illustration Rares featuring iconic trainer-Pokemon partnerships. Check the Chase Cards section above for current market values.' },
+    { q: 'How many cards are in the Journey Together card list?', a: 'Journey Together contains 190 cards in total, spanning main set cards and secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Journey Together release?', a: 'Journey Together released March 28, 2025 as the ninth set in the Scarlet & Violet era.' },
+    { q: 'What is the theme of Journey Together?', a: 'Journey Together celebrates the bond between trainers and their Pokemon, featuring iconic partnerships and trainer-focused artwork throughout the set.' },
+  ],
+  'sv10': [
+    { q: 'What is the most expensive Destined Rivals card?', a: 'The most expensive Destined Rivals cards are the Special Illustration Rares featuring iconic rival duos. Check the Chase Cards section above for current live TCGplayer market values.' },
+    { q: 'How many cards are in the Destined Rivals card list?', a: 'Destined Rivals contains 244 cards in total, including main set cards and secret rares across all rarity tiers.' },
+    { q: 'When did Destined Rivals release?', a: 'Destined Rivals released May 30, 2025 as the tenth main set in the Scarlet & Violet era.' },
+    { q: 'What is the theme of Destined Rivals?', a: 'Destined Rivals pits iconic rival duos against each other, celebrating some of the most memorable rivalries in Pokemon history through its card artwork and set design.' },
+  ],
+  'zsv10pt5': [
+    { q: 'What is the most expensive Black Bolt card?', a: 'The most expensive Black Bolt cards are the Red Victini Black & White Rare, Zekrom ex SIR, and Seismitoad Illustration Rare. Red Victini is the rarest and most valuable pull in the set.' },
+    { q: 'How many cards are in the Black Bolt card list?', a: 'Black Bolt contains 172 cards in total — 86 main set cards plus 86 secret rares including a full roster of Art Rares, Special Illustration Rares, and Black & White Rares.' },
+    { q: 'When did Black Bolt release?', a: 'Black Bolt released July 18, 2025 alongside White Flare as part of the SV10.5 split Unova expansion.' },
+    { q: 'What makes Black Bolt special?', a: 'Black Bolt covers all 156 Unova region Pokemon split with White Flare, focusing on Dark and Lightning types centered around Zekrom ex. Every Pokemon has an Art Rare or SIR variant.' },
+    { q: 'Does Black Bolt have God Packs?', a: 'Yes — Black Bolt features God Packs containing 9 Illustration Rares and 1 Special Illustration Rare, making them extremely rare and highly sought-after.' },
+  ],
+  'rsv10pt5': [
+    { q: 'What is the most expensive White Flare card?', a: 'The most expensive White Flare cards are the Red Victini Black & White Rare, Reshiram ex SIR, and Hydreigon ex SIR. Red Victini is the rarest pull in the set.' },
+    { q: 'How many cards are in the White Flare card list?', a: 'White Flare contains 173 cards in total — 86 main set cards plus 87 secret rares including Art Rares, Special Illustration Rares, and Black & White Rares.' },
+    { q: 'When did White Flare release?', a: 'White Flare released July 18, 2025 alongside Black Bolt as part of the SV10.5 split Unova expansion.' },
+    { q: 'What makes White Flare special?', a: 'White Flare covers the Fire and Water type Unova Pokemon centered around Reshiram ex and Keldeo ex. Every Pokemon has an Art Rare or SIR variant, making it one of the most collector-friendly sets in the era.' },
+    { q: 'Does White Flare have God Packs?', a: 'Yes — White Flare features God Packs containing 9 Illustration Rares and 1 Special Illustration Rare.' },
+  ],
+  'sv05': [
+    { q: 'What is the most expensive Temporal Forces card?', a: 'The most expensive Temporal Forces cards are the ACE SPEC cards — especially Counter Catcher and Unfair Stamp — alongside Walking Wake ex SIR and Iron Leaves ex SIR as the top chase pulls.' },
+    { q: 'How many cards are in the Temporal Forces card list?', a: 'Temporal Forces contains 218 cards in total — 162 main set cards plus 56 secret rares including Illustration Rares, ACE SPEC cards, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Temporal Forces release?', a: 'Temporal Forces released March 22, 2024 as the fifth set in the Scarlet & Violet era.' },
+    { q: 'What are ACE SPEC cards in Temporal Forces?', a: 'ACE SPEC cards are powerful Trainer cards with a rule that only one can be included in a deck. Temporal Forces brought ACE SPEC cards back to the Pokémon TCG for the first time since Black & White era.' },
+  ],
+  'sv6pt5': [
+    { q: 'What is the most expensive Shrouded Fable card?', a: 'The most expensive Shrouded Fable cards are the Pecharunt ex SIR and the Loyal Three Special Illustration Rares. Despite being a smaller subset, it packs a strong chase lineup.' },
+    { q: 'How many cards are in the Shrouded Fable card list?', a: 'Shrouded Fable contains 99 cards in total, making it the smaller of the two SV era subsets. The tighter card pool means higher odds on premium rares per pack.' },
+    { q: 'When did Shrouded Fable release?', a: 'Shrouded Fable released August 2, 2024 as the SV6.5 subset of the Scarlet & Violet era.' },
+    { q: 'What Pokemon headline Shrouded Fable?', a: 'Shrouded Fable focuses on the Mask of Ruin legendaries — Chien-Pao ex, Ting-Lu ex, Chi-Yu ex, and Wo-Chien ex — alongside the mythical Pecharunt ex.' },
+  ],
+  'sv02': [
+    { q: 'What is the most expensive Paldea Evolved card?', a: 'The most expensive Paldea Evolved cards are the Iono Special Illustration Rare and the Gardevoir ex SIR. Iono SIR is the standout chase pull and one of the most popular Trainer SIRs in the Scarlet & Violet era.' },
+    { q: 'How many cards are in the Paldea Evolved card list?', a: 'Paldea Evolved contains 279 cards in total — the largest main set in the Scarlet & Violet era — including main set cards and secret rares across all rarity tiers.' },
+    { q: 'When did Paldea Evolved release?', a: 'Paldea Evolved released June 9, 2023 as the second set in the Scarlet & Violet era.' },
+    { q: 'Why is the Iono card so valuable?', a: 'The Iono Special Illustration Rare from Paldea Evolved depicts the popular streamer character in a stunning full-art style. Iono became one of the most iconic and sought-after Trainer cards in modern Pokémon TCG history.' },
+  ],
+  'sv03': [
+    { q: 'What is the most expensive Obsidian Flames card?', a: 'The most expensive Obsidian Flames card is the Charizard ex Special Illustration Rare — a Tera-type Charizard ex with stunning black-and-gold artwork that became one of the most iconic cards of the Scarlet & Violet era.' },
+    { q: 'How many cards are in the Obsidian Flames card list?', a: 'Obsidian Flames contains 230 cards in total — 151 main set cards plus 79 secret rares including Illustration Rares, Ultra Rares, and Special Illustration Rares.' },
+    { q: 'When did Obsidian Flames release?', a: 'Obsidian Flames released August 11, 2023 as the third set in the Scarlet & Violet era.' },
+    { q: 'What is the Tera Charizard ex card?', a: 'The Charizard ex SIR in Obsidian Flames is a Fire-type Tera Charizard ex illustrated with striking black-and-gold Tera crystal artwork. It is one of the most desirable Charizard cards ever printed and commands premium secondary market prices.' },
+  ],
 };
 
 function getFAQ(setId) {
@@ -233,5 +341,6 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
