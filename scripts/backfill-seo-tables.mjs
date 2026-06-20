@@ -657,7 +657,7 @@ if (TCGP_GROUP_ID) {
 
 // ── Patch Amazon into individual card pages ───────────────────────────────────
 function patchCardPageAmazon(html, cardName, setName) {
-  if (html.includes('btn-amazon')) return html; // already done
+  if (html.includes('class="btn btn-amazon"')) return html; // already done — check button not just CSS
 
   // Add CSS
   html = html.replace(
@@ -734,6 +734,39 @@ function fixChaseSliderAmazon(html) {
   const OLD2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-ebay\"';
   const NEW2 = 'class=\"buy-links\">\n          <a class=\"buy-link buy-amazon\" href=\"${amazonLink(c.searchName)}\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Amazon</a>\n          <a class=\"buy-link buy-ebay\"';
   if (html.includes(OLD2)) return html.split(OLD2).join(NEW2);
+  return html;
+}
+
+
+// ── Fix modal buy links — add Amazon, ensure correct order ───────────────────
+function fixModalLinks(html) {
+  if (html.includes('pl-amazon')) return html; // already done
+
+  // Add Amazon as first button in modal-links, before eBay
+  // Pattern: <div class="modal-links">
+
+        <a class="modal-buy-link pl-ebay"
+  html = html.replace(
+    '<div class="modal-links">\n\n        <a class="modal-buy-link pl-ebay"',
+    '<div class="modal-links">\n\n        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class="modal-buy-link pl-ebay"'
+  );
+  // Also handle variation without double newline
+  html = html.replace(
+    '<div class="modal-links">\n        <a class="modal-buy-link pl-ebay"',
+    '<div class="modal-links">\n        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class="modal-buy-link pl-ebay"'
+  );
+  // Fix TCGplayer label — should always say "Find on TCGplayer" not just "TCGplayer"
+  html = html.replace(
+    "${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}",
+    'Find on TCGplayer'
+  );
+  // Add pl-amazon CSS if not present
+  if (!html.includes('.pl-amazon')) {
+    html = html.replace(
+      '.pl-tcgp { background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.3); color:var(--accent-green); }',
+      '.pl-amazon { background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.3); color:var(--accent-amber); }\n.pl-tcgp { background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.3); color:var(--accent-green); }'
+    );
+  }
   return html;
 }
 
@@ -950,6 +983,11 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
   html = fixTCGPlayerText(html);
   if (html !== htmlBeforeTCGP) changes.push('tcgp text');
 
+  // 1c-iv. Fix modal buy links — add Amazon, fix TCGplayer label
+  const htmlBeforeModal = html;
+  html = fixModalLinks(html);
+  if (html !== htmlBeforeModal) changes.push('modal links');
+
   // 1c-iii. Add Amazon to chase slider buy-links + shorten TCGplayer label
   const htmlBeforeChaseAmazon = html;
   html = fixChaseSliderAmazon(html);
@@ -1015,6 +1053,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
