@@ -316,16 +316,16 @@ function injectDownloadButtons(html, setId, name) {
   const btnHtml = `
 <!-- ===== DOWNLOAD BUTTONS ===== -->
 <div class="download-buttons-section" style="margin:0 0 32px;padding:20px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;">
-  <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:14px;">Free Downloads</p>
+  <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:4px;">${name} Master Set Tools</p>\n  <p style=\"font-size:0.75rem;color:var(--text-muted);margin-bottom:14px;opacity:0.7;">Free printable binder placeholders &amp; master set checklist — instant download</p>
   <div style="display:flex;flex-wrap:wrap;gap:10px;">
     <a href="/api/checklist?set=${setId}&type=master" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:8px;color:#4ade80;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(74,222,128,0.2)'" onmouseout="this.style.background='rgba(74,222,128,0.1)'">
-      <span>📋</span> Checklist CSV
+      <span>📋</span> Free Master Set Checklist
     </a>
     <a href="/api/binder-pdf?set=${setId}&size=9" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
-      <span>📄</span> 9-Pocket Binder PDF
+      <span>📄</span> Binder Placeholders — 9-Pocket
     </a>
     <a href="/api/binder-pdf?set=${setId}&size=12" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
-      <span>📄</span> 16-Pocket Binder PDF
+      <span>📄</span> Binder Placeholders — 16-Pocket
     </a>
   </div>
 </div>`;
@@ -425,6 +425,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
