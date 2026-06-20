@@ -740,26 +740,22 @@ function fixChaseSliderAmazon(html) {
 
 // ── Fix modal buy links — add Amazon, ensure correct order ───────────────────
 function fixModalLinks(html) {
-  if (html.includes('pl-amazon')) return html; // already done
+  if (html.includes('modal-buy-link pl-amazon')) return html; // already done
 
   // Add Amazon as first button in modal-links, before eBay
   // Pattern: <div class="modal-links">
 
 
-  html = html.replace(
-    '<div class="modal-links">\n\n        <a class="modal-buy-link pl-ebay"',
-    '<div class="modal-links">\n\n        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class="modal-buy-link pl-ebay"'
-  );
-  // Also handle variation without double newline
-  html = html.replace(
-    '<div class="modal-links">\n        <a class="modal-buy-link pl-ebay"',
-    '<div class="modal-links">\n        <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class="modal-buy-link pl-ebay"'
-  );
-  // Fix TCGplayer label — should always say "Find on TCGplayer" not just "TCGplayer"
-  html = html.replace(
-    "${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}",
-    'Find on TCGplayer'
-  );
+  // Match modal-links -> eBay button in all escape variants
+  const MODAL_EB_PATTERNS = [
+    ['<div class=\"modal-links\">\n\n        <a class=\"modal-buy-link pl-ebay\"', '<div class=\"modal-links\">\n\n        <a class=\"modal-buy-link pl-amazon\" href=\"${amazonLink(searchQuery)}\" target=\"_blank\" rel=\"noopener\">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class=\"modal-buy-link pl-ebay\"'],
+    ['<div class=\"modal-links\">\n        <a class=\"modal-buy-link pl-ebay\"', '<div class=\"modal-links\">\n        <a class=\"modal-buy-link pl-amazon\" href=\"${amazonLink(searchQuery)}\" target=\"_blank\" rel=\"noopener\">\n          <span>🛒 Find on Amazon</span><span>→</span>\n        </a>\n        <a class=\"modal-buy-link pl-ebay\"'],
+  ];
+  for (const [op, np] of MODAL_EB_PATTERNS) {
+    if (html.includes(op)) { html = html.split(op).join(np); break; }
+  }
+  // Fix TCGplayer label — use regex to handle escaped/unescaped variants
+  html = html.replace(/\$\{directUrl \? ['\\]+'TCGplayer['\\]+ : ['\\]+'🔍 Find on TCGplayer['\\]+\}/g, 'Find on TCGplayer');
   // Add pl-amazon CSS if not present
   if (!html.includes('.pl-amazon')) {
     html = html.replace(
@@ -904,12 +900,9 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
         let cfHtml = readFileSync(cfPath, 'utf8');
         if (cfHtml.includes('btn-amazon')) continue;
         // Extract card name from title tag for Amazon search
-        // Extract clean card name: title is "Card Name 123 Price, Rarity & Card Info | ..."
-        // We want just "Card Name" without the number or extra text
-        const titleMatch = cfHtml.match(/<title>([^|<]+)/);
-        const rawTitle = titleMatch ? titleMatch[1].trim() : name;
-        // Strip trailing number, rarity info etc — keep just the card name
-        const cardName = rawTitle.replace(/\s+#?\d+.*$/, '').replace(/\s+\d+\s+Price.*$/, '').trim() || name;
+        // Extract just the Pokemon name from title "Breloom 004 Price, Rarity & Card Info | ..."
+        const titleMatch = cfHtml.match(/<title>([A-Za-zÀ-ÿ'][^0-9|<]+?)(?=\s+\d|\s+Price|\s*[|#])/);
+        const cardName = titleMatch ? titleMatch[1].trim() : name;
         const patched = patchCardPageAmazon(cfHtml, cardName, name);
         if (patched !== cfHtml) {
           writeFileSync(cfPath, patched);
@@ -1053,6 +1046,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
