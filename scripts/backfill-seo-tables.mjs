@@ -893,11 +893,22 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
       for (const cf of cardFiles) {
         const cfPath = `${cardsDir}/${cf}`;
         let cfHtml = readFileSync(cfPath, 'utf8');
-        if (cfHtml.includes('btn-amazon')) continue;
-        // Extract card name from title tag for Amazon search
-        // Extract just the Pokemon name from title "Breloom 004 Price, Rarity & Card Info | ..."
-        const titleMatch = cfHtml.match(/<title>([A-Za-zÀ-ÿ'][^0-9|<]+?)(?=\s+\d|\s+Price|\s*[|#])/);
+        // Extract clean Pokemon name from title
+        const titleMatch = cfHtml.match(/<title>([A-Za-zÀ-ÿ’'][^0-9|<]+?)(?=\s+\d|\s+Price|\s*[|#])/);
         const cardName = titleMatch ? titleMatch[1].trim() : name;
+        const amazonQuery = encodeURIComponent(cardName + ' ' + name + ' Pokemon Card');
+        const cleanAmazonUrl = 'https://www.amazon.com/s?k=' + amazonQuery + '&linkCode=ll2&tag=cehutto01-20&language=en_US';
+
+        if (cfHtml.includes('class="btn btn-amazon"')) {
+          // Already has button — fix URL if it contains junk from old title extraction
+          if (cfHtml.includes('Price%2C%20Rarity') || cfHtml.includes('Price, Rarity')) {
+            cfHtml = cfHtml.replace(/href="https:\/\/www\.amazon\.com\/s\?k=[^"]*(?:Price|Rarity)[^"]*"/,
+              'href="' + cleanAmazonUrl + '"');
+            writeFileSync(cfPath, cfHtml);
+            cardPatched++;
+          }
+          continue;
+        }
         const patched = patchCardPageAmazon(cfHtml, cardName, name);
         if (patched !== cfHtml) {
           writeFileSync(cfPath, patched);
@@ -1041,6 +1052,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
