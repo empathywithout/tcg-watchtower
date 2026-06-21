@@ -853,6 +853,39 @@ function fixExternalAssets(html) {
   return html;
 }
 
+
+// ── Patch existing individual card pages — H1 + LCP eager ────────────────────
+function patchExistingCardPage(html) {
+  let changed = false;
+
+  // 1. Add H1 if missing — extract name and number from title tag
+  if (!html.includes('<h1') && html.includes('<div class="card-name">')) {
+    const titleM = html.match(/<title>([^|<]+)/);
+    const rawTitle = titleM ? titleM[1].trim() : '';
+    // Title format: "Mega Greninja ex 122 Price, Rarity & Card Info"
+    // Extract: name = everything before the number, num = the number
+    const nameNumM = rawTitle.match(/^(.+?)\s+(\d+)\s+(?:Price|Rarity|Card)/);
+    if (nameNumM) {
+      const cardName = nameNumM[1].trim();
+      const cardNum  = nameNumM[2];
+      // Get set name from title after |
+      const setM = html.match(/<title>[^|]+\|\s*([^<|]+?)\s*(?:\||<)/);
+      const setName = setM ? setM[1].trim() : '';
+      const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${setName ? ' — ' + setName : ''}</h1>\n      `;
+      html = html.replace('<div class="card-name">', h1 + '<div class="card-name">');
+      changed = true;
+    }
+  }
+
+  // 2. Add loading="eager" to main card image (has fetchpriority="high" but may lack loading)
+  if (html.includes('fetchpriority="high"') && !html.includes('loading="eager"')) {
+    html = html.replace('fetchpriority="high"', 'loading="eager" fetchpriority="high"');
+    changed = true;
+  }
+
+  return changed ? html : null;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -991,18 +1024,27 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
         const cardName = titleMatch ? titleMatch[1].trim() : name;
         const amazonQuery = encodeURIComponent(cardName + ' ' + name + ' Pokemon Card');
         const cleanAmazonUrl = 'https://www.amazon.com/s?k=' + amazonQuery + '&linkCode=ll2&tag=cehutto01-20&language=en_US';
+
+        let pageChanged = false;
+
+        // Patch Amazon
         if (cfHtml.includes('class="btn btn-amazon"')) {
           if (cfHtml.includes('Price%2C%20Rarity') || cfHtml.includes('Price, Rarity')) {
             cfHtml = cfHtml.replace(/href="https:\/\/www\.amazon\.com\/s\?k=[^"]*(?:Price|Rarity)[^"]*"/,
               'href="' + cleanAmazonUrl + '"');
-            writeFileSync(cfPath, cfHtml);
-            cardPatched++;
+            pageChanged = true;
           }
-          continue;
+        } else {
+          const patched = patchCardPageAmazon(cfHtml, cardName, name);
+          if (patched !== cfHtml) { cfHtml = patched; pageChanged = true; }
         }
-        const patched = patchCardPageAmazon(cfHtml, cardName, name);
-        if (patched !== cfHtml) {
-          writeFileSync(cfPath, patched);
+
+        // Patch H1 + LCP eager
+        const perfPatched = patchExistingCardPage(cfHtml);
+        if (perfPatched !== null) { cfHtml = perfPatched; pageChanged = true; }
+
+        if (pageChanged) {
+          writeFileSync(cfPath, cfHtml);
           cardPatched++;
         }
       }
@@ -1149,6 +1191,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
