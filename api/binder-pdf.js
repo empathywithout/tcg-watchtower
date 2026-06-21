@@ -64,16 +64,25 @@ export default async function handler(req, res) {
   const setName = SET_NAMES[set] || set;
 
   try {
-    // Fetch card data — try R2 first (fast), fall back to /api/cards
+    // R2 filename aliases — some sets stored under different IDs
+    const R2_ALIASES = {
+      'sv3pt5':'sv03.5','sv4pt5':'sv04.5',
+      'sv6pt5':'sv06.5','sv8pt5':'sv08.5','me02pt5':'me02.5',
+    };
+
+    // Fetch card data — try R2 (primary + alias), fall back to /api/cards
     let cards = [];
-    try {
-      const r2Res = await fetch(`${R2_BASE}/data/${set}.json`,
-        { signal: AbortSignal.timeout(4000) });
-      if (r2Res.ok) {
-        const data = await r2Res.json();
-        cards = data.cards || [];
-      }
-    } catch (_) { /* R2 miss or timeout — fall through */ }
+    for (const key of [set, R2_ALIASES[set]].filter(Boolean)) {
+      try {
+        const r2Res = await fetch(`${R2_BASE}/data/${key}.json`,
+          { signal: AbortSignal.timeout(4000) });
+        if (r2Res.ok) {
+          const data = await r2Res.json();
+          cards = data.cards || [];
+          if (cards.length) break;
+        }
+      } catch (_) { /* try next key */ }
+    }
 
     // Fallback to /api/cards (R2 → TCGCSV → TCGdex chain)
     if (!cards.length) {
@@ -281,6 +290,7 @@ function shortenRarity(r) {
   const norm = r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
   return map[norm] || norm;
 }
+
 
 
 
