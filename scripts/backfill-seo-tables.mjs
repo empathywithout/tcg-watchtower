@@ -14,7 +14,7 @@ const R2 = process.env.CF_R2_PUBLIC_URL;
 if (!R2) { console.error('❌ CF_R2_PUBLIC_URL not set'); process.exit(1); }
 
 const SETS = [
-  { setId: 'sv01',     file: 'scarlet-violet-base-set-card-list.html',  seriesSlug: 'scarlet-violet',  urlSlug: 'scarlet-violet-base-set',  name: 'Scarlet & Violet Base Set',  series: 'Scarlet & Violet', short: 'SV1',  releaseDate: 'Mar 2023', totalCards: '258' },
+  { setId: 'sv01',     file: 'scarlet-violet-base-set-card-list.html',  seriesSlug: 'scarlet-violet',  urlSlug: 'scarlet-violet-base-set',  altUrlSlug: 'base-set',  name: 'Scarlet & Violet Base Set',  series: 'Scarlet & Violet', short: 'SV1',  releaseDate: 'Mar 2023', totalCards: '258' },
   { setId: 'sv02',     file: 'paldea-evolved-card-list.html',            seriesSlug: 'scarlet-violet',  urlSlug: 'paldea-evolved',           name: 'Paldea Evolved',             series: 'Scarlet & Violet', short: 'SV2',  releaseDate: 'Jun 2023', totalCards: '279' },
   { setId: 'sv03',     file: 'obsidian-flames-card-list.html',           seriesSlug: 'scarlet-violet',  urlSlug: 'obsidian-flames',          name: 'Obsidian Flames',            series: 'Scarlet & Violet', short: 'SV3',  releaseDate: 'Aug 2023', totalCards: '230' },
   { setId: 'sv04',     file: 'paradox-rift-card-list.html',              seriesSlug: 'scarlet-violet',  urlSlug: 'paradox-rift',             name: 'Paradox Rift',               series: 'Scarlet & Violet', short: 'SV4',  releaseDate: 'Nov 2023', totalCards: '266' },
@@ -861,7 +861,7 @@ function injectMasterSetHero(html, cards, name, releaseDate, short) {
   return html;
 }
 
-for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate, totalCards, phase = 'en' } of SETS) {
+for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, short, releaseDate, totalCards, phase = 'en' } of SETS) {
   process.stdout.write(`${setId} (${file})... `);
 
   if (!existsSync(file)) {
@@ -1065,6 +1065,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
