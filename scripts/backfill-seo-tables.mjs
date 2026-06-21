@@ -657,6 +657,10 @@ if (TCGP_GROUP_ID) {
 
 // ── Patch Amazon into individual card pages ───────────────────────────────────
 function patchCardPageAmazon(html, cardName, setName) {
+  // Also fix touch-action on card pages (applies every time regardless of Amazon)
+  if (!html.includes('touch-action') && html.includes('</style>')) {
+    html = html.replace('</style>', 'button,a,[onclick]{touch-action:manipulation}\n</style>', );
+  }
   if (html.includes('class="btn btn-amazon"')) return html; // already done — check button not just CSS
 
   // Add CSS
@@ -1145,6 +1149,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
