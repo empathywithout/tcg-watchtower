@@ -677,6 +677,8 @@ function patchCardPageAmazon(html, cardName, setName) {
 
 // ── Fix user-facing TCGplayer pricing attribution text ───────────────────────
 function fixTCGPlayerText(html) {
+  // Revert any 'TCGp' label back to 'TCGplayer' in chase slider buttons
+  html = html.replaceAll('>TCGp</a>', '>TCGplayer</a>');
   const REPLACEMENTS = [
     ['real-time secondary market prices from TCGplayer that update daily', 'live prices updated daily on TCG Watchtower'],
     ['real-time secondary market prices from TCGplayer', 'live prices on TCG Watchtower'],
@@ -710,6 +712,18 @@ function fixTCGPlayerText(html) {
 // ── Add Amazon to chase slider buy-links ─────────────────────────────────────
 function fixChaseSliderAmazon(html) {
   if (!html.includes('renderChaseCardsHTML')) return html;
+  // Always fix CSS even if Amazon button already added
+  html = html
+    .replace(
+      '.buy-links { display:flex; gap:6px; margin-top:auto; padding-top:12px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }',
+      '.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }\n.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }'
+    )
+    .replace(
+      'padding:4px 7px; border-radius:6px; font-size:0.68rem; font-weight:700;',
+      'padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;'
+    )
+    // Also revert any TCGp label that snuck in from a previous backfill run
+    .replaceAll('>TCGp</a>', '>TCGplayer</a>');
   if (html.includes('buy-link buy-amazon')) return html;
 
   // 1. Fix CSS — the file has real newlines so use \n in the strings
@@ -1052,6 +1066,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
