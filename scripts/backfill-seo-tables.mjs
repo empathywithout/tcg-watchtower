@@ -873,9 +873,12 @@ function patchExistingCardPage(html, setName) {
     }
   }
 
-  // 2. Add loading="eager" to main card image — runs independently of H1
-  if (html.includes('fetchpriority="high"') && !html.includes('loading="eager"')) {
-    html = html.replace('fetchpriority="high"', 'loading="eager" fetchpriority="high"');
+  // 2. Add loading="eager" to main card image — target img tag specifically
+  // The img has: width="400" height="557"\n           fetchpriority="high"
+  const imgEagerPat = 'width="400" height="557"\n           fetchpriority="high"';
+  if (html.includes(imgEagerPat) && !html.includes('width="400" height="557"\n           loading="eager"')) {
+    html = html.replace(imgEagerPat,
+      'width="400" height="557"\n           loading="eager" fetchpriority="high"');
     changed = true;
   }
 
@@ -1193,6 +1196,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
