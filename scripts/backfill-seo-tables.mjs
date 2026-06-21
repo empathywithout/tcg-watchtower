@@ -784,26 +784,12 @@ function fixPageSpeed(html) {
     '<img id="set-logo-hero" loading="eager"'
   );
 
-  // 2. touch-action: manipulation — add to global * or button/a rules
-  // Insert after the * { margin:0; padding:0... } block
+  // 2. touch-action: manipulation — inject as a new CSS rule before </style>
   if (!html.includes('touch-action')) {
-    html = html.replace(
-      'a { color: inherit; text-decoration: none; }',
-      'a { color: inherit; text-decoration: none; }\nbutton, a, [onclick] { touch-action: manipulation; }'
-    );
-    // Fallback if above pattern not found
-    if (!html.includes('touch-action')) {
-      html = html.replace(
-        'button { background: none; border: none; cursor: pointer; font-family: inherit; }',
-        'button { background: none; border: none; cursor: pointer; font-family: inherit; touch-action: manipulation; }'
-      );
-    }
+    html = html.replace('</style>', 'button,a,[onclick]{touch-action:manipulation}\n</style>');
   }
 
-  // 3. Standardize breakpoints — fix 769px to 768px
-  html = html.replaceAll('@media (min-width: 769px)', '@media (min-width: 769px)');
-  html = html.replaceAll('max-width: 769px', 'max-width: 768px');
-  html = html.replaceAll('@media(max-width:769px)', '@media(max-width:768px)');
+  // 3. Breakpoints — 769px min-width is correct desktop breakpoint, no change needed
 
   // 4. Add preload for set logo if not present
   if (!html.includes('rel="preload"') || !html.includes('set-logo')) {
