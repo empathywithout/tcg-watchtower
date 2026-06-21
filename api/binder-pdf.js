@@ -83,6 +83,16 @@ export default async function handler(req, res) {
     const slotH = slotW * CARD_RATIO;
     const offsetX = (cellW - slotW) / 2;
 
+    // Calculate official set count from max numeric localId
+    const numericIds = cards
+      .map(c => parseInt(c.localId, 10))
+      .filter(n => !isNaN(n));
+    const officialCount = numericIds.length > 0 ? Math.max(...numericIds) : cards.length;
+    const totalStr = String(officialCount).padStart(3, '0');
+
+    // Helper for card number display
+    const cardNum = (localId) => `${String(localId).padStart(3, '0')}/${totalStr}`;
+
     const cardsPerPage = grid.cols * grid.rows;
     const totalPages   = Math.ceil(cards.length / cardsPerPage);
 
@@ -194,7 +204,7 @@ export default async function handler(req, res) {
             color: rgb(0.93, 0.94, 0.97),
           });
           // Card number large watermark
-          const numStr = `#${String(card.localId).padStart(3, '0')}`;
+          const numStr = `${cardNum(card.localId)}`;
           const numSz  = Math.min(slotW * 0.35, 22);
           const numW   = font.widthOfTextAtSize(numStr, numSz);
           page.drawText(numStr, {
@@ -222,7 +232,7 @@ export default async function handler(req, res) {
         });
 
         // Card number in strip (left)
-        page.drawText(`#${String(card.localId).padStart(3, '0')}`, {
+        page.drawText(`${cardNum(card.localId)}`, {
           x: sx + 3, y: sy + 4,
           size: 5.5, font, color: rgb(1,1,1),
         });
@@ -245,7 +255,7 @@ export default async function handler(req, res) {
             size: nmSz, font: fontLight, color: rgb(1,1,1),
           });
           // override number to left only
-          page.drawText(`#${String(card.localId).padStart(3, '0')}`, {
+          page.drawText(`${cardNum(card.localId)}`, {
             x: sx + 3, y: sy + 4,
             size: 5, font, color: rgb(1,1,1),
           });
@@ -312,3 +322,4 @@ function shortenRarity(r) {
   const norm = r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
   return map[norm] || norm;
 }
+
