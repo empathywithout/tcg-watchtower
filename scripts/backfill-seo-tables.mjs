@@ -791,11 +791,20 @@ function fixPageSpeed(html) {
 
   // 3. Breakpoints — 769px min-width is correct desktop breakpoint, no change needed
 
-  // 4. Add preload for set logo if not present
-  if (!html.includes('rel="preload"') || !html.includes('set-logo')) {
-    // The set logo src is set dynamically via JS so we can't preload it
-    // Skip this one
+  // 4. eBay lazy-load — replace eager script with click-triggered loader
+  const EBAY_EAGER = '<script src="https://epnt.ebay.com/static/epn-smart-tools.js" defer></script>';
+  if (html.includes(EBAY_EAGER)) {
+    html = html.replace(EBAY_EAGER,
+      '<script>window._epn={campaign:5339145069};(function(){var loaded=false;function loadEPN(){if(loaded)return;loaded=true;var s=document.createElement(\'script\');s.src=\'https://epnt.ebay.com/static/epn-smart-tools.js\';document.head.appendChild(s);}document.addEventListener(\'click\',function(e){if(e.target.closest(\'a[href*=\"ebay.com\"]\')){loadEPN();}},{capture:true,passive:true});})();</script>'
+    );
   }
+
+  // 5. OG type article -> website
+  html = html.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">');
+
+  // 6. Remove empty duplicate H1
+  html = html.replace('<h1>\n        </h1>', '');
+  html = html.replace('<h1></h1>', '');
 
   return html;
 }
@@ -1134,6 +1143,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
