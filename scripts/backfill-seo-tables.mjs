@@ -48,7 +48,7 @@ function buildTable(cards, setName, seriesSlug, urlSlug) {
     const cardPath = `/pokemon/sets/${seriesSlug}/${urlSlug}/cards/${toSlug(c.name)}-${c.localId}`;
     return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${c.name}</a></td><td>${c.rarity || ''}</td></tr>`;
   }).join('\n');
-  return `\n<!-- SEO: static card list for search engine indexing -->\n<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0" aria-hidden="true">\n<h2>${setName} Card List — All ${cards.length} Cards</h2>\n<table>\n<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>\n<tbody>\n${rows}\n</tbody>\n</table>\n</div>`;
+  return `\n<!-- SEO: static card list for search engine indexing -->\n<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:normal;max-width:1px;border:0" aria-hidden="true">\n<h2>${setName} Card List — All ${cards.length} Cards</h2>\n<table>\n<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>\n<tbody>\n${rows}\n</tbody>\n</table>\n</div>`;
 }
 
 // ── 2. H1 fix ────────────────────────────────────────────────────────────────
@@ -1110,7 +1110,9 @@ ${cards}
 </div>`;
 
   // Insert after the download buttons section, before the filter bar
-  const anchor = '<div class="filter-bar">';
+  // Try multiple anchor variants (indentation varies per page)
+  const ANCHORS = ['    <div class="filter-bar">', '  <div class="filter-bar">', '<div class="filter-bar">'];
+  const anchor = ANCHORS.find(a => html.includes(a)) || '<div class="filter-bar">';
   if (!html.includes(anchor)) return html;
   return html.replace(anchor, section + '\n' + anchor);
 }
@@ -1430,6 +1432,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
