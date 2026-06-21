@@ -800,6 +800,45 @@ function fixPageSpeed(html) {
   return html;
 }
 
+
+// ── Replace inline CSS/JS with external static files ─────────────────────────
+function fixExternalAssets(html) {
+  // Skip if already using external files
+  if (html.includes('/static/set-page.css')) return html;
+
+  // Replace large inline <style> block with external CSS link
+  // The style block is ~31KB — match it by its opening selector
+  html = html.replace(
+    /\/\* ===== RESET & BASE ===== \*\/.*/s,
+    html => html  // noop — need to find the actual style tag
+  );
+
+  // Better: find and replace the <style> opening and closing
+  // The style block starts after <meta> tags and before other content
+  // Use a regex that matches <style> ... </style> for large blocks only
+  const styleMatch = html.match(/<style>([\s\S]{20000,}?)<\/style>/);
+  if (styleMatch) {
+    html = html.replace(
+      `<style>${styleMatch[1]}</style>`,
+      '<link rel="stylesheet" href="/static/set-page.css">'
+    );
+  }
+
+  // Replace large inline <script> block (CONFIG block ~36KB) with external JS
+  if (!html.includes('/static/set-page.js')) {
+    // Match the large CONFIG script block (>20KB, starts with newline then comment)
+    const scriptMatch = html.match(/<script>\n(\/\* ===== CONFIG[\s\S]{20000,}?)<\/script>/);
+    if (scriptMatch) {
+      html = html.replace(
+        '<script>\n' + scriptMatch[1] + '</script>',
+        '<script src="/static/set-page.js" defer></script>'
+      );
+    }
+  }
+
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -1025,6 +1064,11 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixPageSpeed(html);
   if (html !== htmlBeforePS) changes.push('perf');
 
+  // 1c-vi. Replace inline CSS/JS with external static files
+  const htmlBeforeAssets = html;
+  html = fixExternalAssets(html);
+  if (html !== htmlBeforeAssets) changes.push('external assets');
+
   // 1c-iv. Fix modal buy links — add Amazon, fix TCGplayer label
   const htmlBeforeModal = html;
   html = fixModalLinks(html);
@@ -1095,6 +1139,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
