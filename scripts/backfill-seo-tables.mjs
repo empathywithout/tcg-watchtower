@@ -891,6 +891,58 @@ function patchExistingCardPage(html, setName) {
   return changed ? html : null;
 }
 
+
+const LOGO_PATHS = {
+  'sv01': 'logos/sv01.png',
+  'sv02': 'logos/sv02.png',
+  'sv03': 'logos/sv03.png',
+  'sv3pt5': 'logos/sv3pt5.png',
+  'sv04': 'logos/sv04.png',
+  'sv4pt5': 'logos/sv4pt5.png',
+  'sv05': 'logos/sv05.png',
+  'sv06': 'logos/sv06.png',
+  'sv6pt5': 'logos/sv6pt5.png',
+  'sv07': 'logos/sv07.png',
+  'sv08': 'logos/sv08.png',
+  'sv8pt5': 'logos/sv8pt5.png',
+  'sv09': 'logos/sv09.png',
+  'sv10': 'logos/sv10.png',
+  'zsv10pt5': 'logos/zsv10pt5.png',
+  'rsv10pt5': 'logos/rsv10pt5.png',
+  'me01': 'logos/me01.png',
+  'me02': 'logos/me02.png',
+  'me02pt5': 'logos/me02pt5.png',
+  'me03': 'logos/me03.png',
+  'me04': 'logos/me04.png',
+  'me05': 'logos/me05.png'
+};
+
+// ── Set-specific OG image using set logo ─────────────────────────────────────
+function fixOGImage(html, setId) {
+  const logoPath = LOGO_PATHS[setId];
+  if (!logoPath) return html;
+  const logoUrl = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/' + logoPath;
+  // Replace og:image and twitter:image with set logo
+  html = html.replace(
+    /<meta property="og:image" content="[^"]+"/,
+    `<meta property="og:image" content="${logoUrl}"`
+  );
+  html = html.replace(
+    /<meta name="twitter:image" content="[^"]+"/,
+    `<meta name="twitter:image" content="${logoUrl}"`
+  );
+  // Update og:image:width and og:image:height to match logo dimensions
+  html = html.replace(
+    /<meta property="og:image:width" content="[^"]+"/,
+    '<meta property="og:image:width" content="400"'
+  );
+  html = html.replace(
+    /<meta property="og:image:height" content="[^"]+"/,
+    '<meta property="og:image:height" content="300"'
+  );
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -1120,6 +1172,11 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixTCGPlayerText(html);
   if (html !== htmlBeforeTCGP) changes.push('tcgp text');
 
+  // 1c-vii. Set-specific OG image
+  const htmlBeforeOG = html;
+  html = fixOGImage(html, setId);
+  if (html !== htmlBeforeOG) changes.push('og image');
+
   // 1c-v. Page speed + mobile fixes
   const htmlBeforePS = html;
   html = fixPageSpeed(html);
@@ -1196,6 +1253,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
