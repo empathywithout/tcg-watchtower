@@ -124,7 +124,7 @@ export default async function handler(req, res) {
         x: MARGIN, y: PAGE_H - MARGIN - HEADER + 14,
         size: 9.5, font: fontBold, color: HDR_TEXT,
       });
-      page.drawText(`Page ${p+1} of ${totalPages}   •   TCG Watchtower   •   tcgwatchtower.com`, {
+      page.drawText(`Page ${p+1} of ${totalPages}  •  tcgwatchtower.com  •  Free card lists, live prices & restock alerts`, {
         x: MARGIN, y: PAGE_H - MARGIN - HEADER + 3,
         size: 6, font: fontLight, color: HDR_SUB,
       });
@@ -212,10 +212,7 @@ export default async function handler(req, res) {
         });
 
         // ── Small TCGWatchtower logo mark — bottom right ──
-        page.drawText('TCGw', {
-          x: sx + slotW - 16, y: sy + 2,
-          size: 4, font: fontLight, color: rgb(0.75, 0.75, 0.73),
-        });
+        // no per-card watermark — cleaner
       }
 
       // Empty slots — last page
@@ -236,7 +233,7 @@ export default async function handler(req, res) {
 
       // Footer
       page.drawText(
-        'Free download from TCG Watchtower — tcgwatchtower.com   |   Print on Letter or A4   |   Cut along edges to fit standard binder sleeves',
+        'TCG Watchtower — tcgwatchtower.com   •   Free card lists, live prices & restock alerts for every Pokémon TCG set   •   Print on Letter or A4, cut to fit binder sleeves',
         { x: MARGIN, y: 10, size: 5, font: fontLight, color: rgb(0.60, 0.60, 0.58) }
       );
     }
