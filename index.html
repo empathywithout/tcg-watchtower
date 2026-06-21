@@ -308,7 +308,8 @@
             .pokemon-sets-view { left:50%; transform:translateX(-50%); max-width:800px; right:auto; }
             .hamburger-menu { left:50%; transform:translateX(-50%); right:auto; }
         }
-    </style>
+    button,a,[onclick]{touch-action:manipulation}
+</style>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -322,7 +323,7 @@
     <div class="nav-wrapper">
     <nav class="container">
         <a href="/" class="nav-logo">
-            <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+            <img loading="eager" src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
             <span>TCG Watchtower</span>
         </a>
         <div class="nav-links">
@@ -402,19 +403,19 @@
                         </div>
                         <div class="latest-sets-grid">
                             <a class="latest-set-card" href="/pokemon/sets/mega-evolution/chaos-rising/cards">
-                                <div class="latest-set-logo"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png" alt="Chaos Rising Pokémon TCG card list" onerror="this.style.display='none'"></div>
+                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png" alt="Chaos Rising Pokémon TCG card list" onerror="this.style.display='none'"></div>
                                 <div><div class="latest-set-name">Chaos Rising Card List &amp; Prices</div><div class="latest-set-meta">ME4 · Pokémon</div><span class="set-badge set-badge-hot">Trending</span></div>
                             </a>
                             <a class="latest-set-card" href="/pokemon/sets/scarlet-violet/destined-rivals/cards">
-                                <div class="latest-set-logo"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/sv10.png" alt="Destined Rivals Pokémon TCG card list" onerror="this.style.display='none'"></div>
+                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/sv10.png" alt="Destined Rivals Pokémon TCG card list" onerror="this.style.display='none'"></div>
                                 <div><div class="latest-set-name">Destined Rivals Card List &amp; Prices</div><div class="latest-set-meta">SV10 · Pokémon</div><span class="set-badge set-badge-new">New</span></div>
                             </a>
                             <a class="latest-set-card" href="/one-piece/sets/adventure-on-kamis-island/cards">
-                                <div class="latest-set-logo"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op15.png" alt="Kami's Island One Piece TCG card list" onerror="this.style.display='none'"></div>
+                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op15.png" alt="Kami's Island One Piece TCG card list" onerror="this.style.display='none'"></div>
                                 <div><div class="latest-set-name">Kami's Island Card List &amp; Prices</div><div class="latest-set-meta">OP15 · One Piece</div><span class="set-badge set-badge-new">New</span></div>
                             </a>
                             <a class="latest-set-card" href="/pokemon/sets/mega-evolution/pitch-black/cards">
-                                <div class="latest-set-logo"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me05.png" alt="Pitch Black Pokémon TCG card list" onerror="this.style.display='none'"></div>
+                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me05.png" alt="Pitch Black Pokémon TCG card list" onerror="this.style.display='none'"></div>
                                 <div><div class="latest-set-name">Pitch Black Card List &amp; Prices</div><div class="latest-set-meta">ME5 · Pokémon</div><span class="set-badge set-badge-jp">JP Phase</span></div>
                             </a>
                         </div>
@@ -653,7 +654,7 @@
                     const isDisabled = !set.live;
                     const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
                     const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
-                    html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}"><div class="set-card-image">${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🎴</div>`}</div><div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short} • ${set.series}</div>${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
+                    html += `<a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}"><div class="set-card-image">${logoUrl ? `<img loading="lazy" src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🎴</div>`}</div><div class="set-card-content"><div class="set-card-name">${set.name}</div><div class="set-card-info">${set.short} • ${set.series}</div>${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}</div></a>`;
                 });
                 html += '</div>';
             });
@@ -667,7 +668,7 @@
             if (!filtered.length) { setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>'; return; }
             const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
             let html = '<div class="sets-grid">';
-            filtered.forEach(set => { const isDisabled = !set.live; const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug; const logoUrl = set.setId ? r2 + '/logos/op/' + set.setId + '.png' : null; html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '"><div class="set-card-image">' + (logoUrl ? '<img src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=\'none\'">' : '<div style="font-size:3rem;">🃏</div>') + '</div><div class="set-card-content"><div class="set-card-name">' + set.name + '</div><div class="set-card-info">' + (set.short || '') + ' • ' + (set.series || 'One Piece TCG') + '</div>' + (isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : '') + '</div></a>'; });
+            filtered.forEach(set => { const isDisabled = !set.live; const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug; const logoUrl = set.setId ? r2 + '/logos/op/' + set.setId + '.png' : null; html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '"><div class="set-card-image">' + (logoUrl ? '<img loading="lazy" src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=\'none\'">' : '<div style="font-size:3rem;">🃏</div>') + '</div><div class="set-card-content"><div class="set-card-name">' + set.name + '</div><div class="set-card-info">' + (set.short || '') + ' • ' + (set.series || 'One Piece TCG') + '</div>' + (isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : '') + '</div></a>'; });
             html += '</div>';
             setsGridContainerOp.innerHTML = html;
         }
@@ -678,3 +679,4 @@
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
+
