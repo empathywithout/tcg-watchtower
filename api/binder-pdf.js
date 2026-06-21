@@ -64,10 +64,24 @@ export default async function handler(req, res) {
   const setName = SET_NAMES[set] || set;
 
   try {
+    // Try R2 first, fall back to /api/cards which has full fallback chain
+    let cards = [];
     const r2Res = await fetch(`${R2_BASE}/data/${set}.json`);
-    if (!r2Res.ok) throw new Error(`R2 ${r2Res.status}`);
-    const { cards = [] } = await r2Res.json();
-    if (!cards.length) throw new Error('No cards found');
+    if (r2Res.ok) {
+      const data = await r2Res.json();
+      cards = data.cards || [];
+    }
+    // Fallback to /api/cards (handles R2 → TCGCSV → TCGdex)
+    if (!cards.length) {
+      const host = req.headers.host || 'tcgwatchtower.com';
+      const proto = host.includes('localhost') ? 'http' : 'https';
+      const cardsRes = await fetch(`${proto}://${host}/api/cards?set=${set}`);
+      if (cardsRes.ok) {
+        const data = await cardsRes.json();
+        cards = data.cards || [];
+      }
+    }
+    if (!cards.length) throw new Error(`No card data found for set: ${set}`);
 
     const pdfDoc    = await PDFDocument.create();
     const fontBold  = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
