@@ -803,8 +803,7 @@ function fixPageSpeed(html) {
 
 // ── Replace inline CSS/JS with external static files ─────────────────────────
 function fixExternalAssets(html) {
-  // Skip if already using external files
-  if (html.includes('/static/set-page.css')) return html;
+  return html; // DISABLED — needs Vercel routing setup first
 
   // Replace large inline <style> block with external CSS link
   // The style block is ~31KB — match it by its opening selector
@@ -1064,10 +1063,6 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixPageSpeed(html);
   if (html !== htmlBeforePS) changes.push('perf');
 
-  // 1c-vi. Replace inline CSS/JS with external static files
-  const htmlBeforeAssets = html;
-  html = fixExternalAssets(html);
-  if (html !== htmlBeforeAssets) changes.push('external assets');
 
   // 1c-iv. Fix modal buy links — add Amazon, fix TCGplayer label
   const htmlBeforeModal = html;
@@ -1139,6 +1134,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
