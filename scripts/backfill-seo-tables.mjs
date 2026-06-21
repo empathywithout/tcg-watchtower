@@ -900,21 +900,20 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
   // 1d. Patch Amazon into individual card pages
   if (cards.length > 0 && phase !== 'jp') {
-    const cardsDir = `pokemon/sets/${seriesSlug}/${urlSlug}/cards`;
-    if (existsSync(cardsDir)) {
-      const cardFiles = readdirSync(cardsDir).filter(f => f.endsWith('.html'));
-      let cardPatched = 0;
+    const cardsDirs = [`pokemon/sets/${seriesSlug}/${urlSlug}/cards`];
+    if (altUrlSlug) cardsDirs.push(`pokemon/sets/${seriesSlug}/${altUrlSlug}/cards`);
+    let cardPatched = 0;
+    for (const cDir of cardsDirs) {
+      if (!existsSync(cDir)) continue;
+      const cardFiles = readdirSync(cDir).filter(f => f.endsWith('.html'));
       for (const cf of cardFiles) {
-        const cfPath = `${cardsDir}/${cf}`;
+        const cfPath = `${cDir}/${cf}`;
         let cfHtml = readFileSync(cfPath, 'utf8');
-        // Extract clean Pokemon name from title
-        const titleMatch = cfHtml.match(/<title>([A-Za-zÀ-ÿ’'][^0-9|<]+?)(?=\s+\d|\s+Price|\s*[|#])/);
+        const titleMatch = cfHtml.match(/<title>([A-Za-z\u00C0-\u00FF''][^0-9|<]+?)(?=\s+\d|\s+Price|\s*[|#])/);
         const cardName = titleMatch ? titleMatch[1].trim() : name;
         const amazonQuery = encodeURIComponent(cardName + ' ' + name + ' Pokemon Card');
         const cleanAmazonUrl = 'https://www.amazon.com/s?k=' + amazonQuery + '&linkCode=ll2&tag=cehutto01-20&language=en_US';
-
         if (cfHtml.includes('class="btn btn-amazon"')) {
-          // Already has button — fix URL if it contains junk from old title extraction
           if (cfHtml.includes('Price%2C%20Rarity') || cfHtml.includes('Price, Rarity')) {
             cfHtml = cfHtml.replace(/href="https:\/\/www\.amazon\.com\/s\?k=[^"]*(?:Price|Rarity)[^"]*"/,
               'href="' + cleanAmazonUrl + '"');
@@ -929,8 +928,8 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
           cardPatched++;
         }
       }
-      if (cardPatched > 0) changes.push(`${cardPatched} card pages`);
     }
+    if (cardPatched > 0) changes.push(`${cardPatched} card pages`);
   }
 
   // 1c. Chase/most-valuable pages — generate missing, patch existing (EN phase only)
@@ -1066,6 +1065,7 @@ for (const { setId, file, seriesSlug, urlSlug, name, series, short, releaseDate,
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
