@@ -972,7 +972,7 @@ const PULL_RATES = {
     boxNote: 'Pull rates in Perfect Order are nearly identical to Phantasmal Flames. Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   me02: {
-    name: 'Phantasmal Flames', source: 'TCGplayer Authentication Center',
+    name: 'Phantasmal Flames', source: 'TCGplayer Authentication Center (5,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -984,7 +984,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   me02pt5: {
-    name: 'Ascended Heroes', source: 'TCGplayer Authentication Center',
+    name: 'Ascended Heroes', source: 'TCGplayer Authentication Center (2,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -996,7 +996,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   me01: {
-    name: 'Mega Evolution', source: 'TCGplayer Authentication Center',
+    name: 'Mega Evolution', source: 'TCGplayer Authentication Center (5,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1009,7 +1009,7 @@ const PULL_RATES = {
   },
   // ── Scarlet & Violet series ──────────────────────────────────────────────
   sv09: {
-    name: 'Journey Together', source: 'TCGplayer Authentication Center',
+    name: 'Journey Together', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1021,7 +1021,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv10: {
-    name: 'Destined Rivals', source: 'TCGplayer Authentication Center',
+    name: 'Destined Rivals', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1044,7 +1044,7 @@ const PULL_RATES = {
     boxNote: 'No Illustration Rares in this set. SIRs appear ~twice as often as normal (~1 in 45 packs) but with 32 SIRs in the pool, each specific SIR is ~1 in 1,440 packs.',
   },
   sv08: {
-    name: 'Surging Sparks', source: 'TCGplayer Authentication Center',
+    name: 'Surging Sparks', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1056,7 +1056,7 @@ const PULL_RATES = {
     boxNote: 'Surging Sparks has 61 secret rares — more than most SV sets — making specific card odds tougher than average.',
   },
   sv07: {
-    name: 'Stellar Crown', source: 'TCGplayer Authentication Center',
+    name: 'Stellar Crown', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Stellar-Crown-Pull-Rates/2c0743dd-dbd0-4504-9ff8-be5a72dd04d1/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1068,8 +1068,8 @@ const PULL_RATES = {
     boxNote: 'Stellar Crown is a smaller set (33 secret rares vs 56+ in most SV sets), making specific card odds significantly better than average.',
   },
   sv06: {
-    name: 'Twilight Masquerade', source: 'TCGplayer Authentication Center',
-    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    name: 'Twilight Masquerade', source: 'TCGplayer Authentication Center (8,000+ packs)',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Twilight-Masquerade-Pull-Rates/f3eea967-e5fb-4108-8655-bb1c89587628/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
       { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%',  overall: '1 in 9',   specific: '1 in 103'  },
@@ -1080,7 +1080,7 @@ const PULL_RATES = {
     boxNote: 'Pull rates consistent with Temporal Forces. Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv6pt5: {
-    name: 'Shrouded Fable', source: 'TCGplayer Authentication Center',
+    name: 'Shrouded Fable', source: 'TCGplayer Authentication Center (3,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1116,8 +1116,8 @@ const PULL_RATES = {
     boxNote: 'Pull rates similar to Obsidian Flames. Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv4pt5: {
-    name: 'Paldean Fates', source: 'TCGplayer Authentication Center',
-    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    name: 'Paldean Fates', source: 'TCGplayer Authentication Center (1,500+ packs)',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Paldean-Fates-Pull-Rates/23de3e93-0d0f-4ae0-abc4-13664f3001a3/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
       { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',   overall: '1 in 12',  specific: '1 in 217'  },
@@ -1127,8 +1127,8 @@ const PULL_RATES = {
     boxNote: 'Paldean Fates is a special set with no Illustration Rares. SIRs appear more frequently (~1 in 50 packs) due to the set structure.',
   },
   sv3pt5: {
-    name: 'Pokémon 151', source: 'TCGplayer Authentication Center',
-    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    name: 'Pokémon 151', source: 'TCGplayer Authentication Center (1,500+ packs)',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Scarlet-Violet%E2%80%94151-Pull-Rates/b237df74-fbb0-40d0-9e13-d69ee6e804d9/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
       { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%',  overall: '1 in 9',   specific: '1 in 103'  },
@@ -1139,7 +1139,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv03: {
-    name: 'Obsidian Flames', source: 'TCGplayer Authentication Center',
+    name: 'Obsidian Flames', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1151,7 +1151,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv02: {
-    name: 'Paldea Evolved', source: 'TCGplayer Authentication Center',
+    name: 'Paldea Evolved', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1163,7 +1163,7 @@ const PULL_RATES = {
     boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
   },
   sv01: {
-    name: 'Scarlet & Violet Base Set', source: 'TCGplayer Authentication Center',
+    name: 'Scarlet & Violet Base Set', source: 'TCGplayer Authentication Center (8,000+ packs)',
     sourceUrl: 'https://www.tcgplayer.com/content/article/',
     rates: [
       { rarity: 'Double Rare',               short: 'DR',  pct: '~20%',  overall: '1 in 5',   specific: '1 in 49'   },
@@ -1555,6 +1555,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
