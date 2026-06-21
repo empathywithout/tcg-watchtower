@@ -94,6 +94,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1009,6 +1010,7 @@ footer {
 .nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
+button,a,[onclick]{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1059,6 +1061,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Paradox Rift is the fourth Scarlet &amp; Violet expansion, released November 3, 2023. Based on Japan's Ancient Roar and Future Flash sets, it introduced Ancient and Future Pokémon ex as two distinct themed factions. The Groudon Illustration Rare is the top chase card, commanding prices above all SIRs in the set. Roaring Moon ex SIR and Iron Valiant ex SIR are the top SIR pulls — both competitively viable and visually stunning. The 266-card set spans 182 main set cards plus 84 secret rares. This complete Paradox Rift card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 
 
 
@@ -1158,6 +1161,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Paradox Rift (SV4) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV4 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     

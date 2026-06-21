@@ -94,6 +94,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1009,6 +1010,7 @@ footer {
 .nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
+button,a,[onclick]{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1059,6 +1061,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Shrouded Fable is the third Scarlet &amp; Violet subset, released August 2, 2024. Based on Japan's Night Wanderer set, it focuses on the Loyal Three — Fezandipiti ex, Okidogi ex, and Munkidori ex — alongside the mythical Pecharunt ex. At just 99 cards, it has fewer packs cracked than standard sets, which has driven up single prices. The top chase cards are the Basic Darkness Energy Hyper Rare, Duskull IR, Persian IR, and Cassiopeia SIR. This complete Shrouded Fable card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 
 
 
@@ -1158,6 +1161,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">Shrouded Fable <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SFA card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     

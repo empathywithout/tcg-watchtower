@@ -94,6 +94,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1009,6 +1010,7 @@ footer {
 .nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
+button,a,[onclick]{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1059,6 +1061,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Surging Sparks is the eighth Scarlet &amp; Violet expansion, released November 8, 2024. Based on Japan's Super Electric Breaker set, it is the largest standard set of the Scarlet &amp; Violet era at 252 cards. The set is headlined by multiple Pikachu ex Special Illustration Rare variants that became some of the most popular pull targets of 2024. With 191 main set cards and 61 secret rares, Surging Sparks has the deepest Illustration Rare lineup of any Scarlet &amp; Violet main set. This complete Surging Sparks card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 
 
 
@@ -1158,6 +1161,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Surging Sparks (SV8) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV8 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     

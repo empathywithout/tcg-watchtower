@@ -94,6 +94,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1009,6 +1010,7 @@ footer {
 .nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
+button,a,[onclick]{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1059,6 +1061,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Paldean Fates is the fourth Scarlet &amp; Violet subset, released January 26, 2024. It is a shiny vault set featuring Shiny Pokémon ex, Shiny Rare, and Shiny Ultra Rare cards alongside Special Illustration Rares. The top chase card is the Mew ex SIR (#232), known as Bubble Mew — one of the most valuable cards of the Scarlet &amp; Violet era. Shiny Charizard ex SIR is the most recognizable pull. This complete Paldean Fates card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 
 
 
@@ -1158,6 +1161,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">Paldean Fates <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete PAF card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     

@@ -94,6 +94,7 @@
 
 
 
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev" crossorigin>
 <link rel="preconnect" href="https://api.tcgcsv.com" crossorigin>
@@ -1009,6 +1010,7 @@ footer {
 .nav-dropdown-set.disabled { color: var(--text-muted); pointer-events: none; }
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
+button,a,[onclick]{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1056,6 +1058,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Temporal Forces is the fifth Scarlet &amp; Violet expansion, released March 22, 2024. Based on Japan's Temporal Forces set, it reintroduced ACE SPEC cards to the Pokémon TCG for the first time since the Black &amp; White era. Walking Wake ex SIR (#205) and Raging Bolt ex SIR (#208) are the top chase pulls, alongside Iron Crown ex SIR (#206) and Gouging Fire ex SIR (#204). Sawsbuck IR is the standout Illustration Rare. ACE SPEC Trainer cards are competitively impactful but not the most expensive singles. The 218-card set spans 162 main cards plus 56 secret rares. This complete Temporal Forces card list includes every card with rarity filters and live prices updated daily.</p>
         
+
 
 
 
@@ -1155,6 +1158,8 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">📋 Temporal Forces (SV5) <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete SV5 card list — search and filter by rarity. Click any card to view and find it.</p>
     </div>
+    
+
     
 
     
