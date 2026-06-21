@@ -281,6 +281,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 .btn-amazon{background:#f90;color:#111}
 .btn-amazon{background:#f90;color:#111}
 .btn span:last-child{opacity:0.7}
+button,a,[onclick]{touch-action:manipulation}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
 .card-description{font-size:0.95rem;line-height:1.7;color:var(--text-muted);margin-bottom:2rem}
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
@@ -307,9 +308,10 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
   <div class="card-layout">
     <div class="card-image-wrap">
       <img src="${img}" alt="${card.name} #${card.localId} ${SET_FULL_NAME}" width="400" height="557"
-           fetchpriority="high" onerror="this.style.background='#1e293b';this.style.aspectRatio='3/4'">
+           loading="eager" fetchpriority="high" onerror="this.style.background='#1e293b';this.style.aspectRatio='3/4'">
     </div>
     <div>
+      <h1 class="sr-only">${card.name} #${card.localId} — ${SET_FULL_NAME}</h1>
       <div class="card-name">${card.name}</div>
       <div class="card-meta">
         #${card.localId} · <a href="${cardListUrl}">${SET_FULL_NAME}</a> · ${SET_SERIES}
@@ -633,5 +635,6 @@ let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
 console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
+
 
 
