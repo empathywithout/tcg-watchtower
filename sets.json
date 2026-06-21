@@ -37,7 +37,7 @@
   },
   {
     "slug": "scarlet-violet-151-card-list",
-    "name": "Scarlet & Violet 151",
+    "name": "Scarlet & Violet 151 (SV3.5)",
     "series": "Scarlet & Violet",
     "short": "MEW",
     "setId": "sv3pt5",
@@ -46,7 +46,7 @@
   },
   {
     "slug": "paldean-fates-card-list",
-    "name": "Paldean Fates",
+    "name": "Paldean Fates (SV4.5)",
     "series": "Scarlet & Violet",
     "short": "PAF",
     "setId": "sv4pt5",
@@ -73,7 +73,7 @@
   },
   {
     "slug": "shrouded-fable-card-list",
-    "name": "Shrouded Fable",
+    "name": "Shrouded Fable (SV6.5)",
     "series": "Scarlet & Violet",
     "short": "SFA",
     "setId": "sv6pt5",
@@ -100,7 +100,7 @@
   },
   {
     "slug": "prismatic-evolutions-card-list",
-    "name": "Prismatic Evolutions",
+    "name": "Prismatic Evolutions (SV8.5)",
     "series": "Scarlet & Violet",
     "short": "PRE",
     "setId": "sv8pt5",
@@ -127,7 +127,7 @@
   },
   {
     "slug": "pokemon/sets/scarlet-violet/black-bolt/cards",
-    "name": "Black Bolt",
+    "name": "Black Bolt (SV10.5)",
     "series": "Scarlet & Violet",
     "short": "BBT",
     "setId": "zsv10pt5",
@@ -136,7 +136,7 @@
   },
   {
     "slug": "pokemon/sets/scarlet-violet/white-flare/cards",
-    "name": "White Flare",
+    "name": "White Flare (SV10.5)",
     "series": "Scarlet & Violet",
     "short": "WHF",
     "setId": "rsv10pt5",
@@ -154,7 +154,7 @@
   },
   {
     "slug": "phantasmal-flames-card-list",
-    "name": "Phantasmal Flames",
+    "name": "Phantasmal Flames (ME2)",
     "series": "Mega Evolution",
     "short": "PFL",
     "setId": "me02",
@@ -163,7 +163,7 @@
   },
   {
     "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
-    "name": "Ascended Heroes",
+    "name": "Ascended Heroes (ME2.5)",
     "series": "Mega Evolution",
     "short": "ASC",
     "setId": "me02pt5",
