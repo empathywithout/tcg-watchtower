@@ -1,16 +1,9 @@
 
-/* ===== CONFIG ===== */
-// ===== SET CONFIG — change these for each set =====
-const SET_ID = '{{SET_ID}}';
-const SET_OFFICIAL_COUNT = {{SET_OFFICIAL_COUNT}};
-const SET_PHASE = '{{SET_PHASE}}';  // 'en' | 'jp'
-// ===================================================
-
 const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: '__R2_PUBLIC_URL__'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
 
 // ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────
@@ -21,11 +14,9 @@ function tcgdexSeriesId(setId) {
 // ────────────────────────────────────────────────────────────────────────────
 
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
-function cardImg(setId, localId, size=200) {
-  if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
-    // Cloudflare Image Resizing — serve correctly sized images per device
-    const r2url = `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
-    return `/cdn-cgi/image/width=${size},quality=85,format=webp/${r2url}`;
+function cardImg(setId, localId) {
+  if (CONFIG.r2) {
+    return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
   // FIX 1: was hardcoded "/sv/" — now derives series from setId
   const series = tcgdexSeriesId(setId);
@@ -34,7 +25,7 @@ function cardImg(setId, localId, size=200) {
 
 // Build set logo URL — uses R2 if configured, falls back to TCGdex
 function setLogoUrl(setId) {
-  if (CONFIG.r2 && CONFIG.r2 !== '__R2_PUBLIC_URL__') {
+  if (CONFIG.r2) {
     return `${CONFIG.r2}/logos/${setId}.png`;
   }
   const tcgdexId = {'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','sv05':'sv05','me02pt5':'me02.5'}[setId] || setId;
@@ -51,7 +42,7 @@ document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
 // Wire up set logo in hero stats
 const setLogoHero = document.getElementById('set-logo-hero');
 if (setLogoHero) {
-  setLogoHero.src = setLogoUrl('{{SET_ID}}');
+  setLogoHero.src = setLogoUrl('me04');
   setLogoHero.onerror = function() {
     // Hide logo stat card if image fails to load
     this.parentElement.style.display = 'none';
@@ -69,7 +60,7 @@ function ebayLinkNew(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&LH_ItemCondition=1000&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
 function tcgplayerLink(query) {
-  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/{{SET_TCGP_SLUG}}?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/chaos-rising?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
 }
 function tcgplayerAffiliate(directUrl) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
@@ -81,7 +72,6 @@ function tcgplayerCardLink(name, number, setSlug) {
 }
 
 /* ===== CHASE CARDS ===== */
-const CHASE_CARDS = {{CHASE_CARDS_JSON}};
 
 // Chase list stored at module scope so renderChaseCardsHTML can always read latest prices
 let currentChaseList = [];
@@ -89,10 +79,10 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare', 'Black White Rare'];
-  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Black White Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Black White Rare': 'BWR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Black White Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
+  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
+  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
+  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
 
   if (cards && cards.length) {
     currentChaseList = cards
@@ -110,12 +100,12 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/{{SET_OFFICIAL_COUNT}} {{SET_FULL_NAME}} Pokemon Card`,
-          img: c.image || cardImg('{{SET_ID}}', c.localId),
+          searchName: `${c.name} ${c.localId}/122 Chaos Rising Pokemon Card`,
+          img: c.image || cardImg('me04', c.localId),
         };
       });
   } else {
-    currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('{{SET_ID}}', c.id) }));
+    currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('me04', c.id) }));
   }
 
   // Render immediately — loadTCGPlayerPrices() re-renders once prices arrive
@@ -151,17 +141,17 @@ function renderChaseCardsHTML(grid) {
       data-search="${c.searchName.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
       data-img="${c.img}"
       onclick="handleChaseClick(this)">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} {{SET_FULL_NAME}} Pokemon Card" width="200" height="279" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Chaos Rising Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/{{SET_OFFICIAL_COUNT}}</div>
+        <div class="chase-card-number">#${c.id}/122</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/{{SET_OFFICIAL_COUNT}}', '{{SET_TCGP_SLUG}}')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/122', 'chaos-rising')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
         </div>
       </div>
     </div>`;
@@ -169,7 +159,6 @@ function renderChaseCardsHTML(grid) {
 }
 
 /* ===== PRODUCTS ===== */
-const PRODUCT_META = {{PRODUCT_META_JSON}};
 
 function renderProductCard(p) {
   const fallbackHtml = `<div style="padding:40px 20px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">📦</div><div style="font-size:0.8rem;color:var(--text-muted)">${p.type}</div></div>`;
@@ -206,7 +195,7 @@ function productImgUrl(q) {
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
-    const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/{{SET_ID}}/${asin}.jpg` : null);
+    const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/me04/${asin}.jpg` : null);
     const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent(p.q)}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
     const ebayUrl   = ebayLinkNew(p.q);
@@ -233,7 +222,6 @@ let displayedCount = 0;
 const PAGE_SIZE = 60;
 
 // ── TCGplayer price system ───────────────────────────────────────────────────
-const TCGP_GROUP_ID = '{{TCGP_GROUP_ID}}';
 const priceCache = {};
 let _pricesFetchPromise = null;
 
@@ -295,7 +283,7 @@ function loadTCGPlayerPrices() {
           .sort((a, b) => b.price - a.price)
           .slice(0, 3);
         document.querySelectorAll('#hero-stack img').forEach((img, i) => {
-          if (top3[i]) img.src = top3[i].img || cardImg('{{SET_ID}}', top3[i].id);
+          if (top3[i]) img.src = top3[i].img || cardImg('me04', top3[i].id);
         });
       }
 
@@ -304,7 +292,7 @@ function loadTCGPlayerPrices() {
       }
 
     } catch(e) {
-      console.warn('live prices unavailable:', e.message);
+      console.warn('TCGplayer prices unavailable:', e.message);
       _pricesFetchPromise = null;
     }
   })();
@@ -318,7 +306,7 @@ async function loadCards() {
 
     // Try R2 API first
     try {
-      const res = await fetch('/api/cards?set={{SET_ID}}');
+      const res = await fetch('/api/cards?set=me04');
       if (res.ok) {
         const json = await res.json();
         if (json && (json.cards || json).length > 0) data = json;
@@ -327,7 +315,7 @@ async function loadCards() {
 
     // Fall back to TCGdex directly
     if (!data) {
-      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/{{SET_ID}}');
+      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/me04');
       if (!setRes.ok) throw new Error('TCGdex failed');
       const setData = await setRes.json();
       const basicCards = setData.cards || [];
@@ -336,7 +324,7 @@ async function loadCards() {
       for (let i = 0; i < basicCards.length; i += BATCH) {
         const batch = basicCards.slice(i, i + BATCH);
         const results = await Promise.allSettled(
-          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/{{SET_ID}}-${c.localId}`).then(r => r.json()))
+          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/me04-${c.localId}`).then(r => r.json()))
         );
         results.forEach((result, idx) => {
           const basic = batch[idx];
@@ -345,7 +333,7 @@ async function loadCards() {
             localId: basic.localId,
             name: basic.name,
             // FIX 3: was hardcoded "/sv/" — now derives series from SET_ID at runtime
-            image: cardImg('{{SET_ID}}', basic.localId),
+            image: cardImg('me04', basic.localId),
             rarity: detail.rarity || ''
           });
         });
@@ -389,7 +377,7 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      loadTCGPlayerPrices();
+      if (SET_PHASE === 'en') loadTCGPlayerPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
@@ -402,7 +390,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = card.image || cardImg('{{SET_ID}}', card.localId, 400);
+    const imgUrl = card.image || cardImg('me04', card.localId);
     const el = document.createElement('div');
     el.className = 'card-item';
     el.dataset.localId = card.localId;
@@ -413,7 +401,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${card.localId} {{SET_FULL_NAME}} Pokemon Card" width="245" height="337" loading="lazy"
+      <img src="${imgUrl}" alt="${card.name} ${card.localId} Chaos Rising Pokemon Card" width="245" height="337" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
@@ -421,7 +409,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/{{SET_OFFICIAL_COUNT}} {{SET_FULL_NAME}} Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/122 Chaos Rising Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
@@ -468,13 +456,13 @@ function toCardSlug(name, localId) {
 }
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
-  if (!imgUrl) imgUrl = cardImg('{{SET_ID}}', localId, 400);
+  if (!imgUrl) imgUrl = cardImg('me04', localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
     <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
     <div>
       <div class="modal-name">${name}</div>
-      <div class="modal-meta">#${localId} / {{SET_FULL_NAME}}</div>
+      <div class="modal-meta">#${localId} / Chaos Rising</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
@@ -483,10 +471,10 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/{{SET_OFFICIAL_COUNT}}', '{{SET_TCGP_SLUG}}')}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/122', 'chaos-rising')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
-        <a class="modal-buy-link" href="/pokemon/sets/{{SET_SERIES_SLUG}}/{{SET_SLUG_FOR_URL}}/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+        <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/chaos-rising/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>📄 View Card Page</span><span>→</span>
         </a>
       </div>
