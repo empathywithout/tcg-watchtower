@@ -1341,11 +1341,6 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixSectionNav(html, name, short);
   if (html !== htmlBeforeNav) changes.push('nav');
 
-  // 1c-viii. Pull rates section
-  const htmlBeforePR = html;
-  html = injectPullRates(html, setId);
-  if (html !== htmlBeforePR) changes.push('pull rates');
-
   // 1c-ii. Fix TCGplayer pricing attribution in user-facing text
   const htmlBeforeTCGP = html;
   html = fixTCGPlayerText(html);
@@ -1392,6 +1387,11 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = injectDownloadButtons(html, setId, name);
   if (html !== htmlBeforeDownload) changes.push('download buttons');
 
+  // 2d. Pull rates section — must run AFTER download buttons (injectDownloadButtons strips content before filter-bar)
+  const htmlBeforePR = html;
+  html = injectPullRates(html, setId);
+  if (html !== htmlBeforePR) changes.push('pull rates');
+
   // 3. H2 emoji cleanup
   if (html.includes(`🔥 ${name}`) || html.includes(`📋 ${name}`) || html.includes(`🛒 Buy ${short}`)) {
     html = fixH2s(html, name, short);
@@ -1432,6 +1432,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
