@@ -20,6 +20,31 @@ const SET_NAMES = {
   'me03':'Perfect Order','me04':'Chaos Rising','me05':'Pitch Black',
 };
 
+const SET_URL_PATHS = {
+  'sv01': 'scarlet-violet/scarlet-violet-base-set',
+  'sv02': 'scarlet-violet/paldea-evolved',
+  'sv03': 'scarlet-violet/obsidian-flames',
+  'sv3pt5': 'scarlet-violet/151',
+  'sv04': 'scarlet-violet/paradox-rift',
+  'sv4pt5': 'scarlet-violet/paldean-fates',
+  'sv05': 'scarlet-violet/temporal-forces',
+  'sv06': 'scarlet-violet/twilight-masquerade',
+  'sv6pt5': 'scarlet-violet/shrouded-fable',
+  'sv07': 'scarlet-violet/stellar-crown',
+  'sv08': 'scarlet-violet/surging-sparks',
+  'sv8pt5': 'scarlet-violet/prismatic-evolutions',
+  'sv09': 'scarlet-violet/journey-together',
+  'sv10': 'scarlet-violet/destined-rivals',
+  'zsv10pt5': 'scarlet-violet/black-bolt',
+  'rsv10pt5': 'scarlet-violet/white-flare',
+  'me01': 'mega-evolution/mega-evolution',
+  'me02': 'mega-evolution/phantasmal-flames',
+  'me02pt5': 'mega-evolution/ascended-heroes',
+  'me03': 'mega-evolution/perfect-order',
+  'me04': 'mega-evolution/chaos-rising',
+  'me05': 'mega-evolution/pitch-black'
+};
+
 const RARITY_ORDER = [
   'Common','Uncommon','Rare','Double Rare',
   'Illustration Rare','Art Rare','Ultra Rare',
@@ -306,7 +331,8 @@ function buildZip(files) {
 
 // ── XLSX builder ──────────────────────────────────────────────────────────────
 function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
-  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setId}/cards`;
+  const setPath = SET_URL_PATHS[setId] || setId;
+  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setPath}/cards`;
   const sst = []; const sstMap = {};
   function si(s) {
     const str = String(s??'');
@@ -537,7 +563,8 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
 // ── CSV builder ───────────────────────────────────────────────────────────────
 function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
   const totalCards = cards.length + (master ? rhCards.length : 0);
-  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setId}/cards`;
+  const setPath = SET_URL_PATHS[setId] || setId;
+  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setPath}/cards`;
   const rows = [];
 
   // Width hint row — forces natural column widths on open
@@ -612,6 +639,7 @@ function xmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 function normalizeRarity(r){return r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');}
 function padId(id){const n=parseInt(id,10);return isNaN(n)?id:String(n).padStart(3,'0');}
 function naturalSort(a,b){const na=parseInt(a,10),nb=parseInt(b,10);if(!isNaN(na)&&!isNaN(nb))return na-nb;return String(a).localeCompare(String(b));}
+
 
 
 
