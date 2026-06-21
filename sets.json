@@ -37,9 +37,9 @@
   },
   {
     "slug": "scarlet-violet-151-card-list",
-    "name": "Scarlet & Violet 151 (SV3.5)",
+    "name": "Pokemon 151 (SV3.5)",
     "series": "Scarlet & Violet",
-    "short": "MEW",
+    "short": "SV3.5",
     "setId": "sv3pt5",
     "phase": "en",
     "live": true
@@ -48,7 +48,7 @@
     "slug": "paldean-fates-card-list",
     "name": "Paldean Fates (SV4.5)",
     "series": "Scarlet & Violet",
-    "short": "PAF",
+    "short": "SV4.5",
     "setId": "sv4pt5",
     "phase": "en",
     "live": true
@@ -75,7 +75,7 @@
     "slug": "shrouded-fable-card-list",
     "name": "Shrouded Fable (SV6.5)",
     "series": "Scarlet & Violet",
-    "short": "SFA",
+    "short": "SV6.5",
     "setId": "sv6pt5",
     "phase": "en",
     "live": true
@@ -102,7 +102,7 @@
     "slug": "prismatic-evolutions-card-list",
     "name": "Prismatic Evolutions (SV8.5)",
     "series": "Scarlet & Violet",
-    "short": "PRE",
+    "short": "SV8.5",
     "setId": "sv8pt5",
     "phase": "en",
     "live": true
@@ -129,7 +129,7 @@
     "slug": "pokemon/sets/scarlet-violet/black-bolt/cards",
     "name": "Black Bolt (SV10.5)",
     "series": "Scarlet & Violet",
-    "short": "BBT",
+    "short": "SV10.5",
     "setId": "zsv10pt5",
     "phase": "en",
     "live": true
@@ -138,7 +138,7 @@
     "slug": "pokemon/sets/scarlet-violet/white-flare/cards",
     "name": "White Flare (SV10.5)",
     "series": "Scarlet & Violet",
-    "short": "WHF",
+    "short": "SV10.5",
     "setId": "rsv10pt5",
     "phase": "en",
     "live": true
@@ -147,7 +147,7 @@
     "slug": "pokemon/sets/mega-evolution/base-set/cards",
     "name": "Mega Evolution (ME1)",
     "series": "Mega Evolution",
-    "short": "ME01",
+    "short": "ME1",
     "setId": "me01",
     "phase": "en",
     "live": true
@@ -156,7 +156,7 @@
     "slug": "phantasmal-flames-card-list",
     "name": "Phantasmal Flames (ME2)",
     "series": "Mega Evolution",
-    "short": "PFL",
+    "short": "ME2",
     "setId": "me02",
     "phase": "en",
     "live": true
@@ -165,7 +165,7 @@
     "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
     "name": "Ascended Heroes (ME2.5)",
     "series": "Mega Evolution",
-    "short": "ASC",
+    "short": "ME2.5",
     "setId": "me02pt5",
     "phase": "en",
     "live": true
