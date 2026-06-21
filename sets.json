@@ -27,20 +27,20 @@
     "live": true
   },
   {
-    "slug": "paradox-rift-card-list",
-    "name": "Paradox Rift (SV4)",
-    "series": "Scarlet & Violet",
-    "short": "SV4",
-    "setId": "sv04",
-    "phase": "en",
-    "live": true
-  },
-  {
     "slug": "scarlet-violet-151-card-list",
     "name": "Pokemon 151 (SV3.5)",
     "series": "Scarlet & Violet",
     "short": "SV3.5",
     "setId": "sv3pt5",
+    "phase": "en",
+    "live": true
+  },
+  {
+    "slug": "paradox-rift-card-list",
+    "name": "Paradox Rift (SV4)",
+    "series": "Scarlet & Violet",
+    "short": "SV4",
+    "setId": "sv04",
     "phase": "en",
     "live": true
   },
