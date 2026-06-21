@@ -21,19 +21,19 @@ const SET_NAMES = {
 
 // Rarity accent colors — used for number and rarity label text
 const RARITY_ACCENT = {
-  'MHR': rgb(0.72, 0.55, 0.02), // dark gold
-  'MUR': rgb(0.72, 0.55, 0.02),
-  'SIR': rgb(0.46, 0.18, 0.72), // deep purple
-  'HR':  rgb(0.72, 0.55, 0.02),
-  'MAR': rgb(0.72, 0.55, 0.02),
-  'IR':  rgb(0.65, 0.38, 0.02), // amber
-  'AR':  rgb(0.65, 0.38, 0.02),
-  'UR':  rgb(0.72, 0.15, 0.15), // red
-  'BWR': rgb(0.15, 0.15, 0.15), // near black
-  'DR':  rgb(0.06, 0.42, 0.26), // dark green
-  'R':   rgb(0.12, 0.32, 0.62), // dark blue
-  'U':   rgb(0.28, 0.35, 0.45), // slate
-  'C':   rgb(0.42, 0.46, 0.52), // gray
+  'MHR': rgb(0.85, 0.60, 0.00), // vivid gold
+  'MUR': rgb(0.85, 0.60, 0.00),
+  'MAR': rgb(0.85, 0.60, 0.00),
+  'SIR': rgb(0.55, 0.10, 0.90), // vivid purple
+  'HR':  rgb(0.85, 0.60, 0.00),
+  'IR':  rgb(0.85, 0.42, 0.00), // vivid orange-amber
+  'AR':  rgb(0.85, 0.42, 0.00),
+  'UR':  rgb(0.85, 0.10, 0.10), // vivid red
+  'BWR': rgb(0.08, 0.08, 0.08), // near black
+  'DR':  rgb(0.00, 0.55, 0.30), // vivid green
+  'R':   rgb(0.08, 0.38, 0.80), // vivid blue
+  'U':   rgb(0.25, 0.40, 0.60), // slate blue
+  'C':   rgb(0.38, 0.42, 0.48), // medium gray
 };
 
 const CARD_RATIO = 88 / 63;
@@ -99,13 +99,13 @@ export default async function handler(req, res) {
     const totalPages   = Math.ceil(cards.length / cardsPerPage);
 
     // Colors
-    const PAGE_BG    = rgb(0.96, 0.96, 0.94); // warm off-white page
-    const CARD_BG    = rgb(0.98, 0.98, 0.97); // slightly lighter card face
-    const CARD_EDGE  = rgb(0.80, 0.80, 0.78); // subtle border
+    const PAGE_BG    = rgb(0.88, 0.88, 0.88); // light gray page — cards pop
+    const CARD_BG    = rgb(1.00, 1.00, 1.00); // pure white card face
+    const CARD_EDGE  = rgb(0.60, 0.60, 0.60); // visible border
     const HEADER_BG  = rgb(0.10, 0.14, 0.26); // dark navy
     const HDR_TEXT   = rgb(1, 1, 1);
     const HDR_SUB    = rgb(0.60, 0.68, 0.82);
-    const NAME_COLOR = rgb(0.10, 0.18, 0.26); // deep navy for card name
+    const NAME_COLOR = rgb(0.05, 0.10, 0.18); // very dark navy for card name
 
     for (let p = 0; p < totalPages; p++) {
       const page      = pdfDoc.addPage([PAGE_W, PAGE_H]);
@@ -150,7 +150,7 @@ export default async function handler(req, res) {
         page.drawRectangle({
           x: sx + 2, y: sy - 2,
           width: slotW, height: slotH,
-          color: rgb(0.70, 0.70, 0.68), opacity: 0.25,
+          color: rgb(0.40, 0.40, 0.40), opacity: 0.35,
         });
 
         // Card background
@@ -190,25 +190,25 @@ export default async function handler(req, res) {
         page.drawText(label, {
           x: sx + (slotW - labW) / 2,
           y: sy + 9,
-          size: labSz, font: fontLight, color: accent,
+          size: labSz, font: fontBold, color: accent,
         });
 
         // ── Thin accent line above rarity label ──
         page.drawLine({
           start: { x: sx + 8, y: sy + 20 },
           end:   { x: sx + slotW - 8, y: sy + 20 },
-          thickness: 0.4,
-          color: rgb(0.82, 0.82, 0.80),
-          opacity: 0.8,
+          thickness: 0.6,
+          color: accent,
+          opacity: 0.25,
         });
 
         // ── Thin accent line below number ──
         page.drawLine({
           start: { x: sx + 8, y: sy + slotH - 22 },
           end:   { x: sx + slotW - 8, y: sy + slotH - 22 },
-          thickness: 0.4,
-          color: rgb(0.82, 0.82, 0.80),
-          opacity: 0.8,
+          thickness: 0.6,
+          color: accent,
+          opacity: 0.25,
         });
 
         // ── Small TCGWatchtower logo mark — bottom right ──
@@ -262,3 +262,4 @@ function shortenRarity(r) {
   const norm = r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
   return map[norm] || norm;
 }
+
