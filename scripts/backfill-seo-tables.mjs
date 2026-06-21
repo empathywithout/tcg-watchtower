@@ -346,10 +346,10 @@ function injectDownloadButtons(html, setId, name) {
         </a>
       </div>
     </div>
-    <a href="/api/binder-pdf?set=${setId}&size=9" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
+    <a href="/api/binder-pdf?set=${setId}&size=9" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.18);border:1.5px solid rgba(168,85,247,0.6);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.32)'" onmouseout="this.style.background='rgba(168,85,247,0.18)'">
       <span>📄</span> Binder Placeholders — 9-Pocket
     </a>
-    <a href="/api/binder-pdf?set=${setId}&size=12" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.2)'" onmouseout="this.style.background='rgba(168,85,247,0.1)'">
+    <a href="/api/binder-pdf?set=${setId}&size=12" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(168,85,247,0.18);border:1.5px solid rgba(168,85,247,0.6);border-radius:8px;color:#c084fc;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.32)'" onmouseout="this.style.background='rgba(168,85,247,0.18)'">
       <span>📄</span> Binder Placeholders — 16-Pocket
     </a>
   </div>
