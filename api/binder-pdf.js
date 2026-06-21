@@ -6,6 +6,8 @@
 
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
+export const maxDuration = 60; // Vercel Pro — allow up to 60s for slow fallbacks
+
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
 const SET_NAMES = {
@@ -89,7 +91,7 @@ export default async function handler(req, res) {
       const host = req.headers.host || 'tcgwatchtower.com';
       const proto = host.includes('localhost') ? 'http' : 'https';
       const cardsRes = await fetch(`${proto}://${host}/api/cards?set=${set}`,
-        { signal: AbortSignal.timeout(8000) });
+        { signal: AbortSignal.timeout(25000) });
       if (cardsRes.ok) {
         const data = await cardsRes.json();
         cards = data.cards || [];
@@ -290,6 +292,7 @@ function shortenRarity(r) {
   const norm = r.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():w).join(' ');
   return map[norm] || norm;
 }
+
 
 
 
