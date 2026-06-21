@@ -870,6 +870,15 @@
   ],
   "headers": [
     {
+      "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/api/(.*)",
       "headers": [
         {
@@ -878,5 +887,6 @@
         }
       ]
     }
-  ]
+  ],
+  "_cache_bust": "2026-06-20-v2"
 }
