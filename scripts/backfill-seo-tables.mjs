@@ -789,8 +789,7 @@ function fixPageSpeed(html) {
   if (!html.includes('touch-action')) {
     html = html.replace(
       'a { color: inherit; text-decoration: none; }',
-      'a { color: inherit; text-decoration: none; }
-button, a, [onclick] { touch-action: manipulation; }'
+      'a { color: inherit; text-decoration: none; }\nbutton, a, [onclick] { touch-action: manipulation; }'
     );
     // Fallback if above pattern not found
     if (!html.includes('touch-action')) {
@@ -1110,6 +1109,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
