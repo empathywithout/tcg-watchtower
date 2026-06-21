@@ -943,6 +943,178 @@ function fixOGImage(html, setId) {
   return html;
 }
 
+
+// ── Pull rate data per set (TCGplayer Authentication Center) ─────────────────
+// Source: https://www.tcgplayer.com/content/article/...
+const PULL_RATES = {
+  me04: {
+    name: 'Chaos Rising',
+    source: 'TCGplayer Authentication Center (8,500+ packs)',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Chaos-Rising-Pull-Rates/304e8bfc-175a-4d31-93fe-5bb1be11e5d2/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 217' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 496' },
+      { rarity: 'Mega Hyper Rare',           short: 'MHR', pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'At 1 in 83 packs, expect roughly 1 SIR per 2–3 booster boxes. Mega Greninja ex MHR averages 1 per ~26 boxes.',
+  },
+  me03: {
+    name: 'Perfect Order',
+    source: 'TCGplayer Authentication Center (3,500+ packs)',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/Pok%C3%A9mon-TCG-Perfect-Order-Pull-Rates/73148119-ebcb-40b7-84b6-52b3a6d0c631/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8.5%',overall: '1 in 12',  specific: '1 in 204' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Mega Hyper Rare',           short: 'MHR', pct: '~0.1%',overall: '1 in 956', specific: '1 in 1912', chase: true },
+    ],
+    boxNote: 'Pull rates in Perfect Order are nearly identical to Phantasmal Flames. Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  me02: {
+    name: 'Phantasmal Flames',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 204' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Mega Hyper Rare',           short: 'MHR', pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  me02pt5: {
+    name: 'Ascended Heroes',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 204' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Mega Ultra Rare',           short: 'MUR', pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  me01: {
+    name: 'Mega Evolution',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 204' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Mega Hyper Rare',           short: 'MHR', pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  sv08: {
+    name: 'Surging Sparks',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 217' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Hyper Rare',               short: 'HR',  pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  sv07: {
+    name: 'Stellar Crown',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 217' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Hyper Rare',               short: 'HR',  pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+  sv8pt5: {
+    name: 'Prismatic Evolutions',
+    source: 'TCGplayer Authentication Center',
+    sourceUrl: 'https://www.tcgplayer.com/content/article/',
+    rates: [
+      { rarity: 'Double Rare',               short: 'DR',  pct: '~20%', overall: '1 in 5',   specific: '1 in 49'  },
+      { rarity: 'Illustration Rare',         short: 'IR',  pct: '~11%', overall: '1 in 9',   specific: '1 in 103' },
+      { rarity: 'Ultra Rare',                short: 'UR',  pct: '~8%',  overall: '1 in 12',  specific: '1 in 217' },
+      { rarity: 'Special Illustration Rare', short: 'SIR', pct: '~1.2%',overall: '1 in 83',  specific: '1 in 415' },
+      { rarity: 'Hyper Rare',               short: 'HR',  pct: '~0.1%',overall: '1 in 956', specific: '1 in 956', chase: true },
+    ],
+    boxNote: 'Expect roughly 1 SIR per 2–3 booster boxes.',
+  },
+};
+
+// ── Inject pull rates section ─────────────────────────────────────────────────
+function injectPullRates(html, setId) {
+  // Skip if already injected or no data for this set
+  if (html.includes('pull-rates-section')) return html;
+  const data = PULL_RATES[setId];
+  if (!data) return html;
+
+  // Accent colors per rarity short code
+  const COLORS = {
+    DR:  { badge: 'rgba(74,222,128,0.15)',  text: '#4ade80', bar: '#4ade80'  },
+    IR:  { badge: 'rgba(96,165,250,0.15)',  text: '#60a5fa', bar: '#60a5fa'  },
+    UR:  { badge: 'rgba(251,191,36,0.15)',  text: '#fbbf24', bar: '#fbbf24'  },
+    SIR: { badge: 'rgba(248,113,113,0.15)', text: '#f87171', bar: '#f87171'  },
+    HR:  { badge: 'rgba(251,191,36,0.15)',  text: '#fbbf24', bar: '#fbbf24'  },
+    MHR: { badge: 'rgba(251,191,36,0.2)',   text: '#fbbf24', bar: '#fbbf24'  },
+    MUR: { badge: 'rgba(167,139,250,0.2)',  text: '#a78bfa', bar: '#a78bfa'  },
+    MAR: { badge: 'rgba(251,191,36,0.15)',  text: '#fbbf24', bar: '#fbbf24'  },
+    BWR: { badge: 'rgba(226,232,240,0.1)',  text: '#e2e8f0', bar: '#e2e8f0'  },
+  };
+
+  // Bar width — proportional to percentage
+  const barWidth = pct => {
+    const n = parseFloat(pct.replace('~','').replace('%',''));
+    return isNaN(n) ? '0.5%' : Math.max(0.5, n) + '%';
+  };
+
+  const cards = data.rates.map(r => {
+    const col = COLORS[r.short] || COLORS.IR;
+    const isChase = r.chase;
+    const cardStyle = isChase
+      ? 'background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.3);'
+      : 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);';
+    const pctColor = isChase ? col.text : '#f1f5f9';
+    return `<div style="${cardStyle}border-radius:8px;padding:8px 9px 7px;min-width:0">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:4px">
+    <span style="font-size:9px;font-weight:600;color:#e2e8f0;line-height:1.3">${r.rarity}</span>
+    <span style="font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;white-space:nowrap;flex-shrink:0;background:${col.badge};color:${col.text}">${r.overall}</span>
+  </div>
+  <div style="font-size:15px;font-weight:700;color:${pctColor};margin-bottom:1px">${r.pct}</div>
+  <div style="font-size:9px;color:#475569;line-height:1.4">per pack<br>specific ${r.short} ${r.specific}</div>
+  <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:6px">
+    <div style="height:3px;width:${barWidth(r.pct)};background:${col.bar};border-radius:2px"></div>
+  </div>
+</div>`;
+  }).join('');
+
+  const section = `
+<!-- ===== PULL RATES ===== -->
+<div class="pull-rates-section" style="margin-bottom:20px">
+  <p style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06)">${data.name} pull rates — ${data.source}</p>
+  <div style="display:grid;grid-template-columns:repeat(${data.rates.length},1fr);gap:5px;margin-bottom:8px">
+${cards}
+  </div>
+  <p style="font-size:0.72rem;color:#475569;background:rgba(255,255,255,0.02);border-radius:6px;padding:8px 10px;line-height:1.55;margin-bottom:0">${data.boxNote} <a href="${data.sourceUrl}" target="_blank" rel="noopener" style="color:#64748b;text-decoration:underline;text-underline-offset:2px">Source: TCGplayer</a></p>
+</div>`;
+
+  // Insert after the download buttons section, before the filter bar
+  const anchor = '<div class="filter-bar">';
+  if (!html.includes(anchor)) return html;
+  return html.replace(anchor, section + '\n' + anchor);
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -1167,6 +1339,11 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixSectionNav(html, name, short);
   if (html !== htmlBeforeNav) changes.push('nav');
 
+  // 1c-viii. Pull rates section
+  const htmlBeforePR = html;
+  html = injectPullRates(html, setId);
+  if (html !== htmlBeforePR) changes.push('pull rates');
+
   // 1c-ii. Fix TCGplayer pricing attribution in user-facing text
   const htmlBeforeTCGP = html;
   html = fixTCGPlayerText(html);
@@ -1253,6 +1430,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
