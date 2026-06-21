@@ -283,3 +283,4 @@ function shortenRarity(r) {
 }
 
 
+
