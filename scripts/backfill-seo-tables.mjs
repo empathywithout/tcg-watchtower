@@ -657,10 +657,6 @@ if (TCGP_GROUP_ID) {
 
 // ── Patch Amazon into individual card pages ───────────────────────────────────
 function patchCardPageAmazon(html, cardName, setName) {
-  // Also fix touch-action on card pages (applies every time regardless of Amazon)
-  if (!html.includes('touch-action') && html.includes('</style>')) {
-    html = html.replace('</style>', 'button,a,[onclick]{touch-action:manipulation}\n</style>', );
-  }
   if (html.includes('class="btn btn-amazon"')) return html; // already done — check button not just CSS
 
   // Add CSS
@@ -855,31 +851,46 @@ function fixExternalAssets(html) {
 
 
 // ── Patch existing individual card pages — H1 + LCP eager ────────────────────
-function patchExistingCardPage(html) {
+function patchExistingCardPage(html, setName) {
   let changed = false;
 
-  // 1. Add H1 if missing — extract name and number from title tag
+  // 1. Add H1 if missing — extract name and number from img alt tag
+  // alt="Mega Greninja ex #122 Chaos Rising" is more reliable than title
   if (!html.includes('<h1') && html.includes('<div class="card-name">')) {
-    const titleM = html.match(/<title>([^|<]+)/);
-    const rawTitle = titleM ? titleM[1].trim() : '';
-    // Title format: "Mega Greninja ex 122 Price, Rarity & Card Info"
-    // Extract: name = everything before the number, num = the number
-    const nameNumM = rawTitle.match(/^(.+?)\s+(\d+)\s+(?:Price|Rarity|Card)/);
-    if (nameNumM) {
-      const cardName = nameNumM[1].trim();
-      const cardNum  = nameNumM[2];
-      // Get set name from title after |
-      const setM = html.match(/<title>[^|]+\|\s*([^<|]+?)\s*(?:\||<)/);
-      const setName = setM ? setM[1].trim() : '';
-      const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${setName ? ' — ' + setName : ''}</h1>\n      `;
+    // Try alt tag first: alt="Card Name #NUM Set Name"
+    const altM = html.match(/alt="([^"]+?)\s+#(\d+)\s+([^"]+?)"\s+width="400"/);
+    if (altM) {
+      const cardName = altM[1].trim();
+      const cardNum  = altM[2];
+      const altSet   = altM[3].trim();
+      const useSet   = setName || altSet;
+      const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${useSet ? ' — ' + useSet : ''}</h1>\n      `;
       html = html.replace('<div class="card-name">', h1 + '<div class="card-name">');
       changed = true;
+    } else {
+      // Fallback: title tag
+      const titleM = html.match(/<title>([^|<]+)/);
+      const rawTitle = titleM ? titleM[1].trim() : '';
+      const nameNumM = rawTitle.match(/^(.+?)\s+(\d+)\s+(?:Price|Rarity|Card)/);
+      if (nameNumM) {
+        const cardName = nameNumM[1].trim();
+        const cardNum  = nameNumM[2];
+        const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${setName ? ' — ' + setName : ''}</h1>\n      `;
+        html = html.replace('<div class="card-name">', h1 + '<div class="card-name">');
+        changed = true;
+      }
     }
   }
 
-  // 2. Add loading="eager" to main card image (has fetchpriority="high" but may lack loading)
+  // 2. Add loading="eager" to main card image (has fetchpriority="high" but no loading attr)
   if (html.includes('fetchpriority="high"') && !html.includes('loading="eager"')) {
     html = html.replace('fetchpriority="high"', 'loading="eager" fetchpriority="high"');
+    changed = true;
+  }
+
+  // 3. touch-action
+  if (!html.includes('touch-action') && html.includes('</style>')) {
+    html = html.replace('</style>', 'button,a,[onclick]{touch-action:manipulation}\n</style>');
     changed = true;
   }
 
@@ -1040,7 +1051,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
         }
 
         // Patch H1 + LCP eager
-        const perfPatched = patchExistingCardPage(cfHtml);
+        const perfPatched = patchExistingCardPage(cfHtml, name);
         if (perfPatched !== null) { cfHtml = perfPatched; pageChanged = true; }
 
         if (pageChanged) {
@@ -1191,6 +1202,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
