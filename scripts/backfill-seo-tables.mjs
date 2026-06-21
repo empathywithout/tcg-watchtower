@@ -802,7 +802,9 @@ function fixPageSpeed(html) {
   // 5. OG type article -> website
   html = html.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">');
 
-  // 6. Remove empty duplicate H1
+  // 6. Remove empty/hidden duplicate H1
+  html = html.replace('<h1 style="display:none">\n        </h1>', '');
+  html = html.replace('<h1 style="display:none"></h1>', '');
   html = html.replace('<h1>\n        </h1>', '');
   html = html.replace('<h1></h1>', '');
 
@@ -1143,6 +1145,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
