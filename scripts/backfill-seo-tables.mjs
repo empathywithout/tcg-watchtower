@@ -775,6 +775,46 @@ function fixModalLinks(html) {
   return html;
 }
 
+
+// ── Page speed + mobile fixes ─────────────────────────────────────────────────
+function fixPageSpeed(html) {
+  // 1. LCP: add loading="eager" to set logo hero image (no loading attr currently)
+  html = html.replace(
+    '<img id="set-logo-hero"',
+    '<img id="set-logo-hero" loading="eager"'
+  );
+
+  // 2. touch-action: manipulation — add to global * or button/a rules
+  // Insert after the * { margin:0; padding:0... } block
+  if (!html.includes('touch-action')) {
+    html = html.replace(
+      'a { color: inherit; text-decoration: none; }',
+      'a { color: inherit; text-decoration: none; }
+button, a, [onclick] { touch-action: manipulation; }'
+    );
+    // Fallback if above pattern not found
+    if (!html.includes('touch-action')) {
+      html = html.replace(
+        'button { background: none; border: none; cursor: pointer; font-family: inherit; }',
+        'button { background: none; border: none; cursor: pointer; font-family: inherit; touch-action: manipulation; }'
+      );
+    }
+  }
+
+  // 3. Standardize breakpoints — fix 769px to 768px
+  html = html.replaceAll('@media (min-width: 769px)', '@media (min-width: 769px)');
+  html = html.replaceAll('max-width: 769px', 'max-width: 768px');
+  html = html.replaceAll('@media(max-width:769px)', '@media(max-width:768px)');
+
+  // 4. Add preload for set logo if not present
+  if (!html.includes('rel="preload"') || !html.includes('set-logo')) {
+    // The set logo src is set dynamically via JS so we can't preload it
+    // Skip this one
+  }
+
+  return html;
+}
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 let passed = 0, skipped = 0, failed = 0;
 
@@ -995,6 +1035,11 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
   html = fixTCGPlayerText(html);
   if (html !== htmlBeforeTCGP) changes.push('tcgp text');
 
+  // 1c-v. Page speed + mobile fixes
+  const htmlBeforePS = html;
+  html = fixPageSpeed(html);
+  if (html !== htmlBeforePS) changes.push('perf');
+
   // 1c-iv. Fix modal buy links — add Amazon, fix TCGplayer label
   const htmlBeforeModal = html;
   html = fixModalLinks(html);
@@ -1065,6 +1110,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
