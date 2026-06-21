@@ -854,41 +854,32 @@ function fixExternalAssets(html) {
 function patchExistingCardPage(html, setName) {
   let changed = false;
 
-  // 1. Add H1 if missing — extract name and number from img alt tag
-  // alt="Mega Greninja ex #122 Chaos Rising" is more reliable than title
-  if (!html.includes('<h1') && html.includes('<div class="card-name">')) {
-    // Try alt tag first: alt="Card Name #NUM Set Name"
+  // 1. Fix H1 — add if missing OR fix if it incorrectly says "Pokémon TCG" instead of set name
+  const hasWrongH1 = html.includes('<h1 class="sr-only">') && html.includes('— Pokémon TCG</h1>');
+  const missingH1  = !html.includes('<h1') && html.includes('<div class="card-name">');
+  if (missingH1 || hasWrongH1) {
     const altM = html.match(/alt="([^"]+?)\s+#(\d+)\s+([^"]+?)"\s+width="400"/);
     if (altM) {
       const cardName = altM[1].trim();
       const cardNum  = altM[2];
-      const altSet   = altM[3].trim();
-      const useSet   = setName || altSet;
-      const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${useSet ? ' — ' + useSet : ''}</h1>\n      `;
-      html = html.replace('<div class="card-name">', h1 + '<div class="card-name">');
-      changed = true;
-    } else {
-      // Fallback: title tag
-      const titleM = html.match(/<title>([^|<]+)/);
-      const rawTitle = titleM ? titleM[1].trim() : '';
-      const nameNumM = rawTitle.match(/^(.+?)\s+(\d+)\s+(?:Price|Rarity|Card)/);
-      if (nameNumM) {
-        const cardName = nameNumM[1].trim();
-        const cardNum  = nameNumM[2];
-        const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${setName ? ' — ' + setName : ''}</h1>\n      `;
-        html = html.replace('<div class="card-name">', h1 + '<div class="card-name">');
-        changed = true;
+      const useSet   = setName || altM[3].trim();
+      const h1 = `<h1 class="sr-only">${cardName} #${cardNum}${useSet ? ' — ' + useSet : ''}</h1>`;
+      if (hasWrongH1) {
+        html = html.replace(/<h1 class="sr-only">[^<]+— Pokémon TCG<\/h1>/, h1);
+      } else {
+        html = html.replace('<div class="card-name">', h1 + '\n      <div class="card-name">');
       }
+      changed = true;
     }
   }
 
-  // 2. Add loading="eager" to main card image (has fetchpriority="high" but no loading attr)
+  // 2. Add loading="eager" to main card image — runs independently of H1
   if (html.includes('fetchpriority="high"') && !html.includes('loading="eager"')) {
     html = html.replace('fetchpriority="high"', 'loading="eager" fetchpriority="high"');
     changed = true;
   }
 
-  // 3. touch-action
+  // 3. touch-action — runs independently
   if (!html.includes('touch-action') && html.includes('</style>')) {
     html = html.replace('</style>', 'button,a,[onclick]{touch-action:manipulation}\n</style>');
     changed = true;
@@ -1202,6 +1193,7 @@ for (const { setId, file, seriesSlug, urlSlug, altUrlSlug = null, name, series, 
 
 console.log(`\n✅ Done — ${passed} updated, ${skipped} skipped, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
 
 
 
