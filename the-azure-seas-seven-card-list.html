@@ -365,6 +365,35 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">The Azure Sea's Seven <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete OP14 card list — search and filter by rarity</p>
     </div>
+
+<!-- ===== DOWNLOAD BUTTONS ===== -->
+<div class="download-buttons-section" style="margin:0 0 32px;padding:20px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;">
+  <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">The Azure Sea's Seven Master Set Tools</p>
+  <p style="font-size:0.75rem;color:var(--muted);margin-bottom:14px;opacity:0.7;">Free printable binder placeholders &amp; master set checklist — instant download</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <div style="position:relative;display:inline-block;">
+      <button onclick="(function(b){var p=b.parentElement.querySelector('.cl-picker');p.style.display=p.style.display==='flex'?'none':'flex'})(this)" style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+        <span>📋</span> Free Master Set Checklist <span style="font-size:0.7rem;opacity:0.7;">▾</span>
+      </button>
+      <div class="cl-picker" style="display:none;position:absolute;top:calc(100% + 6px);left:0;flex-direction:column;gap:0;background:#1e293b;border:1px solid rgba(239,68,68,0.3);border-radius:10px;overflow:hidden;z-index:100;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+        <a href="/api/checklist?set=op14&type=master&format=xlsx&game=onepiece" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#fca5a5;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.12)'" onmouseout="this.style.background=''">
+          <span style="font-size:1.1rem;">📊</span>
+          <span><strong>Google Sheets / Excel</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Dropdowns, color coding, 3 sheets</span></span>
+        </a>
+        <a href="/api/checklist?set=op14&type=master&format=csv&game=onepiece" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#fca5a5;text-decoration:none;font-size:0.82rem;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background=''">
+          <span style="font-size:1.1rem;">📄</span>
+          <span><strong>CSV</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Works everywhere</span></span>
+        </a>
+      </div>
+    </div>
+    <a href="/api/binder-pdf?set=op14&size=9&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+      <span>📄</span> Binder Placeholders — 9-Pocket
+    </a>
+    <a href="/api/binder-pdf?set=op14&size=16&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+      <span>📄</span> Binder Placeholders — 16-Pocket
+    </a>
+  </div>
+</div>
     <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
       <select class="filter-select" id="rarity-filter"><option value="">All Rarities</option></select>
