@@ -946,6 +946,7 @@ function renderChaseHTML() {
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links" style="width:100%">
+          <a class="buy-link buy-amazon" href="${amazonLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece Card')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.name+' '+c.displayId+' '+SET_FULL_NAME+' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" href="${cached?.url||tcgpLink(c.name,c.displayId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
