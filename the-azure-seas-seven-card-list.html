@@ -746,7 +746,7 @@ function renderChaseHTML() {
         <div class="buy-links" style="width:100%">
           <a class="buy-link buy-amazon" href="${amazonLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece Card')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.name + ' ' + c.id + ' ' + SET_FULL_NAME + ' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp" href="${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp" href="${(priceCache[priceKey(c.id, c.name)] || priceCache[priceKeyByName(c.id, c.name)])?.url || tcgpLink(c.name, c.id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
         </div>
       </div>
     </div>`;
@@ -785,7 +785,7 @@ function renderCards(reset) {
         ${card.rarity && RARITY_CLASS[card.rarity] ? `<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity] || card.rarity}</span></div>` : ''}
         <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
         </div>
       </div>`;
     el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null); const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
