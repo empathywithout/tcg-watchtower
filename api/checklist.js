@@ -158,6 +158,38 @@ function rarityXf(fillId, type) {
   return base + fillIdx * 4 + typeOffset;
 }
 
+
+// ── One Piece rarity constants ────────────────────────────────────────────────
+const OP_RARITY_ORDER = [
+  'Common','Uncommon','Rare','Super Rare','Secret Rare',
+  'Special','Leader','Treasure Rare','Manga Rare','Alt Art','Manga Alt Art',
+];
+
+const OP_RARITY_ABBREV = {
+  'Common':'C','Uncommon':'U','Rare':'R','Super Rare':'SR','Secret Rare':'SEC',
+  'Special':'SP','Leader':'L','Treasure Rare':'TR','Manga Rare':'MR',
+  'Alt Art':'AA','Manga Alt Art':'MAA',
+};
+
+const OP_RARITY_DESC = {
+  'Common':        'Standard card. Most common pull in the set.',
+  'Uncommon':      'Slightly rarer than Common. Multiple per pack.',
+  'Rare':          'Holo treatment. Guaranteed at least 1 per pack.',
+  'Super Rare':    'Full-art alternate illustration. Key chase tier.',
+  'Secret Rare':   'SEC rarity. Highest base rarity in the set — 2 per set.',
+  'Special':       'SP Portrait card. Ultra-rare with premium foil finish.',
+  'Leader':        'Leader card — used as the deck leader in play.',
+  'Treasure Rare': 'TR rarity. Extremely scarce across all sets.',
+  'Manga Rare':    'Manga Alt Art card. Rarest pull in the set — iconic manga panel art.',
+  'Alt Art':       'Alternate artwork version of a card in the set.',
+  'Manga Alt Art': 'Manga-style alternate artwork. Premium collector tier.',
+};
+
+const OP_SET_URL_PATHS = {
+  'op14':'the-azure-seas-seven','eb03':'heroines-edition',
+  'op15':'adventure-on-kamis-island','op16':'the-time-of-battle',
+};
+
 const STYLES_XML = buildStylesXml();
 
 function buildStylesXml() {
@@ -255,6 +287,14 @@ export default async function handler(req, res) {
   const master  = type === 'master';
   const today   = new Date().toISOString().split('T')[0];
 
+  // OP uses different rarity ordering, abbreviations, and URL structure
+  const rarityOrder  = isOnePiece ? OP_RARITY_ORDER  : RARITY_ORDER;
+  const rarityAbbrev = isOnePiece ? OP_RARITY_ABBREV : RARITY_ABBREV;
+  const rarityDesc   = isOnePiece ? OP_RARITY_DESC   : RARITY_DESC;
+  const setUrlBase   = isOnePiece
+    ? `https://tcgwatchtower.com/one-piece/sets/${OP_SET_URL_PATHS[set] || set}/cards`
+    : `https://tcgwatchtower.com/pokemon/sets/${SET_URL_PATHS[set] || set}/cards`;
+
   try {
     const r2Path = isOnePiece ? `${R2_BASE}/data/op/${set}.json` : `${R2_BASE}/data/${set}.json`;
     const r2Res = await fetch(r2Path);
@@ -266,16 +306,18 @@ export default async function handler(req, res) {
     const cards = rawCards.map(c => ({ ...c, rarity: normalizeRarity(c.rarity || '') }));
 
     const groups = {};
-    for (const r of RARITY_ORDER) groups[r] = [];
+    for (const r of rarityOrder) groups[r] = [];
     for (const c of cards) { const r = c.rarity || 'Unknown'; (groups[r] = groups[r]||[]).push(c); }
     for (const r of Object.keys(groups)) groups[r].sort((a,b) => naturalSort(a.localId, b.localId));
 
-    const rhCards = master ? cards.filter(c => !SECRET_RARITIES.has(c.rarity)) : [];
+    // OP has no reverse holos; Pokemon master set includes RH slots
+    const rhCards = (!isOnePiece && master) ? cards.filter(c => !SECRET_RARITIES.has(c.rarity)) : [];
     const slug = setName.replace(/[^a-z0-9]/gi,'-').toLowerCase().replace(/-+/g,'-');
 
     if (format === 'csv') {
       trackDownload(set, 'csv');
-      const csv = buildCSV(setName, set, cards, groups, rhCards, master, today);
+      const csv = buildCSV(setName, set, cards, groups, rhCards, master, today,
+        { isOnePiece, rarityOrder, rarityAbbrev, rarityDesc, setUrl: setUrlBase });
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.csv"`);
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -283,7 +325,8 @@ export default async function handler(req, res) {
     }
 
     trackDownload(set, 'xlsx');
-    const xlsxBuf = buildXLSX(setName, set, cards, groups, rhCards, master, today);
+    const xlsxBuf = buildXLSX(setName, set, cards, groups, rhCards, master, today,
+      { isOnePiece, rarityOrder, rarityAbbrev, rarityDesc, setUrl: setUrlBase });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="${slug}-${master?'master-set-':''}checklist.xlsx"`);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -336,9 +379,9 @@ function buildZip(files) {
 }
 
 // ── XLSX builder ──────────────────────────────────────────────────────────────
-function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
-  const setPath = SET_URL_PATHS[setId] || setId;
-  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setPath}/cards`;
+function buildXLSX(setName, setId, cards, groups, rhCards, master, today, opts = {}) {
+  const { isOnePiece = false, rarityOrder: ro = RARITY_ORDER, rarityAbbrev: ra = RARITY_ABBREV, rarityDesc: rd = RARITY_DESC, setUrl = null } = opts;
+  const setUrlFinal = setUrl || `https://tcgwatchtower.com/pokemon/sets/${SET_URL_PATHS[setId] || setId}/cards`;
   const sst = []; const sstMap = {};
   function si(s) {
     const str = String(s??'');
@@ -422,7 +465,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
     cell('C',rn+1,si(`Generated: ${today}`),XF_MUTED)+
     blank('D',rn+1,XF_DEFAULT)+
     cell('E',rn+1,si('Live prices:'),XF_MUTED)+
-    cell('F',rn+1,si(setUrl),XF_LINK)
+    cell('F',rn+1,si(setUrlFinal),XF_LINK)
   );
 
   addBlank();
@@ -437,14 +480,14 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
   // ── Card list ──
   addColHeaderRow();
 
-  for (const rarity of RARITY_ORDER) {
+  for (const rarity of ro) {
     const group = groups[rarity];
     if (!group?.length) continue;
     addBlank();
     const secR = rn+1; mergeFull(secR);
-    addSectionRow(`${rarity}  (${RARITY_ABBREV[rarity]||rarity})  —  ${group.length} card${group.length!==1?'s':''}`);
+    addSectionRow(`${rarity}  (${ra[rarity]||rarity})  —  ${group.length} card${group.length!==1?'s':''}`);
     for (const card of group) {
-      addCardRow(padId(card.localId), card.name, RARITY_ABBREV[card.rarity]||card.rarity, card.rarity);
+      addCardRow(padId(card.localId), card.name, ra[card.rarity]||card.rarity, card.rarity);
     }
   }
 
@@ -475,7 +518,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
   // Row 2: direct set link
   row(
     cell('A',rn+1,si(`${setName} prices:`),XF_BOLD)+
-    cell('B',rn+1,si(setUrl),XF_LINK)+
+    cell('B',rn+1,si(setUrlFinal),XF_LINK)+
     cell('C',rn+1,si('Live card prices updated daily for this set'),XF_MUTED)+
     blank('D',rn+1,XF_DEFAULT)+blank('E',rn+1,XF_DEFAULT)+blank('F',rn+1,XF_DEFAULT)
   );
@@ -520,8 +563,9 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
     'Treasure Rare':           'One Piece TCG exclusive rarity.',
     'RH':                      'Reverse Holo. Foil on card border/background instead of artwork. Available for C / U / R / DR cards.',
   };
-  const LEGEND_RARITIES = [...RARITY_ORDER, 'RH'];
-  const LEGEND_ABBREV = { ...RARITY_ABBREV, 'RH': 'RH' };
+  const LEGEND_RARITIES = isOnePiece ? [...ro] : [...RARITY_ORDER, 'RH'];
+  const LEGEND_ABBREV   = isOnePiece ? { ...ra } : { ...RARITY_ABBREV, 'RH': 'RH' };
+  const LEGEND_DESC_MAP = isOnePiece ? rd : RARITY_DESC;
 
   for (const rarity of LEGEND_RARITIES) {
     const fi = RARITY_FILL[rarity] ?? FILL_NONE;
@@ -529,7 +573,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
     const xfCard = (fi >= FILL_COMMON && fi <= FILL_RH) ? rarityXf(fi, 'card') : XF_DEFAULT;
     const xfBlank= (fi >= FILL_COMMON && fi <= FILL_RH) ? rarityXf(fi, 'blank'): XF_DEFAULT;
     const abbrev = LEGEND_ABBREV[rarity] || '';
-    const desc   = LEGEND_DESC[rarity]   || '';
+    const desc   = (LEGEND_DESC_MAP || RARITY_DESC)[rarity] || '';
     lrow([lc('A',si(abbrev), xfNum), lc('B',si(rarity), xfCard), lc('C',si(abbrev), xfNum), lc('D',si(desc), xfCard), lb('E', xfBlank)].join(''));
   }
 
@@ -567,10 +611,10 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today) {
 }
 
 // ── CSV builder ───────────────────────────────────────────────────────────────
-function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
+function buildCSV(setName, setId, cards, groups, rhCards, master, today, opts = {}) {
+  const { isOnePiece = false, rarityOrder: ro = RARITY_ORDER, rarityAbbrev: ra = RARITY_ABBREV, rarityDesc: rd = RARITY_DESC, setUrl = null } = opts;
   const totalCards = cards.length + (master ? rhCards.length : 0);
-  const setPath = SET_URL_PATHS[setId] || setId;
-  const setUrl = `https://tcgwatchtower.com/pokemon/sets/${setPath}/cards`;
+  const setUrlFinal = setUrl || `https://tcgwatchtower.com/pokemon/sets/${SET_URL_PATHS[setId] || setId}/cards`;
   const rows = [];
 
   // Width hint row — forces natural column widths on open
@@ -582,7 +626,7 @@ function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
   rows.push([`Set: ${setId.toUpperCase()}`, `${totalCards} cards total`, `Generated: ${today}`]);
   rows.push(['']);
   rows.push(['=== TCG WATCHTOWER ===', 'Live prices, restock alerts & more']);
-  rows.push(['View this set online:', setUrl]);
+  rows.push(['View this set online:', setUrlFinal]);
   rows.push(['Binder placeholders:', 'Free PDF on every set page at tcgwatchtower.com']);
   rows.push(['']);
 
@@ -597,23 +641,23 @@ function buildCSV(setName, setId, cards, groups, rhCards, master, today) {
   rows.push(['=== RARITY LEGEND ===']);
   rows.push(['Abbrev', 'Full Rarity Name', 'What It Means']);
   rows.push(['------', '----------------', '-------------']);
-  for (const r of RARITY_ORDER) {
-    if (RARITY_ABBREV[r]) rows.push([RARITY_ABBREV[r], r, RARITY_DESC[r] || '']);
+  for (const r of ro) {
+    if (ra[r]) rows.push([ra[r], r, rd[r] || '']);
   }
-  rows.push(['RH', 'Reverse Holo', 'Foil pattern on card border/background. Any C / U / R / DR card can have a RH version.']);
+  if (!isOnePiece) rows.push(['RH', 'Reverse Holo', 'Foil pattern on card border/background. Any C / U / R / DR card can have a RH version.']);
   rows.push(['']);
 
   // Card list
   rows.push(['=== CARD LIST ===']);
   rows.push(['']);
 
-  for (const rarity of RARITY_ORDER) {
+  for (const rarity of ro) {
     const group = groups[rarity];
     if (!group?.length) continue;
-    rows.push([`--- ${rarity.toUpperCase()} (${RARITY_ABBREV[rarity]||rarity}) -- ${group.length} card${group.length!==1?'s':''} ---`]);
-    rows.push(['#', 'Card Name', 'Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
+    rows.push([`--- ${rarity.toUpperCase()} (${ra[rarity]||rarity}) -- ${group.length} card${group.length!==1?'s':''} ---`]);
+    rows.push(['#', 'Card Name', 'Rarity', 'Have (Y/N/W)', isOnePiece ? 'Condition' : 'Grade (PSA/BGS/TAG)', 'Notes']);
     for (const card of group) {
-      rows.push([padId(card.localId), card.name, RARITY_ABBREV[card.rarity]||card.rarity, '', '', '']);
+      rows.push([padId(card.localId), card.name, ra[card.rarity]||card.rarity, '', '', '']);
     }
     rows.push(['']);
   }
