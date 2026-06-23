@@ -986,10 +986,7 @@ function renderCards(reset) {
         <div class="card-item-num">${dispNum}</div>
         <div class="card-item-price ${priceClass}">${priceText}</div>
         ${card.rarity&&RARITY_CLASS[card.rarity]?`<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity]||card.rarity}</span></div>`:''}
-        <div class="buy-links" style="margin-top:6px">
-          <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
-        </div>
+        
         
       </div>`;
     el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
