@@ -18,6 +18,9 @@ const SET_NAMES = {
   'zsv10pt5':'Black Bolt','rsv10pt5':'White Flare',
   'me01':'Mega Evolution','me02':'Phantasmal Flames','me02pt5':'Ascended Heroes',
   'me03':'Perfect Order','me04':'Chaos Rising','me05':'Pitch Black',
+  // One Piece
+  'op14':"The Azure Sea's Seven",'eb03':'Heroines Edition',
+  'op15':"Adventure on Kami's Island",'op16':'The Time of Battle',
 };
 
 const SET_URL_PATHS = {
