@@ -329,9 +329,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/heroines-edition/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/heroines-edition/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/heroines-edition/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/heroines-edition/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">🏴‍☠️ Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
@@ -365,50 +365,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
       <h2 class="section-title">Heroines Edition <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete EB03 card list — search and filter by rarity</p>
     </div>
-    
-
-
-    </div>
-    <a href="/api/binder-pdf?set=eb03&size=9&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
-      <span>📄</span> Binder Placeholders — 9-Pocket
-    </a>
-    <a href="/api/binder-pdf?set=eb03&size=16&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
-      <span>📄</span> Binder Placeholders — 16-Pocket
-    </a>
-  </div>
-</div>
-
-
-    <!-- ===== DOWNLOAD BUTTONS ===== -->
-<div class="download-buttons-section" style="margin:0 0 32px;padding:20px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;">
-  <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">Heroines Edition Master Set Tools</p>
-  <p style="font-size:0.75rem;color:var(--muted);margin-bottom:14px;opacity:0.7;">Free printable binder placeholders &amp; master set checklist — instant download</p>
-  <div style="display:flex;flex-wrap:wrap;gap:10px;">
-    <div style="position:relative;display:inline-block;">
-      <button onclick="(function(b){var p=b.parentElement.querySelector('.cl-picker');p.style.display=p.style.display==='flex'?'none':'flex'})(this)" style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
-        <span>📋</span> Free Master Set Checklist <span style="font-size:0.7rem;opacity:0.7;">▾</span>
-      </button>
-      <div class="cl-picker" style="display:none;position:absolute;top:calc(100% + 6px);left:0;flex-direction:column;gap:0;background:#1e293b;border:1px solid rgba(239,68,68,0.3);border-radius:10px;overflow:hidden;z-index:100;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
-        <a href="/api/checklist?set=eb03&type=master&format=xlsx&game=onepiece" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#fca5a5;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.12)'" onmouseout="this.style.background=''">
-          <span style="font-size:1.1rem;">📊</span>
-          <span><strong>Google Sheets / Excel</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Dropdowns, color coding, 3 sheets</span></span>
-        </a>
-        <a href="/api/checklist?set=eb03&type=master&format=csv&game=onepiece" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#fca5a5;text-decoration:none;font-size:0.82rem;font-weight:600;transition:background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background=''">
-          <span style="font-size:1.1rem;">📄</span>
-          <span><strong>CSV</strong><br><span style="font-size:0.72rem;opacity:0.65;font-weight:400;">Works everywhere</span></span>
-        </a>
-      </div>
-    </div>
-    <a href="/api/binder-pdf?set=eb03&size=9&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
-      <span>📄</span> Binder Placeholders — 9-Pocket
-    </a>
-    <a href="/api/binder-pdf?set=eb03&size=16&game=onepiece" download style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);border-radius:8px;color:#fca5a5;font-size:0.82rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
-      <span>📄</span> Binder Placeholders — 16-Pocket
-    </a>
-  </div>
-</div>
-
-        <div class="filter-bar">
+    <div class="filter-bar">
       <input class="filter-input" type="text" id="search-input" placeholder="Search card name…">
       <select class="filter-select" id="rarity-filter"><option value="">All Rarities</option></select>
       <select class="filter-select" id="sort-select">
@@ -649,13 +606,11 @@ function renderCards(reset) {
     const ebayUrl = ebayLink(`${card.name} ${displayId} ${SET_FULL_NAME} One Piece`);
     el.innerHTML = `<img src="${imgUrl}" alt="${card.name} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
-        <div style="flex:1">
-          <div class="card-item-name">${displayName}</div>
-          <div class="card-item-num">${displayId}</div>
-          <div class="card-item-price ${priceClass}">${priceText}</div>
-          ${card.rarity && RARITY_CLASS[card.rarity] ? `<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity] || card.rarity}</span></div>` : ''}
-        </div>
-        <div class="buy-links" style="margin-top:auto">
+        <div class="card-item-name">${displayName}</div>
+        <div class="card-item-num">${displayId}</div>
+        <div class="card-item-price ${priceClass}">${priceText}</div>
+        ${card.rarity && RARITY_CLASS[card.rarity] ? `<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity] || card.rarity}</span></div>` : ''}
+        <div class="buy-links">
           <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -963,6 +918,30 @@ function initNav() {
 } // end initNav
 </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
+
+<!-- ===== MASTER SET TOOLS ===== -->
+<section class="download-tools-section" style="max-width:900px;margin:0 auto 48px;padding:0 16px;">
+  <h2 style="font-size:1.4rem;font-weight:800;color:#f1f5f9;margin-bottom:8px;">Heroines Edition <span style="color:#ef4444;">Master Set Tools</span></h2>
+  <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:20px;">Download the complete Heroines Edition card list or print binder placeholder sheets to track your master set.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <a href="/api/checklist?set=eb03&format=xlsx&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#fca5a5;font-weight:700;font-size:0.88rem;text-decoration:none;">
+      📊 Download XLSX
+    </a>
+    <a href="/api/checklist?set=eb03&format=csv&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      📄 Download CSV
+    </a>
+    <a href="/api/binder-pdf?set=eb03&size=9&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      🗂 9-Pocket Binder PDF
+    </a>
+    <a href="/api/binder-pdf?set=eb03&size=16&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      🗂 16-Pocket Binder PDF
+    </a>
+  </div>
+</section>
 
 <!-- ===== FAQ ===== -->
 <section style="max-width:900px;margin:0 auto 48px;padding:0 16px;">
