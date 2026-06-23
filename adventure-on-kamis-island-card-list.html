@@ -315,11 +315,11 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/adventure-on-kamis-island/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/adventure-on-kamis-island/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home<//span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/adventure-on-kamis-island/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/adventure-on-kamis-island/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">🏴‍☠️ Sets ▾</span><span class="nav-short">Sets ▾</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
   <div class="section-nav-dropdown" id="nav-sets-dropdown">
@@ -597,29 +597,28 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 
 
 <!-- ===== FAQ ===== -->
-<section style="max-width:900px;margin:0 auto 48px;padding:0 16px;">
-  <h2 style="font-size:1.4rem;font-weight:800;color:#f1f5f9;margin-bottom:20px;">Adventure on Kami's Island <span style="color:#ef4444;">FAQ</span></h2>
-  
-    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
-      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">What is the most expensive Adventure on Kami's Island card?</h3>
-      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">The most expensive Adventure on Kami's Island cards are the Enel Manga Rare and the Koby and Zeus Special Parallels. These are the headline chase pulls of OP15.</p>
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">Adventure on Kami's Island <span style="color:#ef4444;">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text);">What is the most expensive Adventure on Kami's Island card?</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">The most expensive Adventure on Kami's Island cards are the Enel Manga Rare and the Koby and Zeus Special Parallels — the headline chase pulls of OP15.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text);">How many cards are in the Adventure on Kami's Island card list?</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">Adventure on Kami's Island (OP15) contains 124 cards including Secret Rares, Special Parallels, and a Manga Rare.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text);">When did Adventure on Kami's Island release?</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">Adventure on Kami's Island released as OP15 in April 2025 as part of the One Piece Card Game English edition.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text);">What is the set code for Adventure on Kami's Island?</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">The Adventure on Kami's Island set code is OP15, the fifteenth main booster set in the One Piece Card Game.</p>
+      </div>
     </div>
-    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
-      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">How many cards are in the Adventure on Kami's Island card list?</h3>
-      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">Adventure on Kami's Island (OP15) contains 124 cards including Secret Rares, Special Parallels, and a Manga Rare.</p>
-    </div>
-    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
-      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">When did Adventure on Kami's Island release?</h3>
-      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">Adventure on Kami's Island released as OP15 in April 2025 as part of the One Piece Card Game English edition.</p>
-    </div>
-    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
-      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">What is the set code for Adventure on Kami's Island?</h3>
-      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">The Adventure on Kami's Island set code is OP15, the fifteenth main booster set in the One Piece Card Game.</p>
-    </div>
-    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
-      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">What are the rarest cards in Adventure on Kami's Island?</h3>
-      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">The rarest pulls in OP15 are the Manga Rare (Enel) and Special Parallel versions of chase characters. Secret Rares are the next tier down.</p>
-    </div>
+  </div>
 </section>
 
 <footer>
