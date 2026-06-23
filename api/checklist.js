@@ -244,17 +244,20 @@ async function trackDownload(set, format) {
 }
 
 export default async function handler(req, res) {
-  const { set, type, format = 'xlsx' } = req.query;
+  const { set, type, format = 'xlsx', game = '' } = req.query;
   if (!set) return res.status(400).json({ error: 'set parameter required' });
 
+  const isOnePiece = game === 'onepiece' || /^(op|eb|st)\d+/.test(set);
   const setName = SET_NAMES[set] || set;
   const master  = type === 'master';
   const today   = new Date().toISOString().split('T')[0];
 
   try {
-    const r2Res = await fetch(`${R2_BASE}/data/${set}.json`);
+    const r2Path = isOnePiece ? `${R2_BASE}/data/op/${set}.json` : `${R2_BASE}/data/${set}.json`;
+    const r2Res = await fetch(r2Path);
     if (!r2Res.ok) throw new Error(`R2 ${r2Res.status}`);
-    const { cards: rawCards = [] } = await r2Res.json();
+    const json = await r2Res.json();
+    const rawCards = isOnePiece ? (json.cards || json) : (json.cards || json);
     if (!rawCards.length) throw new Error('No cards found');
 
     const cards = rawCards.map(c => ({ ...c, rarity: normalizeRarity(c.rarity || '') }));
