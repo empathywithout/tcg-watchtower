@@ -1695,7 +1695,7 @@ function fixOPH1(html, name) {
   // Pattern in OP pages: <h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>NAME</h1>
   const old = `<h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>${name}</h1>`;
   if (!html.includes(old)) return html;
-  const replacement = `<h1 class="set-title">\n          ${name} Card List\n        </h1>\n        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ef4444;margin-top:-8px;margin-bottom:8px;">One Piece TCG</p>\n        <h1 style="display:none">`;
+  const replacement = `<h1 class="set-title">\n          ${name} Card List\n        </h1>\n        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ef4444;margin-top:-8px;margin-bottom:8px;">One Piece TCG</p>\n        <h1 style="display:none">${name} Card List</h1>`;
   return html.replace(old, replacement);
 }
 
