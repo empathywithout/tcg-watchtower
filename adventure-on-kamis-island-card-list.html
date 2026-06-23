@@ -596,6 +596,81 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 
 
 
+
+<!-- ===== PRODUCTS ===== -->
+<section class="section" id="section-products">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Buy Adventure on Kami's Island <span class="gradient-text">Booster Boxes</span></h2>
+      <p class="section-sub">Compare Adventure on Kami's Island sealed product prices across Amazon, eBay, and TCGplayer</p>
+    </div>
+    <div class="product-filter-bar" id="product-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="box">Booster Box</button>
+      <button class="filter-btn" data-filter="case">Case</button>
+    </div>
+    <div class="products-grid" id="products-grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<script>
+(function() {
+  const AMAZON_TAG  = 'cehutto01-20';
+  const TCGP_BASE   = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
+  const PRODUCT_META = {"682057": {"tcgpId": "682057", "type": "Booster Box", "filterKey": "box", "badgeClass": "badge-box", "name": "Adventure on Kami's Island Booster Box (24 Packs)", "q": "One Piece Adventure Kamis Island Booster Box OP15"}, "682058": {"tcgpId": "682058", "type": "Booster Box Case", "filterKey": "case", "badgeClass": "badge-case", "name": "Adventure on Kami's Island Booster Box Case (12 Boxes)", "q": "One Piece Adventure Kamis Island Booster Box Case OP15", "noAmazon": true}};
+
+  function tcgpUrl(tcgpId) {
+    return `${TCGP_BASE}?u=${encodeURIComponent('https://www.tcgplayer.com/product/' + tcgpId)}`;
+  }
+  function amazonUrl(q) {
+    return `https://www.amazon.com/s?k=${encodeURIComponent(q)}&linkCode=ll2&tag=${AMAZON_TAG}&language=en_US`;
+  }
+  function ebayUrl(q) {
+    return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339145069&toolid=10001`;
+  }
+  function renderCard(p) {
+    const img = `https://product-images.tcgplayer.com/fit-in/437x437/${p.tcgpId}.jpg`;
+    const amz = p.noAmazon ? '' : `<a class="product-link-row pl-amazon" href="${amazonUrl(p.q)}" target="_blank" rel="noopener"><span>Amazon</span><span>→</span></a>`;
+    return `
+      <div class="product-card" data-type="${p.filterKey}">
+        <div class="product-img-wrap">
+          <img src="${img}" alt="${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <span class="rarity-badge ${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">${p.type}</span>
+          <div class="product-name">${p.name}</div>
+          <div class="product-price" data-tcgp-id="${p.tcgpId}" style="font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem;"></div>
+          <div class="product-links">
+            ${amz}
+            <a class="product-link-row pl-ebay" href="${ebayUrl(p.q)}" target="_blank" rel="noopener"><span>eBay</span><span>→</span></a>
+            <a class="product-link-row pl-tcgp" href="${tcgpUrl(p.tcgpId)}" target="_blank" rel="noopener"><span>TCGplayer</span><span>→</span></a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const grid = document.getElementById('products-grid');
+  if (grid) {
+    grid.innerHTML = Object.values(PRODUCT_META).map(renderCard).join('');
+  }
+
+  document.getElementById('product-filters')?.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('#product-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('#products-grid .product-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+    });
+  });
+})();
+</script>
+
 <!-- ===== FAQ ===== -->
 <section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
   <div class="container" style="max-width:800px;">
