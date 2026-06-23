@@ -1619,3 +1619,272 @@ if (failed > 0) process.exit(1);
 
 
 
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ONE PIECE SET PAGES
+// Applies the same structural fixes as Pokémon pages while preserving the
+// OP red color scheme already in each page.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const OP_SETS = [
+  {
+    setId: 'op14', file: 'the-azure-seas-seven-card-list.html',
+    urlSlug: 'the-azure-seas-seven', name: "The Azure Sea's Seven",
+    short: 'OP14', releaseDate: 'Jan 2025', totalCards: '114',
+  },
+  {
+    setId: 'eb03', file: 'heroines-edition-card-list.html',
+    urlSlug: 'heroines-edition', name: 'Heroines Edition',
+    short: 'EB03', releaseDate: 'Feb 2025', totalCards: '67',
+  },
+  {
+    setId: 'op15', file: 'adventure-on-kamis-island-card-list.html',
+    urlSlug: 'adventure-on-kamis-island', name: "Adventure on Kami's Island",
+    short: 'OP15', releaseDate: 'Apr 2025', totalCards: '124',
+  },
+  {
+    setId: 'op16', file: 'the-time-of-battle-card-list.html',
+    urlSlug: 'the-time-of-battle', name: 'The Time of Battle',
+    short: 'OP16', releaseDate: 'Jul 2025', totalCards: '122',
+  },
+];
+
+// ── OP FAQ data ──────────────────────────────────────────────────────────────
+const OP_SET_FAQS = {
+  op14: [
+    { q: "What is the most expensive The Azure Sea's Seven card?", a: "The most expensive Azure Sea's Seven cards are the Mihawk and Crocodile Secret Rares. Treasure Rare pulls are the headline chase cards of OP14." },
+    { q: "How many cards are in The Azure Sea's Seven card list?", a: "The Azure Sea's Seven (OP14) contains 114 cards including Secret Rares and Treasure Rares." },
+    { q: "When did The Azure Sea's Seven release?", a: "The Azure Sea's Seven released as OP14 in January 2025 as part of the One Piece Card Game English edition." },
+    { q: "What is the set code for The Azure Sea's Seven?", a: "The Azure Sea's Seven set code is OP14, the fourteenth main booster set in the One Piece Card Game." },
+  ],
+  eb03: [
+    { q: 'What is the most expensive Heroines Edition card?', a: 'The most expensive Heroines Edition cards are the Special Parallel and Manga Rare pulls featuring fan-favourite female characters from the One Piece universe.' },
+    { q: 'How many cards are in the Heroines Edition card list?', a: 'Heroines Edition (EB03) contains 67 cards, making it a compact Extra Booster set focused entirely on One Piece heroines.' },
+    { q: 'When did Heroines Edition release?', a: 'Heroines Edition released as EB03 in February 2025 as an Extra Booster set in the One Piece Card Game.' },
+    { q: 'What is the set code for Heroines Edition?', a: 'The Heroines Edition set code is EB03, the third Extra Booster set in the One Piece Card Game.' },
+  ],
+  op15: [
+    { q: "What is the most expensive Adventure on Kami's Island card?", a: "The most expensive Adventure on Kami's Island cards are the Enel Manga Rare and the Koby and Zeus Special Parallels. These are the headline chase pulls of OP15." },
+    { q: "How many cards are in the Adventure on Kami's Island card list?", a: "Adventure on Kami's Island (OP15) contains 124 cards including Secret Rares, Special Parallels, and a Manga Rare." },
+    { q: "When did Adventure on Kami's Island release?", a: "Adventure on Kami's Island released as OP15 in April 2025 as part of the One Piece Card Game English edition." },
+    { q: "What is the set code for Adventure on Kami's Island?", a: "The Adventure on Kami's Island set code is OP15, the fifteenth main booster set in the One Piece Card Game." },
+    { q: "What are the rarest cards in Adventure on Kami's Island?", a: "The rarest pulls in OP15 are the Manga Rare (Enel) and Special Parallel versions of chase characters. Secret Rares are the next tier down." },
+  ],
+  op16: [
+    { q: 'What is the most expensive The Time of Battle card?', a: 'The most expensive The Time of Battle cards are the Special Parallel and Manga Rare pulls. Check live prices on TCG Watchtower for current market values.' },
+    { q: 'How many cards are in The Time of Battle card list?', a: 'The Time of Battle (OP16) contains 122 cards including Secret Rares, Special Parallels, and Manga Rares.' },
+    { q: 'When did The Time of Battle release?', a: 'The Time of Battle released as OP16 in July 2025 as part of the One Piece Card Game English edition.' },
+    { q: 'What is the set code for The Time of Battle?', a: 'The Time of Battle set code is OP16, the sixteenth main booster set in the One Piece Card Game.' },
+  ],
+};
+
+// ── OP-specific builders ─────────────────────────────────────────────────────
+
+function buildOPTable(cards, setName, urlSlug) {
+  if (!cards || cards.length === 0) return '';
+  const rows = cards.map(c => {
+    const slug = toSlug(c.name);
+    const cardPath = `/one-piece/sets/${urlSlug}/cards/${slug}-${c.localId}`;
+    return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${c.name}</a></td><td>${c.rarity || ''}</td></tr>`;
+  }).join('\n');
+  return `\n<!-- SEO: static card list for search engine indexing -->\n<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:normal;max-width:1px;border:0" aria-hidden="true">\n<h2>${setName} Card List — All ${cards.length} Cards</h2>\n<table>\n<thead><tr><th>Number</th><th>Card Name</th><th>Rarity</th></tr></thead>\n<tbody>\n${rows}\n</tbody>\n</table>\n</div>`;
+}
+
+function fixOPH1(html, name) {
+  // Pattern in OP pages: <h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>NAME</h1>
+  const old = `<h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>${name}</h1>`;
+  if (!html.includes(old)) return html;
+  const replacement = `<h1 class="set-title">\n          ${name} Card List\n        </h1>\n        <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ef4444;margin-top:-8px;margin-bottom:8px;">One Piece TCG</p>\n        <h1 style="display:none">`;
+  return html.replace(old, replacement);
+}
+
+function fixOPH2s(html, name) {
+  return html
+    .replace(`<h2 class="section-title">🔥 ${name} <span class="gradient-text">Chase Cards</span></h2>`,
+             `<h2 class="section-title">${name} <span class="gradient-text">Chase Cards</span></h2>`)
+    .replace(`<h2 class="section-title">📋 ${name} <span class="gradient-text">Card List</span></h2>`,
+             `<h2 class="section-title">${name} <span class="gradient-text">Card List</span></h2>`);
+}
+
+function removeOPCardPageLink(html) {
+  // Remove the inline "Card Page →" link from card grid items
+  const linkStr = `<a href="\${cardPageHref}" onclick="event.stopPropagation()" style="display:block;text-align:center;color:var(--amber);font-size:.65rem;margin-top:6px;text-decoration:none;opacity:.8">📄 Card Page →</a>`;
+  return html.replace(linkStr, '');
+}
+
+function fixOPOGType(html) {
+  return html.replace(
+    '<meta property="og:type" content="article">',
+    '<meta property="og:type" content="website">'
+  );
+}
+
+function injectOPFooterMarker(html) {
+  // Add footer marker just before </body> if missing
+  if (html.includes('<!-- ===== FOOTER ===== -->')) return html;
+  return html.replace('</body>', '<!-- ===== FOOTER ===== -->\n</body>');
+}
+
+function buildOPFAQ(name, short, releaseDate, totalCards, setId) {
+  const faqs = OP_SET_FAQS[setId] || [
+    { q: `What is the most expensive ${name} card?`,     a: `Check TCG Watchtower's live price tracker for current ${name} market values updated daily.` },
+    { q: `How many cards are in the ${name} card list?`, a: `${name} (${short}) contains ${totalCards} cards. See the full card list above with live prices.` },
+    { q: `When did ${name} release?`,                    a: `${name} released in ${releaseDate} as part of the One Piece Card Game English edition.` },
+    { q: `What is the set code for ${name}?`,            a: `The ${name} set code is ${short} in the One Piece Card Game.` },
+  ];
+
+  const items = faqs.map(({ q, a }) => `
+    <div class="faq-item" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:20px 24px;margin-bottom:12px;">
+      <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;">${q}</h3>
+      <p style="font-size:0.9rem;color:#94a3b8;line-height:1.6;">${a}</p>
+    </div>`).join('');
+
+  return `
+<!-- ===== FAQ ===== -->
+<section style="max-width:900px;margin:0 auto 48px;padding:0 16px;">
+  <h2 style="font-size:1.4rem;font-weight:800;color:#f1f5f9;margin-bottom:20px;">${name} <span style="color:#ef4444;">FAQ</span></h2>
+  ${items}
+</section>
+`;
+}
+
+function buildOPFAQSchema(name, short, releaseDate, totalCards, setId) {
+  const faqs = OP_SET_FAQS[setId] || [
+    { q: `What is the most expensive ${name} card?`,     a: `Check TCG Watchtower for current ${name} market prices updated daily.` },
+    { q: `How many cards are in the ${name} card list?`, a: `${name} (${short}) contains ${totalCards} cards.` },
+  ];
+  const mainEntity = faqs.map(({ q, a }) => `{"@type":"Question","name":${JSON.stringify(q)},"acceptedAnswer":{"@type":"Answer","text":${JSON.stringify(a)}}}`).join(',');
+  return `<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[${mainEntity}]}</script>`;
+}
+
+function injectOPDownloadButtons(html, setId, name) {
+  // Skip if already injected
+  if (html.includes('master-set-tools') || html.includes('download-tools-section')) return html;
+  const section = `
+<!-- ===== MASTER SET TOOLS ===== -->
+<section class="download-tools-section" style="max-width:900px;margin:0 auto 48px;padding:0 16px;">
+  <h2 style="font-size:1.4rem;font-weight:800;color:#f1f5f9;margin-bottom:8px;">${name} <span style="color:#ef4444;">Master Set Tools</span></h2>
+  <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:20px;">Download the complete ${name} card list or print binder placeholder sheets to track your master set.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <a href="/api/checklist?set=${setId}&format=xlsx&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#fca5a5;font-weight:700;font-size:0.88rem;text-decoration:none;">
+      📊 Download XLSX
+    </a>
+    <a href="/api/checklist?set=${setId}&format=csv&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      📄 Download CSV
+    </a>
+    <a href="/api/binder-pdf?set=${setId}&size=9&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      🗂 9-Pocket Binder PDF
+    </a>
+    <a href="/api/binder-pdf?set=${setId}&size=16&game=onepiece" download
+       style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#fca5a5;font-weight:600;font-size:0.88rem;text-decoration:none;">
+      🗂 16-Pocket Binder PDF
+    </a>
+  </div>
+</section>
+`;
+  return html.replace('<!-- ===== FOOTER ===== -->', section + '<!-- ===== FOOTER ===== -->');
+}
+
+// ── Main OP loop ─────────────────────────────────────────────────────────────
+
+console.log('\n\n── One Piece sets ──────────────────────────────────────────────────');
+
+let opPassed = 0, opSkipped = 0, opFailed = 0;
+
+for (const { setId, file, urlSlug, name, short, releaseDate, totalCards } of OP_SETS) {
+  process.stdout.write(`${file} … `);
+
+  if (!existsSync(file)) {
+    console.log(`⚠ file not found — skipping`);
+    opFailed++;
+    continue;
+  }
+
+  let html = readFileSync(file, 'utf8');
+  const changes = [];
+
+  // 1. Fix OG type article → website
+  if (html.includes('og:type" content="article"')) {
+    html = fixOPOGType(html);
+    changes.push('og:type');
+  }
+
+  // 2. Add footer marker (required for all subsequent injections)
+  if (!html.includes('<!-- ===== FOOTER ===== -->')) {
+    html = injectOPFooterMarker(html);
+    changes.push('footer marker');
+  }
+
+  // 3. Remove inline Card Page link from card grid items
+  if (html.includes('📄 Card Page →')) {
+    html = removeOPCardPageLink(html);
+    changes.push('removed card page link');
+  }
+
+  // 4. Fix H1
+  if (html.includes(`<span class="gradient-text">One Piece TCG</span><br>${name}</h1>`)) {
+    html = fixOPH1(html, name);
+    changes.push('H1');
+  }
+
+  // 5. H2 emoji cleanup
+  if (html.includes(`🔥 ${name}`) || html.includes(`📋 ${name}`)) {
+    html = fixOPH2s(html, name);
+    changes.push('H2s');
+  }
+
+  // 6. Static SEO card table — fetch from API
+  if (!html.includes('SEO: static card list')) {
+    try {
+      const apiRes = await fetch(`https://tcgwatchtower.com/api/cards?set=${setId}&game=onepiece`);
+      if (apiRes.ok) {
+        const cards = await apiRes.json();
+        if (Array.isArray(cards) && cards.length > 0) {
+          const table = buildOPTable(cards, name, urlSlug);
+          // Inject before closing </main> or before footer marker
+          if (html.includes('</main>')) {
+            html = html.replace('</main>', table + '\n</main>');
+          } else {
+            html = html.replace('<!-- ===== FOOTER ===== -->', table + '\n<!-- ===== FOOTER ===== -->');
+          }
+          changes.push(`SEO table (${cards.length} cards)`);
+        }
+      }
+    } catch (e) {
+      console.warn(`\n  ⚠ Could not fetch cards for ${setId}: ${e.message}`);
+    }
+  }
+
+  // 7. Download buttons
+  const htmlBeforeTools = html;
+  html = injectOPDownloadButtons(html, setId, name);
+  if (html !== htmlBeforeTools) changes.push('download buttons');
+
+  // 8. FAQ + schema
+  if (!html.includes('FAQPage')) {
+    const faqSection = buildOPFAQ(name, short, releaseDate, totalCards, setId);
+    const faqSchema  = buildOPFAQSchema(name, short, releaseDate, totalCards, setId);
+    html = html.replace('<!-- ===== FOOTER ===== -->', faqSection + '<!-- ===== FOOTER ===== -->');
+    // Insert schema after first ld+json block
+    const ldIdx   = html.indexOf('application/ld+json');
+    const insertAt = html.indexOf('</script>', ldIdx) + '</script>'.length;
+    html = html.slice(0, insertAt) + '\n' + faqSchema + html.slice(insertAt);
+    changes.push('FAQ');
+  }
+
+  if (changes.length === 0) {
+    console.log('✓ already up to date — skipping');
+    opSkipped++;
+    continue;
+  }
+
+  writeFileSync(file, html);
+  console.log(`✓ ${changes.join(', ')}`);
+  opPassed++;
+}
+
+console.log(`\n✅ One Piece — ${opPassed} updated, ${opSkipped} skipped, ${opFailed} failed`);
