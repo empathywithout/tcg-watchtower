@@ -49,44 +49,56 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Scan all download keys: downloads:checklist:{set}:{format} and daily keys
-    const [allKeys, dailyKeys] = await Promise.all([
+    const [checklistKeys, binderKeys, dailyKeys] = await Promise.all([
       kvScan('downloads:checklist:*'),
+      kvScan('downloads:binder:*'),
       kvScan('downloads:daily:*'),
     ]);
 
-    // Fetch all counts in parallel
     const allValues = await Promise.all(
-      [...allKeys, ...dailyKeys].map(async key => ({
+      [...checklistKeys, ...binderKeys, ...dailyKeys].map(async key => ({
         key,
         count: parseInt(await kv(`/get/${encodeURIComponent(key)}`)) || 0,
       }))
     );
 
-    // Aggregate
     let totalXlsx = 0, totalCsv = 0;
+    let totalBinder9 = 0, totalBinder12 = 0, totalBinder16 = 0;
     const bySet = {};
+    const byBinderSet = {};
     const byDay = {};
 
     for (const { key, count } of allValues) {
       if (key.startsWith('downloads:checklist:')) {
         // downloads:checklist:{set}:{format}
         const parts = key.split(':');
-        const setId = parts[2];
-        const format = parts[3]; // xlsx or csv
+        const setId  = parts[2];
+        const format = parts[3];
         if (!bySet[setId]) bySet[setId] = { xlsx: 0, csv: 0, total: 0 };
         bySet[setId][format] = (bySet[setId][format] || 0) + count;
         bySet[setId].total += count;
         if (format === 'xlsx') totalXlsx += count;
         if (format === 'csv')  totalCsv  += count;
+
+      } else if (key.startsWith('downloads:binder:')) {
+        // downloads:binder:{set}:{size}
+        const parts = key.split(':');
+        const setId = parts[2];
+        const size  = parseInt(parts[3], 10);
+        if (!byBinderSet[setId]) byBinderSet[setId] = { s9: 0, s12: 0, s16: 0, total: 0 };
+        const sizeKey = `s${size}`;
+        byBinderSet[setId][sizeKey] = (byBinderSet[setId][sizeKey] || 0) + count;
+        byBinderSet[setId].total += count;
+        if (size === 9)  totalBinder9  += count;
+        if (size === 12) totalBinder12 += count;
+        if (size === 16) totalBinder16 += count;
+
       } else if (key.startsWith('downloads:daily:')) {
-        // downloads:daily:{YYYY-MM-DD}
         const date = key.split(':')[2];
         byDay[date] = (byDay[date] || 0) + count;
       }
     }
 
-    // Sort sets by total desc
     const sets = Object.entries(bySet)
       .map(([setId, counts]) => ({
         setId,
@@ -95,20 +107,36 @@ export default async function handler(req, res) {
       }))
       .sort((a, b) => b.total - a.total);
 
-    // Sort daily by date
+    const binderSets = Object.entries(byBinderSet)
+      .map(([setId, counts]) => ({
+        setId,
+        name: SET_NAMES[setId] || setId,
+        ...counts,
+      }))
+      .sort((a, b) => b.total - a.total);
+
     const daily = Object.entries(byDay)
       .sort(([a], [b]) => b.localeCompare(a))
       .slice(0, 30)
       .map(([date, count]) => ({ date, count }));
 
+    const totalBinder = totalBinder9 + totalBinder12 + totalBinder16;
+    const totalChecklist = totalXlsx + totalCsv;
+
     return res.status(200).json({
       generatedAt: new Date().toISOString(),
       totals: {
-        all:  totalXlsx + totalCsv,
-        xlsx: totalXlsx,
-        csv:  totalCsv,
+        all:       totalChecklist + totalBinder,
+        checklist: totalChecklist,
+        xlsx:      totalXlsx,
+        csv:       totalCsv,
+        binder:    totalBinder,
+        binder9:   totalBinder9,
+        binder12:  totalBinder12,
+        binder16:  totalBinder16,
       },
       sets,
+      binderSets,
       daily,
     });
 
