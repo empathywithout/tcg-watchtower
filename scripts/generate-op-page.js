@@ -424,11 +424,11 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/${SET_URL_SLUG}/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/${SET_URL_SLUG}/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/${SET_URL_SLUG}/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/${SET_URL_SLUG}/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">🏴‍☠️ Sets ▾</span><span class="nav-short">Sets ▾</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
   <div class="section-nav-dropdown" id="nav-sets-dropdown">
@@ -441,7 +441,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 <section class="section" id="section-chase">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">🔥 ${SET_FULL_NAME} <span class="gradient-text">Chase Cards</span></h2>
+      <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls — ranked by market price</p>
     </div>
     <div class="chase-slider-wrap">
@@ -457,7 +457,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
 <section class="section" id="section-cards">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">📋 ${SET_FULL_NAME} <span class="gradient-text">Card List</span></h2>
+      <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Card List</span></h2>
       <p class="section-sub" id="card-list-sub">Complete ${SET_SHORT_NAME} card list — search and filter by rarity</p>
     </div>
     <div class="filter-bar">
@@ -822,7 +822,7 @@ function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
       \${rarity?\`<div class="modal-meta" style="color:var(--amber)">\${rarity}</div>\`:''}
       <div class="modal-links">
         <a class="modal-buy-link pl-ebay" href="\${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
-        <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>\${directUrl?'🛒 Buy on TCGplayer':'🔍 Find on TCGplayer'}</span><span>→</span></a>
+        <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>\${directUrl?'Buy on TCGplayer':'Find on TCGplayer'}</span><span>→</span></a>
         <a class="modal-buy-link" href="\${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
       </div>
     </div>\`;
