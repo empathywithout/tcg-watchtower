@@ -884,7 +884,7 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
 
 (function(){
   const btns=document.querySelectorAll('.section-nav-btn[data-target]');
-  const sections=['section-chase','section-cards'].map(id=>document.getElementById(id)).filter(Boolean);
+  const sections=['section-chase','section-cards','section-products'].map(id=>document.getElementById(id)).filter(Boolean);
   btns.forEach(btn=>{
     btn.addEventListener('click',()=>{
       const t=document.getElementById(btn.dataset.target);
