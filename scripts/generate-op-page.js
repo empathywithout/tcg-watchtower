@@ -937,7 +937,7 @@ function initNav(){
       grouped[series].forEach(set=>{
         const disabled=!set.live;const logoUrl=set.setId?\`\${r2}/logos/\${set.setId}.png\`:null;
         html+=\`<a href="\${disabled?'javascript:void(0)':'/'+set.slug}" class="set-card\${disabled?' disabled':''}">
-          <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>\`:'<div style="font-size:3rem">🎴</div>'}</div>
+          <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\`:'<div style="width:85%;max-width:130px;height:40px"></div>'}</div>
           <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short}•\${set.series}</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
       });html+='</div>';
     });
