@@ -427,6 +427,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
     <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/${SET_URL_SLUG}/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
     <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/${SET_URL_SLUG}/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/one-piece/sets/${SET_URL_SLUG}/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
@@ -477,6 +478,55 @@ ${CARD_LIST_HTML}
     </ul>
   </div>
 </section>
+
+<div class="section-divider"></div>
+
+<!-- ===== PRODUCTS ===== -->
+<section class="section" id="section-products">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Buy ${SET_FULL_NAME} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
+      <p class="section-sub">Compare ${SET_FULL_NAME} sealed product prices across Amazon, eBay, and TCGplayer</p>
+    </div>
+    <div class="product-filter-bar" id="product-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="box">Booster Box</button>
+      <button class="filter-btn" data-filter="etb">Elite Trainer Box</button>
+      <button class="filter-btn" data-filter="bundle">Bundle</button>
+      <button class="filter-btn" data-filter="collection">Collection</button>
+      <button class="filter-btn" data-filter="case">Case</button>
+    </div>
+    <div class="products-grid" id="products-grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== DISCORD CTA ===== -->
+<section class="section">
+  <div class="container" style="text-align:center">
+    <div class="hero-badge" style="justify-content:center;margin:0 auto 24px">
+      <span style="color:var(--amber)">⚡</span>
+      <span>Never miss a restock</span>
+    </div>
+    <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Restock Alerts</span></h2>
+    <p style="color:var(--muted);max-width:560px;margin:0 auto 36px">
+      Join 1,800+ collectors on Discord and get instant notifications when ${SET_SHORT_NAME} Booster Boxes, ETBs, and sealed product goes live at major retailers.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.024.016.047.04.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord — Free
+      </a>
+      <a href="/" class="btn-secondary">Browse All Alerts</a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
 
 <footer>
   <div class="container">
