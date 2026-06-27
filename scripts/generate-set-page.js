@@ -182,7 +182,7 @@ if (PHASE === 'jp' && JP_SCRYDEX_ID && SCRYDEX_API_KEY) {
 
 const releaseDate = SET_RELEASE_DATE
   || (setData.releaseDate
-      ? new Date(setData.releaseDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+      ? new Date(setData.releaseDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       : '???');
 
 // For JP phase, always use SET_FULL_NAME — never the JP name from Scrydex
