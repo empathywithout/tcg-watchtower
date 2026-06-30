@@ -806,7 +806,7 @@ function loadTCGPlayerPrices() {
     try {
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}&game=onepiece`);
       if (!res.ok) return;
-      const { prices = {}, tcgpUrls = {} } = await res.json();
+      const { prices = {}, tcgpUrls = {}, sealedPrices = {} } = await res.json();
       Object.entries(prices).forEach(([key, price]) => {
         if (price == null) return;
         priceCache[key] = { price, url: tcgpUrls[key] || null };
@@ -822,6 +822,11 @@ function loadTCGPlayerPrices() {
           const tcgpBtn = el.querySelector('.buy-link.buy-tcgp[data-tcgp-href]');
           if (tcgpBtn) tcgpBtn.href = cached.url;
         }
+      });
+      document.querySelectorAll('[data-tcgp-id]').forEach(el => {
+        const tid = el.dataset.tcgpId;
+        const sealedPrice = sealedPrices[tid];
+        if (sealedPrice != null) el.textContent = '$' + sealedPrice.toFixed(2);
       });
       renderChaseHTML();
     } catch(e) { console.warn('Prices unavailable:', e.message); }
