@@ -1646,7 +1646,7 @@ const OP_SETS = [
   {
     setId: 'op16', file: 'the-time-of-battle-card-list.html',
     urlSlug: 'the-time-of-battle', name: 'The Time of Battle',
-    short: 'OP16', releaseDate: 'Jul 2025', totalCards: '122',
+    short: 'OP16', releaseDate: 'Jun 2026', totalCards: '127',
   },
 ];
 
@@ -1672,10 +1672,10 @@ const OP_SET_FAQS = {
     { q: "What are the rarest cards in Adventure on Kami's Island?", a: "The rarest pulls in OP15 are the Manga Rare (Enel) and Special Parallel versions of chase characters. Secret Rares are the next tier down." },
   ],
   op16: [
-    { q: 'What is the most expensive The Time of Battle card?', a: 'The most expensive The Time of Battle cards are the Special Parallel and Manga Rare pulls. Check live prices on TCG Watchtower for current market values.' },
-    { q: 'How many cards are in The Time of Battle card list?', a: 'The Time of Battle (OP16) contains 122 cards including Secret Rares, Special Parallels, and Manga Rares.' },
-    { q: 'When did The Time of Battle release?', a: 'The Time of Battle released as OP16 in July 2025 as part of the One Piece Card Game English edition.' },
-    { q: 'What is the set code for The Time of Battle?', a: 'The Time of Battle set code is OP16, the sixteenth main booster set in the One Piece Card Game.' },
+    { q: 'What is the most expensive The Time of Battle card?', a: 'The Time of Battle is the first One Piece TCG set with three Manga Rares instead of the usual one — Kuzan, Sakazuki, and Borsalino, the three Marine Admirals at Marineford. The Secret Rares of Portgas D. Ace (OP16-118) and Marshall D. Teach (OP16-119) are also top chase cards. Check live prices on TCG Watchtower for current market values.' },
+    { q: 'How many cards are in The Time of Battle card list?', a: 'The Time of Battle (OP16) contains 126 unique cards plus 1 commemorative DON!! card. The rarity breakdown is 6 Leaders, 45 Commons, 30 Uncommons, 26 Rares, 10 Super Rares, 2 Secret Rares, 6 Special Cards, 3 Manga Rares, and 1 Treasure Rare.' },
+    { q: 'When did The Time of Battle release?', a: 'The Time of Battle released as OP16 on June 12, 2026 in English, following the Japanese release on May 30, 2026.' },
+    { q: 'What is the set code for The Time of Battle?', a: 'The Time of Battle set code is OP16, the sixteenth main booster set in the One Piece Card Game, themed around the Paramount War (Marineford) arc.' },
   ],
 };
 
