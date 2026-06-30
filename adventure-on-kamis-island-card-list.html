@@ -106,7 +106,8 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .gradient-text{background:linear-gradient(135deg,var(--red),var(--orange),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .set-desc{color:var(--muted);font-size:1rem;line-height:1.7;margin-bottom:28px;max-width:600px}
 .set-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:500px;animation:fadeInUp .8s ease-out .45s backwards}
-.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.set-stats-4{grid-template-columns:repeat(4,1fr);max-width:600px}
+.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-card-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:bold;color:white}
 .stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
@@ -312,7 +313,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
         </h1>
         <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ef4444;margin-top:-8px;margin-bottom:8px;">One Piece TCG</p>
         <p class="set-desc">Complete guide to Adventure on Kami's Island — full card list, chase cards ranked by market price, and where to buy sealed product.<br><br><span style="font-size:0.95rem;opacity:0.85">Adventure on Kami's Island is the fifteenth set in the English One Piece Card Game, released April 3, 2026. It combines OP-15 with the second half of the Japanese Extra Booster 04, giving the English edition two Manga Rares in a single release — Enel, the God of Skypiea, and Koby. The set marks the first dedicated Skypiea arc release in the TCG's history, with Purple Enel as a new Leader and cross-set SP reprints including Zeus, Monkey D. Luffy, and Boa Hancock.</span></p>
-        <div class="set-stats" style="grid-template-columns:repeat(4,1fr);max-width:560px;">
+        <div class="set-stats set-stats-4">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="Adventure on Kami's Island" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
             <div class="stat-label">OP15</div>
@@ -326,7 +327,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
             <div class="stat-label">Manga Rares</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">Apr 2026</div>
+            <div class="stat-value" style="font-size:1.1rem;line-height:1.2;">Apr<br>2026</div>
             <div class="stat-label">Release Date</div>
           </div>
         </div>
