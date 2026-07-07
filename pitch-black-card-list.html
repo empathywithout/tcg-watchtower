@@ -1672,37 +1672,45 @@ function loadTCGPlayerPrices() {
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
-      const prices = data.prices || {};
-      const urls   = data.tcgpUrls || {};
+      // Individual card numbers on this page reflect JP (Abyss Eye) ordering, which is
+      // confirmed to differ from final English Pitch Black numbering. Group 24688 is the
+      // real English TCGplayer group, so once it starts returning per-card prices (e.g.
+      // during prerelease), matching by number risks attaching a real price to the wrong
+      // card. Gate individual card pricing to EN phase only; sealed product prices below
+      // are matched by TCGplayer product ID, not number, so they're unaffected.
+      if (SET_PHASE === 'en') {
+        const prices = data.prices || {};
+        const urls   = data.tcgpUrls || {};
 
-      Object.entries(prices).forEach(([num, price]) => {
-        const withZeros    = num.padStart(3, '0');
-        const withoutZeros = String(parseInt(num, 10));
-        const url   = urls[num] || urls[withZeros] || urls[withoutZeros] || null;
-        const entry = price != null ? { price, url } : null;
-        priceCache[withZeros]    = entry;
-        priceCache[withoutZeros] = entry;
-      });
-      Object.entries(urls).forEach(([num, url]) => {
-        const withZeros    = num.padStart(3, '0');
-        const withoutZeros = String(parseInt(num, 10));
-        if (!priceCache[withZeros])    priceCache[withZeros]    = { price: null, url };
-        if (!priceCache[withoutZeros]) priceCache[withoutZeros] = { price: null, url };
-      });
+        Object.entries(prices).forEach(([num, price]) => {
+          const withZeros    = num.padStart(3, '0');
+          const withoutZeros = String(parseInt(num, 10));
+          const url   = urls[num] || urls[withZeros] || urls[withoutZeros] || null;
+          const entry = price != null ? { price, url } : null;
+          priceCache[withZeros]    = entry;
+          priceCache[withoutZeros] = entry;
+        });
+        Object.entries(urls).forEach(([num, url]) => {
+          const withZeros    = num.padStart(3, '0');
+          const withoutZeros = String(parseInt(num, 10));
+          if (!priceCache[withZeros])    priceCache[withZeros]    = { price: null, url };
+          if (!priceCache[withoutZeros]) priceCache[withoutZeros] = { price: null, url };
+        });
 
-      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
-        const id     = el.dataset.localId;
-        const cached = priceCache[id];
-        const priceEl = el.querySelector('.card-item-price');
-        if (!priceEl) return;
-        if (cached?.price) {
-          priceEl.textContent = `$${cached.price.toFixed(2)}`;
-          priceEl.classList.remove('loading');
-        } else {
-          priceEl.textContent = '';
-          priceEl.classList.remove('loading');
-        }
-      });
+        document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+          const id     = el.dataset.localId;
+          const cached = priceCache[id];
+          const priceEl = el.querySelector('.card-item-price');
+          if (!priceEl) return;
+          if (cached?.price) {
+            priceEl.textContent = `$${cached.price.toFixed(2)}`;
+            priceEl.classList.remove('loading');
+          } else {
+            priceEl.textContent = '';
+            priceEl.classList.remove('loading');
+          }
+        });
+      }
 
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
