@@ -1338,7 +1338,7 @@ button,a,[onclick]{touch-action:manipulation}
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
         <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-light);">What is the most expensive Pitch Black card?</h3>
         <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">The most expensive Pitch Black card is the Mega Darkrai ex Special Illustration Rare, illustrated by Akira Egawa. Mega Zeraora ex SIR and Gwynn SIR are also top chase pulls.</p>
-        <a href="https://tcgwatchtower.com/pokemon/sets/mega-evolution/pitch-black/top-chase-cards" style="display:inline-block;margin-top:10px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">See all Pitch Black chase cards ranked by price →</a>
+        <a href="#section-chase" style="display:inline-block;margin-top:10px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">See all Pitch Black chase cards ranked by price →</a>
       </div>
 
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
@@ -1923,9 +1923,9 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/118', 'pitch-black')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
-        <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/pitch-black/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+        ${SET_PHASE === 'en' ? `<a class="modal-buy-link" href="/pokemon/sets/mega-evolution/pitch-black/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>📄 View Card Page</span><span>→</span>
-        </a>
+        </a>` : ''}
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
