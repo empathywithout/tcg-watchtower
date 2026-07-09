@@ -49,14 +49,15 @@
   .scroll-hint {
     display: block !important;
   }
-  /* Section nav dropdown — fixed position so it appears below nav correctly */
+  /* Section nav dropdown — left/right/width/height adapted for mobile;
+     top is left to the inline style set by JS (button's actual position),
+     since forcing top/bottom:auto here overrides that with !important
+     and leaves the dropdown with no valid vertical position at all. */
   .section-nav-dropdown {
     position: fixed !important;
     left: 8px !important;
     right: 8px !important;
     width: auto !important;
-    top: auto !important;
-    bottom: auto !important;
     max-height: 60vh !important;
     z-index: 9999 !important;
   }
