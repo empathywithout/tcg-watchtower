@@ -2230,6 +2230,10 @@ function initNav() {
   const btn      = document.getElementById('nav-sets-btn');
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!btn || !dropdown) return;
+  // Reparent to <body>: .section-nav has backdrop-filter, which creates a
+  // new containing block for position:fixed descendants, breaking viewport-
+  // relative positioning. Moving it out of that ancestor fixes this.
+  document.body.appendChild(dropdown);
 
   let populated = false;
 

@@ -920,6 +920,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
   const setsBtn = document.getElementById('nav-sets-btn');
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!setsBtn || !dropdown) return;
+  document.body.appendChild(dropdown);
   let populated = false;
 
   setsBtn.addEventListener('click', async () => {
