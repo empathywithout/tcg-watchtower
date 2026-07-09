@@ -2205,6 +2205,20 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   document.body.appendChild(dropdown);
 
   let populated = false;
+  let savedScrollY = 0;
+
+  function lockBodyScroll() {
+    savedScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = (-savedScrollY) + 'px';
+    document.body.style.width = '100%';
+  }
+  function unlockBodyScroll() {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, savedScrollY);
+  }
 
   btn.addEventListener('click', async e => {
     e.stopPropagation();
@@ -2216,14 +2230,14 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     }
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen) { lockBodyScroll(); } else { unlockBodyScroll(); }
     if (isOpen && !populated) await populateNavSets();
   });
   document.addEventListener('click', e => {
     if (!dropdown.contains(e.target) && e.target !== btn) {
       dropdown.classList.remove('open');
       btn.classList.remove('open');
-      document.body.style.overflow = '';
+      unlockBodyScroll();
     }
   });
 
