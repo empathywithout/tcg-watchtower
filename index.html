@@ -644,9 +644,10 @@
         }
         function renderSets() {
             if (!allSets || allSets.length === 0) { setsGridContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">Loading sets...</div>'; return; }
-            let filteredSets = allSets;
-            if (currentFilter === 'live') filteredSets = allSets.filter(set => set.live);
-            else if (currentFilter !== 'all') { const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,''); filteredSets = allSets.filter(set => set.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf); }
+            const pokemonSets = allSets.filter(set => { const id = (set.setId || '').toLowerCase(); return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && set.series !== 'One Piece TCG'; });
+            let filteredSets = pokemonSets;
+            if (currentFilter === 'live') filteredSets = pokemonSets.filter(set => set.live);
+            else if (currentFilter !== 'all') { const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,''); filteredSets = pokemonSets.filter(set => set.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf); }
             const groupedSets = {};
             filteredSets.forEach(set => { if (!groupedSets[set.series]) groupedSets[set.series] = []; groupedSets[set.series].push(set); });
             let html = '';

@@ -2037,12 +2037,18 @@ function initNav() {
       return;
     }
     
-    let filteredSets = allSets;
+    // This view is Pokemon-only (One Piece has its own separate hamburger view)
+    const pokemonSets = allSets.filter(set => {
+      const id = (set.setId || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && set.series !== 'One Piece TCG';
+    });
+
+    let filteredSets = pokemonSets;
     if (currentFilter === 'live') {
-      filteredSets = allSets.filter(set => set.live);
+      filteredSets = pokemonSets.filter(set => set.live);
     } else if (currentFilter !== 'all') {
       const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
-      filteredSets = allSets.filter(set => {
+      filteredSets = pokemonSets.filter(set => {
         const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
         return normalizedSeries === normalizedFilter;
       });
