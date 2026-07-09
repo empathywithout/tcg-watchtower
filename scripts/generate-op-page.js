@@ -13,6 +13,32 @@ const R2_PUBLIC_URL = (process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c5549
 const rawUrlSlug = (process.env.SET_URL_SLUG || '').trim();
 const SET_URL_SLUG = rawUrlSlug || SET_FULL_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const SET_SLUG     = `${SET_URL_SLUG}-card-list`;
+
+// One Piece TCG series chain, in true chronological (English release) order.
+// EB03 (Heroines Edition) released Feb 20 2026 — between OP14 (Jan 16 2026) and
+// OP15 (Apr 3 2026) — so it is NOT a side-branch, it slots inline here.
+// Append new sets to the end as they release.
+const OP_SERIES_ORDER = [
+  { setId: 'op14', url: '/one-piece/sets/the-azure-seas-seven/cards', name: 'The Azure Seas Seven', short: 'OP14' },
+  { setId: 'eb03', url: '/one-piece/sets/heroines-edition/cards', name: 'Heroines Edition', short: 'EB03' },
+  { setId: 'op15', url: '/one-piece/sets/adventure-on-kamis-island/cards', name: "Adventure on Kami's Island", short: 'OP15' },
+  { setId: 'op16', url: '/one-piece/sets/the-time-of-battle/cards', name: 'The Time of Battle', short: 'OP16' },
+];
+
+function buildSeriesNavHtml(order, currentSetId) {
+  const idx = order.findIndex(s => s.setId === currentSetId);
+  const prev = idx > 0 ? order[idx - 1] : null;
+  const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
+  const prevHtml = prev
+    ? `<a href="${prev.url}" style="color:var(--muted);text-decoration:none;">&larr; Previous: ${prev.name} (${prev.short})</a>`
+    : '<span></span>';
+  const nextHtml = next
+    ? `<a href="${next.url}" style="color:var(--muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
+    : '<span></span>';
+  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${nextHtml}</div>`;
+}
+
+const SERIES_NAV_HTML = buildSeriesNavHtml(OP_SERIES_ORDER, SET_ID);
 const SET_SEO_PATH = `one-piece/sets/${SET_URL_SLUG}/cards`;
 
 const TCGP_GROUP_ID = (process.env.TCGP_GROUP_ID || '').trim();
@@ -396,6 +422,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
         <div class="hero-badge"><span style="color:var(--amber)">★</span><span>Complete Set Guide</span></div>
         <h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>${SET_FULL_NAME}</h1>
         <p class="set-desc">${SET_DESCRIPTION}${SEO_INTRO ? '<br><br><span style="font-size:0.95rem;opacity:0.85">'+SEO_INTRO+'</span>' : ''}</p>
+        ${SERIES_NAV_HTML}
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="${SET_FULL_NAME}" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">

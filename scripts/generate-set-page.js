@@ -674,9 +674,53 @@ const FAQ_JSONLD   = buildFAQJsonLD(FAQ_ITEMS);
 const SEO_INTRO      = seoData.intro     || '';
 
 // ── Fill template ──────────────────────────────────────────────────────────────
+// Pokemon series chains (Scarlet & Violet, then Mega Evolution), in true
+// chronological release order. Append new sets to the end of their series
+// block as they release. Used to build the previous/next series-nav links.
+const PM_SERIES_ORDER = [
+  { setId: 'sv01',     url: '/pokemon/sets/scarlet-violet/base-set/cards',            name: 'Scarlet & Violet Base Set', short: 'SV1' },
+  { setId: 'sv02',     url: '/pokemon/sets/scarlet-violet/paldea-evolved/cards',       name: 'Paldea Evolved', short: 'SV2' },
+  { setId: 'sv03',     url: '/pokemon/sets/scarlet-violet/obsidian-flames/cards',      name: 'Obsidian Flames', short: 'SV3' },
+  { setId: 'sv3pt5',   url: '/pokemon/sets/scarlet-violet/scarlet-violet-151/cards',   name: 'Pokemon 151', short: 'SV3.5' },
+  { setId: 'sv04',     url: '/pokemon/sets/scarlet-violet/paradox-rift/cards',         name: 'Paradox Rift', short: 'SV4' },
+  { setId: 'sv4pt5',   url: '/pokemon/sets/scarlet-violet/paldean-fates/cards',        name: 'Paldean Fates', short: 'SV4.5' },
+  { setId: 'sv05',     url: '/pokemon/sets/scarlet-violet/temporal-forces/cards',      name: 'Temporal Forces', short: 'SV5' },
+  { setId: 'sv06',     url: '/pokemon/sets/scarlet-violet/twilight-masquerade/cards',  name: 'Twilight Masquerade', short: 'SV6' },
+  { setId: 'sv6pt5',   url: '/pokemon/sets/scarlet-violet/shrouded-fable/cards',       name: 'Shrouded Fable', short: 'SV6.5' },
+  { setId: 'sv07',     url: '/pokemon/sets/scarlet-violet/stellar-crown/cards',        name: 'Stellar Crown', short: 'SV7' },
+  { setId: 'sv08',     url: '/pokemon/sets/scarlet-violet/surging-sparks/cards',       name: 'Surging Sparks', short: 'SV8' },
+  { setId: 'sv8pt5',   url: '/pokemon/sets/scarlet-violet/prismatic-evolutions/cards', name: 'Prismatic Evolutions', short: 'SV8.5' },
+  { setId: 'sv09',     url: '/pokemon/sets/scarlet-violet/journey-together/cards',     name: 'Journey Together', short: 'SV9' },
+  { setId: 'sv10',     url: '/pokemon/sets/scarlet-violet/destined-rivals/cards',      name: 'Destined Rivals', short: 'SV10' },
+  { setId: 'zsv10pt5', url: '/pokemon/sets/scarlet-violet/black-bolt/cards',           name: 'Black Bolt', short: 'SV10.5' },
+  { setId: 'rsv10pt5', url: '/pokemon/sets/scarlet-violet/white-flare/cards',          name: 'White Flare', short: 'SV10.5' },
+  { setId: 'me01',     url: '/pokemon/sets/mega-evolution/base-set/cards',            name: 'Mega Evolution', short: 'ME1' },
+  { setId: 'me02',     url: '/pokemon/sets/mega-evolution/phantasmal-flames/cards',   name: 'Phantasmal Flames', short: 'ME2' },
+  { setId: 'me02pt5',  url: '/pokemon/sets/mega-evolution/ascended-heroes/cards',      name: 'Ascended Heroes', short: 'ME2.5' },
+  { setId: 'me03',     url: '/pokemon/sets/mega-evolution/perfect-order/cards',        name: 'Perfect Order', short: 'ME3' },
+  { setId: 'me04',     url: '/pokemon/sets/mega-evolution/chaos-rising/cards',         name: 'Chaos Rising', short: 'ME4' },
+  { setId: 'me05',     url: '/pokemon/sets/mega-evolution/pitch-black/cards',          name: 'Pitch Black', short: 'ME5' },
+];
+
+function buildSeriesNavHtml(order, currentSetId) {
+  const idx = order.findIndex(s => s.setId === currentSetId);
+  const prev = idx > 0 ? order[idx - 1] : null;
+  const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
+  const prevHtml = prev
+    ? `<a href="${prev.url}" style="color:var(--text-muted);text-decoration:none;">&larr; Previous: ${prev.name} (${prev.short})</a>`
+    : '<span></span>';
+  const nextHtml = next
+    ? `<a href="${next.url}" style="color:var(--text-muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
+    : '<span></span>';
+  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${nextHtml}</div>`;
+}
+
+const SERIES_NAV_HTML = buildSeriesNavHtml(PM_SERIES_ORDER, SET_ID);
+
 let html = readFileSync('set-template.html', 'utf8');
 
 const vars = {
+  '{{SERIES_NAV}}':         SERIES_NAV_HTML,
   '{{SET_ID}}':             SET_ID,
   '__R2_PUBLIC_URL__':      R2_PUBLIC_URL,
   '{{SET_FULL_NAME}}':      SET_FULL_NAME,
