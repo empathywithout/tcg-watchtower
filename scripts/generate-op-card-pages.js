@@ -710,6 +710,10 @@ console.log(`✅ vercel.json updated with most-valuable rewrite`);
 
 // Add to sitemap
 let sitemap4 = fs.readFileSync(sitemapPath, 'utf8');
+sitemap4 = sitemap4.replace(
+  new RegExp(`  <url>\\s*<loc>${mvPageUrl}</loc>[\\s\\S]*?</url>\\n?`, 'g'),
+  ''
+);
 sitemap4 = sitemap4.replace('</urlset>', `  <url>
     <loc>${mvPageUrl}</loc>
     <lastmod>${today}</lastmod>

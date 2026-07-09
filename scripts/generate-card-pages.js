@@ -433,6 +433,12 @@ const cardEntries = cards.map(c => `  <url>
     <priority>0.6</priority>
   </url>`).join('\n');
 let sitemap = fs.readFileSync(sitemapPath, 'utf8');
+// Remove any existing entries for this set's card pages first, so re-running
+// this script (e.g. after a content fix) doesn't accumulate duplicates.
+sitemap = sitemap.replace(
+  new RegExp(`  <url>\\s*<loc>${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/[^<]+</loc>[\\s\\S]*?</url>\\n?`, 'g'),
+  ''
+);
 sitemap = sitemap.replace('</urlset>', `${cardEntries}\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap);
 console.log(`✅ sitemap.xml updated with ${cards.length} card URLs`);
@@ -616,6 +622,10 @@ fs.writeFileSync(path.join(setDir, 'most-valuable.html'), buildChasePage({
 console.log(`✅ Generated most-valuable page`);
 
 let sitemap2 = fs.readFileSync(sitemapPath, 'utf8');
+sitemap2 = sitemap2.replace(
+  new RegExp(`  <url>\\s*<loc>${mvpUrl}</loc>[\\s\\S]*?</url>\\n?`, 'g'),
+  ''
+);
 sitemap2 = sitemap2.replace('</urlset>', `  <url>\n    <loc>${mvpUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap2);
 console.log(`✅ sitemap.xml updated with most-valuable URL`);
@@ -632,6 +642,10 @@ fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
 console.log(`✅ Generated top-chase-cards page`);
 
 let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
+sitemap3 = sitemap3.replace(
+  new RegExp(`  <url>\\s*<loc>${chaseUrl}</loc>[\\s\\S]*?</url>\\n?`, 'g'),
+  ''
+);
 sitemap3 = sitemap3.replace('</urlset>', `  <url>\n    <loc>${chaseUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap3);
 console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
