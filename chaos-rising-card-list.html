@@ -1394,12 +1394,14 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     }
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     if (isOpen && !populated) await populateNavSets();
   });
   document.addEventListener('click', e => {
     if (!dropdown.contains(e.target) && e.target !== btn) {
       dropdown.classList.remove('open');
       btn.classList.remove('open');
+      document.body.style.overflow = '';
     }
   });
 

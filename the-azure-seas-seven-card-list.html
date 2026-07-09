@@ -936,6 +936,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     }
     dropdown.classList.toggle('open', !isOpen);
     setsBtn.classList.toggle('open', !isOpen);
+    document.body.style.overflow = !isOpen ? 'hidden' : '';
     if (!isOpen && !populated) await populateNavSets();
   });
 
@@ -943,6 +944,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     if (!setsBtn.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove('open');
       setsBtn.classList.remove('open');
+      document.body.style.overflow = '';
     }
   });
 

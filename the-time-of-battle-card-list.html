@@ -1093,10 +1093,11 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
     if(!isOpen){const rect=setsBtn.getBoundingClientRect();dropdown.style.top=(rect.bottom+4)+'px';dropdown.style.right=(window.innerWidth-rect.right)+'px';}
     dropdown.classList.toggle('open',!isOpen);
     setsBtn.classList.toggle('open',!isOpen);
+    document.body.style.overflow=!isOpen?'hidden':'';
     if(!isOpen&&!populated)await populateNavSets();
   });
   document.addEventListener('click',e=>{
-    if(!setsBtn.contains(e.target)&&!dropdown.contains(e.target)){dropdown.classList.remove('open');setsBtn.classList.remove('open');}
+    if(!setsBtn.contains(e.target)&&!dropdown.contains(e.target)){dropdown.classList.remove('open');setsBtn.classList.remove('open');document.body.style.overflow='';}
   });
   async function populateNavSets(){
     try{
