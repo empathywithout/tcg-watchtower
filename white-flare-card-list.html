@@ -2204,19 +2204,21 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   document.body.appendChild(dropdown);
 
   let populated = false;
-  let savedScrollY = 0;
+  let touchMoveHandler = null;
 
   function lockBodyScroll() {
-    savedScrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = (-savedScrollY) + 'px';
-    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    touchMoveHandler = function(e) {
+      if (!dropdown.contains(e.target)) e.preventDefault();
+    };
+    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
   }
   function unlockBodyScroll() {
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, savedScrollY);
+    document.body.style.overflow = '';
+    if (touchMoveHandler) {
+      document.removeEventListener('touchmove', touchMoveHandler);
+      touchMoveHandler = null;
+    }
   }
 
   btn.addEventListener('click', async e => {

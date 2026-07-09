@@ -1088,9 +1088,9 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
   if(!setsBtn||!dropdown)return;
   document.body.appendChild(dropdown);
   let populated=false;
-  let savedScrollY=0;
-  function lockBodyScroll(){savedScrollY=window.scrollY;document.body.style.position='fixed';document.body.style.top=(-savedScrollY)+'px';document.body.style.width='100%';}
-  function unlockBodyScroll(){document.body.style.position='';document.body.style.top='';document.body.style.width='';window.scrollTo(0,savedScrollY);}
+  let touchMoveHandler=null;
+  function lockBodyScroll(){document.body.style.overflow='hidden';touchMoveHandler=function(e){if(!dropdown.contains(e.target))e.preventDefault();};document.addEventListener('touchmove',touchMoveHandler,{passive:false});}
+  function unlockBodyScroll(){document.body.style.overflow='';if(touchMoveHandler){document.removeEventListener('touchmove',touchMoveHandler);touchMoveHandler=null;}}
   setsBtn.addEventListener('click',async()=>{
     const isOpen=dropdown.classList.contains('open');
     if(!isOpen){const rect=setsBtn.getBoundingClientRect();dropdown.style.top=(rect.bottom+4)+'px';dropdown.style.right=(window.innerWidth-rect.right)+'px';}
