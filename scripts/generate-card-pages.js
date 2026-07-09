@@ -42,6 +42,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
+
+// Google Analytics snippet — was missing from this generator entirely, meaning
+// every individual Pokemon card page it generates had zero GA tracking.
+// Matches the working snippet already used in generate-op-card-pages.js.
+const gaScript = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>`;
+
 const SET_ID          = (process.env.SET_ID || '').trim();
 const SET_FULL_NAME   = (process.env.SET_FULL_NAME || '').trim();
 // SERIES_SLUG_MAP: guards against GitHub Actions passing empty string for ME sets
@@ -233,6 +240,7 @@ function generateCardPage(card, allCards) {
 <link rel="preload" as="image" href="${img}" fetchpriority="high">
 ${sharedFonts}
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+${gaScript}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -588,6 +596,7 @@ function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, sch
 }
 <\/script>
 ${sharedFonts}
+${gaScript}
 <style>${chaseStyles}<\/style>
 </head>
 <body>
