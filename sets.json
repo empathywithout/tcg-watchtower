@@ -6,7 +6,8 @@
     "short": "SV1",
     "setId": "sv01",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2023-03-31"
   },
   {
     "slug": "paldea-evolved-card-list",
@@ -15,7 +16,8 @@
     "short": "SV2",
     "setId": "sv02",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2023-06-09"
   },
   {
     "slug": "obsidian-flames-card-list",
@@ -24,7 +26,8 @@
     "short": "SV3",
     "setId": "sv03",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2023-08-11"
   },
   {
     "slug": "scarlet-violet-151-card-list",
@@ -33,7 +36,8 @@
     "short": "SV3.5",
     "setId": "sv3pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2023-09-22"
   },
   {
     "slug": "paradox-rift-card-list",
@@ -42,7 +46,8 @@
     "short": "SV4",
     "setId": "sv04",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2023-11-03"
   },
   {
     "slug": "paldean-fates-card-list",
@@ -51,7 +56,8 @@
     "short": "SV4.5",
     "setId": "sv4pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-01-26"
   },
   {
     "slug": "temporal-forces-card-list",
@@ -60,7 +66,8 @@
     "short": "SV5",
     "setId": "sv05",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-03-22"
   },
   {
     "slug": "twilight-masquerade-card-list",
@@ -69,7 +76,8 @@
     "short": "SV6",
     "setId": "sv06",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-05-24"
   },
   {
     "slug": "shrouded-fable-card-list",
@@ -78,7 +86,8 @@
     "short": "SV6.5",
     "setId": "sv6pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-08-02"
   },
   {
     "slug": "stellar-crown-card-list",
@@ -87,7 +96,8 @@
     "short": "SV7",
     "setId": "sv07",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-09-13"
   },
   {
     "slug": "surging-sparks-card-list",
@@ -96,7 +106,8 @@
     "short": "SV8",
     "setId": "sv08",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2024-11-08"
   },
   {
     "slug": "prismatic-evolutions-card-list",
@@ -105,7 +116,8 @@
     "short": "SV8.5",
     "setId": "sv8pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-01-17"
   },
   {
     "slug": "journey-together-card-list",
@@ -114,7 +126,8 @@
     "short": "SV9",
     "setId": "sv09",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-03-28"
   },
   {
     "slug": "destined-rivals-card-list",
@@ -123,7 +136,8 @@
     "short": "SV10",
     "setId": "sv10",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-05-30"
   },
   {
     "slug": "pokemon/sets/scarlet-violet/black-bolt/cards",
@@ -132,7 +146,8 @@
     "short": "SV10.5",
     "setId": "zsv10pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-07-18"
   },
   {
     "slug": "pokemon/sets/scarlet-violet/white-flare/cards",
@@ -141,7 +156,8 @@
     "short": "SV10.5",
     "setId": "rsv10pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-07-18"
   },
   {
     "slug": "pokemon/sets/mega-evolution/base-set/cards",
@@ -150,7 +166,8 @@
     "short": "ME1",
     "setId": "me01",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-10-10"
   },
   {
     "slug": "phantasmal-flames-card-list",
@@ -159,7 +176,8 @@
     "short": "ME2",
     "setId": "me02",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2025-11-14"
   },
   {
     "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
@@ -168,7 +186,8 @@
     "short": "ME2.5",
     "setId": "me02pt5",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-01-15"
   },
   {
     "slug": "pokemon/sets/mega-evolution/perfect-order/cards",
@@ -177,7 +196,8 @@
     "short": "ME3",
     "setId": "me03",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-03-15"
   },
   {
     "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
@@ -186,7 +206,9 @@
     "short": "ME4",
     "setId": "me04",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-05-22",
+    "trending": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/pitch-black/cards",
@@ -196,7 +218,7 @@
     "setId": "me05",
     "phase": "jp",
     "live": true,
-    "releaseDate": "July 17, 2026"
+    "releaseDate": "2026-07-17"
   },
   {
     "slug": "one-piece/sets/heroines-edition/cards",
@@ -205,7 +227,8 @@
     "short": "EB03",
     "setId": "eb03",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-02-20"
   },
   {
     "slug": "one-piece/sets/the-azure-seas-seven/cards",
@@ -214,7 +237,8 @@
     "short": "OP14",
     "setId": "op14",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-01-16"
   },
   {
     "slug": "one-piece/sets/adventure-on-kamis-island/cards",
@@ -223,7 +247,8 @@
     "short": "OP15",
     "setId": "op15",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-04-03"
   },
   {
     "slug": "one-piece/sets/the-time-of-battle/cards",
@@ -232,6 +257,7 @@
     "short": "OP16",
     "setId": "op16",
     "phase": "en",
-    "live": true
+    "live": true,
+    "releaseDate": "2026-06-12"
   }
 ]

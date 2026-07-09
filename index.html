@@ -403,23 +403,8 @@
                             <span class="panel-title">Latest Sets</span>
                             <a href="#browse-sets" class="panel-link">View all →</a>
                         </div>
-                        <div class="latest-sets-grid">
-                            <a class="latest-set-card" href="/pokemon/sets/mega-evolution/chaos-rising/cards">
-                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png" alt="Chaos Rising Pokémon TCG card list" onerror="this.style.display='none'"></div>
-                                <div><div class="latest-set-name">Chaos Rising Card List &amp; Prices</div><div class="latest-set-meta">ME4 · Pokémon</div><span class="set-badge set-badge-hot">Trending</span></div>
-                            </a>
-                            <a class="latest-set-card" href="/pokemon/sets/scarlet-violet/destined-rivals/cards">
-                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/sv10.png" alt="Destined Rivals Pokémon TCG card list" onerror="this.style.display='none'"></div>
-                                <div><div class="latest-set-name">Destined Rivals Card List &amp; Prices</div><div class="latest-set-meta">SV10 · Pokémon</div><span class="set-badge set-badge-new">New</span></div>
-                            </a>
-                            <a class="latest-set-card" href="/one-piece/sets/adventure-on-kamis-island/cards">
-                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op15.png" alt="Kami's Island One Piece TCG card list" onerror="this.style.display='none'"></div>
-                                <div><div class="latest-set-name">Kami's Island Card List &amp; Prices</div><div class="latest-set-meta">OP15 · One Piece</div><span class="set-badge set-badge-new">New</span></div>
-                            </a>
-                            <a class="latest-set-card" href="/pokemon/sets/mega-evolution/pitch-black/cards">
-                                <div class="latest-set-logo"><img loading="lazy" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me05.png" alt="Pitch Black Pokémon TCG card list" onerror="this.style.display='none'"></div>
-                                <div><div class="latest-set-name">Pitch Black Card List &amp; Prices</div><div class="latest-set-meta">ME5 · Pokémon</div><span class="set-badge set-badge-jp">JP Phase</span></div>
-                            </a>
+                        <div class="latest-sets-grid" id="latest-sets-grid">
+                            <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem;">Loading latest sets…</div>
                         </div>
                         <div class="panel-stats">
                             <div><div class="stat-value" style="color:var(--primary-blue);">22+</div><div class="stat-label">Sets tracked</div></div>
@@ -441,47 +426,7 @@
             </div>
 
             <div id="browse-sets-container">
-                <div class="browse-series-label">🎴 Pokémon TCG</div>
-                <div class="browse-sets-grid">
-                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/chaos-rising/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me04.png" alt="Chaos Rising Pokémon TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Chaos Rising</div><div class="browse-set-tile-meta">ME04 · May 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/perfect-order/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me03.png" alt="Perfect Order Pokémon TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Perfect Order</div><div class="browse-set-tile-meta">ME03 · Mar 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                    <a class="browse-set-tile" href="/pokemon/sets/mega-evolution/ascended-heroes/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02pt5.png" alt="Ascended Heroes Pokémon TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Ascended Heroes</div><div class="browse-set-tile-meta">ASC · Feb 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                    <a class="browse-set-tile" href="/phantasmal-flames-card-list">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02.png" alt="Phantasmal Flames Pokémon TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Phantasmal Flames</div><div class="browse-set-tile-meta">PFL · Nov 2025</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                </div>
-                <div style="text-align:right;margin-top:10px;">
-                    <a href="/sets" style="color:var(--primary-blue);font-size:0.85rem;text-decoration:none;font-weight:500;">View all Pokémon sets →</a>
-                </div>
-
-                <div class="browse-series-label" style="margin-top:28px;">🏴‍☠️ One Piece TCG</div>
-                <div class="browse-sets-grid">
-                    <a class="browse-set-tile" href="/one-piece/sets/the-azure-seas-seven/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op14.png" alt="Azure Sea's Seven One Piece TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Azure Sea's Seven</div><div class="browse-set-tile-meta">OP14 · Jan 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                    <a class="browse-set-tile" href="/one-piece/sets/heroines-edition/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/eb03.png" alt="Heroines Edition One Piece TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Heroines Edition</div><div class="browse-set-tile-meta">EB03 · Feb 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                    <a class="browse-set-tile" href="/one-piece/sets/adventure-on-kamis-island/cards">
-                        <div class="browse-set-tile-img"><img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/op/op15.png" alt="Kami's Island One Piece TCG card list" loading="lazy" onerror="this.style.display='none'"></div>
-                        <div class="browse-set-tile-info"><div class="browse-set-tile-name">Kami's Island</div><div class="browse-set-tile-meta">OP15 · 2026</div><span class="browse-set-tile-live">Live</span></div>
-                    </a>
-                </div>
-                <div style="text-align:right;margin-top:10px;">
-                    <a href="/sets" style="color:#f97316;font-size:0.85rem;text-decoration:none;font-weight:500;">View all One Piece sets →</a>
-                </div>
+                <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:0.9rem;">Loading sets…</div>
             </div>
 
             <!-- SEO copy -->
@@ -679,6 +624,92 @@
         hamburger.addEventListener('click', function(){ fetchSets(); }, { once: true });
     })();
     </script>
+<script>
+(async function() {
+  const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+  const latestGrid = document.getElementById('latest-sets-grid');
+  const browseContainer = document.getElementById('browse-sets-container');
+  if (!latestGrid && !browseContainer) return;
+
+  function logoUrl(set) {
+    const id = (set.setId || '').toLowerCase();
+    const isOP = id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || set.series === 'One Piece TCG';
+    return isOP ? `${R2}/logos/op/${set.setId}.png` : `${R2}/logos/${set.setId}.png`;
+  }
+  function setUrl(set) { return '/' + set.slug; }
+  function daysSince(dateStr) {
+    if (!dateStr) return Infinity;
+    return Math.floor((Date.now() - new Date(dateStr + 'T00:00:00Z').getTime()) / 86400000);
+  }
+  function badgeFor(set) {
+    if (set.phase === 'jp') return '<span class="set-badge set-badge-jp">JP Phase</span>';
+    if (set.trending) return '<span class="set-badge set-badge-hot">Trending</span>';
+    const d = daysSince(set.releaseDate);
+    if (d >= 0 && d <= 60) return '<span class="set-badge set-badge-new">New</span>';
+    return '';
+  }
+  function shortSeries(set) {
+    const id = (set.setId || '').toLowerCase();
+    const isOP = id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || set.series === 'One Piece TCG';
+    return isOP ? 'One Piece' : 'Pokémon';
+  }
+  function displayName(set) {
+    return (set.name || '').replace(/\s*\([^)]*\)\s*$/, '');
+  }
+  function monthYear(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00Z');
+    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+  }
+
+  try {
+    const res = await fetch('/sets.json');
+    if (!res.ok) return;
+    const allSetsData = await res.json();
+    const live = allSetsData.filter(s => s.live);
+    const byDateDesc = [...live].sort((a, b) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
+
+    // ── Latest Sets panel (mixed, top 4 across both games) ──
+    if (latestGrid) {
+      const top4 = byDateDesc.slice(0, 4);
+      latestGrid.innerHTML = top4.map(set => `
+        <a class="latest-set-card" href="${setUrl(set)}">
+          <div class="latest-set-logo"><img loading="lazy" src="${logoUrl(set)}" alt="${displayName(set)} card list" onerror="this.style.display='none'"></div>
+          <div><div class="latest-set-name">${displayName(set)} Card List &amp; Prices</div><div class="latest-set-meta">${set.short} · ${shortSeries(set)}</div>${badgeFor(set)}</div>
+        </a>
+      `).join('');
+    }
+
+    // ── Browse by series (Pokemon top 4, One Piece top 4) ──
+    if (browseContainer) {
+      const pokemonSets = byDateDesc.filter(s => shortSeries(s) === 'Pokémon').slice(0, 4);
+      const opSets = byDateDesc.filter(s => shortSeries(s) === 'One Piece').slice(0, 4);
+
+      function tile(set) {
+        return `
+          <a class="browse-set-tile" href="${setUrl(set)}">
+            <div class="browse-set-tile-img"><img src="${logoUrl(set)}" alt="${displayName(set)} card list" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="browse-set-tile-info"><div class="browse-set-tile-name">${displayName(set)}</div><div class="browse-set-tile-meta">${set.short} · ${monthYear(set.releaseDate)}</div><span class="browse-set-tile-live">Live</span></div>
+          </a>`;
+      }
+
+      browseContainer.innerHTML = `
+        <div class="browse-series-label">🎴 Pokémon TCG</div>
+        <div class="browse-sets-grid">${pokemonSets.map(tile).join('')}</div>
+        <div style="text-align:right;margin-top:10px;">
+          <a href="/sets" style="color:var(--primary-blue);font-size:0.85rem;text-decoration:none;font-weight:500;">View all Pokémon sets →</a>
+        </div>
+        <div class="browse-series-label" style="margin-top:28px;">🏴‍☠️ One Piece TCG</div>
+        <div class="browse-sets-grid">${opSets.map(tile).join('')}</div>
+        <div style="text-align:right;margin-top:10px;">
+          <a href="/sets" style="color:#f97316;font-size:0.85rem;text-decoration:none;font-weight:500;">View all One Piece sets →</a>
+        </div>`;
+    }
+  } catch (e) {
+    console.error('[Latest sets] failed:', e.message);
+  }
+})();
+</script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
