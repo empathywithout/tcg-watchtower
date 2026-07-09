@@ -2126,7 +2126,7 @@ function initNav() {
     setsGridContainerOp.innerHTML = html;
   }
 
-  await fetchSets();
+  hamburger.addEventListener('click', function(){ fetchSets(); }, { once: true });
 })();
 } // end initNav
 

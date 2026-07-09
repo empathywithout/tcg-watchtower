@@ -1192,7 +1192,7 @@ function initNav(){
     });
     html+='</div>';setsGridContainerOp.innerHTML=html;
   }
-  await fetchSets();
+  hamburger.addEventListener('click', function(){ fetchSets(); }, { once: true });
 })();
 }
 </script>
