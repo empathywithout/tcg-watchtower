@@ -603,6 +603,7 @@ ${CARD_LIST_HTML}
 
 <script>
 const SET_ID = '${SET_ID}';
+const SET_PHASE = '${PHASE}';  // 'en' | 'jp' — individual card pages only exist once a set is 'en'
 const SET_URL_SLUG = '${SET_URL_SLUG}';
 const SET_FULL_NAME = '${SET_FULL_NAME.replace(/'/g, "\\'")}';
 const R2 = '${R2_PUBLIC_URL}';
@@ -900,7 +901,7 @@ function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
       <div class="modal-links">
         <a class="modal-buy-link pl-ebay" href="\${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>\${directUrl?'Buy on TCGplayer':'Find on TCGplayer'}</span><span>→</span></a>
-        <a class="modal-buy-link" href="\${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
+        \${SET_PHASE === 'en' ? \`<a class="modal-buy-link" href="\${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>\` : ''}
       </div>
     </div>\`;
   document.getElementById('modal-overlay').classList.add('open');
