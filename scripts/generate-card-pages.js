@@ -47,7 +47,8 @@ const ROOT = path.resolve(__dirname, '..');
 // every individual Pokemon card page it generates had zero GA tracking.
 // Matches the working snippet already used in generate-op-card-pages.js.
 const gaScript = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>`;
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','affiliate_click',{retailer:'tcgplayer',page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','affiliate_click',{retailer:'amazon',page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','affiliate_click',{retailer:'ebay',page_path:location.pathname});}},true);</script>`;
 
 const SET_ID          = (process.env.SET_ID || '').trim();
 const SET_FULL_NAME   = (process.env.SET_FULL_NAME || '').trim();
