@@ -33,6 +33,16 @@
  *   SET_SLUG_FULL="chaos-rising-card-list" TCGP_GROUP_ID=24655 \
  *   node scripts/generate-card-pages.js
  *
+ * JP-phase example (pre-release, no English TCGplayer prices yet — sources
+ * card metadata/images/prices from Scrydex's JP endpoint instead of R2, and
+ * converts JPY prices to an estimated USD figure, same as the JP pricing
+ * path on the Pitch Black card-list page):
+ *   SET_ID=me05 SET_FULL_NAME="Pitch Black" SET_SERIES="Mega Evolution" \
+ *   SET_SERIES_SLUG="mega-evolution" SET_SLUG="pitch-black" \
+ *   SET_SLUG_FULL="pitch-black-card-list" PHASE=jp JP_SCRYDEX_ID=m5_ja \
+ *   SET_OFFICIAL_COUNT=118 \
+ *   node scripts/generate-card-pages.js
+ *
  * NOTE: SET_SLUG is the URL path segment (e.g. "base-set", "stellar-crown").
  *       SET_SLUG_FULL is the HTML filename without .html (e.g. "mega-evolution-base-set-card-list").
  *       These can differ for sets like me01 where the URL slug is shorter than the filename.
@@ -71,6 +81,17 @@ const SET_SLUG_FULL   = (process.env.SET_SLUG_FULL || '').trim() || `${SET_SLUG}
 const TCGP_GROUP_ID   = (process.env.TCGP_GROUP_ID || '').trim();
 const R2_PUBLIC_URL   = (process.env.CF_R2_PUBLIC_URL || '').trim();
 const SITE_URL        = 'https://tcgwatchtower.com';
+// ── JP phase (pre-release) config ──────────────────────────────────────────
+// PHASE='jp' sources metadata/images from Scrydex's JP endpoint instead of R2
+// (R2 won't have images/data until sync-images runs post-release), and gates
+// pricing to the JPY->USD Scrydex conversion instead of TCGplayer, mirroring
+// the pattern already used on JP-phase card-list pages like Pitch Black.
+const PHASE            = (process.env.PHASE || 'en').trim();
+const JP_SCRYDEX_ID    = (process.env.JP_SCRYDEX_ID || '').trim();
+const SCRYDEX_API_KEY  = process.env.SCRYDEX_API_KEY || '';
+const SCRYDEX_TEAM_ID  = process.env.SCRYDEX_TEAM_ID || '';
+const SCRYDEX_BASE     = 'https://api.scrydex.com/pokemon/v1';
+const SET_OFFICIAL_COUNT_ENV = (process.env.SET_OFFICIAL_COUNT || '').trim();
 const TCGP_SLUG_MAP = {
   'sv01':    'sv01-scarlet-and-violet-base-set',
   'sv02':    'sv02-paldea-evolved',
@@ -101,14 +122,53 @@ if (!SET_ID || !SET_FULL_NAME || !SET_SLUG) {
   console.error('Missing required: SET_ID, SET_FULL_NAME, SET_SLUG');
   process.exit(1);
 }
-// ─── Fetch card metadata from R2 ────────────────────────────────────────────
-const metaUrl = `${R2_PUBLIC_URL}/data/${SET_ID}.json`;
-console.log(`📋 Fetching card metadata from ${metaUrl}...`);
-const res = await fetch(metaUrl);
-if (!res.ok) throw new Error(`Failed to fetch metadata: ${res.status}`);
-const metadata = await res.json();
-const cards = metadata.cards || [];
-console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
+if (PHASE === 'jp' && (!JP_SCRYDEX_ID || !SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID)) {
+  console.error('❌ PHASE=jp requires JP_SCRYDEX_ID, SCRYDEX_API_KEY, and SCRYDEX_TEAM_ID');
+  process.exit(1);
+}
+// ─── Fetch card metadata (Scrydex JP for pre-release sets, R2 for EN) ───────
+let cards = [];
+let officialCount = 0;
+if (PHASE === 'jp') {
+  console.log(`📋 Fetching JP card metadata from Scrydex (${JP_SCRYDEX_ID})...`);
+  let rawCards = [], page = 1;
+  while (true) {
+    const scRes = await fetch(
+      `${SCRYDEX_BASE}/ja/expansions/${JP_SCRYDEX_ID}/cards?select=id,name,translation,rarity,images&pageSize=100&page=${page}`,
+      { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID } }
+    );
+    if (!scRes.ok) throw new Error(`Scrydex ${scRes.status} fetching JP cards for ${JP_SCRYDEX_ID}`);
+    const scData = await scRes.json();
+    const rows = scData.data || [];
+    rawCards = rawCards.concat(rows);
+    if (rows.length === 0 || rows.length < 100) break;
+    page++;
+  }
+  cards = rawCards.map(c => {
+    const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
+    const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+    return {
+      name:    c.translation?.en?.name || c.name || '',
+      localId,
+      rarity:  c.rarity || '',
+      image:   c.images?.[0]?.medium || c.images?.[0]?.small || null,
+    };
+  });
+  officialCount = SET_OFFICIAL_COUNT_ENV ? parseInt(SET_OFFICIAL_COUNT_ENV, 10) : cards.length;
+  console.log(`✅ ${cards.length} JP cards found for ${SET_FULL_NAME}`);
+} else {
+  const metaUrl = `${R2_PUBLIC_URL}/data/${SET_ID}.json`;
+  console.log(`📋 Fetching card metadata from ${metaUrl}...`);
+  const metaRes = await fetch(metaUrl);
+  if (!metaRes.ok) throw new Error(`Failed to fetch metadata: ${metaRes.status}`);
+  const r2Metadata = await metaRes.json();
+  cards = r2Metadata.cards || [];
+  officialCount = r2Metadata.cardCount?.official || cards.length;
+  console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
+}
+// metadata.cardCount.official is referenced throughout the templates below —
+// keep that shape intact regardless of which branch populated `cards`.
+const metadata = { cardCount: { official: officialCount } };
 console.log(`🔗 TCGplayer slug: ${TCGP_SET_SLUG} (SET_ID=${SET_ID})`);
 console.log(`📁 URL path: /pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/`);
 console.log(`📄 File slug: ${SET_SLUG_FULL}.html`);
@@ -129,6 +189,7 @@ function cardUrl(card) {
   return `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(card)}`;
 }
 function cardImgUrl(card) {
+  if (PHASE === 'jp' && card.image) return card.image;
   return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
 }
 function tcgpSearchUrl(card) {
@@ -182,6 +243,12 @@ function breadcrumb(lastLabel) {
 </div>`;
 }
 const impactScript = `<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');<\/script>`;
+const jpBanner = PHASE === 'jp' ? `<div class="container" style="padding-top:12px;padding-bottom:0;">
+  <div style="display:flex;align-items:center;gap:10px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:10px 16px;font-size:0.82rem;color:#fbbf24;margin-bottom:1rem;">
+    <span>🇯🇵</span>
+    <span><strong>Japanese Set Preview</strong> — Prices shown are estimates converted from Japanese market data until official English pricing is available.</span>
+  </div>
+</div>` : '';
 // ─── Card page template ───────────────────────────────────────────────────────
 function generateCardPage(card, allCards) {
   const url         = cardUrl(card);
@@ -313,6 +380,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <body>
 ${sharedNav}
 ${breadcrumb(`${card.name} #${card.localId}`)}
+${jpBanner}
 <div class="container">
   <div class="card-layout">
     <div class="card-image-wrap">
@@ -362,7 +430,7 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
       <div class="related-grid">
         ${related.map(r => `
         <a class="related-card" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/cards/${cardSlug(r)}">
-          <img src="${R2_PUBLIC_URL}/cards/${SET_ID}/${r.localId}.webp" alt="${r.name} ${r.localId} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy" onerror="this.style.display='none'">
+          <img src="${cardImgUrl(r)}" alt="${r.name} ${r.localId} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy" onerror="this.style.display='none'">
           <div class="related-card-info">
             <div class="related-card-name">${r.name}</div>
             <div class="related-card-num">#${r.localId}</div>
@@ -385,37 +453,7 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
   <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.</p>
 </footer>
 <script>
-const GROUP_ID = '${TCGP_GROUP_ID}';
-const LOCAL_ID = '${card.localId}';
-async function loadPrice() {
-  if (!GROUP_ID) return;
-  try {
-    const res = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID);
-    if (!res.ok) return;
-    const data = await res.json();
-    const prices = data.prices || {};
-    const padded   = LOCAL_ID.padStart(3, '0');
-    const unpadded = String(parseInt(LOCAL_ID, 10));
-    const price = prices[padded] ?? prices[unpadded];
-    const priceEl = document.getElementById('card-price');
-    if (price != null) {
-      priceEl.textContent = '$' + price.toFixed(2);
-      priceEl.classList.remove('price-loading');
-      document.querySelectorAll('[data-related-id]').forEach(el => {
-        const rid = el.dataset.relatedId;
-        const rp  = prices[rid.padStart(3,'0')] ?? prices[String(parseInt(rid,10))];
-        if (rp != null) el.textContent = '$' + rp.toFixed(2);
-      });
-    } else {
-      priceEl.textContent = 'N/A';
-      priceEl.classList.remove('price-loading');
-    }
-    document.getElementById('price-updated').textContent = 'Updated today';
-  } catch(e) {
-    document.getElementById('card-price').textContent = 'N/A';
-  }
-}
-loadPrice();
+${PHASE === 'jp' ? jpCardPriceScript(card) : enCardPriceScript(card)}
 </script>
 ${impactScript}
 </body>
@@ -499,7 +537,7 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
 .set-link:hover{text-decoration:underline}
 footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}`;
-const chaseScript = `const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
+const enChaseScript = `const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
 async function loadPrices() {
   if (!TCGP_GROUP_ID) return;
   try {
@@ -529,6 +567,42 @@ async function loadPrices() {
   } catch(e) {}
 }
 loadPrices();`;
+const jpChaseScript = `const SET_ID_JS = '${SET_ID}';
+async function loadPrices() {
+  try {
+    const res = await fetch('/api/scrydex-cards?set=' + SET_ID_JS + '&phase=jp');
+    if (!res.ok) return;
+    const data = await res.json();
+    const priceMap = {};
+    (data.cards || []).forEach(c => {
+      if (c.market == null || !c.localId) return;
+      priceMap[String(c.localId).padStart(3,'0')] = c.market;
+      priceMap[String(parseInt(c.localId,10))] = c.market;
+    });
+    document.querySelectorAll('[data-local-id]').forEach(el => {
+      const id = el.dataset.localId;
+      const price = priceMap[id.padStart(3,'0')] ?? priceMap[String(parseInt(id,10))];
+      if (price != null) {
+        el.textContent = '~$' + price.toFixed(2);
+        el.title = 'Estimated from Japanese market price, converted to USD';
+        el.classList.remove('loading');
+      } else {
+        el.textContent = 'N/A';
+        el.classList.remove('loading');
+      }
+    });
+    const grid = document.getElementById('cards-grid');
+    const items = [...grid.querySelectorAll('.card-item')];
+    items.sort((a, b) => {
+      const pa = parseFloat(a.querySelector('[data-local-id]').textContent.replace('~','').replace('$','')) || 0;
+      const pb = parseFloat(b.querySelector('[data-local-id]').textContent.replace('~','').replace('$','')) || 0;
+      return pb - pa;
+    });
+    items.forEach(i => grid.appendChild(i));
+  } catch(e) {}
+}
+loadPrices();`;
+const chaseScript = PHASE === 'jp' ? jpChaseScript : enChaseScript;
 function chaseCardGridItems(cardList) {
   return cardList.map(c => {
     const rarity      = normalizeRarity(c.rarity);
@@ -537,7 +611,7 @@ function chaseCardGridItems(cardList) {
                       : RARITY_TIER[rarity] === 3 ? 'rarity-ur'
                       : 'rarity-ir';
     const label    = RARITY_LABEL[rarity] || rarity;
-    const img      = `${R2_PUBLIC_URL}/cards/${SET_ID}/${c.localId}.webp`;
+    const img      = cardImgUrl(c);
     const slug     = toSlug(c.name) + '-' + c.localId;
     const baseName = c.name.replace(/\s*[-–]\s*[\d\/]+.*$/, '').trim();
     const official = metadata.cardCount?.official || '';
@@ -603,6 +677,7 @@ ${gaScript}
 <body>
 ${sharedNav}
 ${breadcrumb(breadcrumbLabel)}
+${jpBanner}
 <div class="container">
   <h1>${h1}</h1>
   <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily on TCG Watchtower</p>
@@ -640,7 +715,77 @@ sitemap2 = sitemap2.replace('</urlset>', `  <url>\n    <loc>${mvpUrl}</loc>\n   
 fs.writeFileSync(sitemapPath, sitemap2);
 console.log(`✅ sitemap.xml updated with most-valuable URL`);
 // ─── Top Chase Cards page ─────────────────────────────────────────────────────
-const chaseUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`;
+function enCardPriceScript(card) {
+  return `const GROUP_ID = '${TCGP_GROUP_ID}';
+const LOCAL_ID = '${card.localId}';
+async function loadPrice() {
+  if (!GROUP_ID) return;
+  try {
+    const res = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID);
+    if (!res.ok) return;
+    const data = await res.json();
+    const prices = data.prices || {};
+    const padded   = LOCAL_ID.padStart(3, '0');
+    const unpadded = String(parseInt(LOCAL_ID, 10));
+    const price = prices[padded] ?? prices[unpadded];
+    const priceEl = document.getElementById('card-price');
+    if (price != null) {
+      priceEl.textContent = '$' + price.toFixed(2);
+      priceEl.classList.remove('price-loading');
+      document.querySelectorAll('[data-related-id]').forEach(el => {
+        const rid = el.dataset.relatedId;
+        const rp  = prices[rid.padStart(3,'0')] ?? prices[String(parseInt(rid,10))];
+        if (rp != null) el.textContent = '$' + rp.toFixed(2);
+      });
+    } else {
+      priceEl.textContent = 'N/A';
+      priceEl.classList.remove('price-loading');
+    }
+    document.getElementById('price-updated').textContent = 'Updated today';
+  } catch(e) {
+    document.getElementById('card-price').textContent = 'N/A';
+  }
+}
+loadPrice();`;
+}
+function jpCardPriceScript(card) {
+  return `const SET_ID_JS = '${SET_ID}';
+const LOCAL_ID = '${card.localId}';
+async function loadPrice() {
+  try {
+    const res = await fetch('/api/scrydex-cards?set=' + SET_ID_JS + '&phase=jp');
+    if (!res.ok) return;
+    const data = await res.json();
+    const priceMap = {};
+    (data.cards || []).forEach(c => {
+      if (c.market == null || !c.localId) return;
+      priceMap[String(c.localId).padStart(3,'0')] = c.market;
+      priceMap[String(parseInt(c.localId,10))] = c.market;
+    });
+    const padded   = LOCAL_ID.padStart(3, '0');
+    const unpadded = String(parseInt(LOCAL_ID, 10));
+    const price = priceMap[padded] ?? priceMap[unpadded];
+    const priceEl = document.getElementById('card-price');
+    if (price != null) {
+      priceEl.textContent = '~$' + price.toFixed(2);
+      priceEl.title = 'Estimated from Japanese market price, converted to USD';
+      priceEl.classList.remove('price-loading');
+      document.querySelectorAll('[data-related-id]').forEach(el => {
+        const rid = el.dataset.relatedId;
+        const rp  = priceMap[rid.padStart(3,'0')] ?? priceMap[String(parseInt(rid,10))];
+        if (rp != null) el.textContent = '~$' + rp.toFixed(2);
+      });
+    } else {
+      priceEl.textContent = 'N/A';
+      priceEl.classList.remove('price-loading');
+    }
+    document.getElementById('price-updated').textContent = 'Estimated (JP market)';
+  } catch(e) {
+    document.getElementById('card-price').textContent = 'N/A';
+  }
+}
+loadPrice();`;
+}
 const chaseTitle = `${SET_FULL_NAME} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`;
 const chaseDesc  = `The most valuable ${SET_FULL_NAME} chase cards ranked by price — every Hyper Rare, Special Illustration Rare, Ultra Rare, and Illustration Rare. See current market prices and where to buy.`;
 fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
