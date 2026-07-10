@@ -31,8 +31,20 @@ on:
         required: false
         default: ''
       tcgp_group_id:
-        description: 'TCGplayer group ID for prices'
+        description: 'TCGplayer group ID for prices (leave blank for phase=jp)'
         required: false
+      phase:
+        description: 'Phase: en (default) or jp — jp sources data/prices from Scrydex instead of R2/TCGplayer'
+        required: false
+        default: 'en'
+      jp_scrydex_id:
+        description: 'Scrydex JP expansion ID (required if phase=jp, e.g. m5_ja) — confirm via /api/admin/scrydex-expansions-jp, never guess'
+        required: false
+        default: ''
+      set_official_count:
+        description: 'Official card count override (optional, useful for phase=jp if Scrydex data is incomplete pre-release)'
+        required: false
+        default: ''
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -53,6 +65,11 @@ jobs:
           SET_SERIES: ${{ github.event.inputs.set_series }}
           TCGP_GROUP_ID: ${{ github.event.inputs.tcgp_group_id }}
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+          PHASE: ${{ github.event.inputs.phase }}
+          JP_SCRYDEX_ID: ${{ github.event.inputs.jp_scrydex_id }}
+          SET_OFFICIAL_COUNT: ${{ github.event.inputs.set_official_count }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
         run: node scripts/generate-card-pages.js
       - name: Commit and push
         run: |
