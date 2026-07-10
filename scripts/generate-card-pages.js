@@ -786,6 +786,7 @@ async function loadPrice() {
 }
 loadPrice();`;
 }
+const chaseUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`;
 const chaseTitle = `${SET_FULL_NAME} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`;
 const chaseDesc  = `The most valuable ${SET_FULL_NAME} chase cards ranked by price — every Hyper Rare, Special Illustration Rare, Ultra Rare, and Illustration Rare. See current market prices and where to buy.`;
 fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
