@@ -130,7 +130,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/sealed-product",
-      "destination": "/scarlet-violet-base-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/base-set/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/most-valuable",
@@ -146,7 +146,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/sealed-product",
-      "destination": "/scarlet-violet-base-set-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/base-set/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/most-valuable",
@@ -162,7 +162,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/base-set/sealed-product",
-      "destination": "/scarlet-violet-base-set-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/base-set/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/base-set/most-valuable",
@@ -178,7 +178,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product",
-      "destination": "/paldea-evolved-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/paldea-evolved/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldea-evolved/most-valuable",
@@ -194,7 +194,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product",
-      "destination": "/obsidian-flames-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/obsidian-flames/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/obsidian-flames/most-valuable",
@@ -210,7 +210,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/sealed-product",
-      "destination": "/scarlet-violet-151-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/151/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/most-valuable",
@@ -226,7 +226,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/151/sealed-product",
-      "destination": "/scarlet-violet-151-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/151/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/151/most-valuable",
@@ -242,7 +242,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product",
-      "destination": "/paradox-rift-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/paradox-rift/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paradox-rift/most-valuable",
@@ -258,7 +258,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product",
-      "destination": "/temporal-forces-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/temporal-forces/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/temporal-forces/most-valuable",
@@ -274,7 +274,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product",
-      "destination": "/paldean-fates-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/paldean-fates/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/paldean-fates/most-valuable",
@@ -290,7 +290,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/sealed-product",
-      "destination": "/twilight-masquerade-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/twilight-masquerade/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/twilight-masquerade/most-valuable",
@@ -306,7 +306,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product",
-      "destination": "/shrouded-fable-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/shrouded-fable/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable",
@@ -322,7 +322,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product",
-      "destination": "/stellar-crown-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/stellar-crown/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/stellar-crown/most-valuable",
@@ -338,7 +338,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/surging-sparks/sealed-product",
-      "destination": "/surging-sparks-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/surging-sparks/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/surging-sparks/most-valuable",
@@ -354,7 +354,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/sealed-product",
-      "destination": "/prismatic-evolutions-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/prismatic-evolutions/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/prismatic-evolutions/most-valuable",
@@ -370,7 +370,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/journey-together/sealed-product",
-      "destination": "/journey-together-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/journey-together/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/journey-together/most-valuable",
@@ -386,7 +386,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product",
-      "destination": "/destined-rivals-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/destined-rivals/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/destined-rivals/most-valuable",
@@ -402,7 +402,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/phantasmal-flames/sealed-product",
-      "destination": "/phantasmal-flames-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/phantasmal-flames/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/phantasmal-flames/most-valuable",
@@ -418,7 +418,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/base-set/sealed-product",
-      "destination": "/mega-evolution-base-set-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/base-set/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/base-set/most-valuable",
@@ -434,7 +434,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/ascended-heroes/sealed-product",
-      "destination": "/ascended-heroes-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/ascended-heroes/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/ascended-heroes/most-valuable",
@@ -450,7 +450,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/perfect-order/sealed-product",
-      "destination": "/perfect-order-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/perfect-order/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/perfect-order/most-valuable",
@@ -478,7 +478,7 @@
     },
     {
       "source": "/one-piece/sets/heroines-edition/sealed-product",
-      "destination": "/heroines-edition-card-list.html"
+      "destination": "/one-piece/sets/heroines-edition/sealed-product.html"
     },
     {
       "source": "/one-piece/sets/heroines-edition/top-chase-cards",
@@ -502,7 +502,7 @@
     },
     {
       "source": "/one-piece/sets/:slug/sealed-product",
-      "destination": "/:slug-card-list.html"
+      "destination": "/one-piece/sets/:slug/sealed-product.html"
     },
     {
       "source": "/chaos-rising-card-list",
@@ -554,7 +554,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product",
-      "destination": "/chaos-rising-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/chaos-rising/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/chaos-rising/most-valuable",
@@ -570,7 +570,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/black-bolt/sealed-product",
-      "destination": "/black-bolt-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/black-bolt/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/black-bolt/most-valuable",
@@ -586,7 +586,7 @@
     },
     {
       "source": "/pokemon/sets/scarlet-violet/white-flare/sealed-product",
-      "destination": "/white-flare-card-list.html"
+      "destination": "/pokemon/sets/scarlet-violet/white-flare/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet/white-flare/most-valuable",
@@ -602,7 +602,7 @@
     },
     {
       "source": "/pokemon/sets/mega-evolution/pitch-black/sealed-product",
-      "destination": "/pitch-black-card-list.html"
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/sealed-product.html"
     },
     {
       "source": "/pokemon/sets/mega-evolution/pitch-black/most-valuable",
