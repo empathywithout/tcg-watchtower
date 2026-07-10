@@ -19,7 +19,40 @@ const SCRYDEX_EN_ID_MAP = {
 
 const SCRYDEX_JP_ID_MAP = {
   'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja',
+  // 'me05': '<CONFIRM ME>',  // Pitch Black / Abyss Eye — do NOT guess this ID.
+  // Run `node scripts/find-scrydex-jp-id.js "Abyss Eye"` locally (needs
+  // SCRYDEX_API_KEY/SCRYDEX_TEAM_ID in env) to get the confirmed expansion ID,
+  // then add it here AND in the matching map in api/cards.js.
 };
+
+// JPY→USD conversion for JP-phase sets (no English TCGplayer prices exist yet).
+// Free, no-key exchange-rate API; cached in Redis 24h with a static fallback
+// so a transient outage never breaks pricing — it just uses a slightly stale rate.
+const FX_CACHE_KEY = 'fx:jpy_usd';
+const FX_TTL_SEC   = 24 * 60 * 60;
+const FX_FALLBACK_RATE = 0.0067; // approx JPY→USD — update if API is down for a long stretch
+
+async function getJpyToUsdRate() {
+  const cached = await redisGet(FX_CACHE_KEY);
+  if (cached) {
+    const parsed = parseFloat(cached);
+    if (parsed > 0) return parsed;
+  }
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/JPY', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error(`fx ${res.status}`);
+    const data = await res.json();
+    const rate = data?.rates?.USD;
+    if (typeof rate === 'number' && rate > 0) {
+      await redisSetEx(FX_CACHE_KEY, String(rate), FX_TTL_SEC);
+      return rate;
+    }
+    throw new Error('fx response missing rates.USD');
+  } catch (e) {
+    console.warn('[scrydex-cards fx]', e.message, '— using fallback rate');
+    return FX_FALLBACK_RATE;
+  }
+}
 
 /* ── Redis ─────────────────────────────────────────────────────────── */
 async function redisGet(key) {
@@ -72,7 +105,7 @@ async function fetchAllPages(baseUrl) {
 /* ── Normalise ─────────────────────────────────────────────────────── */
 const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
-function normaliseCard(c, internalSetId, phase) {
+function normaliseCard(c, internalSetId, phase, fxRate = null) {
   const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
   const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
@@ -81,10 +114,22 @@ function normaliseCard(c, internalSetId, phase) {
     ? (scrydexImg || `${R2}/cards/${internalSetId}/${localId}.webp`)
     : (scrydexImg || `${R2}/cards/${internalSetId}/${localId}.webp`);
 
+  // JP prices come back from Scrydex in JPY. Convert to USD for display, but keep
+  // the raw JPY figure around too so the UI can be transparent about the estimate.
+  const shouldConvert = phase === 'jp' && typeof fxRate === 'number' && fxRate > 0;
+
   const variants = (c.variants || []).map(v => {
     const prices    = v.prices || [];
     const rawPrice  = prices.find(p => p.type === 'raw' && p.condition === 'U') || prices[0];
-    return { name: v.name || 'normal', market: rawPrice?.market ?? null };
+    const marketJPY = rawPrice?.market ?? null;
+    const market    = shouldConvert && marketJPY != null
+      ? Math.round(marketJPY * fxRate * 100) / 100
+      : marketJPY;
+    return {
+      name: v.name || 'normal',
+      market,
+      ...(shouldConvert ? { marketJPY } : {}),
+    };
   }).filter(v => v.name);
 
   const normalVariant = variants.find(v => v.name === 'normal') || variants[0];
@@ -101,6 +146,7 @@ function normaliseCard(c, internalSetId, phase) {
     rarity:    c.rarity || '',
     image,
     market,
+    ...(shouldConvert ? { marketJPY: normalVariant?.marketJPY ?? null, isEstimate: true, fxRate } : {}),
     variants:  variants.length > 1 ? variants : [],
     supertype: c.supertype || '',
     subtypes:  c.subtypes || [],
@@ -171,10 +217,12 @@ export default async function handler(req, res) {
       ? 'id,name,translation,rarity,images,variants,supertype,subtypes,artist'
       : 'id,name,rarity,images,variants,supertype,subtypes,artist';
 
+    const fxRate = isJP ? await getJpyToUsdRate() : null;
+
     const rawCards = await fetchAllPages(
       `${basePrefix}/expansions/${scrydexId}/cards?select=${selectFields}&include=prices&pageSize=100`
     );
-    const cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en'));
+    const cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
 
     // Only cache if prices are actually present — prevents stale null-price cache
     const hasAnyPrice = cards.some(c => c.market != null);

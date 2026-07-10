@@ -1562,7 +1562,12 @@ function handleChaseClick(el) {
 function renderChaseCardsHTML(grid) {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
-    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null, priceUrl: priceCache[c.id]?.url || null }))
+    .map(c => ({
+      ...c,
+      price: priceCache[c.id]?.price ?? null,
+      priceUrl: priceCache[c.id]?.url || null,
+      priceIsEstimate: !!priceCache[c.id]?.estimate,
+    }))
     .sort((a, b) => {
       if (pricesKnown) {
         return (b.price ?? -1) - (a.price ?? -1);
@@ -1572,7 +1577,7 @@ function renderChaseCardsHTML(grid) {
 
   grid.innerHTML = sorted.map(c => {
     const priceHTML = c.price
-      ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
+      ? `<div class="chase-card-price-wrap"${c.priceIsEstimate ? ' title="Estimated from Japanese Abyss Eye market price, converted to USD"' : ''}><span class="price-value">${c.priceIsEstimate ? '~' : ''}$${c.price.toFixed(2)}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card"
@@ -1750,6 +1755,65 @@ function loadTCGPlayerPrices() {
   return _pricesFetchPromise;
 }
 
+// ── Scrydex JP price system (JPY→USD estimate) ─────────────────────────────
+// Only used during JP phase, since no real English TCGplayer prices exist yet
+// for a set that hasn't released. Prices are estimates converted from the
+// Japanese source set's market price — always shown with a "~" prefix and a
+// tooltip so they're never confused with a confirmed English price.
+// No-ops harmlessly (with a console warning) until this set's Scrydex JP ID
+// is confirmed and added to SCRYDEX_JP_ID_MAP — see api/scrydex-cards.js.
+function loadScrydexJPPrices() {
+  return (async () => {
+    try {
+      const res = await fetch(`/api/scrydex-cards?set=${SET_ID}&phase=jp`);
+      if (!res.ok) throw new Error(`Scrydex JP price fetch failed: ${res.status}`);
+      const data  = await res.json();
+      const cards = data.cards || [];
+      if (cards.length === 0) return;
+
+      cards.forEach(c => {
+        if (c.market == null || !c.localId) return;
+        const withZeros    = String(c.localId).padStart(3, '0');
+        const withoutZeros = String(parseInt(c.localId, 10));
+        const entry = { price: c.market, url: null, estimate: true };
+        priceCache[withZeros]    = entry;
+        priceCache[withoutZeros] = entry;
+      });
+
+      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+        const id      = el.dataset.localId;
+        const cached  = priceCache[id];
+        const priceEl = el.querySelector('.card-item-price');
+        if (!priceEl || !cached?.price) return;
+        priceEl.textContent = `~$${cached.price.toFixed(2)}`;
+        priceEl.title = 'Estimated from Japanese Abyss Eye market price, converted to USD';
+        priceEl.classList.remove('loading');
+      });
+
+      const grid = document.getElementById('chase-grid');
+      if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
+
+      if (currentChaseList.length) {
+        const top3 = [...currentChaseList]
+          .map(c => ({ ...c, price: priceCache[c.id]?.price ?? -1 }))
+          .sort((a, b) => b.price - a.price)
+          .slice(0, 3);
+        document.querySelectorAll('#hero-stack img').forEach((img, i) => {
+          if (top3[i]) img.src = top3[i].img || cardImg('me05', top3[i].id);
+        });
+      }
+
+      if (document.getElementById('sort-select')?.value === 'price' && allCards.length) {
+        applyFilters();
+      }
+    } catch(e) {
+      // Expected to fail until the Scrydex JP ID for this set is confirmed
+      // and registered — see the TODO in api/scrydex-cards.js.
+      console.warn('Scrydex JP prices unavailable:', e.message);
+    }
+  })();
+}
+
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
   try {
@@ -1829,6 +1893,7 @@ async function loadCards() {
     setTimeout(() => {
       renderCards(true);
       loadTCGPlayerPrices();
+      if (SET_PHASE === 'jp') loadScrydexJPPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
