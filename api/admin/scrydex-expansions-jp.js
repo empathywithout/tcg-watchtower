@@ -4,7 +4,7 @@
 //
 // Usage: log in to tcgwatchtower.com as owner, then visit in your browser:
 //   /api/admin/scrydex-expansions-jp?q=Abyss
-// Omit ?q= to see all JA expansions.
+// Omit ?q= to see all JA expansions (raw JP name + English translation).
 
 import { verifySession } from '../auth/_verify.js';
 
@@ -24,11 +24,15 @@ export default async function handler(req, res) {
   const { q } = req.query;
 
   try {
+    // Raw JP expansion names are in Japanese script under the plain /expansions
+    // endpoint, so an English search term never matches there. The /ja/ prefix
+    // (same one used for JP card pricing elsewhere) exposes an English
+    // translation field alongside the raw name — pull both.
     let allExpansions = [];
     let page = 1;
     while (true) {
       const r = await fetch(
-        `${SCRYDEX_BASE}/expansions?page_size=100&page=${page}&select=id,name,series,release_date,language_code`,
+        `${SCRYDEX_BASE}/ja/expansions?page_size=100&page=${page}&select=id,name,translation,series,release_date`,
         { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(10000) }
       );
       if (!r.ok) break;
@@ -42,11 +46,16 @@ export default async function handler(req, res) {
 
     const term = (q || '').toLowerCase().trim();
     const sets = allExpansions
-      .filter(e => (e.language_code || '').toUpperCase() === 'JA')
-      .filter(e => !term || (e.name || '').toLowerCase().includes(term))
-      .map(e => ({ id: e.id, name: e.name, series: e.series, release_date: e.release_date }));
+      .map(e => ({
+        id: e.id,
+        name: e.name,
+        nameEn: e.translation?.en?.name || null,
+        series: e.series,
+        release_date: e.release_date,
+      }))
+      .filter(e => !term || (e.nameEn || '').toLowerCase().includes(term) || (e.name || '').toLowerCase().includes(term));
 
-    return res.status(200).json({ sets, total: sets.length });
+    return res.status(200).json({ sets, total: sets.length, totalExpansionsScanned: allExpansions.length });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
