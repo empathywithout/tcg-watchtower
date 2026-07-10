@@ -366,7 +366,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home<//span></a>
     <button class="section-nav-btn" data-target="section-chase" data-url="/one-piece/sets/the-azure-seas-seven/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
     <button class="section-nav-btn active" data-target="section-cards" data-url="/one-piece/sets/the-azure-seas-seven/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
-    <a class="section-nav-btn" href="/one-piece/sets/the-azure-seas-seven/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></a>
+    <button class="section-nav-btn" data-target="section-products" data-url="/one-piece/sets/the-azure-seas-seven/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
@@ -452,6 +452,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     <div class="section-header">
       <h2 class="section-title">Buy The Azure Sea's Seven <span class="gradient-text">Booster Boxes</span></h2>
       <p class="section-sub">Compare The Azure Sea's Seven sealed product prices across Amazon, eBay, and TCGplayer</p>
+      <a href="https://tcgwatchtower.com/one-piece/sets/the-azure-seas-seven/sealed-product" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;">See the full The Azure Sea's Seven Sealed Product Buying Guide →</a>
     </div>
     <div class="product-filter-bar" id="product-filters">
       <button class="filter-btn active" data-filter="all">All</button>
@@ -911,7 +912,6 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
       btns.forEach(b => b.classList.remove('active')); btn.classList.add('active');
     });
   });

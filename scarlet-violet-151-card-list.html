@@ -1146,9 +1146,9 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
-    <a class="section-nav-btn" href="/pokemon/sets/scarlet-violet/151/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/151/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
     <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/151/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
-    <a class="section-nav-btn" href="/pokemon/sets/scarlet-violet/151/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></a>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/151/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
       <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
@@ -1169,6 +1169,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     <div class="section-header">
       <h2 class="section-title">🔥 Scarlet & Violet 151 <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls from Scarlet & Violet 151 — ranked by market price</p>
+      <a href="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/151/top-chase-cards" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;">See the full Scarlet & Violet 151 Top Chase Cards list →</a>
     </div>
     <div class="chase-slider-wrap">
       <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left" aria-label="Scroll left">&#8249;</button>
@@ -1369,6 +1370,7 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     <div class="section-header">
       <h2 class="section-title">🛒 Buy MEW <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
       <p class="section-sub">Compare Scarlet & Violet 151 sealed product prices across Amazon, eBay, and TCGplayer</p>
+      <a href="https://tcgwatchtower.com/pokemon/sets/scarlet-violet/151/sealed-product" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;">See the full Scarlet & Violet 151 Sealed Product Buying Guide →</a>
     </div>
     <div class="product-filter-bar" id="product-filters">
       <button class="filter-btn active" data-filter="all">All</button>
@@ -2203,7 +2205,6 @@ function initNav() {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (btn.dataset.url) history.pushState(null, '', btn.dataset.url);
       btns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
