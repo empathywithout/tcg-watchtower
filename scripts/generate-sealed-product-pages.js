@@ -121,8 +121,12 @@ function buildSealedProductPage(data) {
     const amazonUrl = p.noAmazon ? null : amazonSearchUrl(p.q);
     const ebayUrl    = ebaySearchUrl(p.q);
     const tcgpUrl    = tcgplayerSearchUrl(p.q);
+    const imgUrl     = p.image || `https://product-images.tcgplayer.com/fit-in/437x437/${p.tcgpId}.jpg`;
     return `
     <div class="product-card">
+      <div class="product-img-wrap">
+        <img src="${imgUrl}" alt="${p.name}" width="180" height="180" loading="lazy" onerror="this.closest('.product-img-wrap').style.display='none'">
+      </div>
       <span class="product-type">${p.type}</span>
       <div class="product-name">${p.name}</div>
       <div class="product-price loading" data-tcgp-id="${p.tcgpId}">Loading...</div>
@@ -195,6 +199,8 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .subtitle{color:var(--text-muted);margin-bottom:2rem}
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;margin-bottom:2rem}
 .product-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.product-img-wrap{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:8px;overflow:hidden;margin-bottom:0.75rem}
+.product-img-wrap img{width:100%;height:100%;object-fit:contain}
 .product-type{display:inline-block;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--accent);margin-bottom:0.5rem}
 .product-name{font-weight:600;margin-bottom:0.75rem;line-height:1.3}
 .product-price{font-size:1.4rem;font-weight:700;color:var(--green);margin-bottom:1rem;min-height:1.75rem}
