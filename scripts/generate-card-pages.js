@@ -528,6 +528,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 .container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
 h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .subtitle{color:var(--text-muted);margin-bottom:2rem}
+.intro-text{color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;max-width:800px}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
 .card-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.2s;cursor:pointer}
 .card-item:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -651,6 +652,9 @@ function chaseCardGridItems(cardList) {
   }).join('');
 }
 function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, schemaType }) {
+  const ogImage = chaseCards[0] ? cardImgUrl(chaseCards[0]) : '';
+  const rarityList = [...new Set(chaseCards.map(c => normalizeRarity(c.rarity)))].filter(Boolean).join(', ');
+  const introText = `This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${rarityList || 'every high-rarity card in the set'}. Prices update automatically throughout the day, so check back for the latest movement before buying or selling.`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -663,6 +667,8 @@ function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, sch
 <meta property="og:description" content="${pageDesc}">
 <meta property="og:url" content="${pageUrl}">
 <meta property="og:type" content="website">
+${ogImage ? `<meta property="og:image" content="${ogImage}">
+<meta name="twitter:image" content="${ogImage}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
@@ -694,6 +700,7 @@ ${jpBanner}
 <div class="container">
   <h1>${h1}</h1>
   <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily on TCG Watchtower</p>
+  <p class="intro-text">${introText}</p>
   <div class="cards-grid" id="cards-grid">
     ${chaseCardGridItems(chaseCards)}
   </div>
