@@ -144,13 +144,26 @@ if (PHASE === 'jp') {
     if (rows.length === 0 || rows.length < 100) break;
     page++;
   }
+  // Scrydex's /ja/ endpoint returns rarity in Japanese, not English — translate
+  // to the taxonomy the rest of the site (rarity filters, CHASE_RARITIES) uses.
+  // Mapping confirmed against Pitch Black's known 81 main + 37 secret rare split.
+  const JP_RARITY_MAP = {
+    '通常': 'Common',
+    '非': 'Uncommon',
+    '希少': 'Rare',
+    'ダブルレア': 'Double Rare',
+    'アートレア': 'Illustration Rare',
+    'スペシャルアートレア': 'Special Illustration Rare',
+    'スーパーレア': 'Ultra Rare',
+    '超ウルトラレア': 'Mega Hyper Rare',
+  };
   cards = rawCards.map(c => {
     const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
     const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
     return {
       name:    c.translation?.en?.name || c.name || '',
       localId,
-      rarity:  c.rarity || '',
+      rarity:  JP_RARITY_MAP[c.rarity] || c.rarity || '',
       image:   c.images?.[0]?.medium || c.images?.[0]?.small || null,
     };
   });
