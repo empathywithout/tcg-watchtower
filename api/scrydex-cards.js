@@ -18,11 +18,7 @@ const SCRYDEX_EN_ID_MAP = {
 };
 
 const SCRYDEX_JP_ID_MAP = {
-  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja',
-  // 'me05': '<CONFIRM ME>',  // Pitch Black / Abyss Eye — do NOT guess this ID.
-  // Run `node scripts/find-scrydex-jp-id.js "Abyss Eye"` locally (needs
-  // SCRYDEX_API_KEY/SCRYDEX_TEAM_ID in env) to get the confirmed expansion ID,
-  // then add it here AND in the matching map in api/cards.js.
+  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
 };
 
 // JPY→USD conversion for JP-phase sets (no English TCGplayer prices exist yet).

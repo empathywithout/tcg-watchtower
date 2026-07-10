@@ -47,8 +47,7 @@ const SCRYDEX_JP_ID_MAP = {
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
-  // 'me05': '<CONFIRM ME>',  // Pitch Black / Abyss Eye — see api/scrydex-cards.js
-  // for how to find the real ID. Add it here too once confirmed.
+  'me05': 'm5_ja',
 };
 
 // TCGdex dot-notation map for special sets
