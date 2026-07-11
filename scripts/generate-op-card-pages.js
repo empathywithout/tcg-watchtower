@@ -59,8 +59,11 @@ function toSlug(name) {
 }
 
 function cardSlug(card) {
-  const displayId = card.localId.includes('_') ? card.localId.split('_')[0] : card.localId;
-  return `${toSlug(card.name)}-${toSlug(displayId)}`;
+  // Use the FULL localId (including any variant suffix like _specialaltart,
+  // _goldspecialaltart, _mangaaltart) so cards sharing a base number don't
+  // collide on the same slug. displayNumber() (below) is what's shown to
+  // users as "#051" -- this is only for building a unique URL/filename.
+  return `${toSlug(card.name)}-${toSlug(card.localId)}`;
 }
 
 function cardUrl(card) {
