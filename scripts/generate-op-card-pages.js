@@ -43,21 +43,20 @@ const metadata = await res.json();
 const rawCards = metadata.cards || [];
 
 // ── Known-bad records ───────────────────────────────────────────────────
-// Confirmed via live /api/cards data + visual verification (not guessed):
-// some cards from op14's two merged source releases (OP-14 + half of
-// EB-04) collide on the same localId with genuinely different card
-// identities, not just conflicting rarity labels for the same card --
-// meaning the generic rarity-priority dedup below would pick the WRONG
-// one here (it would keep 'Nami' at Super Rare over 'King' at Rare, but
-// the actual uploaded image at that slot is King's -- Nami never got a
-// real image of her own). A rarity-based heuristic can't know this;
-// only confirmed visual verification can. Explicit and narrow on purpose.
-const KNOWN_BAD_RECORDS = {
-  op14: [
-    { localId: '031', name: 'Nami' },
-    { localId: '031_altart', name: 'Nami (altArt)' },
-  ],
-};
+// CORRECTED: previously excluded 'Nami' here based on a wrong assumption
+// (that a shared image URL with 'King' at localId 031 meant one of them
+// was fake). Confirmed via the official One Piece Card Game site
+// (en.onepiece-cardgame.com/cardlist) that BOTH are real, legitimate,
+// separate cards: OP14-031 is Nami (Super Rare), EB04-031 is King (Rare)
+// -- this set merges OP-14's own numbering with EB-04's own SEPARATE
+// numbering, so two different real cards sharing the plain number '031'
+// is expected, not an error (same pattern as Bepo/Kikunojo at 012).
+// The real, still-unresolved issue: our data has no distinct image for
+// Nami and falls back to King's -- that needs a real image uploaded to
+// R2 for Nami specifically, not a card exclusion. Left empty rather than
+// deleted outright, to make clear this mechanism still exists for any
+// FUTURE individually-verified case, but nothing currently qualifies.
+const KNOWN_BAD_RECORDS = {};
 const badRecords = KNOWN_BAD_RECORDS[SET_ID] || [];
 const filteredRawCards = rawCards.filter(card => {
   const isBad = badRecords.some(b => b.localId === card.localId && b.name === card.name);

@@ -324,14 +324,15 @@ export default async function handler(req, res) {
       if (r2Res.ok) {
         const json = await r2Res.json();
         // Same data-quality fixes as generate-op-card-pages.js, kept in sync
-        // manually -- confirmed via live data + visual verification, never a
-        // blanket rule. See that script for the full explanation of why.
-        const KNOWN_BAD_RECORDS = {
-          op14: [
-            { localId: '031', name: 'Nami' },
-            { localId: '031_altart', name: 'Nami (altArt)' },
-          ],
-        };
+        // manually. CORRECTED: previously excluded 'Nami' here based on a
+        // wrong assumption (shared image URL with 'King' at localId 031
+        // implied one was fake). Confirmed via the official One Piece Card
+        // Game site that BOTH are real cards -- OP14-031 is Nami (Super
+        // Rare), EB04-031 is King (Rare), two different real cards sharing
+        // a plain number since this set merges two independently-numbered
+        // source releases. The real bug is a missing distinct image for
+        // Nami, not a fake card -- KNOWN_BAD_RECORDS left empty for now.
+        const KNOWN_BAD_RECORDS = {};
         const VARIANT_TYPE_RARITY = {
           treasureRare: 'Treasure Rare', altArt: 'Alternate Art',
           specialAltArt: 'Special', goldSpecialAltArt: 'Special', mangaAltArt: 'Manga Rare',
