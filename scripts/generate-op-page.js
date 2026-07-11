@@ -599,9 +599,6 @@ ${CARD_LIST_HTML}
     <div class="product-filter-bar" id="product-filters">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="box">Booster Box</button>
-      <button class="filter-btn" data-filter="etb">Elite Trainer Box</button>
-      <button class="filter-btn" data-filter="bundle">Bundle</button>
-      <button class="filter-btn" data-filter="collection">Collection</button>
       <button class="filter-btn" data-filter="case">Case</button>
     </div>
     <div class="products-grid" id="products-grid">
@@ -926,6 +923,51 @@ document.getElementById('rarity-filter').addEventListener('change',applyFilters)
 document.getElementById('sort-select').addEventListener('change',applyFilters);
 document.getElementById('load-more-btn').addEventListener('click',()=>renderCards(false));
 
+const PRODUCT_META_BY_SET = {
+  op14: {
+    '665598': { tcgpId: '665598', type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: "The Azure Sea's Seven Booster Box (24 Packs)", q: "One Piece The Azure Sea's Seven Booster Box OP14" },
+  },
+};
+const PRODUCT_META = PRODUCT_META_BY_SET[SET_ID.toLowerCase()] || {};
+
+function tcgpProductUrl(tcgpId) {
+  return \`\${TCGP_BASE}?u=\${encodeURIComponent('https://www.tcgplayer.com/product/' + tcgpId)}\`;
+}
+function renderProductCard(p) {
+  const img = \`https://product-images.tcgplayer.com/fit-in/437x437/\${p.tcgpId}.jpg\`;
+  const amz = p.noAmazon ? '' : \`<a class="product-link-row pl-amazon" href="\${amazonLink(p.q)}" target="_blank" rel="noopener"><span>Amazon</span><span>→</span></a>\`;
+  return \`
+    <div class="product-card" data-type="\${p.filterKey}">
+      <div class="product-img-wrap">
+        <img src="\${img}" alt="\${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'">
+      </div>
+      <div class="product-info">
+        <span class="rarity-badge \${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">\${p.type}</span>
+        <div class="product-name">\${p.name}</div>
+        <div class="product-price" data-tcgp-id="\${p.tcgpId}" style="font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem;"></div>
+        <div class="product-links">
+          \${amz}
+          <a class="product-link-row pl-ebay" href="\${ebayLink(p.q)}" target="_blank" rel="noopener"><span>eBay</span><span>→</span></a>
+          <a class="product-link-row pl-tcgp" href="\${tcgpProductUrl(p.tcgpId)}" target="_blank" rel="noopener"><span>TCGplayer</span><span>→</span></a>
+        </div>
+      </div>
+    </div>\`;
+}
+(function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  if (grid) grid.innerHTML = Object.values(PRODUCT_META).map(renderProductCard).join('');
+  document.getElementById('product-filters')?.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('#product-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('#products-grid .product-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+    });
+  });
+})();
+
 let _priceFetch=null;
 function loadTCGPlayerPrices() {
   if (!TCGP_GROUP_ID||TCGP_GROUP_ID==='0') return;
@@ -934,7 +976,7 @@ function loadTCGPlayerPrices() {
     try {
       const res=await fetch(\`/api/tcgplayer-prices?groupId=\${TCGP_GROUP_ID}&game=onepiece\`);
       if (!res.ok) return;
-      const {prices={},tcgpUrls={}}=await res.json();
+      const {prices={},tcgpUrls={},sealedPrices={}}=await res.json();
       Object.entries(prices).forEach(([key,price])=>{ if(price==null)return; priceCache[key]={price,url:tcgpUrls[key]||null}; });
       document.querySelectorAll('.card-item').forEach(el=>{
         const localId=el.dataset.localId;
@@ -943,6 +985,11 @@ function loadTCGPlayerPrices() {
         const priceEl=el.querySelector('.card-item-price');
         if(priceEl){priceEl.textContent=cached?.price?\`\$\${cached.price.toFixed(2)}\`:'';priceEl.classList.remove('loading');}
         if(cached?.url){const btn=el.querySelector('.buy-link.buy-tcgp[data-tcgp-href]');if(btn)btn.href=cached.url;}
+      });
+      document.querySelectorAll('[data-tcgp-id]').forEach(el=>{
+        const tid=el.dataset.tcgpId;
+        const sealedPrice=sealedPrices[tid];
+        if(sealedPrice!=null) el.textContent='\$'+sealedPrice.toFixed(2);
       });
       renderChaseHTML();
     } catch(e){console.warn('Prices unavailable:',e.message);}
