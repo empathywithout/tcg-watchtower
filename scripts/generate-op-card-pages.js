@@ -42,6 +42,29 @@ if (!res.ok) throw new Error(`Failed to fetch metadata: ${res.status}`);
 const metadata = await res.json();
 const rawCards = metadata.cards || [];
 
+// ── Known-bad records ───────────────────────────────────────────────────
+// Confirmed via live /api/cards data + visual verification (not guessed):
+// some cards from op14's two merged source releases (OP-14 + half of
+// EB-04) collide on the same localId with genuinely different card
+// identities, not just conflicting rarity labels for the same card --
+// meaning the generic rarity-priority dedup below would pick the WRONG
+// one here (it would keep 'Nami' at Super Rare over 'King' at Rare, but
+// the actual uploaded image at that slot is King's -- Nami never got a
+// real image of her own). A rarity-based heuristic can't know this;
+// only confirmed visual verification can. Explicit and narrow on purpose.
+const KNOWN_BAD_RECORDS = {
+  op14: [
+    { localId: '031', name: 'Nami' },
+    { localId: '031_altart', name: 'Nami (altArt)' },
+  ],
+};
+const badRecords = KNOWN_BAD_RECORDS[SET_ID] || [];
+const filteredRawCards = rawCards.filter(card => {
+  const isBad = badRecords.some(b => b.localId === card.localId && b.name === card.name);
+  if (isBad) console.warn(`⚠️  Dropping known-bad record: ${card.localId} (${card.name}) — confirmed duplicate/wrong-name collision`);
+  return !isBad;
+});
+
 // ── Data-quality cleanup ────────────────────────────────────────────────
 // Some sets' source data has malformed entries for the same physical card:
 // (a) the exact same localId appearing twice with different (wrong) rarity
@@ -62,7 +85,7 @@ const DEDUP_RARITY_PRIORITY = {
 };
 const byLocalId = new Map();
 const cards = [];
-for (const card of rawCards) {
+for (const card of filteredRawCards) {
   if (card.isVariant && card.variantType && VARIANT_TYPE_RARITY[card.variantType]
       && card.rarity !== VARIANT_TYPE_RARITY[card.variantType]) {
     console.warn(`⚠️  Dropping malformed variant record: ${card.localId} (${card.name}) — variantType "${card.variantType}" implies rarity "${VARIANT_TYPE_RARITY[card.variantType]}" but rarity field says "${card.rarity}"`);
