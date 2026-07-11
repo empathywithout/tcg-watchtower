@@ -562,6 +562,13 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .btn:hover{opacity:0.85}
 .set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
 .set-link:hover{text-decoration:underline}
+.set-link-top{display:inline-block;margin-bottom:1.5rem;color:var(--accent);font-size:0.9rem;font-weight:600}
+.set-link-top:hover{text-decoration:underline}
+.faq-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.faq-heading{font-size:1.4rem;font-weight:700;margin-bottom:1.25rem}
+.faq-item{margin-bottom:1.25rem}
+.faq-q{font-size:1rem;font-weight:700;margin-bottom:0.4rem;color:var(--text)}
+.faq-a{color:var(--text-muted);font-size:0.9rem;line-height:1.6}
 footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:3rem}`;
 const enChaseScript = `const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
 async function loadPrices() {
@@ -663,10 +670,42 @@ function chaseCardGridItems(cardList) {
     </div>`;
   }).join('');
 }
-function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, schemaType }) {
+function buildChasePage({ pageUrl, pageTitle, pageDesc, h1, breadcrumbLabel, schemaType, totalCount }) {
   const ogImage = chaseCards[0] ? cardImgUrl(chaseCards[0]) : '';
   const rarityList = [...new Set(chaseCards.map(c => normalizeRarity(c.rarity)))].filter(Boolean).join(', ');
-  const introText = `This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${rarityList || 'every high-rarity card in the set'}. Prices update automatically throughout the day, so check back for the latest movement before buying or selling.`;
+  const introText = `This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${rarityList || 'every high-rarity card in the set'}. Chase cards are the highest-rarity cards in a set — the ones collectors specifically hope to pull from a booster box, and the main driver of a box's resale value. Prices update automatically throughout the day.`;
+
+  const topCard = chaseCards[0];
+  const topCardRarity = topCard ? normalizeRarity(topCard.rarity) : '';
+  const faqItems = [
+    {
+      q: `What are the chase cards in ${SET_FULL_NAME}?`,
+      a: `The chase cards in ${SET_FULL_NAME} are its highest-rarity pulls — ${rarityList || 'its highest-rarity cards'}. These are the cards collectors specifically hope to pull from a booster box, and the main driver of a box's resale value.`,
+    },
+    ...(topCard ? [{
+      q: `What is the most valuable ${SET_FULL_NAME} card?`,
+      a: `${topCard.name} is typically the most valuable ${SET_FULL_NAME} pull, as a ${topCardRarity} card. See live pricing for it and every other chase card ranked below.`,
+    }] : []),
+    {
+      q: `How many chase cards are in ${SET_FULL_NAME}?`,
+      a: `${chaseCards.length} out of ${totalCount} total cards in ${SET_FULL_NAME} qualify as chase-tier rarities.`,
+    },
+  ];
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": { "@type": "Answer", "text": item.a },
+    })),
+  };
+  const faqHtml = faqItems.map(item => `
+    <div class="faq-item">
+      <h3 class="faq-q">${item.q}</h3>
+      <p class="faq-a">${item.a}</p>
+    </div>`).join('');
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -701,6 +740,9 @@ ${ogImage ? `<meta property="og:image" content="${ogImage}">
   }
 }
 <\/script>
+<script type="application/ld+json">
+${JSON.stringify(faqSchema, null, 2)}
+<\/script>
 ${sharedFonts}
 ${gaScript}
 <style>${chaseStyles}<\/style>
@@ -711,12 +753,17 @@ ${breadcrumb(breadcrumbLabel)}
 ${jpBanner}
 <div class="container">
   <h1>${h1}</h1>
-  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily on TCG Watchtower</p>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — the most valuable pulls in ${SET_FULL_NAME}, updated daily</p>
   <p class="intro-text">${introText}</p>
+  <a href="${cardListUrl}" class="set-link-top">View the complete ${SET_FULL_NAME} card list and prices →</a>
   <div class="cards-grid" id="cards-grid">
     ${chaseCardGridItems(chaseCards)}
   </div>
   <a href="${cardListUrl}" class="set-link">← View Full ${SET_FULL_NAME} Card List</a>
+  <div class="faq-section">
+    <h2 class="faq-heading">Frequently Asked Questions</h2>
+    ${faqHtml}
+  </div>
 </div>
 <footer>
   <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Prices on TCG Watchtower.</p>
@@ -726,26 +773,10 @@ ${impactScript}
 </body>
 </html>`;
 }
-// ─── Most Valuable page ───────────────────────────────────────────────────────
-const mvpUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/most-valuable`;
-const mvpTitle = `Most Valuable ${SET_FULL_NAME} Cards | Prices & Rankings | Pokémon TCG`;
-const mvpDesc  = `The most valuable ${SET_FULL_NAME} Pokémon cards ranked by price. See current market prices for all Hyper Rare, Special Illustration Rare, and Ultra Rare cards.`;
-fs.writeFileSync(path.join(setDir, 'most-valuable.html'), buildChasePage({
-  pageUrl: mvpUrl, pageTitle: mvpTitle, pageDesc: mvpDesc,
-  h1: `Most Valuable ${SET_FULL_NAME} Cards`,
-  breadcrumbLabel: 'Most Valuable Cards',
-  schemaType: 'CollectionPage',
-}));
-console.log(`✅ Generated most-valuable page`);
-
-let sitemap2 = fs.readFileSync(sitemapPath, 'utf8');
-sitemap2 = sitemap2.replace(
-  new RegExp(`  <url>\\s*<loc>${mvpUrl}</loc>[\\s\\S]*?</url>\\n?`, 'g'),
-  ''
-);
-sitemap2 = sitemap2.replace('</urlset>', `  <url>\n    <loc>${mvpUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>`);
-fs.writeFileSync(sitemapPath, sitemap2);
-console.log(`✅ sitemap.xml updated with most-valuable URL`);
+// (Most Valuable page removed — consolidated into the Top Chase Cards page below,
+// which now targets both "chase cards" and "most valuable" query phrasing on one URL.
+// /most-valuable now 301-redirects to /top-chase-cards via a single wildcard rule
+// in vercel.json, so existing internal links pointing at /most-valuable keep working.)
 // ─── Top Chase Cards page ─────────────────────────────────────────────────────
 function enCardPriceScript(card) {
   return `const GROUP_ID = '${TCGP_GROUP_ID}';
@@ -819,15 +850,22 @@ async function loadPrice() {
 loadPrice();`;
 }
 const chaseUrl   = `${SITE_URL}/pokemon/sets/${SET_SERIES_SLUG}/${SET_SLUG}/top-chase-cards`;
-const chaseTitle = `${SET_FULL_NAME} Top Chase Cards | Best Pulls & Rare Cards | Pokémon TCG`;
-const chaseDesc  = `The most valuable ${SET_FULL_NAME} chase cards ranked by price — every Hyper Rare, Special Illustration Rare, Ultra Rare, and Illustration Rare. See current market prices and where to buy.`;
+const chaseTitle = `${SET_FULL_NAME} Chase Cards: Most Valuable Cards Ranked by Price | Pokémon TCG`;
+const chaseDesc  = `See every ${SET_FULL_NAME} chase card ranked by current market price — the most valuable Hyper Rares, Special Illustration Rares, and Ultra Rares in the set. Updated daily, with pull-rate context and where to buy.`;
 fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), buildChasePage({
   pageUrl: chaseUrl, pageTitle: chaseTitle, pageDesc: chaseDesc,
-  h1: `${SET_FULL_NAME} Top Chase Cards`,
-  breadcrumbLabel: 'Top Chase Cards',
+  h1: `${SET_FULL_NAME} Chase Cards`,
+  breadcrumbLabel: 'Chase Cards',
   schemaType: 'CollectionPage',
+  totalCount: cards.length,
 }));
 console.log(`✅ Generated top-chase-cards page`);
+
+const staleMvPath = path.join(setDir, 'most-valuable.html');
+if (fs.existsSync(staleMvPath)) {
+  fs.unlinkSync(staleMvPath);
+  console.log(`✅ Removed stale most-valuable.html (consolidated into top-chase-cards)`);
+}
 
 let sitemap3 = fs.readFileSync(sitemapPath, 'utf8');
 sitemap3 = sitemap3.replace(

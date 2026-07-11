@@ -115,22 +115,10 @@
     <priority>0.8</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/base-set/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/base-set/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paldea-evolved/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paldea-evolved/top-chase-cards</loc>
@@ -139,22 +127,10 @@
     <priority>0.7</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/obsidian-flames/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/obsidian-flames/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/151/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/151/top-chase-cards</loc>
@@ -163,22 +139,10 @@
     <priority>0.7</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paradox-rift/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/temporal-forces/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/temporal-forces/top-chase-cards</loc>
@@ -1657,12 +1621,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paldean-fates/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/paldean-fates/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -3025,12 +2983,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/twilight-masquerade/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/twilight-masquerade/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -3629,12 +3581,6 @@
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/shrouded-fable/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/shrouded-fable/top-chase-cards</loc>
@@ -4691,12 +4637,6 @@
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/stellar-crown/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/stellar-crown/top-chase-cards</loc>
@@ -6217,12 +6157,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/surging-sparks/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/surging-sparks/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -7307,12 +7241,6 @@
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/prismatic-evolutions/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/prismatic-evolutions/top-chase-cards</loc>
@@ -8459,12 +8387,6 @@
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/journey-together/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/journey-together/top-chase-cards</loc>
@@ -9937,12 +9859,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/most-valuable</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/destined-rivals/top-chase-cards</loc>
     <lastmod>2026-03-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -10757,12 +10673,6 @@
     <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/phantasmal-flames/most-valuable</loc>
-    <lastmod>2026-03-16</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/phantasmal-flames/top-chase-cards</loc>
@@ -11899,12 +11809,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/mega-evolution/most-valuable</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/mega-evolution/top-chase-cards</loc>
     <lastmod>2026-03-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -13037,12 +12941,6 @@
     <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/base-set/most-valuable</loc>
-    <lastmod>2026-03-16</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/base-set/top-chase-cards</loc>
@@ -14821,12 +14719,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/ascended-heroes/most-valuable</loc>
-    <lastmod>2026-03-16</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/ascended-heroes/top-chase-cards</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -15563,12 +15455,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/most-valuable</loc>
-    <lastmod>2026-05-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -16275,12 +16161,6 @@
     <lastmod>2026-03-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/perfect-order/most-valuable</loc>
-    <lastmod>2026-04-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
 <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/perfect-order/top-chase-cards</loc>
@@ -20528,12 +20408,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/black-bolt/most-valuable</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/black-bolt/top-chase-cards</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -21578,12 +21452,6 @@
     <priority>0.6</priority>
   </url>
 <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/white-flare/most-valuable</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-<url>
     <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet/white-flare/top-chase-cards</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -22297,13 +22165,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
-  <url>
-    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/pitch-black/most-valuable</loc>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
+    <url>
     <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution/pitch-black/top-chase-cards</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>

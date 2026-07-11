@@ -611,6 +611,11 @@
   ],
   "redirects": [
     {
+      "source": "/pokemon/sets/:series/:set/most-valuable",
+      "destination": "/pokemon/sets/:series/:set/top-chase-cards",
+      "permanent": true
+    },
+    {
       "source": "/scarlet-violet-base-set-card-list",
       "destination": "/pokemon/sets/scarlet-violet/base-set/cards",
       "permanent": true
