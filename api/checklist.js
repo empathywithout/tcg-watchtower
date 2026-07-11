@@ -24,7 +24,7 @@ const SET_NAMES = {
 };
 
 const SET_URL_PATHS = {
-  'sv01': 'scarlet-violet/scarlet-violet-base-set',
+  'sv01': 'scarlet-violet/base-set',
   'sv02': 'scarlet-violet/paldea-evolved',
   'sv03': 'scarlet-violet/obsidian-flames',
   'sv3pt5': 'scarlet-violet/151',

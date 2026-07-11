@@ -125,22 +125,6 @@
       "destination": "/sets.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/cards",
-      "destination": "/scarlet-violet-base-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/sealed-product",
-      "destination": "/pokemon/sets/scarlet-violet/base-set/sealed-product.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/most-valuable",
-      "destination": "/pokemon/sets/scarlet-violet/scarlet-violet-base/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base/top-chase-cards",
-      "destination": "/pokemon/sets/scarlet-violet/scarlet-violet-base/top-chase-cards.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/cards",
       "destination": "/scarlet-violet-base-set-card-list.html"
     },
@@ -723,6 +707,51 @@
     {
       "source": "/pokemon/sets/mega-evolution/mega-evolution-base-set/top-chase-cards",
       "destination": "/pokemon/sets/mega-evolution/base-set/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/cards",
+      "destination": "/pokemon/sets/scarlet-violet/151/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/sealed-product",
+      "destination": "/pokemon/sets/scarlet-violet/151/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/151/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-151/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/151/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/cards",
+      "destination": "/pokemon/sets/scarlet-violet/base-set/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/sealed-product",
+      "destination": "/pokemon/sets/scarlet-violet/base-set/sealed-product",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/most-valuable",
+      "destination": "/pokemon/sets/scarlet-violet/base-set/most-valuable",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/top-chase-cards",
+      "destination": "/pokemon/sets/scarlet-violet/base-set/top-chase-cards",
+      "permanent": true
+    },
+    {
+      "source": "/heroines-edition-card-list",
+      "destination": "/one-piece/sets/heroines-edition/cards",
       "permanent": true
     },
     {
