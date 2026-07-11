@@ -465,10 +465,6 @@
       "destination": "/one-piece/sets/adventure-on-kamis-island/top-chase-cards.html"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
-      "destination": "/one-piece/sets/heroines-edition/top-chase-cards.html"
-    },
-    {
       "source": "/one-piece/sets/:slug/cards",
       "destination": "/:slug-card-list.html"
     },
@@ -597,12 +593,12 @@
       "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/most-valuable",
-      "destination": "/one-piece/sets/heroines-edition/most-valuable.html"
-    },
-    {
       "source": "/one-piece/sets/the-azure-seas-seven/top-chase-cards",
       "destination": "/one-piece/sets/the-azure-seas-seven/top-chase-cards.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
+      "destination": "/one-piece/sets/heroines-edition/top-chase-cards.html"
     },
     {
       "source": "/one-piece/sets/:set/cards/:slug",
