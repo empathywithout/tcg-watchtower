@@ -457,16 +457,8 @@
       "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards"
     },
     {
-      "source": "/one-piece/sets/heroines-edition/cards",
-      "destination": "/heroines-edition-card-list.html"
-    },
-    {
       "source": "/one-piece/sets/heroines-edition/sealed-product",
       "destination": "/one-piece/sets/heroines-edition/sealed-product.html"
-    },
-    {
-      "source": "/one-piece/sets/heroines-edition/top-chase-cards",
-      "destination": "/heroines-edition-card-list.html"
     },
     {
       "source": "/one-piece/sets/the-azure-seas-seven/cards",
@@ -607,6 +599,10 @@
     {
       "source": "/one-piece/sets/adventure-on-kamis-island/most-valuable",
       "destination": "/one-piece/sets/adventure-on-kamis-island/most-valuable.html"
+    },
+    {
+      "source": "/one-piece/sets/heroines-edition/most-valuable",
+      "destination": "/one-piece/sets/heroines-edition/most-valuable.html"
     },
     {
       "source": "/one-piece/sets/:set/cards/:slug",
