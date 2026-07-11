@@ -1,0 +1,33 @@
+name: Test TTS Narration
+
+on:
+  workflow_dispatch:  # manual trigger only, from the Actions tab
+
+jobs:
+  test-tts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install google-cloud-texttospeech
+
+      - name: Write GCP credentials
+        run: echo '${{ secrets.GCP_TTS_KEY }}' > /tmp/gcp-key.json
+
+      - name: Run narration test
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
+        run: python3 scripts/generate_narration_audio.py
+
+      - name: Upload test audio as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-narration-audio
+          path: /tmp/test_narration.mp3
