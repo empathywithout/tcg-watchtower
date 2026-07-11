@@ -56,6 +56,7 @@ const SCRYDEX_ID_MAP = {
  * These are fetched individually from Scrydex and stored with full IDs (e.g. "EB04-044").
  */
 const EB_SPLIT = {
+  'op14': { 'EB04': [{ start: 11, end: 41 }] },
   'op15': { 'EB04': [{ start: 1, end: 10 }, { start: 42, end: 61 }] },
 };
 
