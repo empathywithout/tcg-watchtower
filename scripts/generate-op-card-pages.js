@@ -76,11 +76,20 @@ function displayNumber(localId) {
   return localId.includes('_') ? localId.split('_')[0] : localId;
 }
 
+const TCGP_AFFILIATE_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
+
 function tcgpSearchUrl(card) {
   const name = (card.name || '').replace(/\s*[(][^)]*[)]\s*$/, '').trim();
   const num  = displayNumber(card.localId);
   const q    = encodeURIComponent(`${name} ${num} One Piece`);
-  return `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${q}&view=grid`;
+  const url  = `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${q}&view=grid`;
+  return `${TCGP_AFFILIATE_BASE}?u=${encodeURIComponent(url)}`;
+}
+
+function amazonSearchUrl(card) {
+  const num = displayNumber(card.localId);
+  const q   = encodeURIComponent(`${card.name} ${num} ${SET_FULL_NAME} One Piece Card`);
+  return `https://www.amazon.com/s?k=${q}&linkCode=ll2&tag=cehutto01-20&language=en_US`;
 }
 
 function ebaySearchUrl(card) {
@@ -291,6 +300,7 @@ nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px so
 .btn{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:none;transition:opacity .2s}
 .btn:hover{opacity:.85}
 .btn-tcgp{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(59,130,246,.2));border:1px solid rgba(74,222,128,.3);color:#4ade80}
+.btn-amazon{background:#f90;color:#111}
 .btn-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .btn span:last-child{opacity:.7}
 .section-title{font-size:.9rem;font-weight:700;margin-bottom:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -351,6 +361,9 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
         ${card.isVariant && card.baseLocalId ? `<div class="info-row"><div class="info-key">Variant Of</div><div class="info-val">${card.baseLocalId}</div></div>` : ''}
       </div>
       <div class="buy-buttons">
+        <a class="btn btn-amazon" href="${amazonSearchUrl(card)}" target="_blank" rel="noopener">
+          <span>🛒 Find on Amazon</span><span>→</span>
+        </a>
         <a class="btn btn-tcgp" href="${tcgpSearchUrl(card)}" target="_blank" rel="noopener">
           <span>🛒 Buy on TCGplayer</span><span>→</span>
         </a>
@@ -601,6 +614,7 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;mar
 .btn{flex:1;padding:7px 4px;border-radius:6px;font-size:.75rem;font-weight:700;text-align:center;cursor:pointer;transition:opacity .2s}
 .btn:hover{opacity:.85}
 .btn-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80}
+.btn-amazon{background:#f90;color:#111}
 .btn-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--amber);margin-top:2.5rem;font-size:.9rem;transition:color .2s}
 .back-link:hover{color:white}
@@ -634,7 +648,9 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const baseLocalId = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
       const variantSuffix = c.localId.includes('_') ? '_' + c.localId.split('_').slice(1).join('_') : '';
       const priceDataKey = isCrossSet ? (baseLocalId + variantSuffix) : (dispNum.padStart(3, '0') + variantSuffix);
-      const tcgpUrl = `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${encodeURIComponent(c.name + ' ' + dispNum + ' One Piece')}&view=grid`;
+      const tcgpRawUrl = `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${encodeURIComponent(c.name + ' ' + dispNum + ' One Piece')}&view=grid`;
+      const tcgpUrl = `${TCGP_AFFILIATE_BASE}?u=${encodeURIComponent(tcgpRawUrl)}`;
+      const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(c.name + ' ' + dispNum + ' ' + SET_FULL_NAME + ' One Piece Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + dispNum + ' ' + SET_FULL_NAME + ' One Piece Card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339145069&toolid=10001&mkevt=1`;
       const badgeClass = c.rarity === 'Manga Rare' ? 'badge-mr' : c.rarity === 'Secret Rare' ? 'badge-sec' : c.rarity === 'Treasure Rare' ? 'badge-tr' : (c.rarity === 'Special' || c.rarity === 'Alternate Art') ? 'badge-sp' : c.rarity === 'Super Rare' ? 'badge-sr' : 'badge-r';
       const label = RARITY_LABEL_OP[c.rarity] || c.rarity;
@@ -649,6 +665,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <span class="rarity-badge ${badgeClass}">${label}</span>
         <div class="card-price loading" data-price-key="${priceDataKey}">—</div>
         <div class="buy-btns">
+          <a class="btn btn-amazon" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
           <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
           <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
         </div>
