@@ -193,6 +193,14 @@ async function loadPrices() {
       return pb - pa;
     });
     items.forEach(i => grid.appendChild(i));
+    const faqEl = document.getElementById('faq-top-answer');
+    if (faqEl && items[0]) {
+      const topName = items[0].querySelector('.card-name')?.textContent;
+      const topPriceText = items[0].querySelector('[data-local-id]')?.textContent;
+      if (topName && topPriceText && topPriceText !== 'N/A') {
+        faqEl.textContent = topName + ' is currently the most valuable chase card in this set, priced at ' + topPriceText + '. See live pricing for it and every other chase card ranked below.';
+      }
+    }
   } catch(e) {}
 }
 loadPrices();`;
@@ -230,6 +238,14 @@ async function loadPrices() {
       return pb - pa;
     });
     items.forEach(i => grid.appendChild(i));
+    const faqEl = document.getElementById('faq-top-answer');
+    if (faqEl && items[0]) {
+      const topName = items[0].querySelector('.card-name')?.textContent;
+      const topPriceText = items[0].querySelector('[data-local-id]')?.textContent;
+      if (topName && topPriceText && topPriceText !== 'N/A') {
+        faqEl.textContent = topName + ' is currently the most valuable chase card in this set, priced at ' + topPriceText + '. See live pricing for it and every other chase card ranked below.';
+      }
+    }
   } catch(e) {}
 }
 loadPrices();`;
@@ -284,6 +300,7 @@ function buildChasePage({ info, chaseCards, totalCount, pageUrl, pageTitle, page
     ...(topCard ? [{
       q: `What is the most valuable ${info.setFullName} card?`,
       a: `${topCard.name} is typically the most valuable ${info.setFullName} pull, as a ${topCardRarity} card. See live pricing for it and every other chase card ranked below.`,
+      id: 'faq-top-answer',
     }] : []),
     {
       q: `How many chase cards are in ${info.setFullName}?`,
@@ -302,7 +319,7 @@ function buildChasePage({ info, chaseCards, totalCount, pageUrl, pageTitle, page
   const faqHtml = faqItems.map(item => `
     <div class="faq-item">
       <h3 class="faq-q">${item.q}</h3>
-      <p class="faq-a">${item.a}</p>
+      <p class="faq-a"${item.id ? ` id="${item.id}"` : ''}>${item.a}</p>
     </div>`).join('');
 
   return `<!DOCTYPE html>

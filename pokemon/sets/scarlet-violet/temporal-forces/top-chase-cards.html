@@ -1050,7 +1050,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
     </div>
     <div class="faq-item">
       <h3 class="faq-q">What is the most valuable Temporal Forces card?</h3>
-      <p class="faq-a">Gouging Fire ex is typically the most valuable Temporal Forces pull, as a Hyper Rare card. See live pricing for it and every other chase card ranked below.</p>
+      <p class="faq-a" id="faq-top-answer">Gouging Fire ex is typically the most valuable Temporal Forces pull, as a Hyper Rare card. See live pricing for it and every other chase card ranked below.</p>
     </div>
     <div class="faq-item">
       <h3 class="faq-q">How many chase cards are in Temporal Forces?</h3>
@@ -1088,6 +1088,14 @@ async function loadPrices() {
       return pb - pa;
     });
     items.forEach(i => grid.appendChild(i));
+    const faqEl = document.getElementById('faq-top-answer');
+    if (faqEl && items[0]) {
+      const topName = items[0].querySelector('.card-name')?.textContent;
+      const topPriceText = items[0].querySelector('[data-local-id]')?.textContent;
+      if (topName && topPriceText && topPriceText !== 'N/A') {
+        faqEl.textContent = topName + ' is currently the most valuable chase card in this set, priced at ' + topPriceText + '. See live pricing for it and every other chase card ranked below.';
+      }
+    }
   } catch(e) {}
 }
 loadPrices();</script>
