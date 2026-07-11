@@ -104,21 +104,60 @@ try {
     }).join('\n');
     console.log(`✅ Baked ${r2Cards.length} card names into static HTML for SEO`);
 
-    // Auto-select hero cards from top chase cards by rarity tier (if not manually specified)
+    // Auto-select hero cards from top chase cards by REAL PRICE (via TCGCSV), not just
+    // rarity tier -- rarity tier is only used as a fallback for cards with no matched price.
     const HERO_RARITY_TIER = {
       'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2,
       'Alternate Art': 3, 'Special': 4, 'Super Rare': 5,
     };
     const manuallySet = process.env.HERO_CARD_1 || process.env.HERO_CARD_2 || process.env.HERO_CARD_3;
     if (!manuallySet) {
-      const chaseCards = r2Cards
-        .filter(c => HERO_RARITY_TIER[c.rarity] !== undefined)
-        .sort((a, b) => (HERO_RARITY_TIER[a.rarity] ?? 99) - (HERO_RARITY_TIER[b.rarity] ?? 99))
-        .slice(0, 3);
+      const chaseCandidates = r2Cards.filter(c => HERO_RARITY_TIER[c.rarity] !== undefined);
+
+      // Fetch real prices by productId, keyed the same way api/tcgplayer-prices.js does.
+      let priceByProductId = {};
+      if (tcgpGroupId && tcgpGroupId !== '0') {
+        try {
+          const pricesRes = await fetch(`https://tcgcsv.com/tcgplayer/68/${tcgpGroupId}/prices`, {
+            headers: { 'User-Agent': 'TCGWatchtower/1.0' },
+          });
+          if (pricesRes.ok) {
+            const pricesData = await pricesRes.json();
+            for (const p of (pricesData.results || [])) {
+              const subType = (p.subTypeName || '').toLowerCase();
+              if (subType.includes('reverse')) continue;
+              const existing = priceByProductId[p.productId];
+              if (!existing || (subType === 'normal' && (existing.subTypeName||'').toLowerCase() !== 'normal')) {
+                priceByProductId[p.productId] = p;
+              }
+            }
+            console.log(`✅ Fetched ${Object.keys(priceByProductId).length} real prices from TCGCSV for hero-card ranking`);
+          }
+        } catch (e) {
+          console.warn('⚠️  Could not fetch TCGCSV prices for hero-card ranking, falling back to rarity tier only:', e.message);
+        }
+      }
+
+      const withPrice = chaseCandidates.map(c => {
+        const priceEntry = c.tcgpProductId ? priceByProductId[c.tcgpProductId] : null;
+        const price = priceEntry ? (priceEntry.marketPrice ?? priceEntry.midPrice ?? null) : null;
+        return { card: c, price };
+      });
+
+      // Real price descending first; cards with no matched price fall back to rarity tier,
+      // sorted after all priced cards.
+      withPrice.sort((a, b) => {
+        if (a.price != null && b.price != null) return b.price - a.price;
+        if (a.price != null) return -1;
+        if (b.price != null) return 1;
+        return (HERO_RARITY_TIER[a.card.rarity] ?? 99) - (HERO_RARITY_TIER[b.card.rarity] ?? 99);
+      });
+
+      const chaseCards = withPrice.slice(0, 3).map(w => w.card);
       if (chaseCards[0]) autoHero1 = chaseCards[0].localId;
       if (chaseCards[1]) autoHero2 = chaseCards[1].localId;
       if (chaseCards[2]) autoHero3 = chaseCards[2].localId;
-      console.log(`✅ Auto hero cards: ${autoHero1}, ${autoHero2}, ${autoHero3}`);
+      console.log(`✅ Auto hero cards (by real price): ${autoHero1}, ${autoHero2}, ${autoHero3}`);
     }
   }
 } catch(e) {
@@ -283,6 +322,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .buy-links{display:flex;gap:6px;margin-top:auto;padding-top:8px;flex-wrap:nowrap}
 .buy-link{flex:1;min-width:0;padding:5px 4px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-amazon{background:#f90;color:#111}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
 .chase-arrow:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.9);opacity:1}
@@ -639,6 +679,7 @@ const logoEl = document.getElementById('set-logo-hero');
 if (logoEl) logoEl.src = \`\${R2}/logos/op/\${SET_ID}.png\`;
 
 function ebayLink(q) { return \`https://www.ebay.com/sch/i.html?_nkw=\${encodeURIComponent(q)}&mkcid=1&mkrid=\${EBAY_MKRID}&siteid=0&campid=\${EBAY_CAMP}&toolid=10001&mkevt=1\`; }
+function amazonLink(q) { return \`https://www.amazon.com/s?k=\${encodeURIComponent(q)}&linkCode=ll2&tag=cehutto01-20&language=en_US\`; }
 function tcgpLink(name, num) {
   const q = encodeURIComponent(\`\${name} \${num} One Piece\`);
   const url = \`https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=\${q}&view=grid\`;
@@ -782,6 +823,7 @@ function renderChaseHTML() {
         <div class="chase-card-rarity-wrap"><span class="rarity-badge \${c.rarityClass}">\${c.label}</span></div>
         \${priceHTML}
         <div class="buy-links" style="width:100%">
+          <a class="buy-link buy-amazon" href="\${amazonLink(c.name+' '+c.displayId+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="\${ebayLink(c.name+' '+c.displayId+' '+SET_FULL_NAME+' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" href="\${cached?.url||tcgpLink(c.name,c.displayId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -820,6 +862,7 @@ function renderCards(reset) {
         <div class="card-item-price \${priceClass}">\${priceText}</div>
         \${card.rarity&&RARITY_CLASS[card.rarity]?\`<div style="margin-top:3px"><span class="rarity-badge \${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">\${RARITY_LABEL[card.rarity]||card.rarity}</span></div>\`:''}
         <div class="buy-links" style="margin-top:6px">
+          <a class="buy-link buy-amazon" href="\${amazonLink(\`\${card.name} \${dispNum} \${SET_FULL_NAME} One Piece Card\`)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="\${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="\${tcgpUrl}" href="\${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -918,7 +961,6 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
     btn.addEventListener('click',()=>{
       const t=document.getElementById(btn.dataset.target);
       if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
-      if(btn.dataset.url)history.pushState(null,'',btn.dataset.url);
       btns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     });
   });
