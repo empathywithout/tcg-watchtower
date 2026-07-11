@@ -65,6 +65,21 @@ const SET_URL_SLUG = (process.env.SET_URL_SLUG || '').trim()
   || SET_URL_SLUG_MAP[SET_ID]
   || SET_SLUG.replace('-card-list', '');
 
+// Guardrail: catches the exact mistake that produced the
+// scarlet-violet/scarlet-violet-151 and .../scarlet-violet-base-set
+// duplicate-page bug. The fallback above (SET_SLUG.replace('-card-list',''))
+// only strips the file-slug suffix — it does NOT strip a series-name
+// prefix, so any set whose file slug includes the series name (the sets.json
+// default) falls through with a URL slug that still duplicates the series.
+// If this fires, either pass SET_URL_SLUG explicitly or add SET_ID to
+// SET_URL_SLUG_MAP above.
+if (SET_URL_SLUG && SET_SERIES_SLUG && SET_URL_SLUG.startsWith(`${SET_SERIES_SLUG}-`)) {
+  console.error(`❌ Computed SET_URL_SLUG ("${SET_URL_SLUG}") duplicates SET_SERIES_SLUG ("${SET_SERIES_SLUG}") as a prefix.`);
+  console.error(`   Did you mean SET_URL_SLUG="${SET_URL_SLUG.slice(SET_SERIES_SLUG.length + 1)}"?`);
+  console.error(`   Fix by passing SET_URL_SLUG explicitly, or adding '${SET_ID}': '${SET_URL_SLUG.slice(SET_SERIES_SLUG.length + 1)}' to SET_URL_SLUG_MAP above.`);
+  process.exit(1);
+}
+
 const SET_SEO_PATH     = process.env.SET_SEO_PATH || `pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards`;
 const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;

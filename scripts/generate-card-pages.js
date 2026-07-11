@@ -76,6 +76,18 @@ const SET_SERIES_SLUG = (process.env.SET_SERIES_SLUG || '').trim()
   || 'scarlet-violet';
 // SET_SLUG = URL path segment, e.g. "base-set" or "stellar-crown"
 const SET_SLUG        = (process.env.SET_SLUG || '').trim();
+// Guardrail: catches the exact mistake that produced the
+// scarlet-violet/scarlet-violet-151 and .../scarlet-violet-base-set
+// duplicate-page bug — SET_SLUG accidentally set to a value that already
+// includes SET_SERIES_SLUG as a prefix (usually from copying sets.json's
+// file-slug field, which legitimately includes the series name, into the
+// SET_SLUG input, which should NOT).
+if (SET_SLUG && SET_SERIES_SLUG && SET_SLUG.startsWith(`${SET_SERIES_SLUG}-`)) {
+  console.error(`❌ SET_SLUG ("${SET_SLUG}") appears to duplicate SET_SERIES_SLUG ("${SET_SERIES_SLUG}") as a prefix.`);
+  console.error(`   Did you mean SET_SLUG="${SET_SLUG.slice(SET_SERIES_SLUG.length + 1)}"?`);
+  console.error(`   (This exact mistake previously created .../${SET_SERIES_SLUG}/${SET_SLUG}/ as a duplicate of .../${SET_SERIES_SLUG}/${SET_SLUG.slice(SET_SERIES_SLUG.length + 1)}/)`);
+  process.exit(1);
+}
 // SET_SLUG_FULL = HTML filename slug, e.g. "mega-evolution-base-set-card-list"
 const SET_SLUG_FULL   = (process.env.SET_SLUG_FULL || '').trim() || `${SET_SLUG}-card-list`;
 const TCGP_GROUP_ID   = (process.env.TCGP_GROUP_ID || '').trim();
