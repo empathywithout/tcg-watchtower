@@ -597,6 +597,10 @@
       "destination": "/one-piece/sets/adventure-on-kamis-island/top-chase-cards.html"
     },
     {
+      "source": "/one-piece/sets/the-time-of-battle/top-chase-cards",
+      "destination": "/one-piece/sets/the-time-of-battle/top-chase-cards.html"
+    },
+    {
       "source": "/one-piece/sets/:set/cards/:slug",
       "destination": "/one-piece/sets/:set/cards/:slug.html"
     }
