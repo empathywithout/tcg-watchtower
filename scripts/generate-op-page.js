@@ -747,6 +747,13 @@ function variantTypeFromId(localId) {
   return map[suffix]||suffix;
 }
 function cleanVariantName(name, variantType, localId) {
+  // Known exception: Vista (OP16-011) is internally mislabeled "altArt" by
+  // Scrydex even though her real rarity is Treasure Rare (corrected via
+  // RARITY_OVERRIDES in sync-op-images.mjs). Her displayed variant label
+  // should say "Treasure Rare", not the raw internal "Alt Art".
+  if (SET_ID.toLowerCase() === 'op16' && localId === '011_altart') {
+    return name.replace(/[ ]*[(][^)]*[)][ ]*\$/, '').trim() + ' (Treasure Rare)';
+  }
   const vtype = variantType||variantTypeFromId(localId);
   if (!vtype) return name;
   return name.replace(/[ ]*[(][^)]*[)][ ]*\$/, '').trim()+' ('+formatVariantType(vtype)+')';

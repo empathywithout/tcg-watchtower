@@ -165,7 +165,22 @@ export default async function handler(req, res) {
 
         // Detect variant suffix from product name
         let suffix = ''; // base card
-        if (nameLower.includes('manga')) {
+        // Known exceptions: cards where Scrydex's OWN internal variant name
+        // doesn't actually say "treasureRare" (so our card data's localId
+        // uses a different suffix), even though the card's real-world
+        // rarity is Treasure Rare and its TCGplayer product name/rarity
+        // metadata says so. Vista (OP16-011) is Scrydex-mislabeled as
+        // "altArt" internally -- sync-op-images.mjs corrects her rarity
+        // field via RARITY_OVERRIDES but her localId suffix stays
+        // "_altart" to match. Without this exception, the generic
+        // Treasure-Rare-via-rarity-metadata check below would assign
+        // "_treasurerare" instead, which would never match her actual
+        // "011_altart" localId, silently losing her price again.
+        const KNOWN_ALTART_TREASURE_RARE = { '24664': new Set(['011']) }; // op16 group ID
+        const isKnownAltArtTR = KNOWN_ALTART_TREASURE_RARE[String(groupId)]?.has(opLocalId);
+        if (isKnownAltArtTR) {
+          suffix = '_altart';
+        } else if (nameLower.includes('manga')) {
           suffix = '_mangaaltart';
         } else if (nameLower.includes('(sp) (gold)') || nameLower.includes('gold)')) {
           suffix = '_goldspecialaltart';
