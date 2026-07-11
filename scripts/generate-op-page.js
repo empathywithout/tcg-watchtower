@@ -632,6 +632,20 @@ ${CARD_LIST_HTML}
 
 <div class="section-divider"></div>
 
+${seoData.faq && seoData.faq.length ? `
+<section style="padding:64px 0;border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container" style="max-width:800px;">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px;">${SET_FULL_NAME} <span style="color:#ef4444;">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      ${seoData.faq.map((f, i) => `
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text);">${f.q}</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;">${f.a}</p>
+        ${i === 0 ? `<a href="https://tcgwatchtower.com/one-piece/sets/${SET_URL_SLUG}/top-chase-cards" style="display:inline-block;margin-top:10px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">See all ${SET_FULL_NAME} chase cards ranked by price →</a>` : ''}
+      </div>`).join('')}
+    </div>
+  </div>
+</section>` : ''}
 
 <footer>
   <div class="container">
