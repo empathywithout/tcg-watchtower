@@ -888,7 +888,7 @@ function renderCards(reset) {
         <div class="card-item-num">${dispNum}</div>
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
-    el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
+    el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null,card.name); });
     grid.appendChild(el);
     rendered++;
   });

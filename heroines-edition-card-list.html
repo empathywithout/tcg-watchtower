@@ -811,7 +811,7 @@ function renderCards(reset) {
         <div class="card-item-num">${displayId}</div>
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
-    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null); const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl); });
+    el.addEventListener('click', () => { const localId = el.dataset.localId; const cardName = el.dataset.cardName || card.name; const cached = priceCache[priceKey(localId, cardName)] || priceCache[priceKeyByName(localId, cardName)] || (!localId.includes('_') ? priceCache[localId.padStart(3,'0')] : null); const tcgpBtn = el.querySelector('[data-tcgp-href]'); const directUrl = cached?.url || tcgpBtn?.getAttribute('data-tcgp-href') || null; openModal(localId, cardName, card.rarity || '', imgUrl, directUrl, card.name); });
     grid.appendChild(el);
   });
   displayedCount += slice.length;
