@@ -321,15 +321,22 @@ function expandPrimaryCards(rawCards, expansionId) {
           // One or more genuine new-art reprints (e.g. a set can add both a Special Alt
           // Art AND a Gold Special Alt Art of the same existing card). Push one entry per
           // special variant, each with its own distinct localId so they never collide.
+          //
+          // Always include the suffix, even when there's only one special variant --
+          // api/tcgplayer-prices.js always assigns a suffix based on the TCGplayer
+          // product's own name, regardless of how many variants exist for a card. If
+          // this script only added a suffix for multi-variant cards, a single-variant
+          // cross-set card's localId (bare, no suffix) would never match the price
+          // API's key for that same product (which always has a suffix) -- exactly the
+          // bug that made Sugar's real ~$116 SP Alt Art price invisible, silently
+          // falling through to a wrong/default price instead.
           specialVariants.forEach((specialVariant, i) => {
             const crossImage = pickImage(specialVariant.images) || pickImage(c.images);
             const crossRarityFromVariant = variantRarityFromName(specialVariant.name || '');
             const crossRarity = crossRarityFromVariant
               || (specialVariant.rarity ? normalizeRarity(specialVariant.rarity) : null)
               || normalizeRarity(c.rarity);
-            const localId = specialVariants.length > 1
-              ? `${rawScrydexId}_${variantSuffix(specialVariant.name)}`
-              : rawScrydexId;
+            const localId = `${rawScrydexId}_${variantSuffix(specialVariant.name)}`;
             console.log(`  📌 Cross-set reprint: ${localId} (${specialVariant.name}) rarity=${crossRarity} → SP art`);
             cards.push({
               localId,
