@@ -536,6 +536,8 @@ const mvHtml = `<!DOCTYPE html>
 <meta property="og:description" content="${mvDesc}">
 <meta property="og:url" content="${mvPageUrl}">
 <meta property="og:type" content="website">
+${chaseCards[0] ? `<meta property="og:image" content="${R2_PUBLIC_URL}/cards/op/${SET_ID}/${chaseCards[0].localId}.webp">
+<meta name="twitter:image" content="${R2_PUBLIC_URL}/cards/op/${SET_ID}/${chaseCards[0].localId}.webp">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
@@ -577,6 +579,7 @@ nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px so
 .container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
 h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:.5rem}
 .subtitle{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
+.intro-text{color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;max-width:800px}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
 @media(max-width:640px){.cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}}
 .card-item{background:rgba(15,23,42,.9);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
@@ -621,6 +624,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <div class="container">
   <h1>Most Valuable ${SET_FULL_NAME} Cards</h1>
   <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily from TCGplayer</p>
+  <p class="intro-text">This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${[...new Set(chaseCards.map(c => c.rarity))].filter(Boolean).join(', ') || 'every high-rarity card in the set'}. Prices update automatically throughout the day, so check back for the latest movement before buying or selling.</p>
   <div class="cards-grid" id="cards-grid">
     ${chaseCards.map(c => {
       const dispNum = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
