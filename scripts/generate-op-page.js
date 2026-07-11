@@ -74,7 +74,12 @@ const SEO_DATA = {
   'op07':{ metaTitle:'500 Years in the Future Card List and Prices | TCG Watchtower', metaDesc:'Full 500 Years in the Future OP07 card list with live prices. Every card, Luffy Treasure Rare, and booster box value for One Piece TCG OP07.', intro:'500 Years in the Future is the seventh set in the English One Piece Card Game, released in November 2024. The OP07 set features Egghead Island characters and the highly sought Monkey D. Luffy OP07-109 Treasure Rare as its top chase pull.' },
   'op08':{ metaTitle:'Two Legends Card List and Prices | TCG Watchtower', metaDesc:'Full Two Legends OP08 card list with live live prices. Every card, Shanks and Gecko Moria Secret Rares, and booster box value for One Piece TCG.', intro:'Two Legends is the eighth set in the English One Piece Card Game, released in January 2025. The OP08 set focuses on legendary characters with both Shanks and Gol D. Roger featured among the top pulls.' },
   'op09':{ metaTitle:'Emperors in the New World Card List and Prices | TCG Watchtower', metaDesc:'Full Emperors in the New World OP09 card list with prices. Every card, Buggy Alternate Art, Nico Robin, and booster box value for One Piece TCG.', intro:'Emperors in the New World is the ninth set in the English One Piece Card Game, released in April 2025. The OP09 set features the Four Emperors and has produced some of the most valuable alternate art cards in the game.' },
-  'op14':{ metaTitle:"The Azure Sea's Seven Card List and Prices | TCG Watchtower", metaDesc:"Full Azure Sea's Seven OP14 card list with live prices. Mihawk, Crocodile Secret Rares, Treasure Rare, and booster box values for One Piece TCG.", intro:"The Azure Sea's Seven is the fourteenth set in the English One Piece Card Game, released in January 2026. Built around the Seven Warlords of the Sea with Dracule Mihawk and Trafalgar Law as new Leaders, OP14 contains 157 cards including 2 Secret Rares and a Treasure Rare." },
+  'op14':{ metaTitle:"The Azure Sea's Seven Card List and Prices | TCG Watchtower", metaDesc:"Full Azure Sea's Seven OP14 card list with live prices. Mihawk, Crocodile Secret Rares, Treasure Rare, and booster box values for One Piece TCG.", intro:"The Azure Sea's Seven is the fourteenth set in the English One Piece Card Game, released in January 2026. Built around the Seven Warlords of the Sea with Dracule Mihawk and Trafalgar Law as new Leaders, OP14 contains 157 cards including 2 Secret Rares and a Treasure Rare.", faq:[
+    { q:"What is the most expensive The Azure Sea's Seven card?", a:"The Buggy (Gold Special Alt Art) is the most valuable chase card in The Azure Sea's Seven, with the Buggy (SP Alt Art) and the Dracule Mihawk Manga Alternate Art Secret Rare also ranking among the top pulls." },
+    { q:"How many cards are in The Azure Sea's Seven card list?", a:"The Azure Sea's Seven (OP14) contains 162 cards, combining the Japanese OP-14 set with the first half of Extra Booster 04, plus Special reprints of cards from earlier sets." },
+    { q:"When did The Azure Sea's Seven release?", a:"The Azure Sea's Seven released as OP14 in English on January 16, 2026." },
+    { q:"What is the set code for The Azure Sea's Seven?", a:"The Azure Sea's Seven set code is OP14, the fourteenth main booster set in the One Piece Card Game." },
+  ] },
   'op15':{ metaTitle:"Adventure on Kami's Island Card List and Prices | TCG Watchtower", metaDesc:"Full Adventure on Kami's Island OP15 card list with live prices. Enel Manga Rare, Koby, Zeus SP, and all card prices for One Piece TCG.", intro:"Adventure on Kami's Island is the fifteenth set in the English One Piece Card Game, released in April 2026. The set features the Sky Island arc with Enel as the top chase Manga Rare, plus cross-set SP reprints including Zeus, Monkey D. Luffy, and Boa Hancock." },
   'eb01':{ metaTitle:'Memorial Collection Card List and Prices | TCG Watchtower', metaDesc:'Full Memorial Collection EB01 card list with live live prices. Every card, Secret Rare, and booster box value for One Piece TCG Extra Booster.', intro:'Memorial Collection is the first Extra Booster in the English One Piece Card Game, released in September 2023. As a celebration set with 80 cards featuring popular characters in anniversary artwork, it has maintained strong collector appeal.' },
   'eb03':{ metaTitle:'Heroines Edition Card List and Prices | TCG Watchtower', metaDesc:'Full Heroines Edition EB03 card list with live prices. Every SP, Manga Rare, and booster box value for One Piece TCG Extra Booster.', intro:'Heroines Edition is the third Extra Booster in the English One Piece Card Game, released in February 2026. Focused on iconic female characters including Boa Hancock, Nami, Nico Robin, and Uta, with SP alternate arts and a Manga Rare of Uta as the top chase cards.' },
@@ -82,6 +87,15 @@ const SEO_DATA = {
 };
 
 const seoData        = SEO_DATA[SET_ID] || {};
+const FAQ_SCHEMA_JSON = (seoData.faq && seoData.faq.length) ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": seoData.faq.map(f => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": { "@type": "Answer", "text": f.a },
+  })),
+}) : '';
 const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | TCG Watchtower`;
 const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} card list with live live prices. Every card and booster box value for One Piece TCG ${SET_SHORT_NAME}.`;
 const SEO_INTRO      = seoData.intro     || '';
@@ -220,6 +234,7 @@ const html = `<!DOCTYPE html>
   }
 }
 </script>
+${FAQ_SCHEMA_JSON ? `<script type="application/ld+json">${FAQ_SCHEMA_JSON}</script>` : ''}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
 <script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','affiliate_click',{retailer:'tcgplayer',page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','affiliate_click',{retailer:'amazon',page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','affiliate_click',{retailer:'ebay',page_path:location.pathname});}},true);</script>
@@ -535,6 +550,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
     <div class="section-header">
       <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Chase Cards</span></h2>
       <p class="section-sub">The highest-value pulls — ranked by market price</p>
+      <a href="https://tcgwatchtower.com/one-piece/sets/${SET_URL_SLUG}/top-chase-cards" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;">See the full ${SET_FULL_NAME} Chase Cards list →</a>
     </div>
     <div class="chase-slider-wrap">
       <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left">&#8249;</button>
@@ -578,6 +594,7 @@ ${CARD_LIST_HTML}
     <div class="section-header">
       <h2 class="section-title">Buy ${SET_FULL_NAME} <span class="gradient-text">Booster Boxes &amp; ETBs</span></h2>
       <p class="section-sub">Compare ${SET_FULL_NAME} sealed product prices across Amazon, eBay, and TCGplayer</p>
+      <a href="https://tcgwatchtower.com/one-piece/sets/${SET_URL_SLUG}/sealed-product" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:#4ade80;text-decoration:none;">See the full ${SET_FULL_NAME} Sealed Product Buying Guide →</a>
     </div>
     <div class="product-filter-bar" id="product-filters">
       <button class="filter-btn active" data-filter="all">All</button>
