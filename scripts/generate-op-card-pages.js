@@ -66,24 +66,35 @@ const filteredRawCards = rawCards.filter(card => {
 });
 
 // ── Data-quality cleanup ────────────────────────────────────────────────
-// Some sets' source data has malformed entries for the same physical card:
-// (a) the exact same localId appearing twice with different (wrong) rarity
-//     values, or (b) a variant entry whose variantType implies one rarity
-//     but whose own rarity field says something else (meaning the record
-//     itself is unreliable, often paired with a never-uploaded image).
-// Deliberately narrow and conservative: only acts on EXACT literal localId
-// duplicates, never on cards that merely share a base number with a
-// different suffix (e.g. Buggy's 051 / 051_specialaltart / 051_goldspecialaltart
-// are three genuinely different real cards and must never be merged).
+// IMPORTANT: this set (and likely other cross-set OP releases combining
+// two Japanese source releases, e.g. OP-14 + half of EB-04) has MANY
+// real, genuinely different cards that happen to share the same plain
+// localId number -- one from each merged source set's own independent
+// numbering. That is the NORMAL, EXPECTED shape of this data, not an
+// error. A prior version of this cleanup compared same-localId entries
+// by rarity and kept only one, assuming it was resolving a duplicate --
+// that was wrong, and silently deleted ~40 real, distinct cards in one
+// run (e.g. dropped the real 'Bepo' entirely because a different real
+// card, 'Kikunojo', also happened to be numbered 012 and had a 'rarer'
+// label). Never do that again. cardSlug() already keys off name+localId
+// together, so genuinely different cards sharing a number naturally get
+// different slugs and their own real pages with no extra logic needed
+// here -- do NOT add any comparison across different records back in.
+//
+// The only two things we still filter out here are individually-verified,
+// named exceptions:
+// (a) KNOWN_BAD_RECORDS above -- specific (localId, name) pairs manually
+//     confirmed (via live data + visual check) to be wrong-name
+//     duplicates of a real card, never a blanket rule.
+// (b) A variant record whose own variantType contradicts its own rarity
+//     field (e.g. tagged 'treasureRare' but rarity says 'Rare') -- this
+//     checks a SINGLE record's internal self-consistency, never compares
+//     across two different cards, so it can't cause the Bepo/Kikunojo
+//     class of bug.
 const VARIANT_TYPE_RARITY = {
   treasureRare: 'Treasure Rare', altArt: 'Alternate Art',
   specialAltArt: 'Special', goldSpecialAltArt: 'Special', mangaAltArt: 'Manga Rare',
 };
-const DEDUP_RARITY_PRIORITY = {
-  'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2, 'Alternate Art': 3,
-  'Alt Art': 3, 'Special': 4, 'Super Rare': 5, 'Rare': 6, 'Uncommon': 7, 'Common': 8, 'Leader': 9,
-};
-const byLocalId = new Map();
 const cards = [];
 for (const card of filteredRawCards) {
   if (card.isVariant && card.variantType && VARIANT_TYPE_RARITY[card.variantType]
@@ -91,22 +102,7 @@ for (const card of filteredRawCards) {
     console.warn(`⚠️  Dropping malformed variant record: ${card.localId} (${card.name}) — variantType "${card.variantType}" implies rarity "${VARIANT_TYPE_RARITY[card.variantType]}" but rarity field says "${card.rarity}"`);
     continue;
   }
-  const existing = byLocalId.get(card.localId);
-  if (!existing) {
-    byLocalId.set(card.localId, card);
-    cards.push(card);
-    continue;
-  }
-  const existingP = DEDUP_RARITY_PRIORITY[existing.rarity] ?? 99;
-  const newP      = DEDUP_RARITY_PRIORITY[card.rarity] ?? 99;
-  if (newP < existingP) {
-    const idx = cards.indexOf(existing);
-    if (idx !== -1) cards[idx] = card;
-    byLocalId.set(card.localId, card);
-    console.warn(`⚠️  Duplicate localId resolved: kept "${card.rarity}" over "${existing.rarity}" for ${card.localId} (${card.name})`);
-  } else {
-    console.warn(`⚠️  Duplicate localId resolved: kept "${existing.rarity}" over "${card.rarity}" for ${existing.localId} (${existing.name})`);
-  }
+  cards.push(card);
 }
 console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 console.log(`📁 URL path: /one-piece/sets/${SET_URL_SLUG}/cards/`);
