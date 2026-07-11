@@ -323,7 +323,27 @@ export default async function handler(req, res) {
       const r2Res = await fetch(r2Url, { signal: AbortSignal.timeout(5000) });
       if (r2Res.ok) {
         const json = await r2Res.json();
-        const cards = (json.cards || []).map(c => ({
+        // Same data-quality fixes as generate-op-card-pages.js, kept in sync
+        // manually -- confirmed via live data + visual verification, never a
+        // blanket rule. See that script for the full explanation of why.
+        const KNOWN_BAD_RECORDS = {
+          op14: [
+            { localId: '031', name: 'Nami' },
+            { localId: '031_altart', name: 'Nami (altArt)' },
+          ],
+        };
+        const VARIANT_TYPE_RARITY = {
+          treasureRare: 'Treasure Rare', altArt: 'Alternate Art',
+          specialAltArt: 'Special', goldSpecialAltArt: 'Special', mangaAltArt: 'Manga Rare',
+        };
+        const badRecords = KNOWN_BAD_RECORDS[setId] || [];
+        const cleanedRaw = (json.cards || []).filter(c => {
+          if (badRecords.some(b => b.localId === c.localId && b.name === c.name)) return false;
+          if (c.isVariant && c.variantType && VARIANT_TYPE_RARITY[c.variantType]
+              && c.rarity !== VARIANT_TYPE_RARITY[c.variantType]) return false;
+          return true;
+        });
+        const cards = cleanedRaw.map(c => ({
           ...c,
           image: c.image || `${R2_BASE}/cards/op/${setId}/${c.localId}.webp`,
           source: 'r2',
