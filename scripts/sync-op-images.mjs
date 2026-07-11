@@ -516,9 +516,23 @@ async function main() {
   const primaryExpanded = expandPrimaryCards(primaryRaw, primaryScrydexId);
 
   const seenLocalIds = new Set();
+  // Tracks bare "PREFIX-NUMBER" card identities regardless of any variant
+  // suffix, so Step 3's independent cross-set discovery (which always uses
+  // a bare localId) can correctly detect that Step 1 already handled this
+  // exact card under a suffixed localId (e.g. Step 1 added Sugar as
+  // "OP10-065_specialaltart" -- seenLocalIds alone wouldn't catch that
+  // Step 3's bare "OP10-065" is the same card, causing a real duplicate
+  // entry with a wrong/stale price).
+  const seenBaseNumbers = new Set();
+  const baseNumberOf = (localId) => {
+    const base = localId.includes('_') ? localId.split('_')[0] : localId;
+    return /^[A-Z]{2,}\d+-/.test(base) ? base : null;
+  };
   let allCards = [];
   for (const card of primaryExpanded) {
     seenLocalIds.add(card.localId);
+    const baseNum = baseNumberOf(card.localId);
+    if (baseNum) seenBaseNumbers.add(baseNum);
     allCards.push(card);
   }
   console.log(`  Added ${primaryExpanded.length} cards from ${primaryScrydexId} (${seenLocalIds.size} total)`);
@@ -538,6 +552,8 @@ async function main() {
     for (const card of expanded) {
       if (seenLocalIds.has(card.localId)) continue;
       seenLocalIds.add(card.localId);
+      const baseNum = baseNumberOf(card.localId);
+      if (baseNum) seenBaseNumbers.add(baseNum);
       allCards.push(card);
       added++;
     }
@@ -556,10 +572,15 @@ async function main() {
       console.log(` (${rawEntries.length}/${cardNums.size} found)`);
       for (const { raw: c, cardNum, expansionId } of rawEntries) {
         const localId = `${expansionId}-${cardNum}`;
-        if (seenLocalIds.has(localId)) continue;
+        // Skip if Step 1/2 already handled this exact card, under ANY
+        // localId form (bare or suffixed) -- checking seenLocalIds alone
+        // isn't enough since this card may already exist under a suffixed
+        // variant-specific localId that doesn't string-match this bare one.
+        if (seenLocalIds.has(localId) || seenBaseNumbers.has(localId)) continue;
         const baseRarity = normalizeRarity(c.rarity);
         const baseImage = pickImage(c.images);
         seenLocalIds.add(localId);
+        seenBaseNumbers.add(localId);
         allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, tcgpProductId: pickProductId(c), isVariant: false });
       }
     }
