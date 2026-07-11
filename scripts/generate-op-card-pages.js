@@ -111,7 +111,8 @@ function getRelated(card, allCards) {
 
 const RARITY_LABEL = {
   'Manga Rare': 'MR', 'Secret Rare': 'SEC', 'Treasure Rare': 'TR',
-  'Alternate Art': 'ALT', 'Special': 'SP', 'Super Rare': 'SR',
+  'Alternate Art': 'ALT', 'Alt Art': 'ALT', 'Manga Alt Art': 'MANGA ALT',
+  'Special': 'SP', 'Super Rare': 'SR',
   'Rare': 'R', 'Uncommon': 'UC', 'Common': 'C', 'Leader': 'L', 'Promo': 'PR',
 };
 
@@ -350,9 +351,10 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
         <div class="info-row"><div class="info-key">Rarity</div><div class="info-val">
           <span class="rarity-badge ${
             rarity === 'Manga Rare' ? 'badge-mr'
+            : rarity === 'Manga Alt Art' ? 'badge-mr'
             : rarity === 'Secret Rare' ? 'badge-sec'
             : rarity === 'Treasure Rare' ? 'badge-tr'
-            : (rarity === 'Special' || rarity === 'Alternate Art') ? 'badge-sp'
+            : (rarity === 'Special' || rarity === 'Alternate Art' || rarity === 'Alt Art') ? 'badge-sp'
             : rarity === 'Super Rare' ? 'badge-sr'
             : rarity === 'Rare' ? 'badge-r'
             : 'badge-default'
@@ -379,6 +381,8 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
         ${rarity === 'Treasure Rare' ? 'Treasure Rares are rare cross-set reprints included in this English release.' : ''}
         ${rarity === 'Special' ? 'Special cards are cross-set SP reprints included in this English release with unique alternate artwork.' : ''}
         ${rarity === 'Alternate Art' ? 'Alternate Art cards feature unique artwork and are among the most desirable pulls.' : ''}
+        ${rarity === 'Alt Art' ? 'Alt Art cards feature unique artwork and are among the most desirable pulls.' : ''}
+        ${rarity === 'Manga Alt Art' ? 'Manga Alt Art cards feature manga-style alternate artwork and are typically the top chase cards in the set.' : ''}
         ${rarity === 'Super Rare' ? 'Super Rares are high-rarity cards featuring detailed artwork.' : ''}
       </p>
       ${related.length > 0 ? `
@@ -520,9 +524,9 @@ console.log(`✅ sitemap.xml updated with ${slugsSeen.size} One Piece card URLs`
 
 // ─── Most Valuable / Top Chase Cards page ─────────────────────────────────────
 
-const CHASE_RARITIES_OP = ['Manga Rare', 'Secret Rare', 'Treasure Rare', 'Alternate Art', 'Special', 'Super Rare'];
-const RARITY_TIER_OP = { 'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2, 'Alternate Art': 3, 'Special': 4, 'Super Rare': 5 };
-const RARITY_LABEL_OP = { 'Manga Rare': 'MR', 'Secret Rare': 'SEC', 'Treasure Rare': 'TR', 'Alternate Art': 'ALT', 'Special': 'SP', 'Super Rare': 'SR', 'Rare': 'R' };
+const CHASE_RARITIES_OP = ['Manga Rare', 'Manga Alt Art', 'Secret Rare', 'Treasure Rare', 'Alternate Art', 'Alt Art', 'Special', 'Super Rare'];
+const RARITY_TIER_OP = { 'Manga Rare': 0, 'Manga Alt Art': 0, 'Secret Rare': 1, 'Treasure Rare': 2, 'Alternate Art': 3, 'Alt Art': 3, 'Special': 4, 'Super Rare': 5 };
+const RARITY_LABEL_OP = { 'Manga Rare': 'MR', 'Manga Alt Art': 'MANGA ALT', 'Secret Rare': 'SEC', 'Treasure Rare': 'TR', 'Alternate Art': 'ALT', 'Alt Art': 'ALT', 'Special': 'SP', 'Super Rare': 'SR', 'Rare': 'R' };
 
 const chaseCards = cards
   .filter(c => CHASE_RARITIES_OP.includes(c.rarity || ''))
@@ -697,7 +701,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
       const tcgpUrl = `${TCGP_AFFILIATE_BASE}?u=${encodeURIComponent(tcgpRawUrl)}`;
       const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(c.name + ' ' + dispNum + ' ' + SET_FULL_NAME + ' One Piece Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US`;
       const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + dispNum + ' ' + SET_FULL_NAME + ' One Piece Card')}&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339145069&toolid=10001&mkevt=1`;
-      const badgeClass = c.rarity === 'Manga Rare' ? 'badge-mr' : c.rarity === 'Secret Rare' ? 'badge-sec' : c.rarity === 'Treasure Rare' ? 'badge-tr' : (c.rarity === 'Special' || c.rarity === 'Alternate Art') ? 'badge-sp' : c.rarity === 'Super Rare' ? 'badge-sr' : 'badge-r';
+      const badgeClass = c.rarity === 'Manga Rare' ? 'badge-mr' : c.rarity === 'Manga Alt Art' ? 'badge-mr' : c.rarity === 'Secret Rare' ? 'badge-sec' : c.rarity === 'Treasure Rare' ? 'badge-tr' : (c.rarity === 'Special' || c.rarity === 'Alternate Art' || c.rarity === 'Alt Art') ? 'badge-sp' : c.rarity === 'Super Rare' ? 'badge-sr' : 'badge-r';
       const label = RARITY_LABEL_OP[c.rarity] || c.rarity;
       const displayName = c.name.replace(/\s*\(([a-z])/g, (m, l) => ' (' + l.toUpperCase()).replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim();
       return `<div class="card-item">
