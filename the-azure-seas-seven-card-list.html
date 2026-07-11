@@ -1040,9 +1040,9 @@ function handleChaseClick(el) {
 function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
   rawName = rawName || name;
   if(!imgUrl)imgUrl=cardImg(localId);
-  const cached=getCached(localId,name);
+  const cached=getCached(localId,rawName);
   const dispNum=displayNumber(localId);
-  const tcgpUrl=directUrl||cached?.url||tcgpLink(name,dispNum);
+  const tcgpUrl=directUrl||cached?.url||tcgpLink(rawName,dispNum);
   document.getElementById('modal-inner').innerHTML=`
     <img class="modal-img" src="${imgUrl}" alt="${name}" loading="lazy">
     <div>
@@ -1050,8 +1050,8 @@ function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
       <div class="modal-meta">${dispNum} / ${SET_FULL_NAME}</div>
       ${rarity?`<div class="modal-meta" style="color:var(--amber)">${rarity}</div>`:''}
       <div class="modal-links">
-        <a class="modal-buy-link pl-amazon" href="${amazonLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🛒 Find on Amazon</span><span>→</span></a>
-        <a class="modal-buy-link pl-ebay" href="${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
+        <a class="modal-buy-link pl-amazon" href="${amazonLink(rawName+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🛒 Find on Amazon</span><span>→</span></a>
+        <a class="modal-buy-link pl-ebay" href="${ebayLink(rawName+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener"><span>${directUrl?'Buy on TCGplayer':'Find on TCGplayer'}</span><span>→</span></a>
         ${SET_PHASE === 'en' ? `<a class="modal-buy-link" href="${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>` : ''}
       </div>
