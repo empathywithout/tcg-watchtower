@@ -202,7 +202,16 @@ export default async function handler(req, res) {
           tcgpUrls[nameKey] = productUrl;
         }
 
-        if (!prices[opLocalId]) {
+        // Only a genuine plain/base-variant product (no suffix) may claim the
+        // bare fallback key -- a special-art variant (SP, Gold, Manga, Alt)
+        // must never stand in for the base card's price just because it
+        // happened to be the first product processed for this card number.
+        // A card can legitimately have no plain product at all in this
+        // group (e.g. a card whose only OP14 printings are new alt-art
+        // reprints, with its real base card sold under its original set's
+        // group) -- in that case the base card correctly shows no price
+        // here rather than a wrong one borrowed from an unrelated variant.
+        if (suffix === '' && !prices[opLocalId]) {
           prices[opLocalId]   = priceObj.marketPrice;
           tcgpUrls[opLocalId] = productUrl;
         }
