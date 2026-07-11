@@ -222,6 +222,14 @@ function pickImage(images) {
   return images[0]?.large || images[0]?.medium || images[0]?.small || null;
 }
 
+/** Extract the TCGplayer product_id from a card or variant's marketplaces array,
+ * so real per-productId prices (via tcgcsv.com) can be looked up later instead of
+ * a fuzzy name-based search match. */
+function pickProductId(cardOrVariant) {
+  const tcgp = (cardOrVariant?.marketplaces || []).find(m => m.name === 'tcgplayer');
+  return tcgp?.product_id || null;
+}
+
 /** Full Scrydex fetch for the primary expansion using printings filter. */
 async function fetchFullExpansion(expansionId) {
   console.log(`\n📋 Full fetch: ${expansionId}...`);
@@ -328,6 +336,7 @@ function expandPrimaryCards(rawCards, expansionId) {
               name: `${(c.name||'').trim()} (${specialVariant.name||'SP'})`,
               rarity: crossRarity,
               image: crossImage,
+              tcgpProductId: pickProductId(specialVariant),
               isVariant: false,
               variantType: specialVariant.name || '',
               baseLocalId: rawScrydexId,
@@ -343,6 +352,7 @@ function expandPrimaryCards(rawCards, expansionId) {
             name: (c.name || '').trim(),
             rarity: normalizeRarity(c.rarity),
             image: plainImage,
+            tcgpProductId: pickProductId(plainVariant),
             isVariant: false,
             variantType: null,
             baseLocalId: null,
@@ -357,11 +367,11 @@ function expandPrimaryCards(rawCards, expansionId) {
     const variants   = c.variants || [];
 
     if (!variants.length) {
-      cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, tcgpProductId: pickProductId(c), isVariant: false });
       continue;
     }
     const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
-    cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false });
+    cards.push({ localId: baseNum, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, tcgpProductId: (normalV ? pickProductId(normalV) : null) || pickProductId(c), isVariant: false });
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
@@ -379,6 +389,7 @@ function expandPrimaryCards(rawCards, expansionId) {
         name: `${(c.name||'').trim()} (${vType})`,
         rarity: variantRarity,
         image: pickImage(v.images) || baseImage,
+        tcgpProductId: pickProductId(v),
         isVariant: true, variantType: vType, baseLocalId: baseNum,
       });
     }
@@ -396,11 +407,11 @@ function expandEBCards(rawCardEntries) {
     const variants    = c.variants || [];
 
     if (!variants.length) {
-      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+      cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, tcgpProductId: pickProductId(c), isVariant: false });
       continue;
     }
     const normalV = variants.find(v => normalizeVariantName(v.name||'') === 'normal');
-    cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, isVariant: false });
+    cards.push({ localId: baseLocalId, name: (c.name||'').trim(), rarity: baseRarity, image: (normalV ? pickImage(normalV.images) : null) || baseImage, tcgpProductId: (normalV ? pickProductId(normalV) : null) || pickProductId(c), isVariant: false });
 
     for (const v of variants) {
       const vPrintings = (v.printings || []).map(p => p.toUpperCase());
@@ -418,6 +429,7 @@ function expandEBCards(rawCardEntries) {
         name: `${(c.name||'').trim()} (${vType})`,
         rarity: variantRarity,
         image: pickImage(v.images) || baseImage,
+        tcgpProductId: pickProductId(v),
         isVariant: true, variantType: vType, baseLocalId,
       });
     }
@@ -541,7 +553,7 @@ async function main() {
         const baseRarity = normalizeRarity(c.rarity);
         const baseImage = pickImage(c.images);
         seenLocalIds.add(localId);
-        allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, isVariant: false });
+        allCards.push({ localId, name: (c.name||'').trim(), rarity: baseRarity, image: baseImage, tcgpProductId: pickProductId(c), isVariant: false });
       }
     }
   }
@@ -580,12 +592,13 @@ async function main() {
     setId: SET_ID, game: 'onepiece', phase: PHASE,
     cardCount: { official: officialCount, total: allCards.length },
     cards: allCards.map(c => ({
-      localId:     c.localId,
-      name:        c.name,
-      rarity:      c.rarity,
-      isVariant:   c.isVariant || false,
-      variantType: c.variantType || null,
-      baseLocalId: c.baseLocalId || null,
+      localId:       c.localId,
+      name:          c.name,
+      rarity:        c.rarity,
+      isVariant:     c.isVariant || false,
+      variantType:   c.variantType || null,
+      baseLocalId:   c.baseLocalId || null,
+      tcgpProductId: c.tcgpProductId || null,
     })),
   }), 'application/json');
   console.log(`✅ data/op/${SET_ID}.json uploaded`);
