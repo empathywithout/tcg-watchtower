@@ -20,7 +20,7 @@ const TCGCSV_HEADERS = {
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v4'; // bumped — full cross-set card number keys
+const CACHE_VERSION = 'v5'; // bumped — Vista OP16-011 altArt/Treasure Rare exception
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -176,6 +176,13 @@ export default async function handler(req, res) {
         // Treasure-Rare-via-rarity-metadata check below would assign
         // "_treasurerare" instead, which would never match her actual
         // "011_altart" localId, silently losing her price again.
+        // Verified safe in isolation (does not throw for any input,
+        // including other groupIds and null/missing opLocalId) before
+        // re-applying, after an earlier deploy of this exact code
+        // coincided with a report of all op16 prices disappearing --
+        // traced to a stale 1-hour in-memory cache entry never being
+        // invalidated across several price-API fixes made today, not an
+        // actual crash in this code.
         const KNOWN_ALTART_TREASURE_RARE = { '24664': new Set(['011']) }; // op16 group ID
         const isKnownAltArtTR = KNOWN_ALTART_TREASURE_RARE[String(groupId)]?.has(opLocalId);
         if (isKnownAltArtTR) {
