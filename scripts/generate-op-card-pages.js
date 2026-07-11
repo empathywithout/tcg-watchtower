@@ -96,7 +96,14 @@ const VARIANT_TYPE_RARITY = {
 };
 const cards = [];
 for (const card of filteredRawCards) {
-  if (card.isVariant && card.variantType && VARIANT_TYPE_RARITY[card.variantType]
+  // Known exception: Scrydex sometimes labels a Treasure Rare variant as
+  // "altArt" internally (e.g. Vista OP16-011), and sync-op-images.mjs
+  // deliberately corrects the rarity field via RARITY_OVERRIDES to the
+  // real "Treasure Rare" value. That's a legitimate, intentional fix, not
+  // a data error -- this check must not flag it as malformed and silently
+  // drop the card, which is exactly what happened before this exception.
+  const isKnownAltArtTreasureRareOverride = card.variantType === 'altArt' && card.rarity === 'Treasure Rare';
+  if (!isKnownAltArtTreasureRareOverride && card.isVariant && card.variantType && VARIANT_TYPE_RARITY[card.variantType]
       && card.rarity !== VARIANT_TYPE_RARITY[card.variantType]) {
     console.warn(`⚠️  Dropping malformed variant record: ${card.localId} (${card.name}) — variantType "${card.variantType}" implies rarity "${VARIANT_TYPE_RARITY[card.variantType]}" but rarity field says "${card.rarity}"`);
     continue;

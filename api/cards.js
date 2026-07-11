@@ -340,7 +340,12 @@ export default async function handler(req, res) {
         const badRecords = KNOWN_BAD_RECORDS[setId] || [];
         const cleanedRaw = (json.cards || []).filter(c => {
           if (badRecords.some(b => b.localId === c.localId && b.name === c.name)) return false;
-          if (c.isVariant && c.variantType && VARIANT_TYPE_RARITY[c.variantType]
+          // Known exception: Scrydex sometimes labels a Treasure Rare variant
+          // as "altArt" internally (e.g. Vista OP16-011), corrected via
+          // RARITY_OVERRIDES in sync-op-images.mjs -- a legitimate fix, not
+          // a data error, so it must not get silently filtered out here.
+          const isKnownAltArtTreasureRareOverride = c.variantType === 'altArt' && c.rarity === 'Treasure Rare';
+          if (!isKnownAltArtTreasureRareOverride && c.isVariant && c.variantType && VARIANT_TYPE_RARITY[c.variantType]
               && c.rarity !== VARIANT_TYPE_RARITY[c.variantType]) return false;
           return true;
         });
