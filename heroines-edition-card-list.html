@@ -632,8 +632,7 @@ function displayNumber(localId) {
   return localId.includes('_') ? localId.split('_')[0] : localId;
 }
 function cardPageUrl(localId, rawName) {
-  const dispNum = displayNumber(localId);
-  return `/one-piece/sets/heroines-edition/cards/${toSlug(rawName)}-${toSlug(dispNum)}`;
+  return `/one-piece/sets/heroines-edition/cards/${toSlug(rawName)}-${toSlug(localId)}`;
 }
 
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });

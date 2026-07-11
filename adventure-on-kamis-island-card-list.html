@@ -820,8 +820,7 @@ function toSlug(s) {
   return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 }
 function cardPageUrl(localId, rawName) {
-  const dispNum = displayNumber(localId);
-  return `/one-piece/sets/${SET_URL_SLUG}/cards/${toSlug(rawName)}-${toSlug(dispNum)}`;
+  return `/one-piece/sets/${SET_URL_SLUG}/cards/${toSlug(rawName)}-${toSlug(localId)}`;
 }
 
 // displayNumber strips variant suffix, keeps full cross-set ID
