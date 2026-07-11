@@ -621,6 +621,17 @@ const EBAY_CAMP = 5339145069;
 const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
 
 function cardImg(id) { return `${R2}/cards/op/${SET_ID}/${id}.webp`; }
+function toSlug(s) {
+  return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function displayNumber(localId) {
+  if (!localId) return '';
+  return localId.includes('_') ? localId.split('_')[0] : localId;
+}
+function cardPageUrl(localId, rawName) {
+  const dispNum = displayNumber(localId);
+  return `/one-piece/sets/the-azure-seas-seven/cards/${toSlug(rawName)}-${toSlug(dispNum)}`;
+}
 
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
 const logoEl = document.getElementById('set-logo-hero');
@@ -893,6 +904,7 @@ function openModal(localId, name, rarity, imgUrl, directUrl) {
         <a class="modal-buy-link pl-amazon" href="${amazonLink(name + ' ' + localId + ' ' + SET_FULL_NAME + ' One Piece Card')}" target="_blank" rel="noopener"><span>🛒 Find on Amazon</span><span>→</span></a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(name + ' ' + localId + ' ' + SET_FULL_NAME + ' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener"><span>${directUrl ? '🛒 Buy on TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span></a>
+        <a class="modal-buy-link" href="${cardPageUrl(localId, name)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
