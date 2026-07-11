@@ -34,11 +34,14 @@ async function main() {
       process.exit(1);
     }
     const data = await res.json();
-    totalCount = data.totalCount ?? totalCount;
+    if (totalCount == null && data.totalCount != null) totalCount = data.totalCount;
     const rows = data.data || [];
     allCards = allCards.concat(rows);
-    console.log(`  got ${rows.length} cards (running total: ${allCards.length} / ${totalCount ?? '?'})`);
-    if (rows.length === 0 || allCards.length >= (totalCount || 0) || rows.length < 100) break;
+    console.log(`  got ${rows.length} cards (running total: ${allCards.length}${totalCount != null ? ' / ' + totalCount : ''})`);
+    // Stop only when a page comes back with fewer than a full page's worth
+    // of results (the real signal we've reached the end) -- never rely on
+    // totalCount alone, since it isn't always present in the response.
+    if (rows.length < 100) break;
     page++;
     if (page > 10) { console.warn('⚠️  Safety cap hit at page 10 — stopping.'); break; }
   }
