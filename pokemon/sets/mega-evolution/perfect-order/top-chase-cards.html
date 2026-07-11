@@ -101,10 +101,14 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .rarity-ir{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc}
 .card-price{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:8px;min-height:1.5rem}
 .card-price.loading{color:var(--text-muted);font-size:0.8rem}
-.buy-btns{display:flex;gap:6px}
-.btn{flex:1;padding:6px;border-radius:6px;font-size:0.75rem;font-weight:600;text-align:center;border:none;cursor:pointer}
-.btn-tcgp{background:#1a6ef5;color:#fff}
-.btn-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.buy-links{display:flex;gap:3px;justify-content:center}
+.buy-link{flex:1;padding:3px 3px;border-radius:6px;font-size:0.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;text-align:center}
+.buy-amazon{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
+.buy-amazon:hover{background:rgba(251,191,36,0.25)}
+.buy-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.buy-ebay:hover{background:rgba(59,130,246,0.25)}
+.buy-tcgp{background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-size:0.5rem}
+.buy-tcgp:hover{background:rgba(74,222,128,0.25)}
 .btn:hover{opacity:0.85}
 .set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
 .set-link-top{display:inline-block;margin-bottom:1.5rem;color:var(--accent);font-size:0.9rem;font-weight:600}
@@ -148,10 +152,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#124</div>
         <span class="card-rarity rarity-hr">MHR</span>
         <div class="card-price loading" data-local-id="124">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20124&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20124%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20124&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20124%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -164,10 +168,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#122</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="122">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Jacinthe%20122&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Jacinthe%20122%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Jacinthe%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Jacinthe%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Jacinthe%20122&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Jacinthe%20122%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -180,10 +184,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#119</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="119">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Clefable%20ex%20119&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Clefable%20ex%20119%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Clefable%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Clefable%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Clefable%20ex%20119&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Clefable%20ex%20119%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -196,10 +200,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#118</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="118">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Starmie%20ex%20118&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Starmie%20ex%20118%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Starmie%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Starmie%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Starmie%20ex%20118&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Starmie%20ex%20118%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -212,10 +216,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#120</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="120">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20120&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20120%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20120&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20120%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -228,10 +232,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#121</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="121">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Meowth%20ex%20121&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Meowth%20ex%20121%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Meowth%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Meowth%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Meowth%20ex%20121&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Meowth%20ex%20121%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -244,10 +248,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#123</div>
         <span class="card-rarity rarity-sir">SIR</span>
         <div class="card-price loading" data-local-id="123">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rosa's%20Encouragement%20123&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rosa's%20Encouragement%20123%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Rosa's%20Encouragement%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Rosa's%20Encouragement%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rosa's%20Encouragement%20123&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rosa's%20Encouragement%20123%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -260,10 +264,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#100</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="100">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Decidueye%20ex%20100&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Decidueye%20ex%20100%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Decidueye%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Decidueye%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Decidueye%20ex%20100&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Decidueye%20ex%20100%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -276,10 +280,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#108</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="108">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Energy%20Recycler%20108&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Energy%20Recycler%20108%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Energy%20Recycler%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Energy%20Recycler%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Energy%20Recycler%20108&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Energy%20Recycler%20108%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -292,10 +296,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#109</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="109">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Forest%20of%20Vitality%20109&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Forest%20of%20Vitality%20109%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Forest%20of%20Vitality%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Forest%20of%20Vitality%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Forest%20of%20Vitality%20109&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Forest%20of%20Vitality%20109%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -308,10 +312,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#110</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="110">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Jacinthe%20110&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Jacinthe%20110%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Jacinthe%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Jacinthe%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Jacinthe%20110&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Jacinthe%20110%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -324,10 +328,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#111</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="111">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Lumiose%20City%20111&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Lumiose%20City%20111%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Lumiose%20City%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Lumiose%20City%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Lumiose%20City%20111&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Lumiose%20City%20111%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -340,10 +344,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#103</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="103">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Clefable%20ex%20103&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Clefable%20ex%20103%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Clefable%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Clefable%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Clefable%20ex%20103&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Clefable%20ex%20103%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -356,10 +360,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#106</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="106">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Skarmory%20ex%20106&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Skarmory%20ex%20106%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Skarmory%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Skarmory%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Skarmory%20ex%20106&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Skarmory%20ex%20106%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -372,10 +376,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#102</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="102">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Starmie%20ex%20102&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Starmie%20ex%20102%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Starmie%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Starmie%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Starmie%20ex%20102&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Starmie%20ex%20102%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -388,10 +392,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#104</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="104">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20104&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20104%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Mega%20Zygarde%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Mega%20Zygarde%20ex%20104&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Mega%20Zygarde%20ex%20104%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -404,10 +408,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#107</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="107">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Meowth%20ex%20107&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Meowth%20ex%20107%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Meowth%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Meowth%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Meowth%20ex%20107&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Meowth%20ex%20107%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -420,10 +424,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#112</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="112">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Naveen%20112&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Naveen%20112%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Naveen%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Naveen%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Naveen%20112&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Naveen%20112%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -436,10 +440,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#113</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="113">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Pok%C3%A9%20Pad%20113&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pok%C3%A9%20Pad%20113%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Pok%C3%A9%20Pad%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Pok%C3%A9%20Pad%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Pok%C3%A9%20Pad%20113&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pok%C3%A9%20Pad%20113%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -452,10 +456,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#114</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="114">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rosa's%20Encouragement%20114&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rosa's%20Encouragement%20114%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Rosa's%20Encouragement%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Rosa's%20Encouragement%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rosa's%20Encouragement%20114&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rosa's%20Encouragement%20114%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -468,10 +472,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#115</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="115">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Sacred%20Ash%20115&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Sacred%20Ash%20115%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Sacred%20Ash%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Sacred%20Ash%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Sacred%20Ash%20115&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Sacred%20Ash%20115%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -484,10 +488,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#101</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="101">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Salazzle%20ex%20101&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Salazzle%20ex%20101%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Salazzle%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Salazzle%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Salazzle%20ex%20101&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Salazzle%20ex%20101%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -500,10 +504,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#116</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="116">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Tarragon%20116&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Tarragon%20116%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Tarragon%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Tarragon%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Tarragon%20116&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Tarragon%20116%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -516,10 +520,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#117</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="117">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Wondrous%20Patch%20117&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Wondrous%20Patch%20117%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Wondrous%20Patch%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Wondrous%20Patch%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Wondrous%20Patch%20117&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Wondrous%20Patch%20117%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -532,10 +536,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#105</div>
         <span class="card-rarity rarity-ur">UR</span>
         <div class="card-price loading" data-local-id="105">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Yveltal%20ex%20105&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Yveltal%20ex%20105%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Yveltal%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Yveltal%20ex%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Yveltal%20ex%20105&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Yveltal%20ex%20105%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -548,10 +552,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#092</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="092">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Aurorus%20092&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Aurorus%20092%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Aurorus%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Aurorus%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Aurorus%20092&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Aurorus%20092%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -564,10 +568,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#094</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="094">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Clefairy%20094&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Clefairy%20094%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Clefairy%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Clefairy%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Clefairy%20094&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Clefairy%20094%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -580,10 +584,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#093</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="093">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Dedenne%20093&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Dedenne%20093%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Dedenne%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Dedenne%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Dedenne%20093&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Dedenne%20093%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -596,10 +600,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#098</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="098">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Doublade%20098&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Doublade%20098%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Doublade%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Doublade%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Doublade%20098&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Doublade%20098%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -612,10 +616,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#097</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="097">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Drapion%20097&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Drapion%20097%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Drapion%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Drapion%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Drapion%20097&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Drapion%20097%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -628,10 +632,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#095</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="095">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Espurr%20095&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Espurr%20095%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Espurr%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Espurr%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Espurr%20095&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Espurr%20095%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -644,10 +648,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#096</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="096">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Probopass%20096&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Probopass%20096%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Probopass%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Probopass%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Probopass%20096&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Probopass%20096%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -660,10 +664,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#099</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="099">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Raticate%20099&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Raticate%20099%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Raticate%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Raticate%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Raticate%20099&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Raticate%20099%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -676,10 +680,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#090</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="090">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rowlet%20090&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rowlet%20090%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Rowlet%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Rowlet%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Rowlet%20090&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Rowlet%20090%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -692,10 +696,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#089</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="089">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Spewpa%20089&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Spewpa%20089%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Spewpa%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Spewpa%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Spewpa%20089&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Spewpa%20089%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>
@@ -708,10 +712,10 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">#091</div>
         <span class="card-rarity rarity-ir">IR</span>
         <div class="card-price loading" data-local-id="091">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Talonflame%20091&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Talonflame%20091%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=Talonflame%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=Talonflame%20Perfect%20Order%20Pokemon%20Card&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="https://www.tcgplayer.com/search/pokemon/me03-perfect-order?productLineName=pokemon&q=Talonflame%20091&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=me03-perfect-order" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="https://www.ebay.com/sch/i.html?_nkw=Talonflame%20091%20Perfect%20Order%20Pokemon%20Card" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>

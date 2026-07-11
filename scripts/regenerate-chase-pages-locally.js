@@ -145,10 +145,14 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .rarity-ir{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc}
 .card-price{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:8px;min-height:1.5rem}
 .card-price.loading{color:var(--text-muted);font-size:0.8rem}
-.buy-btns{display:flex;gap:6px}
-.btn{flex:1;padding:6px;border-radius:6px;font-size:0.75rem;font-weight:600;text-align:center;border:none;cursor:pointer}
-.btn-tcgp{background:#1a6ef5;color:#fff}
-.btn-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.buy-links{display:flex;gap:3px;justify-content:center}
+.buy-link{flex:1;padding:3px 3px;border-radius:6px;font-size:0.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;text-align:center}
+.buy-amazon{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
+.buy-amazon:hover{background:rgba(251,191,36,0.25)}
+.buy-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.buy-ebay:hover{background:rgba(59,130,246,0.25)}
+.buy-tcgp{background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-size:0.5rem}
+.buy-tcgp:hover{background:rgba(74,222,128,0.25)}
 .btn:hover{opacity:0.85}
 .set-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);margin-top:2rem;font-size:0.9rem}
 .set-link-top{display:inline-block;margin-bottom:1.5rem;color:var(--accent);font-size:0.9rem;font-weight:600}
@@ -254,10 +258,10 @@ function chaseCardGridItems(cardList, info) {
         <div class="card-num">#${c.localId}</div>
         <span class="card-rarity ${rarityClass}">${label}</span>
         <div class="card-price loading" data-local-id="${c.localId}">Loading...</div>
-        <div class="buy-btns">
-          <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
-          <a class="btn btn-amazon" href="https://www.amazon.com/s?k=${encodeURIComponent(c.name + ' ' + info.setFullName + ' Pokemon Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="https://www.amazon.com/s?k=${encodeURIComponent(c.name + ' ' + info.setFullName + ' Pokemon Card')}&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>`;

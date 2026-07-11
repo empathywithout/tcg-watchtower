@@ -450,6 +450,7 @@ nav.container {
 }
 .buy-ebay-featured:hover { background: linear-gradient(135deg, rgba(59,130,246,0.35), rgba(168,85,247,0.35)); }
 .buy-tcgp { background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); color:var(--accent-green); }
+.buy-tcgp{font-size:0.5rem}
 .buy-tcgp:hover { background:rgba(74,222,128,0.25); }
 
 /* ===== PRODUCTS ===== */
@@ -1650,7 +1651,7 @@ function renderChaseCardsHTML(grid) {
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + '142', 'sv07-stellar-crown')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + '142', 'sv07-stellar-crown')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;

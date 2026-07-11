@@ -122,6 +122,19 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
 
 <style>html{background:#0a0514}:root{--body-bg:linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)}body{background:linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)}button,a,[onclick]{touch-action:manipulation}
+.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }
+.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
+.buy-link {
+  padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;
+  text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
+}
+.buy-amazon { background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.3); color:#fbbf24; }
+.buy-amazon:hover { background:rgba(251,191,36,0.25); }
+.buy-ebay { background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#93c5fd; }
+.buy-ebay:hover { background:rgba(59,130,246,0.25); }
+.buy-tcgp { background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); color:#4ade80; }
+.buy-tcgp{font-size:0.5rem}
+.buy-tcgp:hover { background:rgba(74,222,128,0.25); }
 </style>
 <link rel="stylesheet" href="/static/set-page.css?v=2">
 </head>
@@ -752,7 +765,7 @@ function renderChaseCardsHTML(grid) {
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/122', 'chaos-rising')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/122', 'chaos-rising')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
