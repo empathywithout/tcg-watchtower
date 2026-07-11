@@ -292,30 +292,61 @@ function expandPrimaryCards(rawCards, expansionId) {
         const inRange = ranges.some(r => cardNumInt >= r.start && cardNumInt <= r.end);
         if (!inRange) continue; // outside our range, skip
       } else {
-        // Not an EB split card — check if it has a variant printed in our expansion (cross-set SP reprint)
-        const crossSetVariant = (c.variants || []).find(v =>
+        // Not an EB split card — check if it has a variant printed in our expansion.
+        // Prioritize a genuine special-art variant (altArt, specialAltArt, mangaAltArt,
+        // treasureRare, etc.) over a plain 'normal'/'foil' variant that merely happens
+        // to list our expansion in its printings -- a card can be reprinted into a set
+        // as itself (no new art) with no special variant at all, and that case must NOT
+        // be labeled "(normal)"/"(foil)", just stored as the plain card with no suffix.
+        const matchingVariants = (c.variants || []).filter(v =>
           (v.printings || []).map(p => p.toUpperCase()).includes(expansionId.toUpperCase())
         );
-        if (!crossSetVariant) continue; // not a cross-set reprint for our expansion, skip
+        if (!matchingVariants.length) continue; // not reprinted into our expansion at all, skip
 
-        // It's a cross-set SP reprint — store under the base cross-set localId (e.g. OP14-084)
-        // with the SP art image. No suffix — the page references these by their base cross-set ID.
-        const crossImage = pickImage(crossSetVariant.images) || pickImage(c.images);
-        // Use variant's rarity if available, fall back to name-derived, then base rarity
-        const crossRarityFromVariant = variantRarityFromName(crossSetVariant.name || '');
-        const crossRarity = crossRarityFromVariant
-          || (crossSetVariant.rarity ? normalizeRarity(crossSetVariant.rarity) : null)
-          || normalizeRarity(c.rarity);
-        console.log(`  📌 Cross-set reprint: ${rawScrydexId} (${crossSetVariant.name}) rarity=${crossRarity} → SP art`);
-        cards.push({
-          localId: rawScrydexId,
-          name: `${(c.name||'').trim()} (${crossSetVariant.name||'SP'})`,
-          rarity: crossRarity,
-          image: crossImage,
-          isVariant: false,
-          variantType: crossSetVariant.name || '',
-          baseLocalId: rawScrydexId,
+        const specialVariants = matchingVariants.filter(v => {
+          const n = normalizeVariantName(v.name || '');
+          return n !== 'normal' && n !== 'foil';
         });
+
+        if (specialVariants.length) {
+          // One or more genuine new-art reprints (e.g. a set can add both a Special Alt
+          // Art AND a Gold Special Alt Art of the same existing card). Push one entry per
+          // special variant, each with its own distinct localId so they never collide.
+          specialVariants.forEach((specialVariant, i) => {
+            const crossImage = pickImage(specialVariant.images) || pickImage(c.images);
+            const crossRarityFromVariant = variantRarityFromName(specialVariant.name || '');
+            const crossRarity = crossRarityFromVariant
+              || (specialVariant.rarity ? normalizeRarity(specialVariant.rarity) : null)
+              || normalizeRarity(c.rarity);
+            const localId = specialVariants.length > 1
+              ? `${rawScrydexId}_${variantSuffix(specialVariant.name)}`
+              : rawScrydexId;
+            console.log(`  📌 Cross-set reprint: ${localId} (${specialVariant.name}) rarity=${crossRarity} → SP art`);
+            cards.push({
+              localId,
+              name: `${(c.name||'').trim()} (${specialVariant.name||'SP'})`,
+              rarity: crossRarity,
+              image: crossImage,
+              isVariant: false,
+              variantType: specialVariant.name || '',
+              baseLocalId: rawScrydexId,
+            });
+          });
+        } else {
+          // Plain reprint into our expansion -- same card, no new art, no suffix.
+          const plainVariant = matchingVariants[0];
+          const plainImage = pickImage(plainVariant.images) || pickImage(c.images);
+          console.log(`  📌 Plain reprint (no new art): ${rawScrydexId}`);
+          cards.push({
+            localId: rawScrydexId,
+            name: (c.name || '').trim(),
+            rarity: normalizeRarity(c.rarity),
+            image: plainImage,
+            isVariant: false,
+            variantType: null,
+            baseLocalId: null,
+          });
+        }
         continue;
       }
     }
