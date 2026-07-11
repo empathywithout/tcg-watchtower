@@ -611,6 +611,11 @@
   ],
   "redirects": [
     {
+      "source": "/one-piece/sets/:set/most-valuable",
+      "destination": "/one-piece/sets/:set/top-chase-cards",
+      "permanent": true
+    },
+    {
       "source": "/pokemon/sets/:series/:set/most-valuable",
       "destination": "/pokemon/sets/:series/:set/top-chase-cards",
       "permanent": true

@@ -531,9 +531,41 @@ const chaseCards = cards
 const setDir = path.join(ROOT, 'one-piece', 'sets', SET_URL_SLUG);
 fs.mkdirSync(setDir, { recursive: true });
 
-const mvPageUrl   = `${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/most-valuable`;
-const mvTitle     = `Most Valuable ${SET_FULL_NAME} Cards | One Piece TCG Prices`;
-const mvDesc      = `The most valuable ${SET_FULL_NAME} One Piece TCG cards ranked by market price. See current live prices for all Manga Rares, Secret Rares, SP cards, and Alternate Arts.`;
+const mvPageUrl   = `${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/top-chase-cards`;
+const mvTitle     = `${SET_FULL_NAME} Chase Cards: Most Valuable Cards Ranked by Price | One Piece TCG`;
+const mvDesc      = `See every ${SET_FULL_NAME} chase card ranked by current market price — the most valuable Manga Rares, Secret Rares, and SP cards in the set. Updated daily, with pull-rate context and where to buy.`;
+
+const rarityListOP = [...new Set(chaseCards.map(c => c.rarity))].filter(Boolean).join(', ');
+const topCardOP = chaseCards[0];
+const faqItemsOP = [
+  {
+    q: `What are the chase cards in ${SET_FULL_NAME}?`,
+    a: `The chase cards in ${SET_FULL_NAME} are its highest-rarity pulls — ${rarityListOP || 'its highest-rarity cards'}. These are the cards collectors specifically hope to pull from a booster box, and the main driver of a box's resale value.`,
+  },
+  ...(topCardOP ? [{
+    q: `What is the most valuable ${SET_FULL_NAME} card?`,
+    a: `${topCardOP.name} is typically the most valuable ${SET_FULL_NAME} pull, as a ${topCardOP.rarity} card. See live pricing for it and every other chase card ranked below.`,
+    id: 'faq-top-answer',
+  }] : []),
+  {
+    q: `How many chase cards are in ${SET_FULL_NAME}?`,
+    a: `${chaseCards.length} out of ${cards.length} total cards in ${SET_FULL_NAME} qualify as chase-tier rarities.`,
+  },
+];
+const faqSchemaOP = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqItemsOP.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a },
+  })),
+};
+const faqHtmlOP = faqItemsOP.map(item => `
+    <div class="faq-item">
+      <h3 class="faq-q">${item.q}</h3>
+      <p class="faq-a"${item.id ? ` id="${item.id}"` : ''}>${item.a}</p>
+    </div>`).join('');
 
 const mvHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -565,10 +597,13 @@ ${chaseCards[0] ? `<meta property="og:image" content="${R2_PUBLIC_URL}/cards/op/
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}" },
       { "@type": "ListItem", "position": 2, "name": "One Piece TCG", "item": "${SITE_URL}/one-piece" },
       { "@type": "ListItem", "position": 3, "name": "${SET_FULL_NAME}", "item": "${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/cards" },
-      { "@type": "ListItem", "position": 4, "name": "Most Valuable Cards", "item": "${mvPageUrl}" }
+      { "@type": "ListItem", "position": 4, "name": "Chase Cards", "item": "${mvPageUrl}" }
     ]
   }
 }<\/script>
+<script type="application/ld+json">
+${JSON.stringify(faqSchemaOP, null, 2)}
+<\/script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -593,6 +628,13 @@ nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px so
 h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:.5rem}
 .subtitle{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
 .intro-text{color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;max-width:800px}
+.set-link-top{display:inline-block;margin-bottom:1.5rem;color:var(--amber);font-size:0.9rem;font-weight:600}
+.set-link-top:hover{text-decoration:underline}
+.faq-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.faq-heading{font-size:1.4rem;font-weight:700;margin-bottom:1.25rem}
+.faq-item{margin-bottom:1.25rem}
+.faq-q{font-size:1rem;font-weight:700;margin-bottom:0.4rem;color:var(--text)}
+.faq-a{color:var(--muted);font-size:0.9rem;line-height:1.6}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
 @media(max-width:640px){.cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}}
 .card-item{background:rgba(15,23,42,.9);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
@@ -610,12 +652,14 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;mar
 .badge-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .card-price{font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:10px;min-height:1.6rem;font-family:monospace}
 .card-price.loading{color:var(--muted);font-size:.8rem;font-weight:400}
-.buy-btns{display:flex;gap:6px}
-.btn{flex:1;padding:7px 4px;border-radius:6px;font-size:.75rem;font-weight:700;text-align:center;cursor:pointer;transition:opacity .2s}
-.btn:hover{opacity:.85}
-.btn-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80}
-.btn-amazon{background:#f90;color:#111}
-.btn-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-links{display:flex;gap:3px;justify-content:center}
+.buy-link{flex:1;padding:3px 3px;border-radius:6px;font-size:0.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;text-align:center}
+.buy-amazon{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
+.buy-amazon:hover{background:rgba(251,191,36,0.25)}
+.buy-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.buy-ebay:hover{background:rgba(59,130,246,0.25)}
+.buy-tcgp{background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-size:0.5rem}
+.buy-tcgp:hover{background:rgba(74,222,128,0.25)}
 .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--amber);margin-top:2.5rem;font-size:.9rem;transition:color .2s}
 .back-link:hover{color:white}
 footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.6;margin-top:3rem}
@@ -633,12 +677,13 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
   <a href="/">Home</a><span>›</span>
   <a href="/one-piece">One Piece TCG</a><span>›</span>
   <a href="/one-piece/sets/${SET_URL_SLUG}/cards">${SET_FULL_NAME}</a><span>›</span>
-  <span>Most Valuable Cards</span>
+  <span>Chase Cards</span>
 </div>
 <div class="container">
-  <h1>Most Valuable ${SET_FULL_NAME} Cards</h1>
-  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — updated daily from TCGplayer</p>
-  <p class="intro-text">This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${[...new Set(chaseCards.map(c => c.rarity))].filter(Boolean).join(', ') || 'every high-rarity card in the set'}. Prices update automatically throughout the day, so check back for the latest movement before buying or selling.</p>
+  <h1>${SET_FULL_NAME} Chase Cards</h1>
+  <p class="subtitle">${chaseCards.length} chase cards ranked by market price — the most valuable pulls in ${SET_FULL_NAME}, updated daily</p>
+  <p class="intro-text">This page ranks every ${SET_FULL_NAME} chase card by current market price, including ${rarityListOP || 'every high-rarity card in the set'}. Chase cards are the highest-rarity cards in a set — the ones collectors specifically hope to pull from a booster box, and the main driver of a box's resale value. Prices update automatically throughout the day.</p>
+  <a href="/one-piece/sets/${SET_URL_SLUG}/cards" class="set-link-top">View the complete ${SET_FULL_NAME} card list and prices →</a>
   <div class="cards-grid" id="cards-grid">
     ${chaseCards.map(c => {
       const dispNum = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
@@ -664,16 +709,20 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
         <div class="card-num">${dispNum}</div>
         <span class="rarity-badge ${badgeClass}">${label}</span>
         <div class="card-price loading" data-price-key="${priceDataKey}">—</div>
-        <div class="buy-btns">
-          <a class="btn btn-amazon" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
-          <a class="btn btn-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="btn btn-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link buy-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
+          <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
         </div>
       </div>
     </div>`;
     }).join('')}
   </div>
   <a href="/one-piece/sets/${SET_URL_SLUG}/cards" class="back-link">← View Full ${SET_FULL_NAME} Card List</a>
+  <div class="faq-section">
+    <h2 class="faq-heading">Frequently Asked Questions</h2>
+    ${faqHtmlOP}
+  </div>
 </div>
 <footer>
   <p>TCG Watchtower is not affiliated with or endorsed by Bandai or the One Piece Card Game. Prices sourced from TCGplayer via TCGCSV.</p>
@@ -707,6 +756,14 @@ async function loadPrices() {
       return pb - pa;
     });
     items.forEach(i => grid.appendChild(i));
+    const faqEl = document.getElementById('faq-top-answer');
+    if (faqEl && items[0]) {
+      const topName = items[0].querySelector('.card-name')?.textContent;
+      const topPriceText = items[0].querySelector('[data-price-key]')?.textContent;
+      if (topName && topPriceText && topPriceText !== '—') {
+        faqEl.textContent = topName + ' is currently the most valuable chase card in this set, priced at ' + topPriceText + '. See live pricing for it and every other chase card ranked below.';
+      }
+    }
   } catch(e) { console.warn('Prices unavailable:', e.message); }
 }
 loadPrices();
@@ -715,23 +772,34 @@ ${impactScript}
 </body>
 </html>`;
 
-fs.writeFileSync(path.join(setDir, 'most-valuable.html'), mvHtml);
-console.log(`✅ Generated most-valuable page: one-piece/sets/${SET_URL_SLUG}/most-valuable.html`);
+fs.writeFileSync(path.join(setDir, 'top-chase-cards.html'), mvHtml);
+console.log(`✅ Generated top-chase-cards page: one-piece/sets/${SET_URL_SLUG}/top-chase-cards.html`);
 
-// Add vercel rewrite for most-valuable
+const staleMvPathOP = path.join(setDir, 'most-valuable.html');
+if (fs.existsSync(staleMvPathOP)) {
+  fs.unlinkSync(staleMvPathOP);
+  console.log(`✅ Removed stale most-valuable.html (consolidated into top-chase-cards)`);
+}
+
+// Add vercel rewrite for top-chase-cards
 updateVercel(vercel => {
   vercel.rewrites = vercel.rewrites.filter(r =>
-    r.source !== `/one-piece/sets/${SET_URL_SLUG}/most-valuable`
+    r.source !== `/one-piece/sets/${SET_URL_SLUG}/most-valuable` &&
+    r.source !== `/one-piece/sets/${SET_URL_SLUG}/top-chase-cards`
   );
   vercel.rewrites.push({
-    source:      `/one-piece/sets/${SET_URL_SLUG}/most-valuable`,
-    destination: `/one-piece/sets/${SET_URL_SLUG}/most-valuable.html`,
+    source:      `/one-piece/sets/${SET_URL_SLUG}/top-chase-cards`,
+    destination: `/one-piece/sets/${SET_URL_SLUG}/top-chase-cards.html`,
   });
 });
-console.log(`✅ vercel.json updated with most-valuable rewrite`);
+console.log(`✅ vercel.json updated with top-chase-cards rewrite`);
 
 // Add to sitemap
 let sitemap4 = fs.readFileSync(sitemapPath, 'utf8');
+sitemap4 = sitemap4.replace(
+  new RegExp(`  <url>\\s*<loc>${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/most-valuable</loc>[\\s\\S]*?</url>\\n?`, 'g'),
+  ''
+);
 sitemap4 = sitemap4.replace(
   new RegExp(`  <url>\\s*<loc>${mvPageUrl}</loc>[\\s\\S]*?</url>\\n?`, 'g'),
   ''
@@ -743,4 +811,4 @@ sitemap4 = sitemap4.replace('</urlset>', `  <url>
     <priority>0.8</priority>
   </url>\n</urlset>`);
 fs.writeFileSync(sitemapPath, sitemap4);
-console.log(`✅ sitemap.xml updated with most-valuable URL`);
+console.log(`✅ sitemap.xml updated with top-chase-cards URL`);
