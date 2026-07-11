@@ -183,8 +183,16 @@ export default async function handler(req, res) {
         // traced to a stale 1-hour in-memory cache entry never being
         // invalidated across several price-API fixes made today, not an
         // actual crash in this code.
-        const KNOWN_ALTART_TREASURE_RARE = { '24664': new Set(['011']) }; // op16 group ID
-        const isKnownAltArtTR = KNOWN_ALTART_TREASURE_RARE[String(groupId)]?.has(opLocalId);
+        // Keyed by the SPECIFIC TCGplayer productId (695996, confirmed via
+        // direct search -- her real base card is a DIFFERENT product,
+        // 695995), not just the card number. Vista has TWO products
+        // sharing card number "011" -- her base Rare and her Treasure
+        // Rare. Keying this exception by card number alone (an earlier,
+        // wrong version of this fix) made BOTH products collide onto the
+        // same "_altart" key, with her cheap base price winning and her
+        // real ~$34+ Treasure Rare price never surfacing at all.
+        const KNOWN_ALTART_TREASURE_RARE_PRODUCT_IDS = new Set([695996]); // Vista TR, OP16-011
+        const isKnownAltArtTR = KNOWN_ALTART_TREASURE_RARE_PRODUCT_IDS.has(product.productId);
         if (isKnownAltArtTR) {
           suffix = '_altart';
         } else if (nameLower.includes('manga')) {
