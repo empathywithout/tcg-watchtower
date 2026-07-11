@@ -50,6 +50,7 @@ const RELEASE_DATE_MAP = {
   'eb01':'Sep 2023','eb02':'Nov 2024','eb03':'Feb 2026','eb04':'Apr 2026',
 };
 const releaseDate = (process.env.SET_RELEASE_DATE || '').trim() || RELEASE_DATE_MAP[SET_ID] || '';
+const [releaseMonth, releaseYear] = releaseDate.split(' ');
 
 const TCGP_GROUP_MAP = {
   'op01':'3188','op02':'17698','op03':'22890','op04':'23024','op05':'23213',
@@ -90,6 +91,7 @@ if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME req
 
 // Fetch card data from R2 to bake into static HTML for SEO
 let CARD_LIST_HTML = '';
+let mangaRareCount = 0;
 let autoHero1 = HERO_CARD_1, autoHero2 = HERO_CARD_2, autoHero3 = HERO_CARD_3;
 try {
   const r2Url = `${R2_PUBLIC_URL}/data/op/${SET_ID}.json`;
@@ -97,6 +99,7 @@ try {
   if (r2Res.ok) {
     const r2Data = await r2Res.json();
     const r2Cards = r2Data.cards || [];
+    mangaRareCount = r2Cards.filter(c => c.rarity === 'Manga Rare').length;
     CARD_LIST_HTML = r2Cards.map(c => {
       const dispNum = c.localId.includes('_') ? c.localId.split('_')[0] : c.localId;
       const setShortId = dispNum.includes('-') ? dispNum : `${SET_SHORT_NAME}-${dispNum}`;
@@ -265,7 +268,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .section-nav-sets{position:relative;flex-shrink:0}
 .section-nav-sets-btn{padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s;white-space:nowrap;font-family:inherit}
 .section-nav-sets-btn:hover{color:var(--text)}
-.section-nav-dropdown{display:none;position:absolute;right:24px;top:100%;width:260px;background:rgba(10,15,30,0.98);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px;z-index:9999;max-height:calc(100vh - 200px);overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.5);margin-top:4px}
+.section-nav-dropdown{display:none;position:fixed;right:24px;top:0;width:260px;background:rgba(10,15,30,0.98);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px;z-index:9999;max-height:calc(100vh - 200px);overflow-y:auto;overscroll-behavior:contain;box-shadow:0 16px 48px rgba(0,0,0,.5);margin-top:4px}
 .section-nav-dropdown.open{display:block}
 .nav-short{display:none}
 .nav-dropdown-series{padding:8px 12px 4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -285,7 +288,8 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .gradient-text{background:linear-gradient(135deg,var(--red),var(--orange),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .set-desc{color:var(--muted);font-size:1rem;line-height:1.7;margin-bottom:28px;max-width:600px}
 .set-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:500px;animation:fadeInUp .8s ease-out .45s backwards}
-.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.set-stats-4{grid-template-columns:repeat(4,1fr);max-width:600px}
+.stat-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
 .stat-card-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:bold;color:white}
 .stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
@@ -300,6 +304,19 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .section-header{text-align:center;margin-bottom:40px}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:8px}
 .section-sub{color:var(--muted);font-size:1rem}
+.product-filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.filter-btn{padding:7px 16px;background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.12);border-radius:999px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:linear-gradient(135deg,rgba(239,68,68,.3),rgba(251,191,36,.2));border-color:rgba(239,68,68,.5);color:white}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+.product-card{background:rgba(30,41,59,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.product-img-wrap{width:100%;aspect-ratio:1;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-info{padding:20px}
+.product-name{font-size:1rem;font-weight:700;margin-bottom:12px;line-height:1.3}
+.product-price{font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem}
+.product-links{display:flex;flex-direction:column;gap:8px}
+.product-link-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;transition:all .2s}
+.badge-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:#fca5a5}
+.badge-case{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.35);color:#d8b4fe}
 .chase-slider-wrap{position:relative;padding:0 32px}
 .chase-slider{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 4px 16px}
 .chase-slider::-webkit-scrollbar{display:none}
@@ -405,7 +422,7 @@ footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px so
   .stat-value{font-size:1.2rem}
   .container{padding:0 16px}
 }
-.hamburger-menu{display:none;flex-direction:column;background:#1a1040;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;position:fixed;top:80px;right:24px;width:200px;z-index:2147483647;box-shadow:0 16px 48px rgba(0,0,0,.9);animation:slideDown .3s ease-out}
+.hamburger-menu{display:none;flex-direction:column;background:#1a1040;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;position:fixed;top:80px;left:auto;right:24px;width:200px;z-index:2147483647;box-shadow:0 16px 48px rgba(0,0,0,.9);animation:slideDown .3s ease-out}
 .hamburger-menu.open{display:flex}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 .hamburger-menu-item{padding:14px 16px;border-radius:8px;color:#e2e8f0;font-size:1rem;font-weight:500;transition:background .15s;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -466,7 +483,7 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
         <h1 class="set-title"><span class="gradient-text">One Piece TCG</span><br>${SET_FULL_NAME}</h1>
         <p class="set-desc">${SET_DESCRIPTION}${SEO_INTRO ? '<br><br><span style="font-size:0.95rem;opacity:0.85">'+SEO_INTRO+'</span>' : ''}</p>
         ${SERIES_NAV_HTML}
-        <div class="set-stats">
+        <div class="set-stats set-stats-4">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" alt="${SET_FULL_NAME}" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
             <div class="stat-label">${SET_SHORT_NAME}</div>
@@ -475,9 +492,13 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
             <div class="stat-value" id="stat-total-count">…</div>
             <div class="stat-label">Total Cards</div>
           </div>
+          <div class="stat-card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+            <div class="stat-value" style="color:#f87171;">${mangaRareCount}</div>
+            <div class="stat-label">Manga Rares</div>
+          </div>
           <div class="stat-card">
-            <div class="stat-value">${releaseDate}</div>
-            <div class="stat-label">Release Date</div>
+            <div class="stat-value">${releaseMonth}</div>
+            <div class="stat-label">${releaseYear}</div>
           </div>
         </div>
       </div>
