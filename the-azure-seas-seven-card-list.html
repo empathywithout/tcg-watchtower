@@ -178,6 +178,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .modal-meta{font-size:.85rem;color:var(--muted);margin-bottom:4px;font-family:'Space Mono',monospace}
 .modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
+.pl-amazon{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
 .pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
 .pl-tcgp{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:var(--green)}
 footer{background:rgba(15,23,42,.8);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);padding:48px 0 32px}
@@ -872,14 +873,11 @@ function renderCards(reset) {
     const priceClass = !cached?'loading':'';
     const displayName = (card.variantType||(card.localId&&card.localId.includes('_')))?cleanVariantName(card.name,card.variantType,card.localId):card.name;
     const dispNum = displayNumber(card.localId);
-    const cardPageHref = cardPageUrl(card.localId, card.name);
     el.innerHTML=`<img src="${imgUrl}" alt="${card.name} ${SET_FULL_NAME}" loading="lazy" onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${displayName}</div>
         <div class="card-item-num">${dispNum}</div>
         <div class="card-item-price ${priceClass}">${priceText}</div>
-        ${card.rarity&&RARITY_CLASS[card.rarity]?`<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity]||card.rarity}</span></div>`:''}
-        <a href="${cardPageHref}" onclick="event.stopPropagation()" style="display:block;text-align:center;color:var(--amber);font-size:.65rem;margin-top:6px;text-decoration:none;opacity:.8">📄 Card Page →</a>
       </div>`;
     el.addEventListener('click',()=>{ const c2=getCached(card.localId,card.name); openModal(card.localId,card.name,card.rarity||'',imgUrl,c2?.url||null); });
     grid.appendChild(el);
@@ -956,6 +954,7 @@ function openModal(localId,name,rarity,imgUrl,directUrl,rawName) {
       <div class="modal-meta">${dispNum} / ${SET_FULL_NAME}</div>
       ${rarity?`<div class="modal-meta" style="color:var(--amber)">${rarity}</div>`:''}
       <div class="modal-links">
+        <a class="modal-buy-link pl-amazon" href="${amazonLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🛒 Find on Amazon</span><span>→</span></a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(name+' '+dispNum+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener"><span>🔍 Find on eBay</span><span>→</span></a>
         <a class="modal-buy-link pl-tcgp" href="${tcgpUrl}" target="_blank" rel="noopener"><span>${directUrl?'Buy on TCGplayer':'Find on TCGplayer'}</span><span>→</span></a>
         ${SET_PHASE === 'en' ? `<a class="modal-buy-link" href="${cardPageUrl(localId,rawName)}" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--amber)"><span>📄 View Card Page</span><span>→</span></a>` : ''}
