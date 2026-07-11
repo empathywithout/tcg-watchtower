@@ -161,6 +161,7 @@ export default async function handler(req, res) {
 
       if (category === 68) {
         const nameLower = productName.toLowerCase();
+        const rarityValue = (extData.find(e => e.name === 'Rarity')?.value || '').toLowerCase();
 
         // Detect variant suffix from product name
         let suffix = ''; // base card
@@ -172,6 +173,17 @@ export default async function handler(req, res) {
           suffix = '_specialaltart';
         } else if (nameLower.includes('alternate art') || nameLower.includes('alt art') || nameLower.includes('(alt)')) {
           suffix = '_altart';
+        } else if (rarityValue.includes('treasure rare')) {
+          // Treasure Rare reprints (e.g. Donquixote Rosinante OP12-108 in OP14)
+          // often have a completely plain product name with no "(TR)" or
+          // "Treasure Rare" marker at all -- only TCGCSV's own Rarity
+          // metadata field reveals it. Confirmed via the real product name
+          // "Donquixote Rosinante - OP12-108 - The Azure Sea's Seven", which
+          // has nothing name-based to detect. Without this, such a product
+          // gets suffix='' and can never match our card data's localId
+          // (which always includes a _treasurerare suffix for consistency),
+          // so its real price silently never gets found.
+          suffix = '_treasurerare';
         }
 
         const baseName = productName
