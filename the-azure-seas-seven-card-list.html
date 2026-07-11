@@ -143,6 +143,7 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .buy-links{display:flex;gap:6px;margin-top:auto;padding-top:8px;flex-wrap:nowrap}
 .buy-link{flex:1;min-width:0;padding:5px 4px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-amazon{background:#f90;color:#111}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
 .chase-arrow:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.9);opacity:1}
@@ -301,9 +302,9 @@ fetch('/nav.html').then(r=>r.text()).then(html=>{
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-id="119_mangaaltart" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
-          <img data-id="119" alt="Top chase card 2" width="245" height="337" loading="lazy">
-          <img data-id="120" alt="Top chase card 3" width="245" height="337" loading="lazy">
+          <img data-id="OP09-051_goldspecialaltart" alt="Top chase card 1" width="245" height="337" fetchpriority="high">
+          <img data-id="OP09-051_specialaltart" alt="Top chase card 2" width="245" height="337" loading="lazy">
+          <img data-id="119_mangaaltart" alt="Top chase card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -698,6 +699,7 @@ const logoEl = document.getElementById('set-logo-hero');
 if (logoEl) logoEl.src = `${R2}/logos/op/${SET_ID}.png`;
 
 function ebayLink(q) { return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&mkcid=1&mkrid=${EBAY_MKRID}&siteid=0&campid=${EBAY_CAMP}&toolid=10001&mkevt=1`; }
+function amazonLink(q) { return `https://www.amazon.com/s?k=${encodeURIComponent(q)}&linkCode=ll2&tag=cehutto01-20&language=en_US`; }
 function tcgpLink(name, num) {
   const q = encodeURIComponent(`${name} ${num} One Piece`);
   const url = `https://www.tcgplayer.com/search/one-piece-card-game/product?productLineName=one-piece-card-game&q=${q}&view=grid`;
@@ -841,6 +843,7 @@ function renderChaseHTML() {
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links" style="width:100%">
+          <a class="buy-link buy-amazon" href="${amazonLink(c.name+' '+c.displayId+' '+SET_FULL_NAME+' One Piece Card')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.name+' '+c.displayId+' '+SET_FULL_NAME+' One Piece')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" href="${cached?.url||tcgpLink(c.name,c.displayId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -879,6 +882,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
         ${card.rarity&&RARITY_CLASS[card.rarity]?`<div style="margin-top:3px"><span class="rarity-badge ${RARITY_CLASS[card.rarity]}" style="font-size:.6rem;padding:2px 6px">${RARITY_LABEL[card.rarity]||card.rarity}</span></div>`:''}
         <div class="buy-links" style="margin-top:6px">
+          <a class="buy-link buy-amazon" href="${amazonLink(`${card.name} ${dispNum} ${SET_FULL_NAME} One Piece Card`)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
           <a class="buy-link buy-tcgp" data-tcgp-href="${tcgpUrl}" href="${tcgpUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
@@ -977,7 +981,6 @@ document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.targe
     btn.addEventListener('click',()=>{
       const t=document.getElementById(btn.dataset.target);
       if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
-      if(btn.dataset.url)history.pushState(null,'',btn.dataset.url);
       btns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     });
   });
