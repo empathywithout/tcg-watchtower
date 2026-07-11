@@ -40,7 +40,51 @@ console.log(`📋 Fetching card metadata from ${metaUrl}...`);
 const res = await fetch(metaUrl);
 if (!res.ok) throw new Error(`Failed to fetch metadata: ${res.status}`);
 const metadata = await res.json();
-const cards = metadata.cards || [];
+const rawCards = metadata.cards || [];
+
+// ── Data-quality cleanup ────────────────────────────────────────────────
+// Some sets' source data has malformed entries for the same physical card:
+// (a) the exact same localId appearing twice with different (wrong) rarity
+//     values, or (b) a variant entry whose variantType implies one rarity
+//     but whose own rarity field says something else (meaning the record
+//     itself is unreliable, often paired with a never-uploaded image).
+// Deliberately narrow and conservative: only acts on EXACT literal localId
+// duplicates, never on cards that merely share a base number with a
+// different suffix (e.g. Buggy's 051 / 051_specialaltart / 051_goldspecialaltart
+// are three genuinely different real cards and must never be merged).
+const VARIANT_TYPE_RARITY = {
+  treasureRare: 'Treasure Rare', altArt: 'Alternate Art',
+  specialAltArt: 'Special', goldSpecialAltArt: 'Special', mangaAltArt: 'Manga Rare',
+};
+const DEDUP_RARITY_PRIORITY = {
+  'Manga Rare': 0, 'Secret Rare': 1, 'Treasure Rare': 2, 'Alternate Art': 3,
+  'Alt Art': 3, 'Special': 4, 'Super Rare': 5, 'Rare': 6, 'Uncommon': 7, 'Common': 8, 'Leader': 9,
+};
+const byLocalId = new Map();
+const cards = [];
+for (const card of rawCards) {
+  if (card.isVariant && card.variantType && VARIANT_TYPE_RARITY[card.variantType]
+      && card.rarity !== VARIANT_TYPE_RARITY[card.variantType]) {
+    console.warn(`⚠️  Dropping malformed variant record: ${card.localId} (${card.name}) — variantType "${card.variantType}" implies rarity "${VARIANT_TYPE_RARITY[card.variantType]}" but rarity field says "${card.rarity}"`);
+    continue;
+  }
+  const existing = byLocalId.get(card.localId);
+  if (!existing) {
+    byLocalId.set(card.localId, card);
+    cards.push(card);
+    continue;
+  }
+  const existingP = DEDUP_RARITY_PRIORITY[existing.rarity] ?? 99;
+  const newP      = DEDUP_RARITY_PRIORITY[card.rarity] ?? 99;
+  if (newP < existingP) {
+    const idx = cards.indexOf(existing);
+    if (idx !== -1) cards[idx] = card;
+    byLocalId.set(card.localId, card);
+    console.warn(`⚠️  Duplicate localId resolved: kept "${card.rarity}" over "${existing.rarity}" for ${card.localId} (${card.name})`);
+  } else {
+    console.warn(`⚠️  Duplicate localId resolved: kept "${existing.rarity}" over "${card.rarity}" for ${existing.localId} (${existing.name})`);
+  }
+}
 console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 console.log(`📁 URL path: /one-piece/sets/${SET_URL_SLUG}/cards/`);
 
