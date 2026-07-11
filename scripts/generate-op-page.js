@@ -84,6 +84,12 @@ const SEO_DATA = {
   'eb01':{ metaTitle:'Memorial Collection Card List and Prices | TCG Watchtower', metaDesc:'Full Memorial Collection EB01 card list with live live prices. Every card, Secret Rare, and booster box value for One Piece TCG Extra Booster.', intro:'Memorial Collection is the first Extra Booster in the English One Piece Card Game, released in September 2023. As a celebration set with 80 cards featuring popular characters in anniversary artwork, it has maintained strong collector appeal.' },
   'eb03':{ metaTitle:'Heroines Edition Card List and Prices | TCG Watchtower', metaDesc:'Full Heroines Edition EB03 card list with live prices. Every SP, Manga Rare, and booster box value for One Piece TCG Extra Booster.', intro:'Heroines Edition is the third Extra Booster in the English One Piece Card Game, released in February 2026. Focused on iconic female characters including Boa Hancock, Nami, Nico Robin, and Uta, with SP alternate arts and a Manga Rare of Uta as the top chase cards.' },
   'eb04':{ metaTitle:'Egghead Crisis Card List and Prices | TCG Watchtower', metaDesc:'Full Egghead Crisis EB04 card list with live live prices. Every card, Secret Rare, and booster box value for One Piece TCG Extra Booster.', intro:'Egghead Crisis is the fourth Extra Booster in the English One Piece Card Game, focused on the Egghead Island arc characters.' },
+  'op16':{ metaTitle:'The Time of Battle Card List and Prices | TCG Watchtower', metaDesc:'Complete The Time of Battle card list with live prices. Every card and booster box value for One Piece TCG OP16.', intro:"The Time of Battle is a Marineford and Impel Down-themed set headlined by three Admiral Manga Rares — Kuzan (OP16-063), Sakazuki (OP16-065), and Borsalino (OP16-073) — the first time the English game has featured three Manga Rares in a single release. The English edition released June 12, 2026, just 13 days after the Japanese version.", faq:[
+    { q:"What are the most expensive The Time of Battle cards?", a:"The Time of Battle is headlined by three Admiral Manga Rares — Kuzan (OP16-063), Sakazuki (OP16-065), and Borsalino (OP16-073) — the top chase cards in the set. Portgas D. Ace's Secret Rare (OP16-118) is considered the safest long-term hold due to his enduring character popularity. See live prices above." },
+    { q:"How many cards are in The Time of Battle card list?", a:"The Time of Battle (OP16) contains 126 card types plus 1 commemorative DON!! card. It is a Marineford and Impel Down-themed set featuring six new Leaders, three Admiral Manga Rares, one Treasure Rare, and two Secret Rares." },
+    { q:"What makes The Time of Battle special?", a:"OP16 is the first One Piece TCG set to feature three Manga Rares in a single release — all three Admirals from Marineford: Kuzan (Aokiji), Sakazuki (Akainu), and Borsalino (Kizaru). It's also one of the closest English-to-Japanese simultaneous releases in the game's history." },
+    { q:"When did The Time of Battle release?", a:"The Japanese version of OP-16 released on May 30, 2026. The English edition released on June 12, 2026 — just 13 days after Japan." },
+  ] },
 };
 
 const seoData        = SEO_DATA[SET_ID] || {};
@@ -947,6 +953,9 @@ document.getElementById('load-more-btn').addEventListener('click',()=>renderCard
 const PRODUCT_META_BY_SET = {
   op14: {
     '665598': { tcgpId: '665598', type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: "The Azure Sea's Seven Booster Box (24 Packs)", q: "One Piece The Azure Sea's Seven Booster Box OP14" },
+  },
+  op16: {
+    '689336': { tcgpId: '689336', type: 'Booster Box', filterKey: 'box', badgeClass: 'badge-box', name: "The Time of Battle Booster Box (24 Packs)", q: "One Piece The Time of Battle Booster Box OP16" },
   },
 };
 const PRODUCT_META = PRODUCT_META_BY_SET[SET_ID.toLowerCase()] || {};
