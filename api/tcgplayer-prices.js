@@ -173,16 +173,19 @@ export default async function handler(req, res) {
           suffix = '_specialaltart';
         } else if (nameLower.includes('alternate art') || nameLower.includes('alt art') || nameLower.includes('(alt)')) {
           suffix = '_altart';
-        } else if (rarityValue.includes('treasure rare')) {
+        } else if (rarityValue.includes('treasure rare') || rarityValue === 'tr') {
           // Treasure Rare reprints (e.g. Donquixote Rosinante OP12-108 in OP14)
           // often have a completely plain product name with no "(TR)" or
           // "Treasure Rare" marker at all -- only TCGCSV's own Rarity
           // metadata field reveals it. Confirmed via the real product name
           // "Donquixote Rosinante - OP12-108 - The Azure Sea's Seven", which
-          // has nothing name-based to detect. Without this, such a product
-          // gets suffix='' and can never match our card data's localId
-          // (which always includes a _treasurerare suffix for consistency),
-          // so its real price silently never gets found.
+          // has nothing name-based to detect. Checking both the full text
+          // and the abbreviated code since I can't directly verify which
+          // format TCGplayer uses for this specific game's Rarity field.
+          // Without this, such a product gets suffix='' and can never match
+          // our card data's localId (which always includes a
+          // _treasurerare suffix for consistency), so its real price
+          // silently never gets found.
           suffix = '_treasurerare';
         }
 
