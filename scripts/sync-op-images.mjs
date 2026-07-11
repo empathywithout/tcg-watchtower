@@ -69,16 +69,16 @@ const SET_OVERRIDES = {
     // Koby Manga Rare — Scrydex API returns wrong image for this variant
     'EB04-044_mangaaltart': 'https://images.scrydex.com/onepiece/EB04-044B/medium',
     // Zoro Treasure Rare
-    'OP13-037': 'https://images.scrydex.com/onepiece/OP13-037A/medium',
+    'OP13-037_treasurerare': 'https://images.scrydex.com/onepiece/OP13-037A/medium',
     // Sabo SP cards — not on Scrydex API, use direct CDN image
     'PRB02-014': 'https://images.scrydex.com/onepiece/P-105A/medium',
     // Cross-set SP reprints — Scrydex individual fetch returns base card image, not SP art
-    'OP11-106': 'https://images.scrydex.com/onepiece/OP11-106B/medium',
-    'OP12-014': 'https://images.scrydex.com/onepiece/OP12-014B/medium',
-    'OP13-031': 'https://images.scrydex.com/onepiece/OP13-031A/medium',
-    'OP13-042': 'https://images.scrydex.com/onepiece/OP13-042B/medium',
-    'EB02-052': 'https://images.scrydex.com/onepiece/EB02-052B/medium',
-    'ST26-005': 'https://images.scrydex.com/onepiece/ST26-005A/medium',
+    'OP11-106_specialaltart': 'https://images.scrydex.com/onepiece/OP11-106B/medium',
+    'OP12-014_specialaltart': 'https://images.scrydex.com/onepiece/OP12-014B/medium',
+    'OP13-031_specialaltart': 'https://images.scrydex.com/onepiece/OP13-031A/medium',
+    'OP13-042_specialaltart': 'https://images.scrydex.com/onepiece/OP13-042B/medium',
+    'EB02-052_specialaltart': 'https://images.scrydex.com/onepiece/EB02-052B/medium',
+    'ST26-005_specialaltart': 'https://images.scrydex.com/onepiece/ST26-005A/medium',
   },
 };
 
@@ -102,14 +102,14 @@ const MANUAL_CARDS = {
 // Rarity overrides — correct rarities where Scrydex returns wrong value
 const RARITY_OVERRIDES = {
   'op15': {
-    'OP13-037': 'Treasure Rare',
+    'OP13-037_treasurerare': 'Treasure Rare',
     // Cross-set SP cards — Scrydex returns base rarity, override to Special
-    'OP11-106': 'Special',
-    'OP12-014': 'Special',
-    'OP13-031': 'Special',
-    'OP13-042': 'Special',
-    'EB02-052': 'Special',
-    'ST26-005': 'Special',
+    'OP11-106_specialaltart': 'Special',
+    'OP12-014_specialaltart': 'Special',
+    'OP13-031_specialaltart': 'Special',
+    'OP13-042_specialaltart': 'Special',
+    'EB02-052_specialaltart': 'Special',
+    'ST26-005_specialaltart': 'Special',
     'PRB02-014': 'Special',
   },
   'op16': {
@@ -118,12 +118,12 @@ const RARITY_OVERRIDES = {
     // Vista TR — Scrydex labels the Treasure Rare variant as altArt, localId is 011_altart
     '011_altart': 'Treasure Rare',
     // Cross-set SP reprints — Scrydex returns base card rarity, override to Special
-    'OP14-029': 'Special',
-    'OP14-084': 'Special',
-    'OP11-067': 'Special',
-    'EB04-054': 'Special',
-    'OP10-045': 'Special',
-    'ST15-005': 'Special',
+    'OP14-029_specialaltart': 'Special',
+    'OP14-084_specialaltart': 'Special',
+    'OP11-067_specialaltart': 'Special',
+    'EB04-054_specialaltart': 'Special',
+    'OP10-045_specialaltart': 'Special',
+    'ST15-005_specialaltart': 'Special',
   },
 };
 
