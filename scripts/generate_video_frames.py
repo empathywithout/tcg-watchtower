@@ -276,10 +276,29 @@ def assemble_video(frames: list, output_path: str, size: tuple = LONGFORM_SIZE) 
         "ffmpeg", "-y",
         "-i", str(silent_video_path),
         "-i", str(combined_audio_path),
+        "-map", "0:v:0", "-map", "1:a:0",  # explicit mapping -- without
+        # this, ffmpeg's automatic stream selection across two separate
+        # inputs isn't guaranteed to pick both a video AND an audio
+        # stream; this is a common, easy-to-miss cause of a muxed file
+        # that plays but has no audio track at all.
         "-c:v", "copy", "-c:a", "aac",
         "-shortest",
         output_path,
     ], check=True, capture_output=True)
+
+    # Verify the output actually has an audio stream before returning --
+    # catches this exact failure mode immediately instead of it only
+    # surfacing when someone plays the video back.
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "a",
+         "-show_entries", "stream=codec_type", "-of", "csv=p=0", output_path],
+        capture_output=True, text=True,
+    )
+    if not probe.stdout.strip():
+        print(f"  WARNING: {output_path} has NO audio stream after assembly -- "
+              f"something in the mux step failed silently.")
+    else:
+        print(f"  Verified: {output_path} has an audio stream present.")
 
     return output_path
 
