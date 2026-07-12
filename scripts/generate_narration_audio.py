@@ -22,9 +22,9 @@ from pathlib import Path
 from google.cloud import texttospeech
 
 # Neural2 voices are included in the free tier (same tier as WaveNet) and
-# sound noticeably more natural than Standard voices. en-US-Neural2-D is a
-# clear, neutral male voice; swap for -F/-C etc. for other tones.
-VOICE_NAME = "en-US-Neural2-D"
+# sound noticeably more natural than Standard voices. en-US-Neural2-F was
+# chosen after A/B testing 5 free voices directly.
+VOICE_NAME = "en-US-Neural2-F"
 LANGUAGE_CODE = "en-US"
 
 _client = None
@@ -38,7 +38,7 @@ def get_client():
     return _client
 
 
-def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0, use_ssml: bool = False, voice_name: str = None) -> str:
+def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0, pitch: float = 0.0, use_ssml: bool = False, voice_name: str = None) -> str:
     """
     Synthesize a single narration string to an MP3 file.
 
@@ -47,6 +47,8 @@ def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0
         output_path: where to save the .mp3 file
         speaking_rate: 1.0 = normal. For narration (not punchy Shorts), 0.95-1.0
             tends to sound more natural than speeding up.
+        pitch: semitone shift, 0.0 = default. Small variance (-1.0 to 1.0)
+            per card adds to the same anti-monotony effect as rate variance.
         use_ssml: if True, `text` is treated as SSML markup (must be wrapped
             in <speak>...</speak>) rather than plain text.
         voice_name: override the module-level VOICE_NAME for this call only
@@ -69,6 +71,7 @@ def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0
     audio_config = texttospeech.AudioConfig(
         audio_encoding=texttospeech.AudioEncoding.MP3,
         speaking_rate=speaking_rate,
+        pitch=pitch,
     )
 
     response = client.synthesize_speech(
@@ -228,12 +231,13 @@ def synthesize_video_narrations(cards: list, output_dir: str, narration_fn=None)
                 reason=reason,
             )
             audio_path = os.path.join(output_dir, f"{i:03d}_{card['display_id']}.mp3")
-            # Small random variance per card (0.97-1.03) -- a real narrator
-            # never speaks at the exact same rate on every sentence, and
-            # that metronomic consistency across 20+ cards is one of the
-            # more subtle "this is synthetic" tells in a full video.
+            # Small random variance per card (rate 0.97-1.03, pitch +/-1
+            # semitone) -- a real narrator never speaks at the exact same
+            # rate and pitch on every sentence, and that consistency across
+            # 20+ cards is one of the more subtle "this is synthetic" tells.
             rate = random.uniform(0.97, 1.03)
-            synthesize_narration(ssml, audio_path, speaking_rate=rate, use_ssml=True)
+            pitch_shift = random.uniform(-1.0, 1.0)
+            synthesize_narration(ssml, audio_path, speaking_rate=rate, pitch=pitch_shift, use_ssml=True)
             text = ssml  # stored for reference/on-screen captions
 
         results.append({"card": card, "text": text, "audio_path": audio_path})
