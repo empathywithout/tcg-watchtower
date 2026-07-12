@@ -26,6 +26,7 @@ const SET_TO_GROUP = {
   'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
+  'me05':'24688', // confirmed real via live TCGplayer presale listings
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -202,9 +203,14 @@ async function cacheToR2InBackground(setId, cards, phase) {
   }
 }
 
-// Fetch EN name map for a JP set — tries TCGCSV first (most reliable), then Scrydex EN, then TCGdex
+// Fetch EN bridge data (name, rarity, image) for a JP-phase set whose English
+// release has already had its official reveal, but Scrydex hasn't caught up
+// yet. TCGCSV/TCGplayer routinely has real, confirmed data before Scrydex --
+// this is preferred over Scrydex's own machine-translation guess whenever
+// available. Falls back to Scrydex EN, then TCGdex, if TCGCSV has nothing yet
+// (e.g. immediately after a set's JP release, before TCGplayer pre-lists it).
 async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
-  // Try TCGCSV first — guaranteed to have all cards once EN releases
+  // Try TCGCSV first — most reliable once TCGplayer pre-lists the set
   const groupId = SET_TO_GROUP[setId];
   if (groupId) {
     try {
@@ -218,16 +224,22 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
         products.forEach(p => {
           const ext       = p.extendedData || [];
           const numEntry  = ext.find(e => e.name === 'Number');
+          const rarEntry  = ext.find(e => e.name === 'Rarity');
           const cleanName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
           if (!cleanName) return;
+          const entry = {
+            name:   cleanName,
+            rarity: rarEntry ? rarEntry.value : null,
+            image:  p.imageUrl || null,
+          };
           if (numEntry) {
             hasNumbers = true;
             const num = numEntry.value.split('/')[0].trim();
-            map[num.padStart(3, '0')]      = cleanName;
-            map[String(parseInt(num, 10))] = cleanName;
-            map[num]                       = cleanName;
+            map[num.padStart(3, '0')]      = entry;
+            map[String(parseInt(num, 10))] = entry;
+            map[num]                       = entry;
           } else {
-            map[`pid_${p.productId}`] = { name: cleanName, productId: p.productId };
+            map[`pid_${p.productId}`] = { ...entry, productId: p.productId };
           }
         });
 
@@ -236,15 +248,16 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
           : Object.keys(map).length;
 
         if (count > 0) {
-          console.log(`[api/cards] EN name map from TCGCSV: ${count} entries (numbered=${hasNumbers})`);
+          console.log(`[api/cards] EN bridge data from TCGCSV: ${count} entries (numbered=${hasNumbers})`);
           return map;
         }
       }
     } catch (e) {
-      console.warn(`[api/cards] TCGCSV name map failed:`, e.message);
+      console.warn(`[api/cards] TCGCSV bridge data failed:`, e.message);
     }
   }
-  // Try Scrydex EN
+  // Try Scrydex EN (name only -- no separate rarity/image bridge from this path,
+  // since if Scrydex EN exists at all, phase would already be 'en', not 'jp')
   if (scrydexEnId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
     try {
       let allCards = [], page = 1, total = null;
@@ -266,13 +279,13 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
         const map = {};
         allCards.forEach(c => {
           const localId = c.id ? c.id.split('-').slice(1).join('-') : '';
-          if (localId && c.name) map[localId] = c.name;
+          if (localId && c.name) map[localId] = { name: c.name, rarity: null, image: null };
         });
-        console.log(`[api/cards] EN name map from Scrydex: ${Object.keys(map).length} names`);
+        console.log(`[api/cards] EN bridge data from Scrydex: ${Object.keys(map).length} names`);
         return map;
       }
     } catch (e) {
-      console.warn(`[api/cards] Scrydex EN name map failed:`, e.message);
+      console.warn(`[api/cards] Scrydex EN bridge data failed:`, e.message);
     }
   }
   // TCGdex last resort
@@ -281,12 +294,12 @@ async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
     if (res.ok) {
       const data  = await res.json();
       const map   = {};
-      (data.cards || []).forEach(c => { if (c.localId && c.name) map[c.localId] = c.name; });
-      console.log(`[api/cards] EN name map from TCGdex: ${Object.keys(map).length} names`);
+      (data.cards || []).forEach(c => { if (c.localId && c.name) map[c.localId] = { name: c.name, rarity: null, image: null }; });
+      console.log(`[api/cards] EN bridge data from TCGdex: ${Object.keys(map).length} names`);
       return map;
     }
   } catch (e) {
-    console.warn(`[api/cards] TCGdex EN name map failed:`, e.message);
+    console.warn(`[api/cards] TCGdex EN bridge data failed:`, e.message);
   }
   return {};
 }
@@ -469,25 +482,39 @@ export default async function handler(req, res) {
           }
 
           if (allCards.length > 0) {
+            // For JP-phase sets, fetch confirmed EN bridge data (name/rarity/
+            // image) ONCE up front -- preferred over Scrydex's own machine-
+            // translation guess whenever TCGCSV/TCGplayer has it, since that's
+            // real, confirmed data rather than an estimate. Falls back to
+            // Scrydex's translation.en fields per-card when the bridge has
+            // nothing for that specific localId (e.g. a very recently-added
+            // card TCGplayer hasn't listed yet).
+            const bridgeMap = phase === 'jp'
+              ? await fetchEnNameMap(setId, SCRYDEX_EN_ID_MAP[setId], tcgdexId)
+              : {};
+
             cards = allCards.map((c) => {
               const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
               const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+              const bridge  = bridgeMap[localId] || bridgeMap[String(parseInt(localId, 10))] || null;
 
               const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
               const image = phase === 'en'
                 ? `${R2_BASE}/cards/${setId}/${localId}.webp`
-                : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
+                : (bridge?.image || scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
 
-              // JP: use translation.en.name; EN: use name directly
+              // JP: prefer confirmed EN bridge name, then Scrydex's own
+              // translation guess, then a stripped-down JP name as last resort.
+              // EN: use name directly.
               const name = phase === 'jp'
-                ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
+                ? (bridge?.name || c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
                 : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
 
               const rarity = normalizeRarity(
-                phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
+                phase === 'jp' ? (bridge?.rarity || c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
               );
 
-              return { localId, name, rarity, image, source: 'scrydex', phase };
+              return { localId, name, rarity, image, source: bridge ? 'tcgcsv-bridge' : 'scrydex', phase };
             });
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
             // Fire-and-forget: cache metadata + images to R2 so next request is free

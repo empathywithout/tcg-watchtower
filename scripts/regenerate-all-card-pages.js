@@ -47,7 +47,7 @@ const GROUP_ID_MAP = {
   sv6pt5: '23529', sv07: '23537', sv08: '23651', sv8pt5: '23821',
   sv09: '24073', sv10: '24269',
   me01: '24380', me02: '24448', me02pt5: '24541', me03: '24587',
-  me04: '24655', me05: '0', // JP-phase, no real English group ID yet
+  me04: '24655', me05: '24688', // confirmed real via live TCGplayer presale listings
   zsv10pt5: '24325', rsv10pt5: '24326',
 };
 const SET_URL_SLUG_MAP = {

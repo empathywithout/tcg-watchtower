@@ -113,12 +113,15 @@ const GROUP_ID_MAP = {
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
   'me01': '24380', 'me02': '24448', 'me02pt5': '24541', 'me03': '24587',
-  'me04': '24655', 'me05': '0', // me05 (Pitch Black) is still JP-phase --
-                                  // no English TCGplayer listing exists yet,
-                                  // so no real group ID exists to put here.
-                                  // Update once Pitch Black actually releases
-                                  // in English (confirmed July 17, 2026) and
-                                  // the real ID can be verified on TCGplayer.
+  'me04': '24655', 'me05': '24688', // confirmed real via live TCGplayer presale
+                                      // listings for individual cards (e.g.
+                                      // product 704873, Mega Darkrai ex) and
+                                      // sealed product (692939, 692942, 692947)
+                                      // -- TCGplayer pre-populates a set's group
+                                      // ahead of street date. Earlier today this
+                                      // was changed to '0' based on the (wrong)
+                                      // assumption that no group could exist pre-
+                                      // release; reverted after direct evidence.
   'zsv10pt5': '24325',   // Black Bolt
   'rsv10pt5': '24326',   // White Flare
 };
