@@ -21,6 +21,10 @@
 
 const TCGCSV_GROUP_ID = '24688';
 const TCGCSV_CATEGORY = 3; // Pokemon
+const SCRYDEX_JP_EXPANSION_ID = 'm5_ja'; // matches SCRYDEX_JP_ID_MAP['me05'] in production
+const SCRYDEX_BASE = 'https://api.scrydex.com/pokemon/v1';
+const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
+const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 
 // A handful of KNOWN reference cards (from real, cross-checked sources
 // this session) to manually verify the numbering question directly,
@@ -42,6 +46,114 @@ const KNOWN_NEW_ENGLISH_ONLY_CARDS = [
   { name: 'Jett', expectedNumber: 79 },
   { name: 'Mega Delphox ex', expectedNumber: 8 },
 ];
+
+/**
+ * Fetch JP source card data from Scrydex (real pattern used in production).
+ * Returns array of { localId, name, rarity, image } using Scrydex's own
+ * translation.en fields as the JP-side name/rarity guess.
+ */
+async function fetchJpScrydexCards() {
+  if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
+    console.log('   (no SCRYDEX_API_KEY/TEAM_ID set -- skipping JP fetch, testing TCGCSV-only path)');
+    return [];
+  }
+  let allCards = [], page = 1, total = null;
+  while (true) {
+    const res = await fetch(
+      `${SCRYDEX_BASE}/ja/expansions/${SCRYDEX_JP_EXPANSION_ID}/cards?select=id,name,translation,rarity,images&pageSize=100&page=${page}`,
+      { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(10000) }
+    );
+    if (!res.ok) { console.warn(`   Scrydex JP fetch failed: HTTP ${res.status}`); break; }
+    const data = await res.json();
+    const pageCards = data.data || [];
+    if (total === null) total = data.totalCount || data.total || null;
+    allCards = allCards.concat(pageCards);
+    if (pageCards.length === 0 || pageCards.length < 100) break;
+    if (total !== null && allCards.length >= total) break;
+    page++;
+  }
+  return allCards.map(c => {
+    const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
+    const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+    const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+    return {
+      localId,
+      name: c.translation?.en?.name || (c.name || '').trim(),
+      rarity: c.translation?.en?.rarity || c.rarity || '',
+      image: scrydexImage,
+    };
+  });
+}
+
+/**
+ * THE actual merge function -- TCGCSV-primary, JP-fallback per card.
+ * This is the exact logic Phase 3 would reuse in the shared module.
+ * Keyed by card NUMBER (not name), since that's the real identity key
+ * once TCGCSV is treated as authoritative for position.
+ */
+function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
+  const merged = {}; // keyed by zero-padded number string
+
+  // TCGCSV first -- authoritative when present
+  for (const p of tcgcsvCardProducts) {
+    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
+    if (!numEntry) continue;
+    const num = numEntry.value.split('/')[0].trim().padStart(3, '0');
+    const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
+    const cleanName = (p.name || '').replace(/\s*-\s*\d+\/\d+\s*$/, '').trim();
+    merged[num] = {
+      localId: num, name: cleanName, rarity: rarEntry?.value || '',
+      image: p.imageUrl || null, source: 'tcgcsv',
+    };
+  }
+
+  // JP Scrydex fills in ONLY numbers TCGCSV doesn't have yet
+  let jpFallbackCount = 0;
+  for (const c of jpScrydexCards) {
+    const num = String(c.localId).padStart(3, '0');
+    if (merged[num]) continue; // TCGCSV already has this position
+    merged[num] = { localId: num, name: c.name, rarity: c.rarity, image: c.image, source: 'jp-fallback' };
+    jpFallbackCount++;
+  }
+
+  return { cards: Object.values(merged).sort((a, b) => a.localId.localeCompare(b.localId)), jpFallbackCount };
+}
+
+async function testMerge(cardProducts) {
+  console.log(`\n=== Testing the actual merge function against real data ===`);
+  const jpCards = await fetchJpScrydexCards();
+  console.log(`   JP Scrydex cards fetched: ${jpCards.length}`);
+
+  const { cards: mergedCards, jpFallbackCount } = mergeCards(cardProducts, jpCards);
+
+  console.log(`\n   Merged result: ${mergedCards.length} total cards`);
+  console.log(`   From TCGCSV (confirmed): ${mergedCards.filter(c => c.source === 'tcgcsv').length}`);
+  console.log(`   From JP fallback (estimate): ${jpFallbackCount}`);
+
+  const expectedTotal = 120;
+  if (mergedCards.length === expectedTotal) {
+    console.log(`   ✅ Matches expected total of ${expectedTotal}`);
+  } else {
+    console.log(`   ⚠️  Expected ${expectedTotal}, got ${mergedCards.length} -- investigate before trusting this merge`);
+  }
+
+  // Verify no duplicate localIds (a real risk if number-parsing has an edge case)
+  const idCounts = {};
+  mergedCards.forEach(c => { idCounts[c.localId] = (idCounts[c.localId] || 0) + 1; });
+  const dupes = Object.entries(idCounts).filter(([, count]) => count > 1);
+  if (dupes.length === 0) {
+    console.log(`   ✅ No duplicate localIds`);
+  } else {
+    console.log(`   ⚠️  DUPLICATE localIds found: ${dupes.map(([id]) => id).join(', ')}`);
+  }
+
+  // Spot-check the 3 known new cards actually made it through the merge correctly
+  console.log(`\n   Spot-check known new cards in merged output:`);
+  for (const known of KNOWN_NEW_ENGLISH_ONLY_CARDS) {
+    const found = mergedCards.find(c => c.name.toLowerCase() === known.name.toLowerCase());
+    console.log(`   ${found ? '✅' : '❌'} ${known.name}: ${found ? `#${found.localId}, source=${found.source}` : 'MISSING from merged output'}`);
+  }
+}
 
 async function main() {
   console.log(`=== Diagnostic check: TCGCSV group ${TCGCSV_GROUP_ID} ===\n`);
@@ -150,6 +262,8 @@ async function main() {
       console.log(`   raw name: "${p.name}" | number: ${numEntry?.value || '?'} | rarity: ${rarEntry?.value || '?'}`);
     }
   }
+
+  await testMerge(cardProducts);
 }
 
 main().catch(e => {
