@@ -1,16 +1,53 @@
-name: Pinterest Pin Campaign
+name: Pinterest Pin Queue
 
 on:
-  workflow_dispatch:  # manual trigger only for now, from the Actions tab
+  workflow_dispatch:
     inputs:
+      action:
+        description: 'What to do'
+        required: true
+        type: choice
+        options:
+          - build_queue
+          - post_from_queue
+        default: build_queue
+      style:
+        description: 'Pin style (only used for build_queue)'
+        required: false
+        type: choice
+        options:
+          - chase
+          - simple
+          - roundup
+        default: chase
+      set_id:
+        description: 'Internal set ID (only used for build_queue), e.g. me05'
+        required: false
+        default: 'me05'
+      set_slug:
+        description: 'URL slug (only used for build_queue), e.g. pitch-black'
+        required: false
+        default: 'pitch-black'
+      series_slug:
+        description: 'Series slug (only used for build_queue), e.g. mega-evolution'
+        required: false
+        default: 'mega-evolution'
+      top_n:
+        description: 'How many cards to queue (only used for build_queue -- leave blank for ALL cards in simple style)'
+        required: false
+        default: '8'
       live:
-        description: 'Actually post to Pinterest (unchecked = dry run, safe)'
+        description: 'Actually post (only used for post_from_queue) -- unchecked = dry run, safe'
         required: true
         type: boolean
         default: false
+      max_posts:
+        description: 'Max pins to post this run (only used for post_from_queue, blank = no limit)'
+        required: false
+        default: ''
 
 jobs:
-  pinterest-campaign:
+  pinterest-queue:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -24,32 +61,47 @@ jobs:
       - name: Install dependencies
         run: pip install Pillow
 
-      - name: List boards (verify token + get board IDs)
+      - name: Build queue
+        if: ${{ inputs.action == 'build_queue' }}
         env:
-          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
-        run: python3 scripts/pinterest_list_boards.py
-
-      - name: Run campaign
-        env:
-          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
-          PINTEREST_BOARD_CHASE_CARDS: ${{ secrets.PINTEREST_BOARD_CHASE_CARDS }}
-          PINTEREST_BOARD_PITCH_BLACK: ${{ secrets.PINTEREST_BOARD_PITCH_BLACK }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
           CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
           CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+        run: |
+          ARGS="--style ${{ inputs.style }} --set ${{ inputs.set_id }} \
+            --set-slug ${{ inputs.set_slug }} --series-slug ${{ inputs.series_slug }} \
+            --board-id ${{ secrets.PINTEREST_BOARD_CHASE_CARDS }}"
+          if [ -n "${{ inputs.top_n }}" ]; then ARGS="$ARGS --top-n ${{ inputs.top_n }}"; fi
+          python3 scripts/pinterest_queue_build.py $ARGS
+
+      - name: Commit updated queue
+        if: ${{ inputs.action == 'build_queue' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pinterest_queue/queue.json
+          git diff --staged --quiet || git commit -m "Update Pinterest pin queue"
+          git push
+
+      - name: Post from queue
+        if: ${{ inputs.action == 'post_from_queue' }}
+        env:
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
         run: |
-          if [ "${{ inputs.live }}" = "true" ]; then
-            python3 scripts/pinterest_campaign.py --live
-          else
-            python3 scripts/pinterest_campaign.py
-          fi
+          ARGS=""
+          if [ "${{ inputs.live }}" = "true" ]; then ARGS="$ARGS --live"; fi
+          if [ -n "${{ inputs.max_posts }}" ]; then ARGS="$ARGS --max-posts ${{ inputs.max_posts }}"; fi
+          python3 scripts/pinterest_queue_post.py $ARGS
 
-      - name: Upload generated pin images for inspection
-        uses: actions/upload-artifact@v4
-        with:
-          name: pinterest-pins
-          path: /tmp/pinterest_pins/*.png
+      - name: Commit updated queue (posted status)
+        if: ${{ inputs.action == 'post_from_queue' && inputs.live == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pinterest_queue/queue.json
+          git diff --staged --quiet || git commit -m "Mark Pinterest pins as posted"
+          git push
