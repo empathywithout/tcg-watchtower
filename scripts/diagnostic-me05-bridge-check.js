@@ -106,7 +106,7 @@ async function checkRarityMappingGaps(cardProducts) {
   let allRaw = [], page = 1, total = null;
   while (true) {
     const res = await fetch(
-      `${SCRYDEX_BASE}/ja/expansions/${SCRYDEX_JP_EXPANSION_ID}/cards?select=id,name,rarity&pageSize=100&page=${page}`,
+      `${SCRYDEX_BASE}/ja/expansions/${SCRYDEX_JP_EXPANSION_ID}/cards?select=id,name,translation,rarity&pageSize=100&page=${page}`,
       { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(10000) }
     );
     if (!res.ok) { console.warn(`   raw Scrydex fetch failed: HTTP ${res.status}`); return; }
@@ -126,11 +126,17 @@ async function checkRarityMappingGaps(cardProducts) {
     'スペシャルアートレア': 'Special Illustration Rare', '超ウルトラレア': 'Mega Hyper Rare',
   };
 
-  // Build name -> raw JP rarity lookup from Scrydex
+  // Build name -> raw JP rarity lookup from Scrydex, keyed by the ENGLISH
+  // translated name (translation.en.name) -- NOT the raw Japanese name --
+  // since that's what needs to match against TCGCSV's English names below.
+  // (First version of this check used the raw JP name as the key, which
+  // could never match an English lookup regardless of rarity -- caught
+  // when ALL 8 rarities showed "no match", including cards already
+  // confirmed to exist in both sources via the earlier reference-card check.)
   const rawRarityByName = {};
   for (const c of allRaw) {
-    const cleanName = (c.name || '').trim();
-    if (cleanName && !rawRarityByName[cleanName]) rawRarityByName[cleanName] = c.rarity;
+    const enName = (c.translation?.en?.name || c.name || '').trim();
+    if (enName && !rawRarityByName[enName]) rawRarityByName[enName] = c.rarity;
   }
 
   // For each DISTINCT rarity TCGCSV confirms, find one example card and
