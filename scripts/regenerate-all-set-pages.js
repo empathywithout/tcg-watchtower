@@ -53,7 +53,26 @@ const SET_URL_SLUG_MAP = {
 // confirmed by reading each script's own default derivation directly).
 // Real correct values: SET_URL_SLUG="151", SET_SLUG="scarlet-violet-151-card-list".
 const SET_URL_SLUG_OVERRIDE = { sv3pt5: '151' };
-const SET_SLUG_FILENAME_OVERRIDE = { sv3pt5: 'scarlet-violet-151-card-list' };
+// Verified DIRECTLY against vercel.json's actual routing rules and
+// sets.json's own slug field -- not derived/guessed. For "flat-pattern"
+// sets (slug field doesn't contain "/cards"), the slug field IS the real
+// flat filename already. For "nested-pattern" sets (slug contains
+// "/cards"), cross-referenced vercel.json's rewrites to find the real
+// destination file for each -- only me01 needed a series-name prefix
+// (to avoid colliding with sv01, since both independently use "base-set"
+// as their URL slug); every other nested-pattern set just uses
+// "{url_slug}-card-list", confirmed per-set rather than assumed uniform.
+const SET_SLUG_FILENAME_OVERRIDE = {
+  sv01: 'scarlet-violet-base-set-card-list',
+  sv3pt5: 'scarlet-violet-151-card-list',
+  me01: 'mega-evolution-base-set-card-list',
+  me02pt5: 'ascended-heroes-card-list',
+  me03: 'perfect-order-card-list',
+  me04: 'chaos-rising-card-list',
+  me05: 'pitch-black-card-list',
+  zsv10pt5: 'black-bolt-card-list',
+  rsv10pt5: 'white-flare-card-list',
+};
 
 function deriveUrlSlug(set, seriesSlug) {
   if (SET_URL_SLUG_MAP[set.setId]) return SET_URL_SLUG_MAP[set.setId];
@@ -92,7 +111,16 @@ const plan = pokemonSets.map(set => {
   };
   const finalUrlSlug = SET_URL_SLUG_OVERRIDE[set.setId] || urlSlug;
   if (finalUrlSlug) env.SET_URL_SLUG = finalUrlSlug;
-  if (SET_SLUG_FILENAME_OVERRIDE[set.setId]) env.SET_SLUG = SET_SLUG_FILENAME_OVERRIDE[set.setId];
+  // Real flat filename: for "flat-pattern" sets (slug field doesn't
+  // contain "/cards"), sets.json's own slug field IS the correct filename
+  // already -- no derivation needed, verified this matches a real existing
+  // file for all 14 such sets. For "nested-pattern" sets, use the
+  // verified-against-vercel.json override map instead of guessing.
+  if (SET_SLUG_FILENAME_OVERRIDE[set.setId]) {
+    env.SET_SLUG = SET_SLUG_FILENAME_OVERRIDE[set.setId];
+  } else if (set.slug && !set.slug.includes('/cards')) {
+    env.SET_SLUG = set.slug;
+  }
   if (set.phase === 'jp' && SCRYDEX_JP_ID_MAP[set.setId]) {
     env.JP_SCRYDEX_ID = SCRYDEX_JP_ID_MAP[set.setId];
   }
