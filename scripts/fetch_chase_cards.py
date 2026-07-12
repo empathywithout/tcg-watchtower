@@ -131,6 +131,28 @@ def get_chase_cards(set_id: str, phase: str = "jp", top_n: int = 8) -> list:
     return [adapt_card(c) for c in chase_only[:top_n]]
 
 
+def get_all_cards(set_id: str, phase: str = "jp", top_n: int = None) -> list:
+    """
+    Returns ALL cards for a set with a valid price (not just chase-rarity
+    ones) -- for broader "individual card page" pinning coverage, not
+    just the curated top chase cards. Sorted by price descending, same
+    as get_chase_cards(), so if top_n is set, you still get the most
+    valuable cards first rather than an arbitrary subset.
+
+    Args:
+        top_n: cap the number of cards returned. None (default) returns
+            every card in the set with a price -- could be 100+ cards,
+            worth being deliberate about whether you actually want that
+            many queued/posted at once given Pinterest's daily pacing.
+    """
+    raw_cards = fetch_set_cards(set_id, phase)
+    with_price = [c for c in raw_cards if c.get("market")]
+    with_price.sort(key=lambda c: -c.get("market", 0))
+    if top_n is not None:
+        with_price = with_price[:top_n]
+    return [adapt_card(c) for c in with_price]
+
+
 def download_card_image(card: dict, local_path: str) -> str:
     """
     Download a card's real image using the URL already provided by the

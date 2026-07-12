@@ -69,6 +69,38 @@ def _truncate_to_width(draw, text, font, max_width):
     return text + "..."
 
 
+
+def generate_simple_card_pin(card_image_path: str, output_path: str) -> str:
+    """
+    "Simple card" style, matching the format already seen performing on
+    Pinterest for individual cards: just the raw card art, letterboxed
+    onto the 2:3 canvas, with NO text overlay baked into the image at
+    all. Title, description, and link all live in Pinterest's own pin
+    fields instead (see pinterest_queue_build.py) -- not composited here.
+
+    Uses a solid letterbox background rather than relying on Pinterest's
+    own auto-crop for non-matching aspect ratios, since a real Pokemon
+    card's ratio (~0.714) doesn't exactly match Pinterest's 2:3 (~0.667)
+    -- letting Pinterest crop it risks cutting off part of the card art.
+    """
+    width, height = PIN_SIZE
+    pin = Image.new("RGB", (width, height), COLOR_BG)
+
+    try:
+        card_img = Image.open(card_image_path).convert("RGB")
+    except (FileNotFoundError, OSError):
+        card_img = Image.new("RGB", (600, 837), COLOR_BG_PANEL)
+
+    # Scale to fill as much of the canvas as possible without cropping
+    card_img.thumbnail((width - 40, height - 40), Image.LANCZOS)
+    x = (width - card_img.width) // 2
+    y = (height - card_img.height) // 2
+    pin.paste(card_img, (x, y))
+
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    pin.save(output_path)
+    return output_path
+
 def generate_reveal_pin(card_image_path: str, title: str, output_path: str) -> str:
     """
     "Reveal" style: clean card art dominates, minimal text overlay --
