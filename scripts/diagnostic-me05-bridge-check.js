@@ -88,6 +88,78 @@ async function fetchJpScrydexCards() {
 }
 
 
+/**
+ * Check whether RARITY_JA_TO_EN (in api/scrydex-cards.js) has a real gap
+ * for any rarity TCGCSV confirms exists in this set. Fetches RAW (untranslated)
+ * Scrydex JP rarity text -- not going through translation.en -- and matches
+ * by card name against TCGCSV's confirmed English rarity, to see the actual
+ * raw Japanese string for each rarity tier actually present in this set.
+ */
+async function checkRarityMappingGaps(cardProducts) {
+  console.log(`\n=== Checking for gaps in RARITY_JA_TO_EN mapping ===`);
+  if (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID) {
+    console.log('   (no SCRYDEX_API_KEY/TEAM_ID set -- skipping, cannot check without JP raw data)');
+    return;
+  }
+
+  // Fetch RAW Scrydex JP cards (not translation.en) to see the literal rarity field
+  let allRaw = [], page = 1, total = null;
+  while (true) {
+    const res = await fetch(
+      `${SCRYDEX_BASE}/ja/expansions/${SCRYDEX_JP_EXPANSION_ID}/cards?select=id,name,rarity&pageSize=100&page=${page}`,
+      { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(10000) }
+    );
+    if (!res.ok) { console.warn(`   raw Scrydex fetch failed: HTTP ${res.status}`); return; }
+    const data = await res.json();
+    const pageCards = data.data || [];
+    if (total === null) total = data.totalCount || data.total || null;
+    allRaw = allRaw.concat(pageCards);
+    if (pageCards.length === 0 || pageCards.length < 100) break;
+    if (total !== null && allRaw.length >= total) break;
+    page++;
+  }
+
+  // The exact mapping currently in api/scrydex-cards.js, for comparison
+  const RARITY_JA_TO_EN = {
+    '通常': 'Common', '希少': 'Rare', 'ダブルレア': 'Double Rare',
+    'アートレア': 'Illustration Rare', 'スーパーレア': 'Super Rare',
+    'スペシャルアートレア': 'Special Illustration Rare', '超ウルトラレア': 'Mega Hyper Rare',
+  };
+
+  // Build name -> raw JP rarity lookup from Scrydex
+  const rawRarityByName = {};
+  for (const c of allRaw) {
+    const cleanName = (c.name || '').trim();
+    if (cleanName && !rawRarityByName[cleanName]) rawRarityByName[cleanName] = c.rarity;
+  }
+
+  // For each DISTINCT rarity TCGCSV confirms, find one example card and
+  // print its raw JP rarity + whether it's actually in the mapping table
+  const rarityExamples = {};
+  for (const p of cardProducts) {
+    const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
+    const cleanName = (p.name || '').replace(/\s*-\s*\d+\/\d+\s*$/, '').trim();
+    if (rarEntry && !rarityExamples[rarEntry.value]) rarityExamples[rarEntry.value] = cleanName;
+  }
+
+  console.log(`   Distinct rarities TCGCSV confirms for this set: ${Object.keys(rarityExamples).length}`);
+  for (const [enRarity, exampleName] of Object.entries(rarityExamples)) {
+    const rawJp = rawRarityByName[exampleName];
+    if (rawJp === undefined) {
+      console.log(`   ⚠️  "${enRarity}" (example: ${exampleName}) -- no matching JP card found by name (might be one of the 3 new English-only cards, expected)`);
+      continue;
+    }
+    const mapped = RARITY_JA_TO_EN[rawJp];
+    if (mapped === enRarity) {
+      console.log(`   ✅ "${enRarity}": raw JP "${rawJp}" correctly maps to "${mapped}"`);
+    } else if (mapped) {
+      console.log(`   ⚠️  "${enRarity}": raw JP "${rawJp}" maps to "${mapped}" -- MISMATCH with TCGCSV's "${enRarity}"`);
+    } else {
+      console.log(`   ❌ "${enRarity}": raw JP "${rawJp}" is NOT in RARITY_JA_TO_EN at all -- confirmed gap, would fall through untranslated`);
+    }
+  }
+}
+
 async function testMerge(cardProducts) {
   console.log(`\n=== Testing the actual merge function against real data ===`);
   const jpCards = await fetchJpScrydexCards();
@@ -233,6 +305,7 @@ async function main() {
   }
 
   await testMerge(cardProducts);
+  await checkRarityMappingGaps(cardProducts);
 }
 
 main().catch(e => {
