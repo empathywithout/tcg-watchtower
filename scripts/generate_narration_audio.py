@@ -102,23 +102,20 @@ import random
 # common TCG abbreviations don't read naturally as letters. This maps them
 # to how they should actually be SPOKEN, without changing what's shown on
 # screen (that stays as-is in your video's visual overlay).
-PRONUNCIATION_SUBSTITUTIONS = {
-    # Kayou-style single/double letter codes
-    "SE": "S E",
-    "SP": "S P",
-    "BP": "B P",
+# Codes that should be SPELLED OUT letter by letter (E-X, not a blended
+# "ex" sound). Handled via SSML <say-as interpret-as="characters">, which
+# forces true distinct letter-by-letter pronunciation -- confirmed working
+# for both Neural2 and Chirp3 HD.
+SPELL_OUT_CODES = ["SE", "SP", "BP", "PU", "PTR", "XR", "QR", "GX", "EX"]
+
+# Codes that should be read as their full expanded word instead of
+# spelled out (e.g. "TR" -> "Treasure Rare", not "T-R").
+WORD_SUBSTITUTIONS = {
     "MR": "Miracle Rare",
-    "PU": "P U",
-    "PTR": "P T R",
     "UR": "Ultra Rare",
     "SSR": "Super Secret Rare",
     "SR": "Super Rare",
     "TR": "Treasure Rare",
-    "XR": "X R",
-    "QR": "Q R",
-    # Common Pokemon/One Piece abbreviations that read oddly literally
-    "GX": "G X",
-    "EX": "E X",
     "VMAX": "V Max",
     "VSTAR": "V Star",
 }
@@ -126,20 +123,36 @@ PRONUNCIATION_SUBSTITUTIONS = {
 
 def apply_pronunciation_fixes(text: str) -> str:
     """
-    Wrap any known raw code/abbreviation in the text with an SSML <sub>
+    Wrap any known raw code/abbreviation in the text with the correct SSML
     tag so it's pronounced correctly, without altering the visible text
     elsewhere. Only matches whole words (word boundaries) so this doesn't
     accidentally rewrite letters inside a normal word.
 
+    Two categories, handled differently:
+    - SPELL_OUT_CODES (EX, GX, XR, etc.) use <say-as interpret-as=
+      "characters">, which forces genuinely distinct letter-by-letter
+      pronunciation ("E... X..."). A <sub alias="E X"> was tried first but
+      still let the engine blend the two letters together, since <sub>
+      just substitutes replacement text that gets parsed normally rather
+      than forcing character-by-character reading.
+    - WORD_SUBSTITUTIONS (TR -> Treasure Rare, etc.) use <sub alias="...">,
+      since these should be read as their expanded word, not spelled out.
+
     Matching is case-insensitive: Pokemon's modern "ex" cards are styled
     lowercase (e.g. "Charizard ex"), while older-era "EX" cards are
-    uppercase -- both need the same "E X" spelled-out pronunciation, and
-    a case-sensitive match was silently missing the lowercase form
-    entirely (confirmed: it was reading "ex" as a literal word instead
-    of spelling it out). The originally-matched text's actual casing is
-    preserved as the visible <sub> content either way.
+    uppercase -- both need the same treatment. The originally-matched
+    text's actual casing is preserved as the visible tag content either way.
     """
-    for code, spoken in PRONUNCIATION_SUBSTITUTIONS.items():
+    for code in SPELL_OUT_CODES:
+        pattern = r'\b' + re.escape(code) + r'\b'
+        text = re.sub(
+            pattern,
+            lambda m: f'<say-as interpret-as="characters">{m.group(0)}</say-as>',
+            text,
+            flags=re.IGNORECASE,
+        )
+
+    for code, spoken in WORD_SUBSTITUTIONS.items():
         pattern = r'\b' + re.escape(code) + r'\b'
         text = re.sub(
             pattern,
