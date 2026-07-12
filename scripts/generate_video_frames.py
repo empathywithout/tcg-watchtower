@@ -249,7 +249,16 @@ def assemble_video(frames: list, output_path: str, size: tuple = LONGFORM_SIZE) 
     subprocess.run([
         "ffmpeg", "-y",
         "-f", "concat", "-safe", "0", "-i", str(concat_list_path),
-        "-vsync", "vfr",
+        # Constant frame rate output (not vsync vfr) -- variable frame
+        # rate with very long per-frame hold times (each "frame" here is
+        # really one image held for several seconds) can make some
+        # players/codecs stutter or delay before showing the correct
+        # frame, especially the first one, since there are very few
+        # actual encoded frames with large gaps between their timestamps.
+        # Forcing a standard 30fps constant rate re-encodes each still
+        # image as many identical frames instead, which is far more
+        # broadly compatible for immediate, correct playback.
+        "-r", "30",
         "-pix_fmt", "yuv420p",
         "-s", f"{size[0]}x{size[1]}",
         str(silent_video_path),

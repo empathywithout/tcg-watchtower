@@ -130,39 +130,45 @@ PHONEME_OVERRIDES = {
 # https://bulbapedia.bulbagarden.net/wiki/User:SnorlaxMonster/Pronunciation
 # (sourced from official Pokemon Company materials, not fan guesswork)
 POKEMON_NAME_PHONEMES = {
-    # All three below confirmed directly against Bulbapedia's official
-    # pronunciation table (User:SnorlaxMonster/Pronunciation), sourced
-    # from official Pokemon Company materials -- not guesses.
-    "Darkrai": "ˈdɑːrkraɪ",       # "DARK-rye" -- matches what was already here
-    "Excadrill": "ˈɛkskədrɪl",   # "EKS-kuh-dril" -- confirms the original guess
-    "Chandelure": "ʃændəˈlʊər",  # "shan-duh-LOOR" -- CORRECTED: stress is on
-                                  # the LAST syllable, not the first as originally
-                                  # guessed. This was the one actually wrong.
-    # Zeraora has NO official pronunciation on record -- Bulbapedia's own
-    # table entry for it is blank (Mythical Pokemon, likely just never
-    # had an official audio source to draw from). This remains an
-    # unconfirmed best-guess; if you find an official source for it,
-    # update this entry accordingly.
-    "Zeraora": "zɛɹˈaʊɹə",
+    # Switched from <phoneme alphabet="ipa"> to plain-word substitutions
+    # via <sub alias="...">. Phoneme tags risk a known TTS quirk: some
+    # engines speak the ph-guided pronunciation AND THEN ALSO speak the
+    # enclosed literal text as a fallback -- correct pronunciation
+    # immediately followed by the engine's own (wrong) attempt at the
+    # same word. <sub> sidesteps this entirely: it substitutes real
+    # replacement words that get read normally, with no separate
+    # phoneme-vs-literal-text distinction to cause a double-read.
+    #
+    # Each respelling uses ordinary words chosen so normal TTS
+    # grapheme-to-phoneme rules land close to the confirmed pronunciation
+    # from Bulbapedia (see below) -- not IPA, just real English words.
+    "Darkrai": "dark rye",         # confirmed: "DARK-rye"
+    "Excadrill": "ex kuh drill",   # confirmed: "EKS-kuh-dril"
+    "Chandelure": "shan duh lure", # confirmed: "shan-duh-LOOR" (stress on last syllable)
+    # Zeraora has no official pronunciation on record anywhere (Bulbapedia's
+    # own table entry is blank) -- this remains an unconfirmed guess.
+    "Zeraora": "zair ow ruh",
 }
 
 
 def apply_name_pronunciation_fixes(name: str) -> str:
     """
-    Wrap a known-tricky Pokemon character name in an SSML <phoneme> tag.
-    Only exact matches from POKEMON_NAME_PHONEMES get touched -- anything
-    not in the dict passes through untouched, so this only ever helps,
-    never risks breaking a name that already sounds fine.
+    Wrap a known-tricky Pokemon character name in an SSML <sub> tag,
+    substituting a plain-word respelling that reads correctly via normal
+    TTS pronunciation rules. Only exact matches from POKEMON_NAME_PHONEMES
+    get touched -- anything not in the dict passes through untouched, so
+    this only ever helps, never risks breaking a name that already sounds
+    fine.
 
     Add new entries here as you identify specific mispronunciations by
     listening to real generated audio -- this dict is meant to grow
     incrementally, not be solved all at once.
     """
-    for name_part, ipa in POKEMON_NAME_PHONEMES.items():
+    for name_part, respelling in POKEMON_NAME_PHONEMES.items():
         pattern = r'\b' + re.escape(name_part) + r'\b'
         name = re.sub(
             pattern,
-            lambda m: f'<phoneme alphabet="ipa" ph="{ipa}">{m.group(0)}</phoneme>',
+            lambda m: f'<sub alias="{respelling}">{m.group(0)}</sub>',
             name,
             flags=re.IGNORECASE,
         )
