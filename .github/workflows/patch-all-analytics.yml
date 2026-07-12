@@ -23,7 +23,7 @@ jobs:
             python3 scripts/patch_all_analytics.py
           fi
       - name: Commit and push
-        if: ${{ inputs.dry_run == 'false' }}
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
