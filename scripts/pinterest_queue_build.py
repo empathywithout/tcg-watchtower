@@ -72,13 +72,24 @@ def build_queue(set_id: str, set_slug: str, series_slug: str, board_id: str,
     queue = load_queue()
     existing_ids = {entry["card_display_id"] for entry in queue if entry["set_id"] == set_id}
 
-    for card in cards:
+    for i, card in enumerate(cards):
         if card["display_id"] in existing_ids:
             print(f"  Skipping {card['name']} (#{card['display_id']}) -- already in queue")
             continue
 
         print(f"  Building queue entry: {card['name']} (#{card['display_id']}, ${card['price']})")
         image_path = download_card_image(card, f"/tmp/queue_images/{set_id}_{card['display_id']}.webp")
+
+        # Ratio control: reveal pins read as curation/showcase content and
+        # follow the normal default_approved setting. Price-guide pins read
+        # more commercially (big dollar figure, buyer-intent framing), so
+        # they default to approved on only roughly 1 in 5 cards -- keeps
+        # the overall mix closer to 80/20 valuable-vs-promotional rather
+        # than posting a price-guide pin for every single card, per the
+        # Pinterest affiliate research (over-promotional accounts see
+        # reduced reach, which hurts distribution for everything, not
+        # just the commercial-feeling pins).
+        price_guide_default = default_approved and (i % 5 == 0)
 
         reveal_local = f"/tmp/queue_pins/reveal_{card['display_id']}.png"
         reveal_title = f"{set_slug.replace('-', ' ').title()}'s {card['rarity_label']}: {card['name']}"
@@ -135,7 +146,7 @@ def build_queue(set_id: str, set_slug: str, series_slug: str, board_id: str,
                         f"#ad This page contains affiliate links."
                     ),
                     "alt_text": f"{card['name']} price guide, {card['rarity_label']}",
-                    "approved": default_approved,
+                    "approved": price_guide_default,
                     "posted": False,
                 },
             },
