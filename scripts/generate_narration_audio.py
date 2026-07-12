@@ -130,11 +130,23 @@ def apply_pronunciation_fixes(text: str) -> str:
     tag so it's pronounced correctly, without altering the visible text
     elsewhere. Only matches whole words (word boundaries) so this doesn't
     accidentally rewrite letters inside a normal word.
+
+    Matching is case-insensitive: Pokemon's modern "ex" cards are styled
+    lowercase (e.g. "Charizard ex"), while older-era "EX" cards are
+    uppercase -- both need the same "E X" spelled-out pronunciation, and
+    a case-sensitive match was silently missing the lowercase form
+    entirely (confirmed: it was reading "ex" as a literal word instead
+    of spelling it out). The originally-matched text's actual casing is
+    preserved as the visible <sub> content either way.
     """
     for code, spoken in PRONUNCIATION_SUBSTITUTIONS.items():
         pattern = r'\b' + re.escape(code) + r'\b'
-        replacement = f'<sub alias="{spoken}">{code}</sub>'
-        text = re.sub(pattern, replacement, text)
+        text = re.sub(
+            pattern,
+            lambda m: f'<sub alias="{spoken}">{m.group(0)}</sub>',
+            text,
+            flags=re.IGNORECASE,
+        )
     return text
 
 
