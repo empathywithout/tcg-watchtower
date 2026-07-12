@@ -21,13 +21,13 @@ jobs:
       - name: Write GCP credentials
         run: echo '${{ secrets.GCP_TTS_KEY }}' > /tmp/gcp-key.json
 
-      - name: Run narration test
+      - name: Run narration test (generates 5 voice comparison samples)
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
         run: python3 scripts/generate_narration_audio.py
 
-      - name: Upload test audio as artifact
+      - name: Upload voice comparison samples as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-narration-audio
-          path: /tmp/test_narration.mp3
+          name: voice-comparison-samples
+          path: /tmp/voice_test_*.mp3
