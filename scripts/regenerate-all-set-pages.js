@@ -44,6 +44,16 @@ const SET_URL_SLUG_MAP = {
   sv01: 'base-set',
   me01: 'base-set',
 };
+// Confirmed against the real existing directory
+// (pokemon/sets/scarlet-violet/151/cards): naive derivation produces
+// "scarlet-violet-151" for both SET_URL_SLUG and this generator's own
+// SET_SLUG (note: in THIS generator, "SET_SLUG" means the flat filename
+// slug, e.g. "sv3pt5-card-list" -- opposite of what "SET_SLUG" means in
+// generate-card-pages.js, where it's the URL segment. Confusing, but
+// confirmed by reading each script's own default derivation directly).
+// Real correct values: SET_URL_SLUG="151", SET_SLUG="scarlet-violet-151-card-list".
+const SET_URL_SLUG_OVERRIDE = { sv3pt5: '151' };
+const SET_SLUG_FILENAME_OVERRIDE = { sv3pt5: 'scarlet-violet-151-card-list' };
 
 function deriveUrlSlug(set, seriesSlug) {
   if (SET_URL_SLUG_MAP[set.setId]) return SET_URL_SLUG_MAP[set.setId];
@@ -80,7 +90,9 @@ const plan = pokemonSets.map(set => {
     SET_SERIES_SLUG: seriesSlug,
     PHASE: set.phase || 'en',
   };
-  if (urlSlug) env.SET_URL_SLUG = urlSlug;
+  const finalUrlSlug = SET_URL_SLUG_OVERRIDE[set.setId] || urlSlug;
+  if (finalUrlSlug) env.SET_URL_SLUG = finalUrlSlug;
+  if (SET_SLUG_FILENAME_OVERRIDE[set.setId]) env.SET_SLUG = SET_SLUG_FILENAME_OVERRIDE[set.setId];
   if (set.phase === 'jp' && SCRYDEX_JP_ID_MAP[set.setId]) {
     env.JP_SCRYDEX_ID = SCRYDEX_JP_ID_MAP[set.setId];
   }

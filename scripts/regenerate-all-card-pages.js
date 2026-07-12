@@ -54,6 +54,16 @@ const SET_URL_SLUG_MAP = {
   sv01: 'base-set',
   me01: 'base-set',
 };
+// Confirmed via generate-card-pages.js's own safety guard (which exits
+// with an error if SET_SLUG starts with SET_SERIES_SLUG + '-') that naive
+// derivation is wrong for this specific set: it would produce
+// "scarlet-violet-151", triggering that guard. The real correct SET_SLUG
+// is "151" (verified against the actual existing directory
+// pokemon/sets/scarlet-violet/151/cards), but SET_SLUG_FULL (the flat
+// filename) is "scarlet-violet-151-card-list" -- doesn't auto-derive from
+// the short SET_SLUG, so both need explicit overrides here.
+const SET_SLUG_OVERRIDE = { sv3pt5: '151' };
+const SET_SLUG_FULL_OVERRIDE = { sv3pt5: 'scarlet-violet-151-card-list' };
 
 function deriveUrlSlug(set) {
   if (SET_URL_SLUG_MAP[set.setId]) return SET_URL_SLUG_MAP[set.setId];
@@ -84,7 +94,9 @@ const plan = pokemonSets.map(set => {
     SET_SERIES_SLUG: seriesSlug,
     TCGP_GROUP_ID: groupId,
   };
-  if (urlSlug) env.SET_SLUG = urlSlug;
+  const finalUrlSlug = SET_SLUG_OVERRIDE[set.setId] || urlSlug;
+  if (finalUrlSlug) env.SET_SLUG = finalUrlSlug;
+  if (SET_SLUG_FULL_OVERRIDE[set.setId]) env.SET_SLUG_FULL = SET_SLUG_FULL_OVERRIDE[set.setId];
   if (set.phase === 'jp' && SCRYDEX_JP_ID_MAP[set.setId]) {
     env.PHASE = 'jp';
     env.JP_SCRYDEX_ID = SCRYDEX_JP_ID_MAP[set.setId];
