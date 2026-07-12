@@ -35,7 +35,7 @@ def build_new_block(custom_dims: dict) -> str:
     dims_json = json.dumps(custom_dims, separators=(',', ':'))
     return (
         '<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>\n'
-        f"<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('set',{dims_json});gtag('config','G-E0S4363S5Y');</script>\n"
+        f"<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-E0S4363S5Y',{dims_json});</script>\n"
         "<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;"
         "if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}"
         "else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}"
