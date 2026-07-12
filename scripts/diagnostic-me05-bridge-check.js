@@ -122,7 +122,7 @@ async function checkRarityMappingGaps(cardProducts) {
   // The exact mapping currently in api/scrydex-cards.js, for comparison
   const RARITY_JA_TO_EN = {
     '通常': 'Common', '希少': 'Rare', 'ダブルレア': 'Double Rare',
-    'アートレア': 'Illustration Rare', 'スーパーレア': 'Super Rare',
+    'アートレア': 'Illustration Rare', 'スーパーレア': 'Ultra Rare', // confirmed via this same script's position-based check
     'スペシャルアートレア': 'Special Illustration Rare', '超ウルトラレア': 'Mega Hyper Rare',
   };
 

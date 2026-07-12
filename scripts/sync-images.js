@@ -27,7 +27,7 @@ const RARITY_NORM = {
   'SR':'Ultra Rare','AR':'Illustration Rare','SAR':'Special Illustration Rare',
   'HR':'Hyper Rare','MUR':'Mega Ultra Rare',
   'コモン':'Common','通常':'Common','アンコモン':'Uncommon','非':'Uncommon',
-  'レア':'Rare','希少':'Rare','スーパーレア':'Double Rare','ダブルレア':'Double Rare',
+  'レア':'Rare','希少':'Rare','スーパーレア':'Ultra Rare','ダブルレア':'Double Rare', // スーパーレア confirmed Ultra Rare (not Double Rare) via 2 position-verified reference cards
   'ウルトラレア':'Ultra Rare','アートレア':'Illustration Rare',
   'スペシャルアートレア':'Special Illustration Rare',
   'ハイパーレア':'Hyper Rare','ゴールデンレア':'Hyper Rare','超ウルトラレア':'Mega Ultra Rare',
