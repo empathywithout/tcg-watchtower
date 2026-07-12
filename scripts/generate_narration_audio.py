@@ -68,11 +68,21 @@ def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0
         language_code=LANGUAGE_CODE,
         name=voice_name or VOICE_NAME,
     )
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3,
-        speaking_rate=speaking_rate,
-        pitch=pitch,
-    )
+
+    # Chirp3 HD voices don't support speaking_rate/pitch as AudioConfig
+    # params (per Google's docs) -- only include them for non-Chirp voices
+    # to avoid a request that either errors or silently does nothing.
+    is_chirp = "Chirp" in (voice_name or VOICE_NAME)
+    if is_chirp:
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+        )
+    else:
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=speaking_rate,
+            pitch=pitch,
+        )
 
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
@@ -130,8 +140,7 @@ def apply_pronunciation_fixes(text: str) -> str:
 
 def build_card_ssml(name: str, rarity: str, number: str, price: str, reason: str) -> str:
     """
-    Build SSML for a card narration line with natural pauses, emphasis,
-    and pronunciation fixes.
+    Build SSML for a card narration line, for Neural2 voices.
 
     - <break> after the card name gives the listener a beat to register
       what's being shown.
@@ -155,6 +164,30 @@ def build_card_ssml(name: str, rarity: str, number: str, price: str, reason: str
     <prosody rate="90%"><say-as interpret-as="currency" language="en-US">USD{price_value}</say-as></prosody>.
     <break time="300ms"/>
     {reason_fixed}
+    </speak>"""
+
+
+def build_card_ssml_chirp(name: str, rarity: str, number: str, price: str, reason: str) -> str:
+    """
+    Build SSML for a card narration line, for Chirp3 HD voices specifically.
+
+    Chirp3 HD's SSML support is a DIFFERENT, more limited subset than
+    Neural2's -- confirmed via Google's official release notes: only
+    <phoneme>, <p>, <s>, <sub>, and <say-as> are supported. Notably NOT
+    supported: <break>, <emphasis>, <prosody>. Rate/pitch as separate
+    AudioConfig parameters also aren't supported for Chirp voices.
+
+    This version drops the unsupported tags entirely rather than including
+    them and hoping they're silently ignored -- <s> (sentence) boundaries
+    provide some natural pacing on their own even without explicit <break>.
+    """
+    rarity_fixed = apply_pronunciation_fixes(rarity)
+    reason_fixed = apply_pronunciation_fixes(reason)
+    price_value = price.replace("$", "").strip()
+
+    return f"""<speak>
+    <s>{name}, the {rarity_fixed} at number {number}, is currently valued at <say-as interpret-as="currency" language="en-US">USD{price_value}</say-as>.</s>
+    <s>{reason_fixed}</s>
     </speak>"""
 
 
@@ -270,14 +303,27 @@ if __name__ == "__main__":
     # committing to one for the full pipeline -- swap VOICE_NAME above
     # once you've decided.
     VOICES_TO_COMPARE = [
-        "en-US-Neural2-D",  # current default -- male
-        "en-US-Neural2-J",  # male, different tone
-        "en-US-Neural2-F",  # female
-        "en-US-Neural2-A",  # male
-        "en-US-Neural2-C",  # female
+        "en-US-Neural2-F",  # current default -- winner of the first round
+        "en-US-Neural2-J",  # runner-up from the first round
+        "en-US-Chirp3-HD-Aoede",   # Chirp3 HD, female
+        "en-US-Chirp3-HD-Charon",  # Chirp3 HD, male
+        "en-US-Chirp3-HD-Leda",    # Chirp3 HD, female
+        "en-US-Chirp3-HD-Kore",    # Chirp3 HD, female
     ]
 
     for voice_name in VOICES_TO_COMPARE:
         output_path = f"/tmp/voice_test_{voice_name}.mp3"
-        synthesize_narration(ssml, output_path, use_ssml=True, voice_name=voice_name)
+        if "Chirp" in voice_name:
+            # Chirp3 HD only supports a limited SSML tag subset --
+            # use the dedicated builder rather than the Neural2 one.
+            chirp_ssml = build_card_ssml_chirp(
+                name=test_card["name"],
+                rarity=test_card["rarity_label"],
+                number=test_card["display_id"],
+                price=f"${test_card['price']:.2f}",
+                reason=reason,
+            )
+            synthesize_narration(chirp_ssml, output_path, use_ssml=True, voice_name=voice_name)
+        else:
+            synthesize_narration(ssml, output_path, use_ssml=True, voice_name=voice_name)
         print(f"Generated: {output_path}")
