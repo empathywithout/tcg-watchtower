@@ -101,6 +101,33 @@ async function fetchAllPages(baseUrl) {
 /* ── Normalise ─────────────────────────────────────────────────────── */
 const R2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
+// JP-phase cards return `rarity` as raw Japanese text (confirmed from
+// live data on Pitch Black/Abyss Eye) rather than the English rarity
+// names used elsewhere on the site (static/set-page.js's CHASE_RARITIES).
+// Without this, JP-phase cards can never match chase-rarity filtering
+// anywhere on the site. Mapped from the actual confirmed distinct values
+// seen in production, not a generic/assumed list:
+const RARITY_JA_TO_EN = {
+  '通常': 'Common',
+  '希少': 'Rare',
+  'ダブルレア': 'Double Rare',
+  'アートレア': 'Illustration Rare',
+  'スーパーレア': 'Super Rare',
+  'スペシャルアートレア': 'Special Illustration Rare',
+  '超ウルトラレア': 'Mega Hyper Rare',
+  // '非' seen on one card (Sinistcha) -- likely a truncated string from
+  // Scrydex's own data (e.g. part of a longer phrase), not a standalone
+  // rarity term. Left unmapped rather than guessed, since an incorrect
+  // rarity claim is worse than a card falling through to "Unknown" --
+  // it doesn't affect chase-rarity filtering either way, since it isn't
+  // a chase-tier rarity regardless of what it actually stands for.
+};
+
+function translateRarity(rawRarity, phase) {
+  if (phase !== 'jp') return rawRarity || '';
+  return RARITY_JA_TO_EN[rawRarity] || rawRarity || '';
+}
+
 function normaliseCard(c, internalSetId, phase, fxRate = null) {
   const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
   const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
@@ -139,7 +166,7 @@ function normaliseCard(c, internalSetId, phase, fxRate = null) {
     id: c.id,
     localId,
     name,
-    rarity:    c.rarity || '',
+    rarity:    translateRarity(c.rarity, phase),
     image,
     market,
     ...(shouldConvert ? { marketJPY: normalVariant?.marketJPY ?? null, isEstimate: true, fxRate } : {}),
