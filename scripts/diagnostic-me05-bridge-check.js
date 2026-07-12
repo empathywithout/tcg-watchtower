@@ -189,6 +189,55 @@ async function checkRarityMappingGaps(cardProducts) {
     }
   }
 
+  // Comprehensive check: for EVERY card name that appears exactly ONCE in
+  // BOTH the TCGCSV set and the raw JP set (no rarity-variant ambiguity at
+  // all -- unlike Darkrai/Zeraora/Gwynn which have 3-4 variants sharing a
+  // name), directly compare raw JP rarity to TCGCSV's confirmed rarity.
+  // This covers far more ground than the 3 hand-picked reference cards,
+  // and specifically targets resolving the '非' (Uncommon?) question with
+  // real, unambiguous evidence rather than the unreliable name-collision-
+  // prone check used earlier.
+  console.log(`\n   Comprehensive check: every unambiguous (single-variant) card name`);
+  const tcgcsvNameCounts = {};
+  const tcgcsvRarityByName = {};
+  for (const p of cardProducts) {
+    const cleanName = (p.name || '').replace(/\s*-\s*\d+\/\d+\s*$/, '').trim();
+    tcgcsvNameCounts[cleanName] = (tcgcsvNameCounts[cleanName] || 0) + 1;
+    const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
+    if (rarEntry) tcgcsvRarityByName[cleanName] = rarEntry.value;
+  }
+  const jpNameCounts = {};
+  const jpRawRarityByName = {};
+  for (const c of allRaw) {
+    const enName = (c.translation?.en?.name || c.name || '').trim();
+    jpNameCounts[enName] = (jpNameCounts[enName] || 0) + 1;
+    jpRawRarityByName[enName] = c.rarity;
+  }
+
+  let checkedCount = 0, mismatchCount = 0, gapCount = 0;
+  const gapDetails = {};
+  for (const name of Object.keys(tcgcsvNameCounts)) {
+    if (tcgcsvNameCounts[name] !== 1) continue; // ambiguous, skip
+    if (jpNameCounts[name] !== 1) continue; // not in JP source, or ambiguous there too
+    checkedCount++;
+    const rawJp = jpRawRarityByName[name];
+    const enRarity = tcgcsvRarityByName[name];
+    const mapped = RARITY_JA_TO_EN[rawJp];
+    if (mapped === enRarity) continue; // correct, no need to log every single match
+    if (!mapped) {
+      gapCount++;
+      gapDetails[rawJp] = gapDetails[rawJp] || { enRarity, examples: [] };
+      gapDetails[rawJp].examples.push(name);
+    } else {
+      mismatchCount++;
+      console.log(`   ⚠️  ${name}: raw JP "${rawJp}" maps to "${mapped}" but TCGCSV confirms "${enRarity}"`);
+    }
+  }
+  console.log(`   Checked ${checkedCount} unambiguous cards, ${mismatchCount} mismatches, ${gapCount} unmapped gaps`);
+  for (const [rawJp, info] of Object.entries(gapDetails)) {
+    console.log(`   ❌ raw JP "${rawJp}" NOT in RARITY_JA_TO_EN -- TCGCSV confirms this should be "${info.enRarity}" (examples: ${info.examples.slice(0,3).join(', ')}, ${info.examples.length} total)`);
+  }
+
   console.log(`   Distinct rarities TCGCSV confirms for this set: ${Object.keys(rarityExamples).length}`);
   for (const [enRarity, exampleName] of Object.entries(rarityExamples)) {
     const rawJp = rawRarityByName[exampleName];
