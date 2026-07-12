@@ -1,0 +1,13 @@
+name: Diagnostic - me05 Bridge Check (Read-Only)
+on:
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run diagnostic (no writes, no secrets needed)
+        run: node scripts/diagnostic-me05-bridge-check.js
