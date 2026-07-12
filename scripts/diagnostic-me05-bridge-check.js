@@ -133,6 +133,23 @@ async function main() {
   console.log(`localIds correctly, not just enrich the current JP-based list --`);
   console.log(`and the portfolio-safety concern from the prior conversation is real,`);
   console.log(`not hypothetical, for that specific card.`);
+
+  // ── Debug: raw partial-match dump for cards that found zero exact matches ──
+  // If a reference card above showed "no TCGCSV match found", print every
+  // product whose name PARTIALLY contains that card's name, so we can see
+  // the real naming format TCGCSV actually uses (e.g. rarity suffixes,
+  // dash-separated variant markers) instead of guessing.
+  console.log(`\n=== Debug: raw partial-name matches for reference cards ===`);
+  for (const ref of REFERENCE_CARDS) {
+    const searchTerm = ref.name.toLowerCase();
+    const partial = cardProducts.filter(p => (p.name || '').toLowerCase().includes(searchTerm));
+    console.log(`\n${ref.name}: ${partial.length} partial match(es)`);
+    for (const p of partial) {
+      const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
+      const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
+      console.log(`   raw name: "${p.name}" | number: ${numEntry?.value || '?'} | rarity: ${rarEntry?.value || '?'}`);
+    }
+  }
 }
 
 main().catch(e => {
