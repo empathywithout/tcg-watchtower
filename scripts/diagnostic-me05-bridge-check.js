@@ -148,6 +148,47 @@ async function checkRarityMappingGaps(cardProducts) {
     if (rarEntry && !rarityExamples[rarEntry.value]) rarityExamples[rarEntry.value] = cleanName;
   }
 
+  // Build a position-keyed lookup too (localId -> raw rarity), since name-only
+  // lookup is ambiguous for any card with multiple rarity variants sharing
+  // the same name (Mega Darkrai ex, Mega Zeraora ex, Gwynn, etc.) -- confirmed
+  // as a real bug on the first run of this check: Ultra Rare, Special
+  // Illustration Rare, and Mega Hyper Rare all suspiciously resolved to the
+  // exact same raw string, because the by-name lookup just grabbed whichever
+  // variant was processed first regardless of which one was actually meant.
+  const rawRarityByPosition = {};
+  for (const c of allRaw) {
+    const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
+    const localId = (rawId.includes('/') ? rawId.split('/')[0].trim() : rawId).padStart(3, '0');
+    if (localId) rawRarityByPosition[localId] = c.rarity;
+  }
+
+  // Known OLD (JP-based, current live site) positions for the reference
+  // cards, established earlier this conversation from the live site's own
+  // SEO table -- used to look up raw rarity unambiguously by position.
+  const KNOWN_OLD_POSITIONS = {
+    'Mega Darkrai ex': { '046': 'Double Rare', '099': 'Ultra Rare', '114': 'Special Illustration Rare', '118': 'Mega Hyper Rare' },
+    'Mega Zeraora ex': { '026': 'Double Rare', '096': 'Ultra Rare', '112': 'Special Illustration Rare' },
+    'Gwynn': { '117': 'Special Illustration Rare' },
+  };
+  console.log(`\n   Position-based check (unambiguous, avoids name collision):`);
+  for (const [name, positions] of Object.entries(KNOWN_OLD_POSITIONS)) {
+    for (const [oldPos, expectedEnRarity] of Object.entries(positions)) {
+      const rawJp = rawRarityByPosition[oldPos];
+      if (rawJp === undefined) {
+        console.log(`   ⚠️  ${name} #${oldPos} (expected ${expectedEnRarity}): no raw JP data at this position`);
+        continue;
+      }
+      const mapped = RARITY_JA_TO_EN[rawJp];
+      if (mapped === expectedEnRarity) {
+        console.log(`   ✅ ${name} #${oldPos}: raw JP "${rawJp}" correctly maps to "${mapped}"`);
+      } else if (mapped) {
+        console.log(`   ⚠️  ${name} #${oldPos}: raw JP "${rawJp}" maps to "${mapped}" -- expected "${expectedEnRarity}"`);
+      } else {
+        console.log(`   ❌ ${name} #${oldPos}: raw JP "${rawJp}" NOT in RARITY_JA_TO_EN -- confirmed gap for "${expectedEnRarity}"`);
+      }
+    }
+  }
+
   console.log(`   Distinct rarities TCGCSV confirms for this set: ${Object.keys(rarityExamples).length}`);
   for (const [enRarity, exampleName] of Object.entries(rarityExamples)) {
     const rawJp = rawRarityByName[exampleName];
