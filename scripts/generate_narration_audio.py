@@ -106,7 +106,20 @@ import random
 # "ex" sound). Handled via SSML <say-as interpret-as="characters">, which
 # forces true distinct letter-by-letter pronunciation -- confirmed working
 # for both Neural2 and Chirp3 HD.
-SPELL_OUT_CODES = ["SE", "SP", "BP", "PU", "PTR", "XR", "QR", "GX", "EX"]
+SPELL_OUT_CODES = ["SE", "SP", "BP", "PU", "PTR", "XR", "QR", "GX"]
+
+# "EX" gets a dedicated IPA phoneme override rather than the generic
+# say-as characters treatment above. say-as spells the letters correctly
+# but doesn't give any control over how long each one is held -- the "E"
+# was coming out too short/clipped. <phoneme> lets us specify the exact
+# sound directly: /iː/ is the standard IPA long-E sound (the letter name
+# "E"), and the extra length mark draws it out further specifically
+# because the default read wasn't holding it long enough. This is one
+# specific, deliberately tuned case, not a general pattern -- extend this
+# dict directly if other codes need similar hand-tuning after listening.
+PHONEME_OVERRIDES = {
+    "EX": "iːː ɛks",
+}
 
 # Codes that should be read as their full expanded word instead of
 # spelled out (e.g. "TR" -> "Treasure Rare", not "T-R").
@@ -128,13 +141,15 @@ def apply_pronunciation_fixes(text: str) -> str:
     elsewhere. Only matches whole words (word boundaries) so this doesn't
     accidentally rewrite letters inside a normal word.
 
-    Two categories, handled differently:
-    - SPELL_OUT_CODES (EX, GX, XR, etc.) use <say-as interpret-as=
+    Three categories, handled differently:
+    - PHONEME_OVERRIDES (currently just EX) use <phoneme alphabet="ipa">
+      for direct control over the exact sound and duration, since the
+      generic character-spelling approach wasn't holding the "E" long
+      enough and there's no <prosody> tag available on Chirp3 HD to fix
+      that a different way.
+    - SPELL_OUT_CODES (GX, XR, etc.) use <say-as interpret-as=
       "characters">, which forces genuinely distinct letter-by-letter
-      pronunciation ("E... X..."). A <sub alias="E X"> was tried first but
-      still let the engine blend the two letters together, since <sub>
-      just substitutes replacement text that gets parsed normally rather
-      than forcing character-by-character reading.
+      pronunciation ("E... X...").
     - WORD_SUBSTITUTIONS (TR -> Treasure Rare, etc.) use <sub alias="...">,
       since these should be read as their expanded word, not spelled out.
 
@@ -143,6 +158,15 @@ def apply_pronunciation_fixes(text: str) -> str:
     uppercase -- both need the same treatment. The originally-matched
     text's actual casing is preserved as the visible tag content either way.
     """
+    for code, ipa in PHONEME_OVERRIDES.items():
+        pattern = r'\b' + re.escape(code) + r'\b'
+        text = re.sub(
+            pattern,
+            lambda m: f'<phoneme alphabet="ipa" ph="{ipa}">{m.group(0)}</phoneme>',
+            text,
+            flags=re.IGNORECASE,
+        )
+
     for code in SPELL_OUT_CODES:
         pattern = r'\b' + re.escape(code) + r'\b'
         text = re.sub(
