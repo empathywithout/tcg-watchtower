@@ -91,13 +91,38 @@ def get_chase_cards(set_id: str, phase: str = "jp", top_n: int = 8) -> list:
     # rarity matches? cards present but no prices?) instead of failing silently.
     print(f"  [diagnostic] Raw cards fetched from API: {len(raw_cards)}")
     if raw_cards:
-        sample_rarities = {c.get("rarity") for c in raw_cards[:20]}
-        print(f"  [diagnostic] Sample rarities seen: {sample_rarities}")
+        # Full distinct rarity set (not just a sample) with one example
+        # card per rarity, so an accurate JP->EN mapping can be built
+        # instead of guessed from a partial sample.
+        rarity_examples = {}
+        for c in raw_cards:
+            r = c.get("rarity")
+            if r not in rarity_examples:
+                rarity_examples[r] = c.get("name", "?")
+        print(f"  [diagnostic] Complete distinct rarity set ({len(rarity_examples)} values):")
+        for rarity, example_name in rarity_examples.items():
+            print(f"    {rarity!r} -- e.g. {example_name}")
         with_price = sum(1 for c in raw_cards if c.get("market"))
         print(f"  [diagnostic] Cards with a non-null market price: {with_price}/{len(raw_cards)}")
 
     chase_only = [c for c in raw_cards if c.get("rarity") in CHASE_RARITIES and c.get("market")]
     print(f"  [diagnostic] Cards matching CHASE_RARITIES with a price: {len(chase_only)}")
+
+    if not chase_only:
+        # Known issue: JP-phase cards return rarity as raw Japanese text
+        # (see api/scrydex-cards.js's normaliseCard(), which translates
+        # `name` for JP phase but never translates `rarity`) -- so
+        # CHASE_RARITIES (English strings) can't match anything yet.
+        # This needs a proper fix at the source (translating rarity the
+        # same way name already is), tracked separately. In the meantime,
+        # fall back to ranking purely by price so this still produces a
+        # real video rather than blocking entirely.
+        print("  [diagnostic] WARNING: rarity filter matched 0 cards (likely JP rarity "
+              "strings not yet translated -- see normaliseCard() in api/scrydex-cards.js). "
+              "Falling back to price-only ranking for this run.")
+        chase_only = [c for c in raw_cards if c.get("market")]
+        chase_only.sort(key=lambda c: -c.get("market", 0))
+        return [adapt_card(c) for c in chase_only[:top_n]]
 
     chase_only.sort(
         key=lambda c: (RARITY_TIER.get(c.get("rarity", ""), 99), -c.get("market", 0))
