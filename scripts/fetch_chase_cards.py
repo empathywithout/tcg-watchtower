@@ -41,6 +41,15 @@ def fetch_set_cards(set_id: str, phase: str = "jp") -> list:
     url = f"{SITE_BASE}/api/scrydex-cards?set={set_id}&phase={phase}"
     with urllib.request.urlopen(url, timeout=15) as response:
         data = json.loads(response.read())
+
+    if "error" in data:
+        # The endpoint returns {"error": "..."} on failure (e.g. unknown
+        # set/phase mapping, upstream Scrydex issue) rather than raising
+        # an HTTP error -- surface this explicitly instead of letting it
+        # look like a silently-empty result.
+        print(f"  [diagnostic] API returned an error field: {data['error']}")
+        return []
+
     return data.get("cards", [])
 
 
@@ -76,7 +85,19 @@ def get_chase_cards(set_id: str, phase: str = "jp", top_n: int = 8) -> list:
     pull just because of a momentary price spike.
     """
     raw_cards = fetch_set_cards(set_id, phase)
+
+    # Diagnostic output -- if the chase-card filter below returns nothing,
+    # this tells us WHY (empty API response entirely? cards present but no
+    # rarity matches? cards present but no prices?) instead of failing silently.
+    print(f"  [diagnostic] Raw cards fetched from API: {len(raw_cards)}")
+    if raw_cards:
+        sample_rarities = {c.get("rarity") for c in raw_cards[:20]}
+        print(f"  [diagnostic] Sample rarities seen: {sample_rarities}")
+        with_price = sum(1 for c in raw_cards if c.get("market"))
+        print(f"  [diagnostic] Cards with a non-null market price: {with_price}/{len(raw_cards)}")
+
     chase_only = [c for c in raw_cards if c.get("rarity") in CHASE_RARITIES and c.get("market")]
+    print(f"  [diagnostic] Cards matching CHASE_RARITIES with a price: {len(chase_only)}")
 
     chase_only.sort(
         key=lambda c: (RARITY_TIER.get(c.get("rarity", ""), 99), -c.get("market", 0))
