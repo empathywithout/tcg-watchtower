@@ -21,10 +21,10 @@ import os
 from pathlib import Path
 from google.cloud import texttospeech
 
-# Neural2 voices are included in the free tier (same tier as WaveNet) and
-# sound noticeably more natural than Standard voices. en-US-Neural2-F was
-# chosen after A/B testing 5 free voices directly.
-VOICE_NAME = "en-US-Neural2-F"
+# Chirp3 HD voices offer noticeably more natural intonation than Neural2,
+# but are NOT free tier -- $30/1M characters. en-US-Chirp3-HD-Charon was
+# chosen after A/B testing against the best Neural2 candidates directly.
+VOICE_NAME = "en-US-Chirp3-HD-Charon"
 LANGUAGE_CODE = "en-US"
 
 _client = None
@@ -256,7 +256,9 @@ def synthesize_video_narrations(cards: list, output_dir: str, narration_fn=None)
         else:
             price_str = f"${card['price']:.2f}" if card.get("price") else "an unconfirmed price"
             reason = build_reason(card)
-            ssml = build_card_ssml(
+            is_chirp = "Chirp" in VOICE_NAME
+            builder = build_card_ssml_chirp if is_chirp else build_card_ssml
+            ssml = builder(
                 name=card["name"],
                 rarity=card.get("rarity_label", card.get("rarity", "")),
                 number=card["display_id"],
@@ -264,13 +266,18 @@ def synthesize_video_narrations(cards: list, output_dir: str, narration_fn=None)
                 reason=reason,
             )
             audio_path = os.path.join(output_dir, f"{i:03d}_{card['display_id']}.mp3")
-            # Small random variance per card (rate 0.97-1.03, pitch +/-1
-            # semitone) -- a real narrator never speaks at the exact same
-            # rate and pitch on every sentence, and that consistency across
-            # 20+ cards is one of the more subtle "this is synthetic" tells.
-            rate = random.uniform(0.97, 1.03)
-            pitch_shift = random.uniform(-1.0, 1.0)
-            synthesize_narration(ssml, audio_path, speaking_rate=rate, pitch=pitch_shift, use_ssml=True)
+            if is_chirp:
+                # Chirp3 HD doesn't support rate/pitch AudioConfig params,
+                # so there's no variance to add here -- synthesize_narration
+                # already skips them automatically for Chirp voice names.
+                synthesize_narration(ssml, audio_path, use_ssml=True)
+            else:
+                # Small random variance per card (rate 0.97-1.03, pitch +/-1
+                # semitone) -- a real narrator never speaks at the exact same
+                # rate and pitch on every sentence.
+                rate = random.uniform(0.97, 1.03)
+                pitch_shift = random.uniform(-1.0, 1.0)
+                synthesize_narration(ssml, audio_path, speaking_rate=rate, pitch=pitch_shift, use_ssml=True)
             text = ssml  # stored for reference/on-screen captions
 
         results.append({"card": card, "text": text, "audio_path": audio_path})
