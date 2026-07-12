@@ -142,13 +142,35 @@ def download_card_image(card: dict, local_path: str) -> str:
     from pathlib import Path
     Path(local_path).parent.mkdir(parents=True, exist_ok=True)
     image_url = card.get("_image_url")
+    print(f"  [diagnostic] Image URL for {card.get('name', '?')}: {image_url}")
+
     if not image_url:
+        print(f"  [diagnostic] No _image_url present at all for this card -- API response had no image field")
         return local_path  # no URL at all -> triggers generate_card_frame()'s fallback
+
     try:
-        urllib.request.urlretrieve(image_url, local_path)
+        req = urllib.request.Request(image_url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as response:
+            content_type = response.headers.get("Content-Type", "")
+            data = response.read()
+
+        if "image" not in content_type.lower():
+            # The request "succeeded" (no HTTP error) but didn't actually
+            # return image data -- likely an HTML error page, auth wall,
+            # or redirect to a login screen. This is exactly the case
+            # that a bare try/except around urlretrieve() would silently
+            # miss, since no exception gets raised for this.
+            print(f"  [diagnostic] WARNING: response Content-Type was '{content_type}', not an image "
+                  f"-- got {len(data)} bytes, first 200: {data[:200]!r}")
+            return local_path  # don't write bad data to disk; triggers fallback
+
+        with open(local_path, "wb") as f:
+            f.write(data)
+        print(f"  [diagnostic] Downloaded successfully: {len(data)} bytes, Content-Type: {content_type}")
         return local_path
+
     except Exception as e:
-        print(f"  WARNING: could not download {image_url} ({e}) -- will use placeholder")
+        print(f"  [diagnostic] WARNING: could not download {image_url} ({type(e).__name__}: {e}) -- will use placeholder")
         return local_path
 
 
