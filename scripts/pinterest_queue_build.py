@@ -106,10 +106,18 @@ def build_queue(set_id: str, set_slug: str, series_slug: str, board_id: str,
                 "reveal": {
                     "image_url": reveal_url,
                     "title": reveal_title,
+                    # Disclosure included even though the pin links to our OWN
+                    # domain, not a raw affiliate URL -- Pinterest's Commercial
+                    # Content Guidelines and FTC rules require disclosure based
+                    # on whether the content chain is commercially monetized,
+                    # not just whether the pin's own link target is an
+                    # affiliate link. Since destination pages contain
+                    # TCGplayer/Amazon/eBay affiliate links, this applies.
                     "description": (
                         f"{card['name']} is one of the top chase cards in the "
                         f"{set_slug.replace('-', ' ').title()} set. See live prices "
-                        f"and the full chase-card list."
+                        f"and the full chase-card list. #ad This page contains "
+                        f"affiliate links."
                     ),
                     "alt_text": f"{card['name']}, {card['rarity_label']}",
                     # "approved" is the actual control point -- review this
@@ -123,7 +131,8 @@ def build_queue(set_id: str, set_slug: str, series_slug: str, board_id: str,
                     "title": price_title,
                     "description": (
                         f"See current market prices for {card['name']} and other "
-                        f"chase cards from {set_slug.replace('-', ' ').title()}."
+                        f"chase cards from {set_slug.replace('-', ' ').title()}. "
+                        f"#ad This page contains affiliate links."
                     ),
                     "alt_text": f"{card['name']} price guide, {card['rarity_label']}",
                     "approved": default_approved,
