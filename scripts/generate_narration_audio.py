@@ -121,6 +121,55 @@ PHONEME_OVERRIDES = {
     "EX": "iːː ɛks",
 }
 
+# Pokemon character names the TTS engine mispronounces. Unlike the rarity
+# codes above, I can't verify these by ear myself -- no audio access from
+# my sandbox. Each entry below needs to be confirmed by actually listening
+# to the generated audio and adjusting if it's still off.
+#
+# Source for accurate respellings/IPA: Bulbapedia's pronunciation guide --
+# https://bulbapedia.bulbagarden.net/wiki/User:SnorlaxMonster/Pronunciation
+# (sourced from official Pokemon Company materials, not fan guesswork)
+#
+# "Darkrai" below is the one entry with real confirmation: official movie
+# dub audio ("The Rise of Darkrai") uses "Dark-rye" (rhyming with "eye"),
+# not "Dark-ray" -- confirmed via a Bulbapedia talk-page discussion, not
+# just assumed from spelling.
+#
+# The other Pitch Black names (Zeraora, Chandelure, Excadrill) are left as
+# clearly-marked placeholders using my best phonetic guess from their word
+# construction, NOT verified pronunciations -- listen to real output and
+# replace these with the actual correct IPA/respelling once you hear what's
+# actually wrong.
+POKEMON_NAME_PHONEMES = {
+    "Darkrai": "dˈɑːɹkɹˈaɪ",  # confirmed: official dub uses "Dark-rye"
+    # TODO -- verify by ear, these are unconfirmed best guesses:
+    "Zeraora": "zɛɹˈaʊɹə",       # guessed from Japanese ゼラオラ romanization
+    "Chandelure": "ʃˈændəlʊɹ",   # guessed from "chandelier" + "-lure"
+    "Excadrill": "ˈɛkskədɹɪl",   # guessed from "excavate" + "drill"
+}
+
+
+def apply_name_pronunciation_fixes(name: str) -> str:
+    """
+    Wrap a known-tricky Pokemon character name in an SSML <phoneme> tag.
+    Only exact matches from POKEMON_NAME_PHONEMES get touched -- anything
+    not in the dict passes through untouched, so this only ever helps,
+    never risks breaking a name that already sounds fine.
+
+    Add new entries here as you identify specific mispronunciations by
+    listening to real generated audio -- this dict is meant to grow
+    incrementally, not be solved all at once.
+    """
+    for name_part, ipa in POKEMON_NAME_PHONEMES.items():
+        pattern = r'\b' + re.escape(name_part) + r'\b'
+        name = re.sub(
+            pattern,
+            lambda m: f'<phoneme alphabet="ipa" ph="{ipa}">{m.group(0)}</phoneme>',
+            name,
+            flags=re.IGNORECASE,
+        )
+    return name
+
 # Codes that should be read as their full expanded word instead of
 # spelled out (e.g. "TR" -> "Treasure Rare", not "T-R").
 WORD_SUBSTITUTIONS = {
@@ -202,13 +251,14 @@ def build_card_ssml(name: str, rarity: str, number: str, price: str, reason: str
     - Rarity and reason both get pronunciation fixes applied, since raw
       codes (Kayou's SE/TR/XR etc.) can appear directly in either.
     """
+    name_fixed = apply_name_pronunciation_fixes(name)
     rarity_fixed = apply_pronunciation_fixes(rarity)
     reason_fixed = apply_pronunciation_fixes(reason)
     # Strip the $ since say-as currency handles the symbol itself
     price_value = price.replace("$", "").strip()
 
     return f"""<speak>
-    {name}<break time="200ms"/>, the {rarity_fixed} at number {number},
+    {name_fixed}<break time="200ms"/>, the {rarity_fixed} at number {number},
     is currently valued at
     <prosody rate="90%"><say-as interpret-as="currency" language="en-US">USD{price_value}</say-as></prosody>.
     <break time="300ms"/>
@@ -230,12 +280,13 @@ def build_card_ssml_chirp(name: str, rarity: str, number: str, price: str, reaso
     them and hoping they're silently ignored -- <s> (sentence) boundaries
     provide some natural pacing on their own even without explicit <break>.
     """
+    name_fixed = apply_name_pronunciation_fixes(name)
     rarity_fixed = apply_pronunciation_fixes(rarity)
     reason_fixed = apply_pronunciation_fixes(reason)
     price_value = price.replace("$", "").strip()
 
     return f"""<speak>
-    <s>{name}, the {rarity_fixed} at number {number}, is currently valued at <say-as interpret-as="currency" language="en-US">USD{price_value}</say-as>.</s>
+    <s>{name_fixed}, the {rarity_fixed} at number {number}, is currently valued at <say-as interpret-as="currency" language="en-US">USD{price_value}</say-as>.</s>
     <s>{reason_fixed}</s>
     </speak>"""
 
