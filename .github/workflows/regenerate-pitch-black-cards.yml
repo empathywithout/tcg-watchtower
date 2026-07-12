@@ -1,0 +1,61 @@
+name: Regenerate Pitch Black Individual Card Pages
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (generate but do not commit/push)'
+        required: true
+        type: boolean
+        default: true
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Generate individual card pages for Pitch Black (me05)
+        env:
+          SET_ID: me05
+          SET_FULL_NAME: Pitch Black
+          SET_SERIES: Mega Evolution
+          SET_SERIES_SLUG: mega-evolution
+          SET_SLUG: pitch-black
+          SET_SLUG_FULL: pitch-black-card-list
+          PHASE: jp
+          JP_SCRYDEX_ID: m5_ja
+          TCGP_GROUP_ID: '24688'
+          # Deliberately NOT setting SET_OFFICIAL_COUNT here -- the old
+          # documented invocation included SET_OFFICIAL_COUNT=118, which
+          # would override the bridge's correct 120-card count back down
+          # to the stale JP-only value. Omitting it lets officialCount
+          # default to cards.length, which will correctly be 120 once
+          # the TCGCSV bridge succeeds.
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
+        run: node scripts/generate-card-pages.js
+      - name: Show what changed
+        run: |
+          echo "=== Modified/new files ==="
+          git status --short
+      - name: Commit and push
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "⚠️ Nothing to commit"
+          else
+            git commit -m "Regenerate Pitch Black individual card pages with corrected English numbering"
+            git push origin main
+            echo "✅ Committed and pushed"
+          fi
