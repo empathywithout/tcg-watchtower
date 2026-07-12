@@ -279,7 +279,8 @@ if __name__ == "__main__":
     parser.add_argument("--board-id", required=True, help="Pinterest board ID for these pins")
     parser.add_argument("--top-n", type=int, default=None,
                          help="chase style defaults to 8 if omitted; simple style "
-                              "defaults to ALL cards if omitted")
+                              "defaults to 12 if omitted (pass a number explicitly "
+                              "to override, or a large number for full-set coverage)")
     parser.add_argument("--list-page-url", default=None,
                          help="roundup style only -- full URL to the chase-cards "
                               "list page. Defaults to a guessed URL if omitted.")
@@ -292,8 +293,14 @@ if __name__ == "__main__":
         build_chase_queue(args.set, args.set_slug, args.series_slug, args.board_id,
                            args.top_n or 8, default_approved=args.auto_approve)
     elif args.style == "simple":
+        # Simple style defaults to 12 cards (within the requested 10-15
+        # range) rather than every card with a price, if --top-n wasn't
+        # explicitly given -- covers the cards anyone would plausibly
+        # search for individually, without flooding the queue with
+        # dozens of low-value commons that add volume, not value.
+        simple_top_n = args.top_n if args.top_n is not None else 12
         build_simple_queue(args.set, args.set_slug, args.series_slug, args.board_id,
-                            args.top_n, default_approved=args.auto_approve)
+                            simple_top_n, default_approved=args.auto_approve)
     elif args.style == "roundup":
         build_roundup_queue(args.set, args.set_slug, args.series_slug, args.board_id,
                              args.list_page_url, default_approved=args.auto_approve)

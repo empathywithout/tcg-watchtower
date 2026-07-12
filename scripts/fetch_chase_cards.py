@@ -38,6 +38,13 @@ def fetch_set_cards(set_id: str, phase: str = "jp") -> list:
     JPY-converted USD estimates -- already handled server-side by
     api/scrydex-cards.js, not something this function needs to redo.
     """
+    if phase == "jp":
+        print("  ⚠️  WARNING: fetching JP-phase (pre-English-release) data -- "
+              "prices are JPY-converted ESTIMATES, not confirmed English market "
+              "prices, and card names/numbers may still change before the "
+              "official English release. Content built from this run may need "
+              "a refresh once English data is available.")
+
     url = f"{SITE_BASE}/api/scrydex-cards?set={set_id}&phase={phase}"
     with urllib.request.urlopen(url, timeout=15) as response:
         data = json.loads(response.read())
