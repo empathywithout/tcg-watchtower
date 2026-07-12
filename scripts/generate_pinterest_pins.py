@@ -59,6 +59,16 @@ def _wrap_text(draw, text, font, max_width):
     return lines
 
 
+def _truncate_to_width(draw, text, font, max_width):
+    """Truncates text with an ellipsis if it exceeds max_width, keeping
+    label height predictable (single line) rather than wrapping."""
+    if draw.textlength(text, font=font) <= max_width:
+        return text
+    while text and draw.textlength(text + "...", font=font) > max_width:
+        text = text[:-1]
+    return text + "..."
+
+
 def generate_reveal_pin(card_image_path: str, title: str, output_path: str) -> str:
     """
     "Reveal" style: clean card art dominates, minimal text overlay --
@@ -183,6 +193,119 @@ def generate_price_guide_pin(card: dict, card_image_path: str, title: str, outpu
     pin.save(output_path)
     return output_path
 
+
+
+def generate_roundup_pin(cards_with_images: list, title: str, output_path: str) -> str:
+    """
+    "Roundup" style: one featured (#1) card larger at top, remaining 4
+    in a 2x2 grid below -- for broader-intent searches like "pitch black
+    chase cards" where a single-card pin only partially answers what
+    someone's actually looking for. Destination should be the full
+    chase-cards list page, not any single card's page.
+
+    Args:
+        cards_with_images: list of exactly 5 (card_dict, image_path) tuples,
+            in rank order -- cards_with_images[0] is the featured card.
+        title: overall roundup title, e.g. "Pitch Black: Top 5 Chase Cards"
+        output_path: where to save the pin
+
+    Returns:
+        output_path
+    """
+    if len(cards_with_images) != 5:
+        raise ValueError(f"generate_roundup_pin expects exactly 5 cards, got {len(cards_with_images)}")
+
+    width, height = PIN_SIZE
+    pin = Image.new("RGB", (width, height), COLOR_BG)
+    draw = ImageDraw.Draw(pin)
+
+    # Fixed height budget, verified by rendering (an earlier version
+    # overflowed the canvas -- rows got cut off -- because these numbers
+    # were guessed rather than computed against the actual 1500px limit).
+    title_font = _load_font(FONT_BOLD, 44)
+    title_lines = _wrap_text(draw, title, title_font, width - 100)[:2]  # cap at 2 lines
+    y = 45
+    for line in title_lines:
+        line_width = draw.textlength(line, font=title_font)
+        draw.text(((width - line_width) // 2, y), line, fill=COLOR_TEXT, font=title_font)
+        y += 54
+    y += 15
+
+    featured_card, featured_image_path = cards_with_images[0]
+    try:
+        featured_img = Image.open(featured_image_path).convert("RGB")
+    except (FileNotFoundError, OSError):
+        featured_img = Image.new("RGB", (600, 837), COLOR_BG_PANEL)
+
+    featured_img.thumbnail((360, 380), Image.LANCZOS)
+    style = RARITY_STYLES.get(featured_card.get("rarity_label", ""), DEFAULT_RARITY_STYLE)
+    border = 5
+    bordered_featured = Image.new(
+        "RGB",
+        (featured_img.width + border * 2, featured_img.height + border * 2),
+        style["border"],
+    )
+    bordered_featured.paste(featured_img, (border, border))
+    featured_x = (width - bordered_featured.width) // 2
+    pin.paste(bordered_featured, (featured_x, y))
+    y += bordered_featured.height + 12
+
+    rank_font = _load_font(FONT_BOLD, 34)
+    rank_text = _truncate_to_width(draw, f"#1  {featured_card.get('name', '')}", rank_font, width - 80)
+    rank_width = draw.textlength(rank_text, font=rank_font)
+    draw.text(((width - rank_width) // 2, y), rank_text, fill=COLOR_AMBER, font=rank_font)
+    y += 46
+
+    # Grid: fixed single-line labels (no wrapping) so each cell's total
+    # height is predictable -- the earlier 2-line-wrap version caused
+    # unpredictable heights that overlapped into the row below.
+    grid_top = y + 15
+    cell_w, cell_h = 210, 220
+    gap_x, gap_y = 35, 20
+    row_content_h = cell_h + 8 + 30 + 32  # image + border*2(4 each side) + label line + price line
+    grid_total_w = cell_w * 2 + gap_x
+    grid_x0 = (width - grid_total_w) // 2
+
+    body_font = _load_font(FONT_BODY_BOLD, 22)
+    price_font = _load_font(FONT_BODY_BOLD, 26)
+
+    for i, (card, image_path) in enumerate(cards_with_images[1:5], start=2):
+        row, col = (i - 2) // 2, (i - 2) % 2
+        cell_x = grid_x0 + col * (cell_w + gap_x)
+        cell_y = grid_top + row * (row_content_h + gap_y)
+
+        try:
+            card_img = Image.open(image_path).convert("RGB")
+        except (FileNotFoundError, OSError):
+            card_img = Image.new("RGB", (600, 837), COLOR_BG_PANEL)
+        card_img.thumbnail((cell_w - 8, cell_h), Image.LANCZOS)
+
+        cell_style = RARITY_STYLES.get(card.get("rarity_label", ""), DEFAULT_RARITY_STYLE)
+        cell_border = 4
+        bordered_cell = Image.new(
+            "RGB",
+            (card_img.width + cell_border * 2, card_img.height + cell_border * 2),
+            cell_style["border"],
+        )
+        bordered_cell.paste(card_img, (cell_border, cell_border))
+        img_x = cell_x + (cell_w - bordered_cell.width) // 2
+        pin.paste(bordered_cell, (img_x, cell_y))
+
+        label = _truncate_to_width(draw, f"#{i} {card.get('name', '')}", body_font, cell_w)
+        label_y = cell_y + bordered_cell.height + 6
+        label_width = draw.textlength(label, font=body_font)
+        draw.text((cell_x + (cell_w - label_width) // 2, label_y), label, fill=COLOR_TEXT, font=body_font)
+
+        price = card.get("price")
+        price_str = f"${price:.2f}" if price else ""
+        if price_str:
+            price_y = label_y + 30
+            price_width = draw.textlength(price_str, font=price_font)
+            draw.text((cell_x + (cell_w - price_width) // 2, price_y), price_str, fill=COLOR_AMBER, font=price_font)
+
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    pin.save(output_path)
+    return output_path
 
 if __name__ == "__main__":
     # Quick manual test with a dummy card and no real image (exercises
