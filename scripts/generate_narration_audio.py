@@ -121,31 +121,29 @@ PHONEME_OVERRIDES = {
     "EX": "iːː ɛks",
 }
 
-# Pokemon character names the TTS engine mispronounces. Unlike the rarity
-# codes above, I can't verify these by ear myself -- no audio access from
-# my sandbox. Each entry below needs to be confirmed by actually listening
-# to the generated audio and adjusting if it's still off.
+# Pokemon character names the TTS engine mispronounces. I can't verify
+# these by ear myself -- no audio access from my sandbox -- so each entry
+# is either confirmed against an authoritative source (noted inline) or
+# clearly marked as an unconfirmed guess still needing verification.
 #
 # Source for accurate respellings/IPA: Bulbapedia's pronunciation guide --
 # https://bulbapedia.bulbagarden.net/wiki/User:SnorlaxMonster/Pronunciation
 # (sourced from official Pokemon Company materials, not fan guesswork)
-#
-# "Darkrai" below is the one entry with real confirmation: official movie
-# dub audio ("The Rise of Darkrai") uses "Dark-rye" (rhyming with "eye"),
-# not "Dark-ray" -- confirmed via a Bulbapedia talk-page discussion, not
-# just assumed from spelling.
-#
-# The other Pitch Black names (Zeraora, Chandelure, Excadrill) are left as
-# clearly-marked placeholders using my best phonetic guess from their word
-# construction, NOT verified pronunciations -- listen to real output and
-# replace these with the actual correct IPA/respelling once you hear what's
-# actually wrong.
 POKEMON_NAME_PHONEMES = {
-    "Darkrai": "dˈɑːɹkɹˈaɪ",  # confirmed: official dub uses "Dark-rye"
-    # TODO -- verify by ear, these are unconfirmed best guesses:
-    "Zeraora": "zɛɹˈaʊɹə",       # guessed from Japanese ゼラオラ romanization
-    "Chandelure": "ʃˈændəlʊɹ",   # guessed from "chandelier" + "-lure"
-    "Excadrill": "ˈɛkskədɹɪl",   # guessed from "excavate" + "drill"
+    # All three below confirmed directly against Bulbapedia's official
+    # pronunciation table (User:SnorlaxMonster/Pronunciation), sourced
+    # from official Pokemon Company materials -- not guesses.
+    "Darkrai": "ˈdɑːrkraɪ",       # "DARK-rye" -- matches what was already here
+    "Excadrill": "ˈɛkskədrɪl",   # "EKS-kuh-dril" -- confirms the original guess
+    "Chandelure": "ʃændəˈlʊər",  # "shan-duh-LOOR" -- CORRECTED: stress is on
+                                  # the LAST syllable, not the first as originally
+                                  # guessed. This was the one actually wrong.
+    # Zeraora has NO official pronunciation on record -- Bulbapedia's own
+    # table entry for it is blank (Mythical Pokemon, likely just never
+    # had an official audio source to draw from). This remains an
+    # unconfirmed best-guess; if you find an official source for it,
+    # update this entry accordingly.
+    "Zeraora": "zɛɹˈaʊɹə",
 }
 
 
