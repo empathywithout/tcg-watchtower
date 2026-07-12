@@ -61,6 +61,7 @@ function filterCardProducts(products) {
  */
 function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
   const merged = {};
+  const tcgcsvNames = new Set(); // for name-based dedup against JP fallback
 
   for (const p of tcgcsvCardProducts) {
     const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
@@ -76,12 +77,22 @@ function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
       productId: p.productId,
       source: 'tcgcsv',
     };
+    tcgcsvNames.add(cleanName.toLowerCase());
   }
 
   let jpFallbackCount = 0;
   for (const c of jpScrydexCards || []) {
     const num = String(c.localId).padStart(3, '0');
     if (merged[num]) continue; // TCGCSV already authoritative for this position
+    // CRITICAL: also skip if TCGCSV has this same card under ANY OTHER
+    // number -- prevents the same physical card appearing twice when its
+    // position shifted between JP and English AND TCGCSV has partial
+    // (not yet complete) coverage. Caught via testing with a mock partial-
+    // coverage scenario before this shipped -- did not show up against
+    // me05's real data specifically because TCGCSV is already 100%
+    // complete there, so this exact bug is dormant for today's target but
+    // real for future, less-complete sets.
+    if (tcgcsvNames.has((c.name || '').toLowerCase())) continue;
     merged[num] = { localId: num, name: c.name, rarity: c.rarity, image: c.image, source: 'jp-fallback' };
     jpFallbackCount++;
   }

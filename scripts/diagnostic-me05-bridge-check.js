@@ -19,6 +19,8 @@
 // locally) -- this sandbox's network is restricted and cannot reach
 // tcgcsv.com or api.scrydex.com directly.
 
+import { mergeCards } from '../api/_lib/tcgcsv-bridge.js';
+
 const TCGCSV_GROUP_ID = '24688';
 const TCGCSV_CATEGORY = 3; // Pokemon
 const SCRYDEX_JP_EXPANSION_ID = 'm5_ja'; // matches SCRYDEX_JP_ID_MAP['me05'] in production
@@ -85,39 +87,6 @@ async function fetchJpScrydexCards() {
   });
 }
 
-/**
- * THE actual merge function -- TCGCSV-primary, JP-fallback per card.
- * This is the exact logic Phase 3 would reuse in the shared module.
- * Keyed by card NUMBER (not name), since that's the real identity key
- * once TCGCSV is treated as authoritative for position.
- */
-function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
-  const merged = {}; // keyed by zero-padded number string
-
-  // TCGCSV first -- authoritative when present
-  for (const p of tcgcsvCardProducts) {
-    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
-    if (!numEntry) continue;
-    const num = numEntry.value.split('/')[0].trim().padStart(3, '0');
-    const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
-    const cleanName = (p.name || '').replace(/\s*-\s*\d+\/\d+\s*$/, '').trim();
-    merged[num] = {
-      localId: num, name: cleanName, rarity: rarEntry?.value || '',
-      image: p.imageUrl || null, source: 'tcgcsv',
-    };
-  }
-
-  // JP Scrydex fills in ONLY numbers TCGCSV doesn't have yet
-  let jpFallbackCount = 0;
-  for (const c of jpScrydexCards) {
-    const num = String(c.localId).padStart(3, '0');
-    if (merged[num]) continue; // TCGCSV already has this position
-    merged[num] = { localId: num, name: c.name, rarity: c.rarity, image: c.image, source: 'jp-fallback' };
-    jpFallbackCount++;
-  }
-
-  return { cards: Object.values(merged).sort((a, b) => a.localId.localeCompare(b.localId)), jpFallbackCount };
-}
 
 async function testMerge(cardProducts) {
   console.log(`\n=== Testing the actual merge function against real data ===`);
