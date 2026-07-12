@@ -9,5 +9,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Run diagnostic (no writes, no secrets needed)
+      - name: Run diagnostic (read-only, no writes anywhere)
+        env:
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
         run: node scripts/diagnostic-me05-bridge-check.js
