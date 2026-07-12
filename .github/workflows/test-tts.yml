@@ -1,10 +1,10 @@
-name: Test TTS Narration
+name: Test Full Video Pipeline
 
 on:
   workflow_dispatch:  # manual trigger only, from the Actions tab
 
 jobs:
-  test-tts:
+  test-pipeline:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -16,18 +16,27 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install google-cloud-texttospeech
+        run: pip install google-cloud-texttospeech Pillow
+
+      - name: Verify ffmpeg is available
+        run: ffmpeg -version
 
       - name: Write GCP credentials
         run: echo '${{ secrets.GCP_TTS_KEY }}' > /tmp/gcp-key.json
 
-      - name: Run narration test (generates 5 voice comparison samples)
+      - name: Run full pipeline test (narration + frames + assembly)
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
-        run: python3 scripts/generate_narration_audio.py
+        run: python3 scripts/test_full_pipeline.py
 
-      - name: Upload voice comparison samples as artifact
+      - name: Upload sample video as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: voice-comparison-samples
-          path: /tmp/voice_test_*.mp3
+          name: sample-video
+          path: /tmp/pipeline_test/sample_video.mp4
+
+      - name: Upload individual frames for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-frames
+          path: /tmp/pipeline_test/frames/*.png
