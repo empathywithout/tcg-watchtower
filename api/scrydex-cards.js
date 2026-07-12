@@ -1,8 +1,6 @@
 // api/scrydex-cards.js
 // Fetches cards from Scrydex for portfolio use — Redis cached 6h
 
-import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
-
 const SCRYDEX_BASE    = 'https://api.scrydex.com/pokemon/v1';
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
@@ -21,13 +19,6 @@ const SCRYDEX_EN_ID_MAP = {
 
 const SCRYDEX_JP_ID_MAP = {
   'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
-};
-
-// TCGplayer groupId map for the TCGCSV bridge -- same values as
-// api/cards.js's SET_TO_GROUP (kept as a separate declaration here since
-// this file has never imported from another api/*.js file before).
-const SET_TO_GROUP = {
-  'me05': '24688', // confirmed real via diagnostic script against live TCGCSV data
 };
 
 // JPY→USD conversion for JP-phase sets (no English TCGplayer prices exist yet).
@@ -121,28 +112,15 @@ const RARITY_JA_TO_EN = {
   '希少': 'Rare',
   'ダブルレア': 'Double Rare',
   'アートレア': 'Illustration Rare',
-  'スーパーレア': 'Ultra Rare', // NOT "Super Rare" -- confirmed via 2 independent
-                                 // position-verified reference cards against real
-                                 // TCGCSV data (Mega Darkrai ex #099, Mega Zeraora
-                                 // ex #096, both this exact raw JP string, both
-                                 // confirmed "Ultra Rare" by TCGCSV). "Super Rare"
-                                 // was a real rarity tier in earlier Pokemon TCG
-                                 // eras, but for the Mega Evolution series this raw
-                                 // JP term maps to "Ultra Rare" instead -- verified
-                                 // specifically for this series; if a future JP-phase
-                                 // set from a different era/family shows this same
-                                 // raw string mapping to something else, this may
-                                 // need to become phase/series-specific rather than
-                                 // a single global mapping.
+  'スーパーレア': 'Super Rare',
   'スペシャルアートレア': 'Special Illustration Rare',
   '超ウルトラレア': 'Mega Hyper Rare',
-  '非': 'Uncommon', // originally left unmapped (seen on Sinistcha, thought
-                     // possibly a truncated/non-standalone string) -- now
-                     // confirmed via a comprehensive check across 13
-                     // independent, unambiguous cards in this set (Sinistcha,
-                     // Heatran, Seaking, and 10 others), all agreeing this
-                     // raw JP string reliably means "Uncommon" per TCGCSV's
-                     // confirmed real data.
+  // '非' seen on one card (Sinistcha) -- likely a truncated string from
+  // Scrydex's own data (e.g. part of a longer phrase), not a standalone
+  // rarity term. Left unmapped rather than guessed, since an incorrect
+  // rarity claim is worse than a card falling through to "Unknown" --
+  // it doesn't affect chase-rarity filtering either way, since it isn't
+  // a chase-tier rarity regardless of what it actually stands for.
 };
 
 function translateRarity(rawRarity, phase) {
@@ -267,52 +245,7 @@ export default async function handler(req, res) {
     const rawCards = await fetchAllPages(
       `${basePrefix}/expansions/${scrydexId}/cards?select=${selectFields}&include=prices&pageSize=100`
     );
-    let cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
-
-    // TCGCSV bridge: name/rarity/image ONLY (not pricing -- see note below).
-    // Only activates for phase='jp' sets with a registered group ID; any
-    // failure falls through to the original 'cards' array unchanged.
-    const bridgeGroupId = isJP ? SET_TO_GROUP[set] : null;
-    if (bridgeGroupId) {
-      try {
-        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
-        const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
-        const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
-        const { cards: mergedIdentity } = mergeCards(tcgcsvCardProducts, jpShaped);
-
-        // Match merged identity (correct EN name/rarity/image/number) back
-        // to the ORIGINAL cards array by a NAME+RARITY composite key, not
-        // by position (position shifts between JP and EN numbering) and
-        // NOT by name alone -- a card that exists at multiple rarities
-        // (e.g. Mega Darkrai ex: Double Rare, Ultra Rare, SIR, Mega Hyper
-        // Rare all share the exact same name) would otherwise collapse to
-        // a single lookup entry, silently misattributing 3 of 4 real
-        // prices to the wrong rarity variant. Verified with a mock test
-        // reproducing this exact real scenario before trusting this fix:
-        // name-only matching produced 1 entry for 4 distinct cards; the
-        // name+rarity composite key correctly produces 4.
-        const originalByKey = {};
-        for (const c of cards) originalByKey[`${c.name.toLowerCase()}|${(c.rarity||'').toLowerCase()}`] = c;
-
-        const bridgedCards = mergedIdentity.map(m => {
-          const key = `${m.name.toLowerCase()}|${(m.rarity||'').toLowerCase()}`;
-          const original = originalByKey[key];
-          if (original) {
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source };
-          }
-          // No original match (shouldn't happen -- every merged card comes
-          // from either TCGCSV or the JP array itself) -- include with no
-          // pricing rather than drop the card entirely.
-          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market: null, source: m.source };
-        });
-
-        console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${bridgedCards.length} cards`);
-        cards = bridgedCards;
-      } catch (e) {
-        console.warn(`[scrydex-cards] TCGCSV bridge failed for ${set}, using original cards:`, e.message);
-        // cards stays as the original, unbridged array
-      }
-    }
+    const cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
 
     // Only cache if prices are actually present — prevents stale null-price cache
     const hasAnyPrice = cards.some(c => c.market != null);

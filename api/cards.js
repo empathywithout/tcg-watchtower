@@ -10,8 +10,6 @@
 //      GET /api/cards?set=sv9b          (Japanese set ID — handled via sets.json phase)
 //      GET /api/cards?set=me02pt5
 
-import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
-
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
@@ -28,7 +26,6 @@ const SET_TO_GROUP = {
   'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
-  'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -79,14 +76,10 @@ const JP_RARITY_MAP = {
   '希少':                            'Rare',
   // Double Rare
   'RR':                             'Double Rare',
+  'スーパーレア':                     'Double Rare',
   'ダブルレア':                       'Double Rare',
   // Ultra Rare
   'SR':                             'Ultra Rare',
-  'スーパーレア':                     'Ultra Rare', // moved from Double Rare -- confirmed
-                                                    // wrong via 2 independent position-
-                                                    // verified reference cards against
-                                                    // real TCGCSV data (Mega Darkrai ex
-                                                    // #099, Mega Zeraora ex #096)
   'Uレア':                           'Ultra Rare',
   'ウルトラレア':                     'Ultra Rare',
   // Illustration Rare

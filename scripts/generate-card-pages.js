@@ -50,7 +50,6 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from '../api/_lib/tcgcsv-bridge.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
@@ -186,50 +185,8 @@ if (PHASE === 'jp') {
       image:   c.images?.[0]?.medium || c.images?.[0]?.small || null,
     };
   });
-  console.log(`✅ ${cards.length} JP cards found for ${SET_FULL_NAME}`);
-
-  // TCGCSV bridge: only activates when a real group ID has been provided
-  // (same TCGP_GROUP_ID already used elsewhere in this script for pricing)
-  // -- if not provided, or if the bridge attempt fails for any reason,
-  // falls through cleanly to the JP-only cards array built above,
-  // completely unchanged. This is the third of three places this same
-  // tested merge function (Phase 1/2/3, verified against real live me05
-  // data) gets wired in -- api/cards.js and api/scrydex-cards.js already
-  // have it; this is the individual-card-page generator, which is the
-  // piece that MUST ship together with the other two, since fixing card
-  // numbering in the live API without also regenerating individual pages
-  // under their correct new filenames creates broken "View Card Page"
-  // links for every card whose position shifted.
-  if (TCGP_GROUP_ID) {
-    try {
-      console.log(`📋 Fetching TCGCSV bridge data (group ${TCGP_GROUP_ID})...`);
-      const tcgcsvProducts = await fetchTcgcsvProducts(TCGP_GROUP_ID);
-      const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
-      const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
-      const { cards: mergedCards, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
-      cards = mergedCards.map(c => ({
-        name: c.name,
-        localId: c.localId,
-        rarity: c.rarity,
-        image: c.image,
-        source: c.source,
-      }));
-      console.log(`✅ TCGCSV bridge hit: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
-    } catch (e) {
-      console.warn(`⚠️  TCGCSV bridge failed, using JP-only cards unchanged: ${e.message}`);
-      // cards stays as the JP-only array built above
-    }
-  } else {
-    console.log(`ℹ️  No TCGP_GROUP_ID provided -- using JP-only cards (bridge not attempted)`);
-  }
-  // Computed AFTER the bridge above, so this reflects the FINAL card count
-  // (e.g. 120 after a successful merge) rather than the pre-bridge JP-only
-  // count (e.g. 118) -- a real bug caught while wiring this in: the
-  // original single assignment here got dropped when the bridge logic was
-  // inserted between card-building and this line, which would have left
-  // officialCount permanently at its initial value of 0 for every JP-phase
-  // run, not just ones using the bridge.
   officialCount = SET_OFFICIAL_COUNT_ENV ? parseInt(SET_OFFICIAL_COUNT_ENV, 10) : cards.length;
+  console.log(`✅ ${cards.length} JP cards found for ${SET_FULL_NAME}`);
 } else {
   const metaUrl = `${R2_PUBLIC_URL}/data/${SET_ID}.json`;
   console.log(`📋 Fetching card metadata from ${metaUrl}...`);
