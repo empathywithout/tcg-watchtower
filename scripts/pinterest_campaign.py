@@ -24,7 +24,29 @@ BOARD_ID_SET_SPECIFIC = os.environ.get("PINTEREST_BOARD_PITCH_BLACK", "")
 
 SET_ID = "me05"
 SET_URL_SLUG = "pitch-black"
-DESTINATION_BASE = f"https://tcgwatchtower.com/pokemon/sets/mega-evolution/{SET_URL_SLUG}/cards"
+SET_SERIES_SLUG = "mega-evolution"
+SITE_BASE = "https://tcgwatchtower.com"
+
+
+def to_slug(name: str) -> str:
+    """Mirrors toSlug() in scripts/generate-card-pages.js exactly."""
+    import re
+    s = name.lower().replace("'", "").replace("'", "")
+    s = re.sub(r'[^a-z0-9]+', '-', s)
+    return s.strip('-')
+
+
+def card_destination_url(card: dict) -> str:
+    """
+    Real per-card page URL (confirmed these already exist on the live
+    site, e.g. mega-darkrai-ex-118.html) -- NOT a single shared set-list
+    URL. Using one shared URL for every card in the set was a real bug:
+    the 72h same-URL spacing rule would then only let the FIRST pin in a
+    run actually post, silently skipping every other card as "too soon"
+    even though they're about different cards entirely.
+    """
+    slug = f"{to_slug(card['name'])}-{card['display_id']}"
+    return f"{SITE_BASE}/pokemon/sets/{SET_SERIES_SLUG}/{SET_URL_SLUG}/cards/{slug}"
 
 
 def fetch_card_image(card: dict) -> str:
@@ -62,9 +84,12 @@ def run_campaign(top_n: int = 8, dry_run: bool = True):
         generate_price_guide_pin(card, image_path, price_title, price_path)
 
         if dry_run:
-            print(f"  [DRY RUN] Would post: {reveal_path}, {price_path}")
+            print(f"  [DRY RUN] Would post reveal pin: {reveal_path}")
+            print(f"  [DRY RUN] Price-guide pin generated but NOT posted this "
+                  f"run -- see note below on why only one style posts per run")
             continue
 
+        destination_url = card_destination_url(card)
         posted = post_one_pin(
             local_image_path=reveal_path,
             board_id=BOARD_ID_CHASE_CARDS,
@@ -73,11 +98,20 @@ def run_campaign(top_n: int = 8, dry_run: bool = True):
                 f"{card['name']} is one of the top chase cards in Pokemon TCG's "
                 f"Pitch Black set. See live prices and the full chase-card list."
             ),
-            destination_url=DESTINATION_BASE,
+            destination_url=destination_url,
             alt_text=f"{card['name']}, {card['rarity_label']} from Pitch Black",
         )
         if posted:
             posted_count += 1
+
+        # NOTE: only the reveal pin posts this run. The price-guide pin is
+        # still generated (useful to review), but intentionally not posted
+        # in the same run -- both styles point at the SAME per-card URL,
+        # and posting both back-to-back would trip the 72h same-URL
+        # spacing rule on the second one anyway. Post price-guide pins for
+        # these same cards in a separate later run instead (e.g. a few
+        # days after the reveal pins), which naturally respects the
+        # spacing rule rather than fighting it.
 
     print(f"\nDone. {'(dry run, nothing actually posted)' if dry_run else f'{posted_count} pins posted.'}")
 
