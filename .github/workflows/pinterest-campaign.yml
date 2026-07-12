@@ -8,9 +8,10 @@ on:
         required: true
         type: choice
         options:
+          - list_boards
           - build_queue
           - post_from_queue
-        default: build_queue
+        default: list_boards
       style:
         description: 'Pin style (only used for build_queue)'
         required: false
@@ -60,6 +61,12 @@ jobs:
 
       - name: Install dependencies
         run: pip install Pillow
+
+      - name: List boards (verify token + get board IDs)
+        if: ${{ inputs.action == 'list_boards' }}
+        env:
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+        run: python3 scripts/pinterest_list_boards.py
 
       - name: Build queue
         if: ${{ inputs.action == 'build_queue' }}
