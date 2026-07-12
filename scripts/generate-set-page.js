@@ -735,6 +735,7 @@ const SERIES_NAV_HTML = buildSeriesNavHtml(PM_SERIES_ORDER, SET_ID);
 let html = readFileSync('set-template.html', 'utf8');
 
 const vars = {
+  '{{GA_CUSTOM_DIMS}}':     JSON.stringify({ set_id: SET_ID, series: SET_SERIES, page_type: 'set_list' }),
   '{{SERIES_NAV}}':         SERIES_NAV_HTML,
   '{{SET_ID}}':             SET_ID,
   '__R2_PUBLIC_URL__':      R2_PUBLIC_URL,

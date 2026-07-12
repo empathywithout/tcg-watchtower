@@ -112,9 +112,13 @@ const sharedFonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">`;
-const gaScript = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
-<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>`;
+function gaScriptFor(customDims) {
+  const dimsJson = JSON.stringify(customDims || {});
+  return `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('set',${dimsJson});gtag('config','G-E0S4363S5Y');</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>
+<script type="module">import{onCLS,onFCP,onINP,onLCP,onTTFB}from"https://unpkg.com/web-vitals@5?module";function sendToGA(m){if(typeof gtag==="function"){gtag("event","web_vitals",{metric_name:m.name,metric_value:m.value,metric_rating:m.rating,metric_id:m.id,page_path:location.pathname});}}onCLS(sendToGA);onFCP(sendToGA);onINP(sendToGA);onLCP(sendToGA);onTTFB(sendToGA);</script>`;
+}
 const impactScript = `<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');<\/script>`;
 const chaseStyles = `*{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;--text:#f1f5f9;--text-muted:#94a3b8;--accent:#3b82f6;--accent-amber:#f59e0b;--green:#22c55e;}
@@ -360,7 +364,7 @@ ${ogImage ? `<meta property="og:image" content="${ogImage}">
 ${JSON.stringify(faqSchema, null, 2)}
 <\/script>
 ${sharedFonts}
-${gaScript}
+${gaScriptFor({ set_id: info.setId, series: info.seriesSlug, page_type: 'chase_cards' })}
 <style>${chaseStyles}<\/style>
 </head>
 <body>

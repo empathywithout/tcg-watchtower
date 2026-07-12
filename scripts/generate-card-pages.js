@@ -56,9 +56,15 @@ const ROOT = path.resolve(__dirname, '..');
 // Google Analytics snippet — was missing from this generator entirely, meaning
 // every individual Pokemon card page it generates had zero GA tracking.
 // Matches the working snippet already used in generate-op-card-pages.js.
-const gaScript = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
-<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>`;
+function gaScriptFor(customDims) {
+  const dimsJson = JSON.stringify(customDims || {});
+  return `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('set',${dimsJson});gtag('config','G-E0S4363S5Y');</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>
+<script type="module">import{onCLS,onFCP,onINP,onLCP,onTTFB}from"https://unpkg.com/web-vitals@5?module";function sendToGA(m){if(typeof gtag==="function"){gtag("event","web_vitals",{metric_name:m.name,metric_value:m.value,metric_rating:m.rating,metric_id:m.id,page_path:location.pathname});}}onCLS(sendToGA);onFCP(sendToGA);onINP(sendToGA);onLCP(sendToGA);onTTFB(sendToGA);</script>`;
+}
+
+
 
 const SET_ID          = (process.env.SET_ID || '').trim();
 const SET_FULL_NAME   = (process.env.SET_FULL_NAME || '').trim();
@@ -333,7 +339,7 @@ function generateCardPage(card, allCards) {
 <link rel="preload" as="image" href="${img}" fetchpriority="high">
 ${sharedFonts}
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-${gaScript}
+${gaScriptFor({ set_id: SET_ID, series: SET_SERIES, rarity: card.rarity || '(unknown)' })}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -765,7 +771,7 @@ ${ogImage ? `<meta property="og:image" content="${ogImage}">
 ${JSON.stringify(faqSchema, null, 2)}
 <\/script>
 ${sharedFonts}
-${gaScript}
+${gaScriptFor({ set_id: SET_ID, series: SET_SERIES, page_type: 'chase_cards' })}
 <style>${chaseStyles}<\/style>
 </head>
 <body>

@@ -449,6 +449,31 @@ document.getElementById('rarity-filter').addEventListener('change', applyFilters
 document.getElementById('sort-select').addEventListener('change', applyFilters);
 document.getElementById('load-more-btn').addEventListener('click', () => renderCards(false));
 
+// Analytics: search fires on every keystroke via applyFilters above, so
+// tracking it directly there would flood GA4 with one event per character
+// typed. Debounced separately here instead -- only fires ~800ms after the
+// user stops typing, once per actual search "attempt" rather than per key.
+let _searchTrackTimer = null;
+document.getElementById('search-input').addEventListener('input', (e) => {
+  clearTimeout(_searchTrackTimer);
+  const value = e.target.value;
+  _searchTrackTimer = setTimeout(() => {
+    if (value && typeof gtag === 'function') {
+      gtag('event', 'card_search_used', { search_term: value, page_path: location.pathname });
+    }
+  }, 800);
+});
+document.getElementById('rarity-filter').addEventListener('change', (e) => {
+  if (typeof gtag === 'function') {
+    gtag('event', 'rarity_filter_used', { rarity: e.target.value || '(all)', page_path: location.pathname });
+  }
+});
+document.getElementById('sort-select').addEventListener('change', (e) => {
+  if (typeof gtag === 'function') {
+    gtag('event', 'sort_used', { sort_option: e.target.value, page_path: location.pathname });
+  }
+});
+
 /* ===== MODAL ===== */
 
 function toCardSlug(name, localId) {

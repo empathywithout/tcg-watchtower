@@ -231,9 +231,15 @@ function breadcrumb(lastLabel) {
 
 const impactScript = `<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');<\/script>`;
 
-const gaScript = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
-<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>`;
+function gaScriptFor(customDims) {
+  const dimsJson = JSON.stringify(customDims || {});
+  return `<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('set',${dimsJson});gtag('config','G-E0S4363S5Y');</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>
+<script type="module">import{onCLS,onFCP,onINP,onLCP,onTTFB}from"https://unpkg.com/web-vitals@5?module";function sendToGA(m){if(typeof gtag==="function"){gtag("event","web_vitals",{metric_name:m.name,metric_value:m.value,metric_rating:m.rating,metric_id:m.id,page_path:location.pathname});}}onCLS(sendToGA);onFCP(sendToGA);onINP(sendToGA);onLCP(sendToGA);onTTFB(sendToGA);</script>`;
+}
+
+
 
 // ─── Card page template ───────────────────────────────────────────────────────
 
@@ -322,7 +328,7 @@ function generateCardPage(card, allCards) {
 <link rel="preload" as="image" href="${img}" fetchpriority="high">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-${gaScript}
+${gaScriptFor({ set_id: SET_ID, series: 'One Piece', rarity: card.rarity || '(unknown)' })}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -680,8 +686,7 @@ ${chaseCards[0] ? `<meta property="og:image" content="${R2_PUBLIC_URL}/cards/op/
 <script type="application/ld+json">
 ${JSON.stringify(faqSchemaOP, null, 2)}
 <\/script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
+${gaScriptFor({ set_id: SET_ID, series: 'One Piece', page_type: 'chase_cards' })}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">

@@ -1969,10 +1969,12 @@ function adjustQty(idx, delta) {
   const newQty = (portfolio[idx].qty || 1) + delta;
   if (newQty <= 0) {
     const name = portfolio[idx].name;
+    const setId = portfolio[idx].setId;
     portfolio.splice(idx, 1);
     savePortfolio();
     renderCollection();
     showToast(`Removed ${name} from collection`);
+    if (typeof gtag === 'function') gtag('event', 'portfolio_remove_card', { set_id: setId });
     return;
   }
   portfolio[idx].qty = newQty;
@@ -2303,6 +2305,7 @@ document.getElementById('save-card-btn').addEventListener('click', () => {
   if (existing) {
     existing.qty = (existing.qty || 1) + qty;
     showToast(`Updated quantity for ${pendingCard.name}${variantName ? ` (${variantName})` : ''}`);
+    if (typeof gtag === 'function') gtag('event', 'portfolio_add_card', { set_id: pendingCard.setId, new_card: false });
   } else {
     portfolio.push({
       setId:        pendingCard.setId,
@@ -2317,6 +2320,7 @@ document.getElementById('save-card-btn').addEventListener('click', () => {
       addedAt:      Date.now(),
     });
     showToast(`Added ${pendingCard.name}${variantName ? ` (${variantName})` : ''} ✓`, 'success');
+    if (typeof gtag === 'function') gtag('event', 'portfolio_add_card', { set_id: pendingCard.setId, new_card: true });
   }
 
   savePortfolio();
@@ -2368,9 +2372,11 @@ document.getElementById('export-csv').addEventListener('click', () => {
   portfolio.forEach(c => rows.push([c.name, c.setId, c.localId, c.rarity, c.qty, c.condition, new Date(c.addedAt).toLocaleDateString()]));
   const csv  = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   download('tcgw-collection.csv', csv, 'text/csv');
+  if (typeof gtag === 'function') gtag('event', 'portfolio_export', { format: 'csv', card_count: portfolio.length });
 });
 document.getElementById('export-json').addEventListener('click', () => {
   download('tcgw-collection.json', JSON.stringify(portfolio, null, 2), 'application/json');
+  if (typeof gtag === 'function') gtag('event', 'portfolio_export', { format: 'json', card_count: portfolio.length });
 });
 function download(name, content, type) {
   const a   = document.createElement('a');

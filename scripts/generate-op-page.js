@@ -242,8 +242,9 @@ const html = `<!DOCTYPE html>
 </script>
 ${FAQ_SCHEMA_JSON ? `<script type="application/ld+json">${FAQ_SCHEMA_JSON}</script>` : ''}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('set',{set_id:'${SET_ID}',series:'One Piece',page_type:'set_list'});gtag('config','G-E0S4363S5Y');</script>
 <script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','tcgplayer_click',{page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','amazon_click',{page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','ebay_click',{page_path:location.pathname});}},true);</script>
+<script type="module">import{onCLS,onFCP,onINP,onLCP,onTTFB}from"https://unpkg.com/web-vitals@5?module";function sendToGA(m){if(typeof gtag==="function"){gtag("event","web_vitals",{metric_name:m.name,metric_value:m.value,metric_rating:m.rating,metric_id:m.id,page_path:location.pathname});}}onCLS(sendToGA);onFCP(sendToGA);onINP(sendToGA);onLCP(sendToGA);onTTFB(sendToGA);</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -949,6 +950,10 @@ document.getElementById('search-input').addEventListener('input',applyFilters);
 document.getElementById('rarity-filter').addEventListener('change',applyFilters);
 document.getElementById('sort-select').addEventListener('change',applyFilters);
 document.getElementById('load-more-btn').addEventListener('click',()=>renderCards(false));
+let _searchTrackTimer=null;
+document.getElementById('search-input').addEventListener('input',(e)=>{clearTimeout(_searchTrackTimer);const value=e.target.value;_searchTrackTimer=setTimeout(()=>{if(value&&typeof gtag==='function'){gtag('event','card_search_used',{search_term:value,page_path:location.pathname});}},800);});
+document.getElementById('rarity-filter').addEventListener('change',(e)=>{if(typeof gtag==='function'){gtag('event','rarity_filter_used',{rarity:e.target.value||'(all)',page_path:location.pathname});}});
+document.getElementById('sort-select').addEventListener('change',(e)=>{if(typeof gtag==='function'){gtag('event','sort_used',{sort_option:e.target.value,page_path:location.pathname});}});
 
 const PRODUCT_META_BY_SET = {
   op14: {
