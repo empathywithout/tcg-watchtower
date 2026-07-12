@@ -63,7 +63,11 @@ const SET_URL_SLUG_MAP = {
 // filename) is "scarlet-violet-151-card-list" -- doesn't auto-derive from
 // the short SET_SLUG, so both need explicit overrides here.
 const SET_SLUG_OVERRIDE = { sv3pt5: '151' };
-const SET_SLUG_FULL_OVERRIDE = { sv3pt5: 'scarlet-violet-151-card-list' };
+const SET_SLUG_FULL_OVERRIDE = {
+  sv3pt5: 'scarlet-violet-151-card-list',
+  sv01: 'scarlet-violet-base-set-card-list',
+  me01: 'mega-evolution-base-set-card-list',
+};
 
 function deriveUrlSlug(set) {
   if (SET_URL_SLUG_MAP[set.setId]) return SET_URL_SLUG_MAP[set.setId];
