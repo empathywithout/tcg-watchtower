@@ -38,22 +38,28 @@ def get_client():
     return _client
 
 
-def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0) -> str:
+def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0, use_ssml: bool = False) -> str:
     """
     Synthesize a single narration string to an MP3 file.
 
     Args:
-        text: the narration text (output of build_narration() from the script template)
+        text: the narration text, OR a full SSML string if use_ssml=True
         output_path: where to save the .mp3 file
-        speaking_rate: 1.0 = normal. Slightly above 1.0 (e.g. 1.05-1.1) can help
-            pacing feel snappier for short-form content without sounding rushed.
+        speaking_rate: 1.0 = normal. For narration (not punchy Shorts), 0.95-1.0
+            tends to sound more natural than speeding up.
+        use_ssml: if True, `text` is treated as SSML markup (must be wrapped
+            in <speak>...</speak>) rather than plain text.
 
     Returns:
         The output_path, for chaining into the ffmpeg step.
     """
     client = get_client()
 
-    synthesis_input = texttospeech.SynthesisInput(text=text)
+    if use_ssml:
+        synthesis_input = texttospeech.SynthesisInput(ssml=text)
+    else:
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+
     voice = texttospeech.VoiceSelectionParams(
         language_code=LANGUAGE_CODE,
         name=VOICE_NAME,
@@ -74,16 +80,72 @@ def synthesize_narration(text: str, output_path: str, speaking_rate: float = 1.0
     return output_path
 
 
-def synthesize_video_narrations(cards: list, output_dir: str, narration_fn) -> list:
+def build_card_ssml(name: str, rarity: str, number: str, price: str, reason: str) -> str:
+    """
+    Build SSML for a card narration line with natural pauses and emphasis
+    on the price (the actual point of the sentence). A short <break> after
+    the card name gives the listener a beat to register what's being shown,
+    and emphasis on the price stops it from being read in the same flat
+    tone as everything else.
+    """
+    return f"""<speak>
+    {name}<break time="200ms"/>, the {rarity} at number {number},
+    is currently valued at <emphasis level="moderate">{price}</emphasis>.
+    <break time="300ms"/>
+    {reason}
+    </speak>"""
+
+
+REASON_TEMPLATES = {
+    "high_rarity": "With only {print_context} in circulation, that scarcity is driving real demand.",
+    "character_popularity": "{character} being a fan favorite is a big part of what's pushing this price.",
+    "trend_up": "Prices have moved up since release, which is worth watching if you're holding one.",
+    "art_focus": "The alternate art on this one is a big part of the appeal for collectors.",
+    "": "",  # fallback: no reason line rather than a forced generic one
+}
+
+
+def infer_reason_key(card: dict) -> str:
+    """
+    Simple rule-based inference for which reason template fits a card,
+    based on data you already have. Human review (per your existing
+    workflow) should catch anything that reads oddly before publishing --
+    this just picks a reasonable starting point automatically rather than
+    requiring a manual choice for every single card.
+    """
+    if card.get("price_change_pct", 0) > 20:
+        return "trend_up"
+    if card.get("rarity_tier_rank", 99) <= 2:  # top 2 rarity tiers in the set
+        return "high_rarity"
+    if card.get("variant_type") in ("altArt", "specialAltArt", "mangaAltArt"):
+        return "art_focus"
+    return ""  # no forced reason if nothing clearly applies
+
+
+def build_reason(card: dict) -> str:
+    key = infer_reason_key(card)
+    template = REASON_TEMPLATES.get(key, "")
+    return template.format(
+        character=card.get("character_name", card.get("name", "")),
+        print_context=card.get("print_context", "a limited print run"),
+    )
+
+
+def synthesize_video_narrations(cards: list, output_dir: str, narration_fn=None) -> list:
     """
     Batch-synthesize narration audio for every card in a video, in order.
 
     Args:
-        cards: list of card dicts (same shape as your existing card data)
+        cards: list of card dicts (same shape as your existing card data).
+            Expected keys used here: name, rarity_label, display_id, price
+            (and optionally: price_change_pct, rarity_tier_rank, variant_type,
+            character_name, print_context -- for reason inference)
         output_dir: directory to write per-card mp3 files into
-        narration_fn: the build_narration() function from the script template
-            (passed in rather than imported, so this file has no dependency
-            on where that template lives)
+        narration_fn: OPTIONAL override. If provided, its plain-text output
+            is used instead of the automatic SSML path (useful if you want
+            full manual control over a specific card's script). If omitted
+            (the default), every card automatically gets SSML with natural
+            pauses and price emphasis via build_card_ssml().
 
     Returns:
         List of dicts: [{"card": card, "text": narration_text, "audio_path": path}, ...]
@@ -92,9 +154,24 @@ def synthesize_video_narrations(cards: list, output_dir: str, narration_fn) -> l
     """
     results = []
     for i, card in enumerate(cards):
-        text = narration_fn(card)
-        audio_path = os.path.join(output_dir, f"{i:03d}_{card['display_id']}.mp3")
-        synthesize_narration(text, audio_path)
+        if narration_fn is not None:
+            text = narration_fn(card)
+            audio_path = os.path.join(output_dir, f"{i:03d}_{card['display_id']}.mp3")
+            synthesize_narration(text, audio_path)
+        else:
+            price_str = f"${card['price']:.2f}" if card.get("price") else "an unconfirmed price"
+            reason = build_reason(card)
+            ssml = build_card_ssml(
+                name=card["name"],
+                rarity=card.get("rarity_label", card.get("rarity", "")),
+                number=card["display_id"],
+                price=price_str,
+                reason=reason,
+            )
+            audio_path = os.path.join(output_dir, f"{i:03d}_{card['display_id']}.mp3")
+            synthesize_narration(ssml, audio_path, use_ssml=True)
+            text = ssml  # stored for reference/on-screen captions
+
         results.append({"card": card, "text": text, "audio_path": audio_path})
         print(f"  [{i+1}/{len(cards)}] {card['name']} -> {audio_path}")
 
