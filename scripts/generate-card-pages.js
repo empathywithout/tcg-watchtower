@@ -524,7 +524,7 @@ ${jpBanner}
   <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.</p>
 </footer>
 <script>
-${PHASE === 'jp' ? jpCardPriceScript(card) : enCardPriceScript(card)}
+${PHASE === 'jp' ? jpCardPriceScript(card) : PHASE === 'presale' ? presaleCardPriceScript(card) : enCardPriceScript(card)}
 </script>
 ${impactScript}
 </body>
@@ -701,7 +701,68 @@ async function loadPrices() {
   } catch(e) {}
 }
 loadPrices();`;
-const chaseScript = PHASE === 'jp' ? jpChaseScript : enChaseScript;
+// Presale mode: TCGplayer EN prices primary (with presale marker),
+// Scrydex JP estimates as fallback for cards not yet listed on TCGplayer.
+const presaleChaseScript = `const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
+const SET_ID_JS = '${SET_ID}';
+async function loadPrices() {
+  try {
+    const tcgpRes = await fetch('/api/tcgplayer-prices?groupId=' + TCGP_GROUP_ID);
+    const tcgpData = tcgpRes.ok ? await tcgpRes.json() : {};
+    const tcgpPrices = tcgpData.prices || {};
+    const hasTcgp = {};
+    document.querySelectorAll('[data-local-id]').forEach(el => {
+      const id = el.dataset.localId;
+      const price = tcgpPrices[id.padStart(3,'0')] ?? tcgpPrices[String(parseInt(id,10))];
+      if (price != null) {
+        el.textContent = '$' + price.toFixed(2) + ' \u2746';
+        el.title = 'Presale price \u2014 may change at release';
+        el.classList.remove('loading');
+        hasTcgp[id] = true;
+      }
+    });
+    const jpRes = await fetch('/api/scrydex-cards?set=' + SET_ID_JS + '&phase=jp');
+    if (jpRes.ok) {
+      const jpData = await jpRes.json();
+      const priceMap = {};
+      (jpData.cards || []).forEach(c => {
+        if (c.market == null || !c.localId) return;
+        priceMap[String(c.localId).padStart(3,'0')] = c.market;
+        priceMap[String(parseInt(c.localId,10))] = c.market;
+      });
+      document.querySelectorAll('[data-local-id]').forEach(el => {
+        const id = el.dataset.localId;
+        if (hasTcgp[id]) return;
+        const price = priceMap[id.padStart(3,'0')] ?? priceMap[String(parseInt(id,10))];
+        if (price != null) {
+          el.textContent = '~$' + price.toFixed(2);
+          el.title = 'Estimated from Japanese market price, converted to USD';
+          el.classList.remove('loading');
+        } else {
+          el.textContent = 'N/A';
+          el.classList.remove('loading');
+        }
+      });
+    }
+    const grid = document.getElementById('cards-grid');
+    const items = [...grid.querySelectorAll('.card-item')];
+    items.sort((a, b) => {
+      const raw = t => parseFloat(t.replace(/[^0-9.]/g,'')) || 0;
+      return raw(b.querySelector('[data-local-id]').textContent) - raw(a.querySelector('[data-local-id]').textContent);
+    });
+    items.forEach(i => grid.appendChild(i));
+    const faqEl = document.getElementById('faq-top-answer');
+    if (faqEl && items[0]) {
+      const topName = items[0].querySelector('.card-name')?.textContent;
+      const topPriceText = items[0].querySelector('[data-local-id]')?.textContent;
+      if (topName && topPriceText && topPriceText !== 'N/A') {
+        faqEl.textContent = topName + ' is currently the most valuable chase card in this set, priced at ' + topPriceText + '. See live pricing for it and every other chase card ranked below.';
+      }
+    }
+  } catch(e) {}
+}
+loadPrices()`;
+const chaseScript = PHASE === 'jp' ? jpChaseScript : PHASE === 'presale' ? presaleChaseScript : enChaseScript;
 function chaseCardGridItems(cardList) {
   return cardList.map(c => {
     const rarity      = normalizeRarity(c.rarity);
@@ -901,6 +962,68 @@ async function loadPrice() {
     });
     const padded   = LOCAL_ID.padStart(3, '0');
     const unpadded = String(parseInt(LOCAL_ID, 10));
+    const price = priceMap[padded] ?? priceMap[unpadded];
+    const priceEl = document.getElementById('card-price');
+    if (price != null) {
+      priceEl.textContent = '~$' + price.toFixed(2);
+      priceEl.title = 'Estimated from Japanese market price, converted to USD';
+      priceEl.classList.remove('price-loading');
+      document.querySelectorAll('[data-related-id]').forEach(el => {
+        const rid = el.dataset.relatedId;
+        const rp  = priceMap[rid.padStart(3,'0')] ?? priceMap[String(parseInt(rid,10))];
+        if (rp != null) el.textContent = '~$' + rp.toFixed(2);
+      });
+    } else {
+      priceEl.textContent = 'N/A';
+      priceEl.classList.remove('price-loading');
+    }
+    document.getElementById('price-updated').textContent = 'Estimated (JP market)';
+  } catch(e) {
+    document.getElementById('card-price').textContent = 'N/A';
+  }
+}
+loadPrice();`;
+}
+// Presale mode: TCGplayer EN prices primary (with ✦ presale marker),
+// Scrydex JP estimate as fallback if card not yet listed on TCGplayer.
+function presaleCardPriceScript(card) {
+  return `const GROUP_ID = '${TCGP_GROUP_ID}';
+const SET_ID_JS = '${SET_ID}';
+const LOCAL_ID = '${card.localId}';
+async function loadPrice() {
+  try {
+    const padded   = LOCAL_ID.padStart(3, '0');
+    const unpadded = String(parseInt(LOCAL_ID, 10));
+    // Primary: TCGplayer EN presale price
+    const tcgpRes = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID);
+    if (tcgpRes.ok) {
+      const tcgpData = await tcgpRes.json();
+      const prices = tcgpData.prices || {};
+      const price = prices[padded] ?? prices[unpadded];
+      if (price != null) {
+        const priceEl = document.getElementById('card-price');
+        priceEl.textContent = '$' + price.toFixed(2) + ' \u2746';
+        priceEl.title = 'Presale price \u2014 may change at release';
+        priceEl.classList.remove('price-loading');
+        document.querySelectorAll('[data-related-id]').forEach(el => {
+          const rid = el.dataset.relatedId;
+          const rp  = prices[rid.padStart(3,'0')] ?? prices[String(parseInt(rid,10))];
+          if (rp != null) { el.textContent = '$' + rp.toFixed(2) + ' \u2746'; el.title = 'Presale price'; }
+        });
+        document.getElementById('price-updated').textContent = 'Presale price';
+        return;
+      }
+    }
+    // Fallback: Scrydex JP estimate
+    const jpRes = await fetch('/api/scrydex-cards?set=' + SET_ID_JS + '&phase=jp');
+    if (!jpRes.ok) throw new Error('JP price fetch failed');
+    const jpData = await jpRes.json();
+    const priceMap = {};
+    (jpData.cards || []).forEach(c => {
+      if (c.market == null || !c.localId) return;
+      priceMap[String(c.localId).padStart(3,'0')] = c.market;
+      priceMap[String(parseInt(c.localId,10))] = c.market;
+    });
     const price = priceMap[padded] ?? priceMap[unpadded];
     const priceEl = document.getElementById('card-price');
     if (price != null) {
