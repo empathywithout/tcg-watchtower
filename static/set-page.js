@@ -121,7 +121,7 @@ function handleChaseClick(el) {
 function renderChaseCardsHTML(grid) {
   const pricesKnown = Object.keys(priceCache).length > 0;
   const sorted = [...currentChaseList]
-    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null, priceUrl: priceCache[c.id]?.url || null }))
+    .map(c => ({ ...c, price: priceCache[c.id]?.price ?? null, priceUrl: priceCache[c.id]?.url || null, priceIsEstimate: !!priceCache[c.id]?.estimate }))
     .sort((a, b) => {
       if (pricesKnown) {
         return (b.price ?? -1) - (a.price ?? -1);
@@ -131,7 +131,10 @@ function renderChaseCardsHTML(grid) {
 
   grid.innerHTML = sorted.map(c => {
     const priceHTML = c.price
-      ? `<div class="chase-card-price-wrap"><span class="price-value">$${c.price.toFixed(2)}</span></div>`
+      ? `<div class="chase-card-price-wrap"${
+          c.priceIsEstimate ? ' title="Estimated from Japanese market price, converted to USD"' :
+          SET_PHASE === 'presale' ? ' title="Presale price — may change at release"' : ''
+        }><span class="price-value">${c.priceIsEstimate ? '~' : ''}$${c.price.toFixed(2)}${c.priceIsEstimate ? ' 〜' : SET_PHASE === 'presale' ? ' ❆' : ''}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card"
@@ -257,7 +260,12 @@ function loadTCGPlayerPrices() {
         const priceEl = el.querySelector('.card-item-price');
         if (!priceEl) return;
         if (cached?.price) {
-          priceEl.textContent = `$${cached.price.toFixed(2)}`;
+          if (SET_PHASE === 'presale') {
+            priceEl.textContent = `$${cached.price.toFixed(2)} ❆`;
+            priceEl.title = 'Presale price — may change at release';
+          } else {
+            priceEl.textContent = `$${cached.price.toFixed(2)}`;
+          }
           priceEl.classList.remove('loading');
         } else {
           priceEl.textContent = '';
@@ -298,6 +306,48 @@ function loadTCGPlayerPrices() {
   })();
   return _pricesFetchPromise;
 }
+// ── Scrydex JP price fallback (presale/jp phase) ────────────────────────────
+// Only fills cards that don't already have a TCGplayer confirmed price.
+// Shows ~$X 〜 with tooltip so users know it's a JP estimate, not a settled EN price.
+let _scrydexPricesFetchPromise = null;
+function loadScrydexJPPrices() {
+  if (_scrydexPricesFetchPromise) return _scrydexPricesFetchPromise;
+  _scrydexPricesFetchPromise = (async () => {
+    try {
+      const res = await fetch(`/api/scrydex-cards?set=${SET_ID}&phase=jp`);
+      if (!res.ok) throw new Error(`Scrydex JP fetch failed: ${res.status}`);
+      const data = await res.json();
+      const cards = data.cards || [];
+      if (!cards.length) return;
+      cards.forEach(c => {
+        if (c.market == null || !c.localId) return;
+        const withZeros    = String(c.localId).padStart(3, '0');
+        const withoutZeros = String(parseInt(c.localId, 10));
+        // Only fill if TCGplayer doesn't already have a confirmed price
+        if (priceCache[withZeros]?.price) return;
+        const entry = { price: c.market, url: null, estimate: true };
+        priceCache[withZeros]    = entry;
+        priceCache[withoutZeros] = entry;
+      });
+      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+        const id      = el.dataset.localId;
+        const cached  = priceCache[id];
+        const priceEl = el.querySelector('.card-item-price');
+        if (!priceEl || !cached?.estimate || !cached?.price) return;
+        priceEl.textContent = `~$${cached.price.toFixed(2)} 〜`;
+        priceEl.title = 'Estimated from Japanese market price, converted to USD';
+        priceEl.classList.remove('loading');
+      });
+      const grid = document.getElementById('chase-grid');
+      if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
+    } catch(e) {
+      console.warn('Scrydex JP prices unavailable:', e.message);
+      _scrydexPricesFetchPromise = null;
+    }
+  })();
+  return _scrydexPricesFetchPromise;
+}
+
 
 async function loadCards() {
   document.getElementById('card-count').textContent = 'Loading cards…';
@@ -377,7 +427,8 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      if (SET_PHASE === 'en') loadTCGPlayerPrices();
+      if (SET_PHASE === 'en' || SET_PHASE === 'presale') loadTCGPlayerPrices();
+      if (SET_PHASE === 'presale' || SET_PHASE === 'jp') loadScrydexJPPrices();
     }, 0);
   } catch(e) {
     console.error('Card load failed:', e);
@@ -397,7 +448,7 @@ function renderCards(reset) {
     el.dataset.name = card.name;
 
     const cached = priceCache[card.localId];
-    const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
+    const priceText = cached?.price ? (cached.estimate ? `~$${cached.price.toFixed(2)} 〜` : (SET_PHASE === 'presale' ? `$${cached.price.toFixed(2)} ❆` : `$${cached.price.toFixed(2)}`)) : '';
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `

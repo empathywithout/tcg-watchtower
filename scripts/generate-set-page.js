@@ -800,6 +800,19 @@ if (PHASE === 'jp') {
   html = html.replace(/\{\{#IF_JP_PHASE\}\}[\s\S]*?\{\{\/IF_JP_PHASE\}\}/g, '');
 }
 
+// Auto-register TCGplayer group ID in api/cards.js SET_TO_GROUP whenever provided.
+// This ensures the TCGCSV bridge (which reads SET_TO_GROUP at runtime) can reach
+// the right group for this set without a manual api/cards.js edit.
+if (TCGP_GROUP_ID && TCGP_GROUP_ID !== '0') {
+  try {
+    const { execSync } = await import('child_process');
+    execSync(`SET_ID=${SET_ID} TCGP_GROUP_ID=${TCGP_GROUP_ID} node scripts/patch-group-id.js`, { stdio: 'inherit' });
+  } catch(e) {
+    console.warn(`⚠️  Could not auto-patch SET_TO_GROUP: ${e.message}`);
+    console.warn(`   Manually add '${SET_ID}': '${TCGP_GROUP_ID}' to api/cards.js SET_TO_GROUP`);
+  }
+}
+
 const r2Url = R2_PUBLIC_URL;
 if (r2Url) {
   html = html.replaceAll(
