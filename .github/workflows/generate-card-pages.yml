@@ -34,7 +34,7 @@ on:
         description: 'TCGplayer group ID for prices (leave blank for phase=jp)'
         required: false
       phase:
-        description: 'Phase: en (default) or jp — jp sources data/prices from Scrydex instead of R2/TCGplayer'
+        description: 'Phase: en (default), jp (JP-only from Scrydex), or presale (TCGCSV bridge: EN card data + TCGplayer presale prices + JP estimate fallback)'
         required: false
         default: 'en'
       jp_scrydex_id:
@@ -55,6 +55,66 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Seed R2 with EN card data (presale phase only)
+        if: ${{ github.event.inputs.phase == 'presale' }}
+        env:
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          SET_ID: ${{ github.event.inputs.set_id }}
+          SET_OFFICIAL_COUNT: ${{ github.event.inputs.set_official_count }}
+        run: |
+          node --input-type=module -e "
+            import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+
+            const setId = process.env.SET_ID;
+            const officialCount = parseInt(process.env.SET_OFFICIAL_COUNT || '0', 10) || null;
+
+            const res = await fetch('https://tcgwatchtower.com/api/cards?set=' + setId);
+            if (!res.ok) throw new Error('API fetch failed: ' + res.status);
+            const data = await res.json();
+            console.log('Fetched', data.cards?.length, 'cards for', setId, 'phase:', data.phase);
+            if (!data.cards?.length) throw new Error('No cards returned');
+            if (data.cards.length < 50) throw new Error('Too few cards: ' + data.cards.length);
+
+            const metadata = {
+              id: setId,
+              phase: 'en',
+              cardCount: {
+                official: officialCount || data.cardCount?.total || data.cards.length,
+                total: data.cards.length
+              },
+              cards: data.cards.map(c => ({
+                localId: c.localId,
+                name: c.name,
+                rarity: c.rarity,
+                image: c.image,
+                denominator: c.denominator || String(officialCount || data.cards.length).padStart(3, '0'),
+              })),
+            };
+            console.log('Sample cards (first 3):');
+            metadata.cards.slice(0, 3).forEach(c =>
+              console.log(' ', c.localId, c.name, c.rarity, 'denom:', c.denominator)
+            );
+
+            const s3 = new S3Client({
+              region: 'auto',
+              endpoint: process.env.CF_R2_ENDPOINT,
+              credentials: {
+                accessKeyId: process.env.CF_R2_ACCESS_KEY,
+                secretAccessKey: process.env.CF_R2_SECRET_KEY,
+              },
+            });
+            await s3.send(new PutObjectCommand({
+              Bucket: process.env.CF_R2_BUCKET,
+              Key: 'data/' + setId + '.json',
+              Body: JSON.stringify(metadata),
+              ContentType: 'application/json',
+              CacheControl: 'public, max-age=3600',
+            }));
+            console.log('R2 seed complete for', setId);
+          "
       - name: Generate card pages
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
