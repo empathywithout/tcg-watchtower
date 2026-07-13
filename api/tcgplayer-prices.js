@@ -110,6 +110,10 @@ export default async function handler(req, res) {
       }
     }
 
+    // Helper: best available price — marketPrice preferred, midPrice fallback
+    // Newly-listed presale cards often have listings but no marketPrice yet
+    const bestPrice = (p) => p.marketPrice ?? p.midPrice ?? p.lowPrice ?? null;
+
     // Build card number -> price + URL map
     // For One Piece: each variant is a separate product with the same card number
     // Key by "number_varianttype" to distinguish Nami (053), Nami (Alt Art) (053), etc.
@@ -154,7 +158,7 @@ export default async function handler(req, res) {
         : null;
 
       const priceObj = priceByProductId[product.productId];
-      if (!priceObj || priceObj.marketPrice == null) continue;
+      if (!priceObj || bestPrice(priceObj) == null) continue;
 
       const productName = (product.name || '').trim();
       const setSlug = (product.groupName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -239,11 +243,11 @@ export default async function handler(req, res) {
 
         const productUrl = product.url || `https://www.tcgplayer.com/product/${product.productId}`;
 
-        prices[numKey]   = priceObj.marketPrice;
+        prices[numKey]   = bestPrice(priceObj);
         tcgpUrls[numKey] = productUrl;
 
         if (!prices[nameKey]) {
-          prices[nameKey]   = priceObj.marketPrice;
+          prices[nameKey]   = bestPrice(priceObj);
           tcgpUrls[nameKey] = productUrl;
         }
 
@@ -257,14 +261,14 @@ export default async function handler(req, res) {
         // group) -- in that case the base card correctly shows no price
         // here rather than a wrong one borrowed from an unrelated variant.
         if (suffix === '' && !prices[opLocalId]) {
-          prices[opLocalId]   = priceObj.marketPrice;
+          prices[opLocalId]   = bestPrice(priceObj);
           tcgpUrls[opLocalId] = productUrl;
         }
 
       } else {
         // Pokemon: keep lowest productId per card number
         if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
-        prices[cardNumber] = priceObj.marketPrice;
+        prices[cardNumber] = bestPrice(priceObj);
         const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
         const q = encodeURIComponent(`${cardName} ${cardNumber}`);
         tcgpUrls[cardNumber] = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
@@ -279,8 +283,8 @@ export default async function handler(req, res) {
       const hasNumber = extData.some(e => e.name === 'Number');
       if (hasNumber) continue;
       const priceObj = priceByProductId[product.productId];
-      if (!priceObj || priceObj.marketPrice == null) continue;
-      sealedPrices[String(product.productId)] = priceObj.marketPrice;
+      if (!priceObj || bestPrice(priceObj) == null) continue;
+      sealedPrices[String(product.productId)] = bestPrice(priceObj);
     }
 
     const responseData = {
