@@ -211,6 +211,7 @@ if (PHASE === 'jp') {
         rarity: c.rarity,
         image: c.image,
         source: c.source,
+        denominator: c.denominator,
       }));
       console.log(`✅ TCGCSV bridge hit: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
     } catch (e) {
@@ -262,7 +263,9 @@ function cardImgUrl(card) {
 }
 function tcgpSearchUrl(card) {
   const baseName = card.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
-  const official = metadata.cardCount?.official || '';
+  // Prefer the card's own real TCGplayer denominator (from the bridge)
+  // over the total set count -- same fix as the other search-URL builder.
+  const official = card.denominator || metadata.cardCount?.official || '';
   const q = encodeURIComponent(`${baseName} ${card.localId}${official ? '/' + official : ''}`);
   const slug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
   return `https://www.tcgplayer.com/search/pokemon/${slug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${slug}`;
@@ -471,7 +474,7 @@ ${jpBanner}
       </div>
       <div class="info-table">
         <div class="info-row"><div class="info-key">Card Name</div><div class="info-val">${card.name}</div></div>
-        <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${card.localId} / ${metadata.cardCount?.official || '?'}</div></div>
+        <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${card.localId} / ${card.denominator || metadata.cardCount?.official || '?'}</div></div>
         <div class="info-row"><div class="info-key">Set</div><div class="info-val"><a href="${cardListUrl}" style="color:var(--accent)">${SET_FULL_NAME}</a></div></div>
         <div class="info-row"><div class="info-key">Series</div><div class="info-val"><a href="${seriesUrl}" style="color:var(--accent)">${SET_SERIES}</a></div></div>
         <div class="info-row"><div class="info-key">Rarity</div><div class="info-val"><span class="rarity-badge">${card.rarity || 'Unknown'}</span></div></div>
@@ -710,7 +713,14 @@ function chaseCardGridItems(cardList) {
     const img      = cardImgUrl(c);
     const slug     = toSlug(c.name) + '-' + c.localId;
     const baseName = c.name.replace(/\s*[-–]\s*[\d\/]+.*$/, '').trim();
-    const official = metadata.cardCount?.official || '';
+    // Prefer the card's own real TCGplayer denominator (e.g. "084", the
+    // main-set-count) when the bridge provided one -- using the total
+    // card count here instead was a real bug (reported: search links
+    // used '111/120' when TCGplayer's actual listing is '111/084',
+    // which could cause the search to not match the real product).
+    // Falls back to the old officialCount-based behavior for cards/sets
+    // that didn't go through the bridge (e.g. stable EN-phase sets).
+    const official = c.denominator || metadata.cardCount?.official || '';
     const tcgpSlug = TCGP_SET_SLUG || 'sv01-scarlet-and-violet-base-set';
     const tcgpUrl  = `https://www.tcgplayer.com/search/pokemon/${tcgpSlug}?productLineName=pokemon&q=${encodeURIComponent(baseName + ' ' + c.localId + (official ? '/' + official : ''))}&view=grid&Language=English&productTypeName=Cards&sharedid=&irpid=7068180&afsrc=1&setName=${tcgpSlug}`;
     const ebayUrl  = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.name + ' ' + c.localId + ' ' + SET_FULL_NAME + ' Pokemon Card')}`;
