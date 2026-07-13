@@ -10,6 +10,8 @@
 //      GET /api/cards?set=sv9b          (Japanese set ID — handled via sets.json phase)
 //      GET /api/cards?set=me02pt5
 
+import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
+
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
@@ -26,6 +28,7 @@ const SET_TO_GROUP = {
   'sv6pt5':'23529','sv07':'23537','sv08':'23651','sv8pt5':'23821',
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
+  'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -202,94 +205,6 @@ async function cacheToR2InBackground(setId, cards, phase) {
   }
 }
 
-// Fetch EN name map for a JP set — tries TCGCSV first (most reliable), then Scrydex EN, then TCGdex
-async function fetchEnNameMap(setId, scrydexEnId, tcgdexId) {
-  // Try TCGCSV first — guaranteed to have all cards once EN releases
-  const groupId = SET_TO_GROUP[setId];
-  if (groupId) {
-    try {
-      const res      = await fetch(`https://tcgcsv.com/tcgplayer/3/${groupId}/products`, { signal: AbortSignal.timeout(8000) });
-      if (res.ok) {
-        const data     = await res.json();
-        const products = data.results || [];
-        const map      = {};
-        let hasNumbers = false;
-
-        products.forEach(p => {
-          const ext       = p.extendedData || [];
-          const numEntry  = ext.find(e => e.name === 'Number');
-          const cleanName = (p.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
-          if (!cleanName) return;
-          if (numEntry) {
-            hasNumbers = true;
-            const num = numEntry.value.split('/')[0].trim();
-            map[num.padStart(3, '0')]      = cleanName;
-            map[String(parseInt(num, 10))] = cleanName;
-            map[num]                       = cleanName;
-          } else {
-            map[`pid_${p.productId}`] = { name: cleanName, productId: p.productId };
-          }
-        });
-
-        const count = hasNumbers
-          ? Object.keys(map).filter(k => !k.startsWith('pid_')).length
-          : Object.keys(map).length;
-
-        if (count > 0) {
-          console.log(`[api/cards] EN name map from TCGCSV: ${count} entries (numbered=${hasNumbers})`);
-          return map;
-        }
-      }
-    } catch (e) {
-      console.warn(`[api/cards] TCGCSV name map failed:`, e.message);
-    }
-  }
-  // Try Scrydex EN
-  if (scrydexEnId && SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
-    try {
-      let allCards = [], page = 1, total = null;
-      while (true) {
-        const res = await fetch(
-          `${SCRYDEX_BASE}/expansions/${scrydexEnId}/cards?select=id,name&pageSize=100&page=${page}`,
-          { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID }, signal: AbortSignal.timeout(8000) }
-        );
-        if (!res.ok) break;
-        const data = await res.json();
-        const pageCards = data.data || [];
-        if (total === null) total = data.totalCount || data.total || null;
-        allCards = allCards.concat(pageCards);
-        if (pageCards.length === 0 || pageCards.length < 100) break;
-        if (total !== null && allCards.length >= total) break;
-        page++;
-      }
-      if (allCards.length > 0) {
-        const map = {};
-        allCards.forEach(c => {
-          const localId = c.id ? c.id.split('-').slice(1).join('-') : '';
-          if (localId && c.name) map[localId] = c.name;
-        });
-        console.log(`[api/cards] EN name map from Scrydex: ${Object.keys(map).length} names`);
-        return map;
-      }
-    } catch (e) {
-      console.warn(`[api/cards] Scrydex EN name map failed:`, e.message);
-    }
-  }
-  // TCGdex last resort
-  try {
-    const res = await fetch(`https://api.tcgdex.net/v2/en/sets/${tcgdexId}`, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      const data  = await res.json();
-      const map   = {};
-      (data.cards || []).forEach(c => { if (c.localId && c.name) map[c.localId] = c.name; });
-      console.log(`[api/cards] EN name map from TCGdex: ${Object.keys(map).length} names`);
-      return map;
-    }
-  } catch (e) {
-    console.warn(`[api/cards] TCGdex EN name map failed:`, e.message);
-  }
-  return {};
-}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -469,26 +384,61 @@ export default async function handler(req, res) {
           }
 
           if (allCards.length > 0) {
-            cards = allCards.map((c) => {
-              const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
-              const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+            const bridgeGroupId = phase === 'jp' ? SET_TO_GROUP[setId] : null;
 
-              const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
-              const image = phase === 'en'
-                ? `${R2_BASE}/cards/${setId}/${localId}.webp`
-                : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
+            if (bridgeGroupId) {
+              try {
+                const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+                const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
 
-              // JP: use translation.en.name; EN: use name directly
-              const name = phase === 'jp'
-                ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
-                : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
+                const jpShaped = allCards.map((c) => {
+                  const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
+                  const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+                  const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                  return {
+                    localId,
+                    name: c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim(),
+                    rarity: c.translation?.en?.rarity || c.rarity || '',
+                    image: scrydexImage,
+                  };
+                });
 
-              const rarity = normalizeRarity(
-                phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
-              );
+                const { cards: mergedCards, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
+                cards = mergedCards.map(c => ({
+                  localId: c.localId,
+                  name: c.name,
+                  rarity: normalizeRarity(c.rarity),
+                  image: c.image || `${R2_BASE}/cards/${setId}/${c.localId}.webp`,
+                  source: c.source,
+                  phase,
+                }));
+                console.log(`[api/cards] TCGCSV bridge hit for ${setId}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
+              } catch (e) {
+                console.warn(`[api/cards] TCGCSV bridge failed for ${setId}, falling back to Scrydex-only:`, e.message);
+              }
+            }
 
-              return { localId, name, rarity, image, source: 'scrydex', phase };
-            });
+            if (!cards) {
+              cards = allCards.map((c) => {
+                const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
+                const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+
+                const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                const image = phase === 'en'
+                  ? `${R2_BASE}/cards/${setId}/${localId}.webp`
+                  : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);
+
+                const name = phase === 'jp'
+                  ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
+                  : (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim();
+
+                const rarity = normalizeRarity(
+                  phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
+                );
+
+                return { localId, name, rarity, image, source: 'scrydex', phase };
+              });
+            }
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
             // Fire-and-forget: cache metadata + images to R2 so next request is free
             cacheToR2InBackground(setId, cards, phase).catch(() => {});

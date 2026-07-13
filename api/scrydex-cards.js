@@ -1,8 +1,16 @@
 // api/scrydex-cards.js
 // Fetches cards from Scrydex for portfolio use — Redis cached 6h
 
+import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
+
 const SCRYDEX_BASE    = 'https://api.scrydex.com/pokemon/v1';
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
+
+// TCGCSV group ID for the bridge -- only me05 currently has a real,
+// confirmed value (verified via diagnostic script against live data).
+const SET_TO_GROUP = {
+  'me05': '24688',
+};
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const KV_URL          = process.env.KV_REST_API_URL;
 const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
@@ -112,15 +120,18 @@ const RARITY_JA_TO_EN = {
   '希少': 'Rare',
   'ダブルレア': 'Double Rare',
   'アートレア': 'Illustration Rare',
-  'スーパーレア': 'Super Rare',
+  'スーパーレア': 'Ultra Rare', // NOT "Super Rare" -- confirmed via 2 independent
+                                 // position-verified reference cards against real
+                                 // TCGCSV data (Mega Darkrai ex #099, Mega Zeraora
+                                 // ex #096, both this exact raw JP string, both
+                                 // confirmed "Ultra Rare" by TCGCSV).
   'スペシャルアートレア': 'Special Illustration Rare',
   '超ウルトラレア': 'Mega Hyper Rare',
-  // '非' seen on one card (Sinistcha) -- likely a truncated string from
-  // Scrydex's own data (e.g. part of a longer phrase), not a standalone
-  // rarity term. Left unmapped rather than guessed, since an incorrect
-  // rarity claim is worse than a card falling through to "Unknown" --
-  // it doesn't affect chase-rarity filtering either way, since it isn't
-  // a chase-tier rarity regardless of what it actually stands for.
+  '非': 'Uncommon', // originally left unmapped (seen on Sinistcha, thought
+                     // possibly a truncated/non-standalone string) -- now
+                     // confirmed via a comprehensive check across 13
+                     // independent, unambiguous cards in this set, all
+                     // agreeing this raw JP string reliably means "Uncommon".
 };
 
 function translateRarity(rawRarity, phase) {
@@ -245,7 +256,39 @@ export default async function handler(req, res) {
     const rawCards = await fetchAllPages(
       `${basePrefix}/expansions/${scrydexId}/cards?select=${selectFields}&include=prices&pageSize=100`
     );
-    const cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
+    let cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
+
+    // TCGCSV bridge: only activates for JP-phase sets with a registered
+    // group ID. Relinks existing pricing/data across the position shift
+    // using a NAME+RARITY composite key -- NOT position (which moves
+    // between JP and EN numbering) and NOT name alone (which collides for
+    // any card with multiple rarity variants sharing a name -- e.g. Mega
+    // Darkrai ex has 4; verified this would otherwise misattribute 3 of 4
+    // real prices before this fix).
+    const bridgeGroupId = isJP ? SET_TO_GROUP[set] : null;
+    if (bridgeGroupId) {
+      try {
+        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+        const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
+        const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
+        const { cards: mergedIdentity, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
+
+        const originalByKey = {};
+        for (const c of cards) originalByKey[`${c.name.toLowerCase()}|${(c.rarity||'').toLowerCase()}`] = c;
+
+        cards = mergedIdentity.map(m => {
+          const key = `${m.name.toLowerCase()}|${(m.rarity||'').toLowerCase()}`;
+          const original = originalByKey[key];
+          if (original) {
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source };
+          }
+          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market: null, source: m.source };
+        });
+        console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
+      } catch (e) {
+        console.warn(`[scrydex-cards] TCGCSV bridge failed for ${set}, using JP-only cards:`, e.message);
+      }
+    }
 
     // Only cache if prices are actually present — prevents stale null-price cache
     const hasAnyPrice = cards.some(c => c.market != null);
