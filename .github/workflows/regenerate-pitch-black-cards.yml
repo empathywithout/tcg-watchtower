@@ -42,12 +42,13 @@ jobs:
                 localId: c.localId,
                 name: c.name,
                 rarity: c.rarity,
+                image: c.image,
                 denominator: c.denominator || '084',
               })),
             };
             console.log('Sample cards 108-113:');
             metadata.cards.slice(107, 113).forEach(c =>
-              console.log(' ', c.localId, c.name, c.rarity, 'denom:', c.denominator)
+              console.log(' ', c.localId, c.name, c.rarity, 'denom:', c.denominator, 'img:', c.image?.slice(0,60))
             );
 
             const s3 = new S3Client({
@@ -65,7 +66,7 @@ jobs:
               ContentType: 'application/json',
               CacheControl: 'public, max-age=3600',
             }));
-            console.log('R2 seed complete — 84-card denominator set');
+            console.log('R2 seed complete');
           "
       - name: Capture list of existing individual card files (before generation)
         run: |
@@ -121,7 +122,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "⚠️ Nothing to commit"
           else
-            git commit -m "Regenerate Pitch Black card pages: presale EN prices, correct /084 denominator"
+            git commit -m "Regenerate Pitch Black card pages: presale EN prices + EN images, /084 denominator"
             git push origin main
             echo "✅ Committed and pushed"
           fi
