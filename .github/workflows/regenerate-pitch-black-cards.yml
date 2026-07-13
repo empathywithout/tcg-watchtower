@@ -29,8 +29,7 @@ jobs:
           SET_SERIES_SLUG: mega-evolution
           SET_SLUG: pitch-black
           SET_SLUG_FULL: pitch-black-card-list
-          PHASE: jp
-          JP_SCRYDEX_ID: m5_ja
+          PHASE: presale
           TCGP_GROUP_ID: '24688'
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
@@ -87,7 +86,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "⚠️ Nothing to commit"
           else
-            git commit -m "Regenerate Pitch Black individual card pages with corrected English numbering, remove orphaned old files"
+            git commit -m "Regenerate Pitch Black individual card pages with presale EN prices"
             git push origin main
             echo "✅ Committed and pushed"
           fi
