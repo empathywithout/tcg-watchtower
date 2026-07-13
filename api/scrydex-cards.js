@@ -241,13 +241,20 @@ export default async function handler(req, res) {
   const cacheKey = `scrydex:cards:v2-tcgcsv-bridge:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+    // Same reasoning as api/cards.js: JP-phase data is actively volatile
+    // right now, and a long edge-cache window here masked the bridge fix
+    // for a while after it deployed today, independent of the Redis TTL.
+    res.setHeader('Cache-Control', isJP
+      ? 's-maxage=60, stale-while-revalidate=300'
+      : 's-maxage=3600, stale-while-revalidate=86400');
     res.setHeader('X-Cache', 'HIT');
     const cards = JSON.parse(cached);
     return res.status(200).json({ cards, total: cards.length, cached: true });
   }
 
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+  res.setHeader('Cache-Control', isJP
+    ? 's-maxage=60, stale-while-revalidate=300'
+    : 's-maxage=3600, stale-while-revalidate=86400');
   res.setHeader('X-Cache', 'MISS');
   try {
     const basePrefix    = isJP ? `${SCRYDEX_BASE}/ja` : SCRYDEX_BASE;

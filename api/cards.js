@@ -234,7 +234,17 @@ export default async function handler(req, res) {
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+    // JP-phase data is actively volatile right now (bridging from JP to
+    // English as TCGCSV fills in) -- a long CDN cache window here caused a
+    // real problem today: the edge cache kept serving a response from
+    // before the bridge fix deployed for far longer than the in-memory
+    // cache's own 1h TTL, since s-maxage/stale-while-revalidate operate
+    // independently at Vercel's edge, in front of this function entirely.
+    // EN-phase (stable, already-released) sets keep the original, longer
+    // caching -- this is specifically about data that's still changing.
+    res.setHeader('Cache-Control', cached.data.phase === 'jp'
+      ? 's-maxage=60, stale-while-revalidate=300'
+      : 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(cached.data);
   }
 
@@ -525,7 +535,9 @@ export default async function handler(req, res) {
     // Avoid caching suspiciously small results that might be partial
     cache.set(cacheKey, { ts: Date.now(), data: responseData });
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', phase === 'jp'
+      ? 's-maxage=60, stale-while-revalidate=300'
+      : 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(responseData);
 
   } catch (e) {
