@@ -40,18 +40,38 @@ jobs:
           SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
           SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
         run: node scripts/generate-card-pages.js
-      - name: Identify orphaned old files (present before, not produced by this generation)
+      - name: Identify orphaned old files (present before, NOT newly created by this run)
         run: |
           DIR="pokemon/sets/mega-evolution/pitch-black/cards"
-          echo "=== Orphaned old files (would be removed) ==="
+          # Real fix: the previous version checked "does this old filename
+          # still exist on disk", which is trivially always true since the
+          # generator never deletes anything -- that's why it reported 0
+          # orphans against 118 real old files. The correct check is
+          # "was THIS filename newly created by THIS run" (git status '??'
+          # = untracked = new), not "does a file with this name exist
+          # somewhere". Any old file NOT in the '??' set is genuinely
+          # orphaned; if an old filename coincidentally matches a new one,
+          # git shows it as modified ('M') rather than untracked, and it's
+          # correctly left alone (it's a real update, not an orphan) --
+          # verified this reasoning against the confirmed real data (old
+          # files aren't zero-padded, new ones are, so zero collisions
+          # actually occur for this specific set).
+          echo "=== Orphaned old files (present before, not part of this run's new output) ==="
           removed=0
           while IFS= read -r fname; do
             [ -z "$fname" ] && continue
-            if [ ! -f "$DIR/$fname" ]; then
-              echo "  $fname"
-              removed=$((removed+1))
-              if [ "${{ inputs.dry_run }}" = "false" ]; then
-                git rm -q "$DIR/$fname"
+            f="$DIR/$fname"
+            status=$(git status --porcelain -- "$f")
+            if [[ "$status" != "??"* ]]; then
+              # Not newly created by this run's generation -- if it's also
+              # not shown as modified in place, it's untouched old content,
+              # genuinely orphaned by the new numbering.
+              if [[ -z "$status" ]]; then
+                echo "  $fname"
+                removed=$((removed+1))
+                if [ "${{ inputs.dry_run }}" = "false" ]; then
+                  git rm -q "$f"
+                fi
               fi
             fi
           done < /tmp/before_list.txt
