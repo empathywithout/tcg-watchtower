@@ -1576,7 +1576,7 @@ function renderChaseCardsHTML(grid) {
 
   grid.innerHTML = sorted.map(c => {
     const priceHTML = c.price
-      ? `<div class="chase-card-price-wrap"${c.priceIsEstimate ? ' title="Estimated from Japanese Abyss Eye market price, converted to USD"' : ''}><span class="price-value">${c.priceIsEstimate ? '~' : ''}$${c.price.toFixed(2)}</span></div>`
+      ? `<div class="chase-card-price-wrap"${c.priceIsEstimate ? ' title="Estimated from Japanese Abyss Eye market price, converted to USD"' : ''}><span class="price-value">${c.priceIsEstimate ? '~' : ''}$${c.price.toFixed(2)}${c.priceIsEstimate ? ' 〜' : ''}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card"
@@ -1789,7 +1789,7 @@ function loadScrydexJPPrices() {
         const cached  = priceCache[id];
         const priceEl = el.querySelector('.card-item-price');
         if (!priceEl || !cached?.price) return;
-        priceEl.textContent = `~$${cached.price.toFixed(2)}`;
+        priceEl.textContent = `~$${cached.price.toFixed(2)} 〜`;
         priceEl.title = 'Estimated from Japanese Abyss Eye market price, converted to USD';
         priceEl.classList.remove('loading');
       });
@@ -1917,7 +1917,7 @@ function renderCards(reset) {
     el.dataset.name = card.name;
 
     const cached = priceCache[card.localId];
-    const priceText = cached?.price ? `$${cached.price.toFixed(2)}` : '';
+    const priceText = cached?.price ? (cached.estimate ? `~$${cached.price.toFixed(2)} 〜` : `$${cached.price.toFixed(2)}`) : '';
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `

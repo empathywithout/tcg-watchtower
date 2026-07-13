@@ -736,7 +736,7 @@ async function loadPrices() {
         if (hasTcgp[id]) return;
         const price = priceMap[id.padStart(3,'0')] ?? priceMap[String(parseInt(id,10))];
         if (price != null) {
-          el.textContent = '~$' + price.toFixed(2);
+          el.textContent = '~$' + price.toFixed(2) + ' 〜';
           el.title = 'Estimated from Japanese market price, converted to USD';
           el.classList.remove('loading');
         } else {
@@ -966,13 +966,13 @@ async function loadPrice() {
     const price = priceMap[padded] ?? priceMap[unpadded];
     const priceEl = document.getElementById('card-price');
     if (price != null) {
-      priceEl.textContent = '~$' + price.toFixed(2);
+      priceEl.textContent = '~$' + price.toFixed(2) + ' 〜';
       priceEl.title = 'Estimated from Japanese market price, converted to USD';
       priceEl.classList.remove('price-loading');
       document.querySelectorAll('[data-related-id]').forEach(el => {
         const rid = el.dataset.relatedId;
         const rp  = priceMap[rid.padStart(3,'0')] ?? priceMap[String(parseInt(rid,10))];
-        if (rp != null) el.textContent = '~$' + rp.toFixed(2);
+        if (rp != null) el.textContent = '~$' + rp.toFixed(2) + ' 〜';
       });
     } else {
       priceEl.textContent = 'N/A';
