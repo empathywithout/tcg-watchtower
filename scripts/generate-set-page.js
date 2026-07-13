@@ -85,9 +85,14 @@ const SET_SHORT_NAME   = process.env.SET_SHORT_NAME || SET_ID?.toUpperCase();
 const SET_RELEASE_DATE = process.env.SET_RELEASE_DATE || null;
 const SET_DESCRIPTION  = process.env.SET_DESCRIPTION  || null;
 
-// ── JP/EN phase support ───────────────────────────────────────────────────────
-// PHASE=jp  → page uses Japanese cards from Scrydex, no TCGplayer prices yet
-// PHASE=en  → normal EN flow (default)
+// ── JP/EN/presale phase support ──────────────────────────────────────────────
+// PHASE=jp       → page uses Japanese cards from Scrydex, no TCGplayer prices yet
+// PHASE=presale  → TCGCSV bridge: EN card data + TCGplayer presale prices + JP
+//                  estimate fallback. Shows JP banner. For sets whose official EN
+//                  reveal has happened but Scrydex EN data isn't available yet.
+//                  Requires JP_SCRYDEX_ID (for client-side JP estimate fallback)
+//                  and TCGP_GROUP_ID (for bridge + presale prices).
+// PHASE=en       → normal EN flow (default)
 const PHASE           = (process.env.PHASE          || 'en').trim();
 const JP_SCRYDEX_ID   = (process.env.JP_SCRYDEX_ID  || '').trim();  // e.g. 'sv9b'
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
@@ -784,7 +789,10 @@ for (const [placeholder, value] of Object.entries(vars)) {
 }
 
 // ── Handle JP phase conditional blocks ────────────────────────────────────────
-if (PHASE === 'jp') {
+// Both jp and presale show the JP banner and register SCRYDEX_JP_ID_MAP.
+// Presale additionally needs TCGP_GROUP_ID (for bridge + TCGplayer prices)
+// which is handled by the auto-register block below alongside jp.
+if (PHASE === 'jp' || PHASE === 'presale') {
   html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
 
   if (JP_SCRYDEX_ID) {
