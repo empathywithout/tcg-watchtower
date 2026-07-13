@@ -607,6 +607,596 @@
   ],
   "redirects": [
     {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/annihilape-39",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/antique-shield-fossil-72",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/antique-skull-fossil-71",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/armarouge-11",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/armarouge-83",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/banette-32",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bastiodon-60",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bastiodon-91",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bolty-lightning-energy-80",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bombirdier-69",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/brave-bangle-107",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/brionne-18",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bronzong-62",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/bronzor-61",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/centiskorch-9",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/charcadet-10",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/charjabug-24",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/chi-yu-57",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/cranidos-42",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/crushing-hammer-104",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/dark-bell-105",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/dark-bell-70",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/dhelmise-37",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/dhelmise-88",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/drilbur-44",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/electrike-22",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/energy-switch-103",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/finizen-20",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/fomantis-3",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/fomantis-82",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/fossil-excavation-site-79",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gladions-decisive-battle-109",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gladions-decisive-battle-116",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gladions-decisive-battle-76",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/goldeen-12",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/goldeen-84",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/grubbin-2",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gwynn-111",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gwynn-117",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/gwynn-78",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/heatran-7",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/heroic-bomb-106",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/heroic-bomb-73",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/inkay-49",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/iron-defender-102",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/jynx-30",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/koraidon-45",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/lampent-35",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/litwick-34",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/lurantis-ex-4",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/lurantis-ex-94",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mabosstiff-56",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/malamar-50",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mandibuzz-48",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/manectric-23",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/manectric-86",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mankey-40",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/marshadow-38",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/maschiff-55",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-chandelure-ex-113",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-chandelure-ex-36",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-chandelure-ex-97",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-darkrai-ex-114",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-darkrai-ex-118",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-darkrai-ex-46",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-darkrai-ex-99",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-excadrill-ex-101",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-excadrill-ex-63",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-zeraora-ex-112",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-zeraora-ex-26",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mega-zeraora-ex-96",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/miraidon-27",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mistys-energy-108",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/mistys-energy-75",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/morpeko-ex-100",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/morpeko-ex-115",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/morpeko-ex-53",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/nickit-51",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/palafin-21",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/pikipek-64",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/poltchageist-5",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/popplio-17",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/primarina-19",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/primarina-85",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/primeape-41",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/rampardos-ex-43",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/rampardos-ex-98",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/relicanth-16",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/retry-badge-74",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/rust-syndicate-grunt-110",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/rust-syndicate-grunt-77",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/seaking-13",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/shadowy-darkness-energy-81",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/shieldon-59",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/shuppet-31",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/silvally-68",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/silvally-93",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/sinistcha-6",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/sizzlipede-8",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/skarmory-58",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/slowbro-29",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/slowbro-87",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/slowpoke-28",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/spiritomb-33",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/thievul-52",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/thievul-89",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/toucannon-66",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/toucannon-92",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/tropius-1",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/trumbeak-65",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/type-null-67",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/vikavolt-25",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/vullaby-47",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/wailmer-14",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/wailord-ex-15",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/wailord-ex-95",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/zarude-54",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards/zarude-90",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "permanent": true
+    },
+    {
       "source": "/one-piece/sets/:set/most-valuable",
       "destination": "/one-piece/sets/:set/top-chase-cards",
       "permanent": true
