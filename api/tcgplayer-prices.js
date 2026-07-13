@@ -20,7 +20,7 @@ const TCGCSV_HEADERS = {
 
 const cache = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_VERSION = 'v5'; // bumped — Vista OP16-011 altArt/Treasure Rare exception
+const CACHE_VERSION = 'v6'; // bumped — force fresh prices July 13
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
