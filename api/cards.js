@@ -124,15 +124,22 @@ function normalizeRarity(r) {
 }
 
 // Read phase from sets.json at runtime so JP→EN switch requires no code deploy
+// Explicit, hardcoded phase map -- NOT a runtime sets.json file read.
+// That approach (readFileSync('sets.json') inside a try/catch that
+// silently fell back to 'en' on any failure) is almost certainly why
+// the whole TCGCSV bridge appeared not to work today: serverless
+// functions only reliably bundle files that are statically detectable
+// as dependencies, and a dynamic readFileSync with a bare relative path
+// is exactly the kind of thing that can silently fail to be included at
+// deploy time or resolve against the wrong working directory at runtime.
+// Confirmed via a real API response showing phase:"en" + source:"r2" for
+// me05 -- meaning this function had been resolving phase to 'en' the
+// entire time, regardless of what sets.json actually says, silently
+// bypassing the JP-phase bridge code path entirely. Only me05 is
+// currently JP-phase; every other set defaults to 'en' as before.
+const SET_PHASE_MAP = { 'me05': 'jp' };
 async function getSetPhase(setId) {
-  try {
-    const { readFileSync } = await import('fs');
-    const sets  = JSON.parse(readFileSync('sets.json', 'utf8'));
-    const entry = sets.find(s => s.setId === setId);
-    return entry?.phase || 'en';
-  } catch {
-    return 'en';
-  }
+  return SET_PHASE_MAP[setId] || 'en';
 }
 
 // Background-write card metadata + images to R2 after a Scrydex hit.
