@@ -37,11 +37,18 @@ jobs:
             const metadata = {
               id: 'me05',
               phase: 'en',
-              cardCount: { official: data.cardCount?.total || data.cards.length, total: data.cards.length },
-              cards: data.cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+              cardCount: { official: 84, total: data.cards.length },
+              cards: data.cards.map(c => ({
+                localId: c.localId,
+                name: c.name,
+                rarity: c.rarity,
+                denominator: c.denominator || '084',
+              })),
             };
-            console.log('Writing data/me05.json to R2 with', metadata.cards.length, 'cards');
-            console.log('Sample:', JSON.stringify(metadata.cards.slice(108, 113)));
+            console.log('Sample cards 108-113:');
+            metadata.cards.slice(107, 113).forEach(c =>
+              console.log(' ', c.localId, c.name, c.rarity, 'denom:', c.denominator)
+            );
 
             const s3 = new S3Client({
               region: 'auto',
@@ -58,7 +65,7 @@ jobs:
               ContentType: 'application/json',
               CacheControl: 'public, max-age=3600',
             }));
-            console.log('R2 seed complete');
+            console.log('R2 seed complete — 84-card denominator set');
           "
       - name: Capture list of existing individual card files (before generation)
         run: |
@@ -74,6 +81,7 @@ jobs:
           SET_SLUG_FULL: pitch-black-card-list
           PHASE: presale
           TCGP_GROUP_ID: '24688'
+          SET_OFFICIAL_COUNT: '84'
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
@@ -113,7 +121,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "⚠️ Nothing to commit"
           else
-            git commit -m "Regenerate Pitch Black individual card pages with presale EN prices"
+            git commit -m "Regenerate Pitch Black card pages: presale EN prices, correct /084 denominator"
             git push origin main
             echo "✅ Committed and pushed"
           fi
