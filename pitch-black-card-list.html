@@ -1540,7 +1540,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/118 Pitch Black Pokemon Card`,
+          searchName: `${c.name} ${c.localId}/084 Pitch Black Pokemon Card`,
           img: c.image || cardImg('me05', c.localId),
         };
       });
@@ -1590,13 +1590,13 @@ function renderChaseCardsHTML(grid) {
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/118</div>
+        <div class="chase-card-number">#${c.id}/084</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/118', 'pitch-black')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/084', 'pitch-black')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1683,42 +1683,45 @@ function loadTCGPlayerPrices() {
       // Individual card numbers on this page reflect JP (Abyss Eye) ordering, which is
       // confirmed to differ from final English Pitch Black numbering. Group 24688 is the
       // real English TCGplayer group, so once it starts returning per-card prices (e.g.
-      // during prerelease), matching by number risks attaching a real price to the wrong
-      // card. Gate individual card pricing to EN phase only; sealed product prices below
-      // are matched by TCGplayer product ID, not number, so they're unaffected.
-      if (SET_PHASE === 'en') {
-        const prices = data.prices || {};
-        const urls   = data.tcgpUrls || {};
+      // Individual card prices: ungated now that the TCGCSV bridge ensures EN card
+      // numbers match TCGplayer's own Number field — safe to match by number even
+      // during JP phase. Presale prices marked with ✦ tooltip until EN phase flips.
+      const prices = data.prices || {};
+      const urls   = data.tcgpUrls || {};
 
-        Object.entries(prices).forEach(([num, price]) => {
-          const withZeros    = num.padStart(3, '0');
-          const withoutZeros = String(parseInt(num, 10));
-          const url   = urls[num] || urls[withZeros] || urls[withoutZeros] || null;
-          const entry = price != null ? { price, url } : null;
-          priceCache[withZeros]    = entry;
-          priceCache[withoutZeros] = entry;
-        });
-        Object.entries(urls).forEach(([num, url]) => {
-          const withZeros    = num.padStart(3, '0');
-          const withoutZeros = String(parseInt(num, 10));
-          if (!priceCache[withZeros])    priceCache[withZeros]    = { price: null, url };
-          if (!priceCache[withoutZeros]) priceCache[withoutZeros] = { price: null, url };
-        });
+      Object.entries(prices).forEach(([num, price]) => {
+        const withZeros    = num.padStart(3, '0');
+        const withoutZeros = String(parseInt(num, 10));
+        const url   = urls[num] || urls[withZeros] || urls[withoutZeros] || null;
+        const entry = price != null ? { price, url } : null;
+        priceCache[withZeros]    = entry;
+        priceCache[withoutZeros] = entry;
+      });
+      Object.entries(urls).forEach(([num, url]) => {
+        const withZeros    = num.padStart(3, '0');
+        const withoutZeros = String(parseInt(num, 10));
+        if (!priceCache[withZeros])    priceCache[withZeros]    = { price: null, url };
+        if (!priceCache[withoutZeros]) priceCache[withoutZeros] = { price: null, url };
+      });
 
-        document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
-          const id     = el.dataset.localId;
-          const cached = priceCache[id];
-          const priceEl = el.querySelector('.card-item-price');
-          if (!priceEl) return;
-          if (cached?.price) {
-            priceEl.textContent = `$${cached.price.toFixed(2)}`;
-            priceEl.classList.remove('loading');
+      document.querySelectorAll('.card-item[data-local-id]').forEach(el => {
+        const id     = el.dataset.localId;
+        const cached = priceCache[id];
+        const priceEl = el.querySelector('.card-item-price');
+        if (!priceEl) return;
+        if (cached?.price) {
+          if (SET_PHASE === 'jp') {
+            priceEl.textContent = `$${cached.price.toFixed(2)} ✦`;
+            priceEl.title = 'Presale price — may change at release';
           } else {
-            priceEl.textContent = '';
-            priceEl.classList.remove('loading');
+            priceEl.textContent = `$${cached.price.toFixed(2)}`;
           }
-        });
-      }
+          priceEl.classList.remove('loading');
+        } else {
+          priceEl.textContent = '';
+          priceEl.classList.remove('loading');
+        }
+      });
 
       const grid = document.getElementById('chase-grid');
       if (grid && currentChaseList.length) renderChaseCardsHTML(grid);
@@ -1774,6 +1777,8 @@ function loadScrydexJPPrices() {
         if (c.market == null || !c.localId) return;
         const withZeros    = String(c.localId).padStart(3, '0');
         const withoutZeros = String(parseInt(c.localId, 10));
+        // Only fill cards TCGplayer doesn't have a confirmed price for yet
+        if (priceCache[withZeros]?.price) return;
         const entry = { price: c.market, url: null, estimate: true };
         priceCache[withZeros]    = entry;
         priceCache[withoutZeros] = entry;
@@ -1924,7 +1929,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/118 Pitch Black Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/084 Pitch Black Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
@@ -1986,7 +1991,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/118', 'pitch-black')}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/084', 'pitch-black')}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/pitch-black/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
