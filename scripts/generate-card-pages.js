@@ -259,6 +259,7 @@ function cardUrl(card) {
 }
 function cardImgUrl(card) {
   if (PHASE === 'jp' && card.image) return card.image;
+  if (PHASE === 'presale' && card.image) return card.image;
   return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
 }
 function tcgpSearchUrl(card) {
