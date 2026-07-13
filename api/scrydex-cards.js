@@ -234,7 +234,11 @@ export default async function handler(req, res) {
   const scrydexId = isJP ? SCRYDEX_JP_ID_MAP[set] : SCRYDEX_EN_ID_MAP[set];
   if (!scrydexId) return res.status(400).json({ error: `Unknown set: ${set}` });
 
-  const cacheKey = `scrydex:cards:${scrydexId}`;
+  // Versioned -- bumped when the TCGCSV bridge was added, so a stale
+  // cached entry from before that change can never mask whether the new
+  // code is actually working (this is exactly what happened today: this
+  // cache masked the bridge fix for a while after it deployed).
+  const cacheKey = `scrydex:cards:v2-tcgcsv-bridge:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');

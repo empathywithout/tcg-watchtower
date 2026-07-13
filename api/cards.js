@@ -223,7 +223,14 @@ export default async function handler(req, res) {
   const isOnePiece = game === 'onepiece'
     || /^(op|eb|st)\d+/.test(setId);
 
-  const cacheKey = `${isOnePiece ? 'op:' : ''}${setId}`;
+  // Version prefix -- bump this whenever the underlying data-shape/logic
+  // changes meaningfully (e.g. the TCGCSV bridge added here), so a stale
+  // in-memory cache entry from before the change can never mask whether
+  // new code is actually working. Hit this exact problem today: the
+  // Redis cache in api/scrydex-cards.js masked the bridge fix for a
+  // while, and this in-memory cache did the same thing here.
+  const CACHE_VERSION = 'v2-tcgcsv-bridge';
+  const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
