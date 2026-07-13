@@ -17,6 +17,49 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Seed R2 with correct EN card data from live API
+        env:
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+        run: |
+          node --input-type=module -e "
+            import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+
+            const res = await fetch('https://tcgwatchtower.com/api/cards?set=me05');
+            if (!res.ok) throw new Error('API fetch failed: ' + res.status);
+            const data = await res.json();
+            console.log('Fetched', data.cards?.length, 'cards, phase:', data.phase);
+            if (!data.cards?.length) throw new Error('No cards returned');
+            if (data.cards.length < 118) throw new Error('Too few cards: ' + data.cards.length);
+
+            const metadata = {
+              id: 'me05',
+              phase: 'en',
+              cardCount: { official: data.cardCount?.total || data.cards.length, total: data.cards.length },
+              cards: data.cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+            };
+            console.log('Writing data/me05.json to R2 with', metadata.cards.length, 'cards');
+            console.log('Sample:', JSON.stringify(metadata.cards.slice(108, 113)));
+
+            const s3 = new S3Client({
+              region: 'auto',
+              endpoint: process.env.CF_R2_ENDPOINT,
+              credentials: {
+                accessKeyId: process.env.CF_R2_ACCESS_KEY,
+                secretAccessKey: process.env.CF_R2_SECRET_KEY,
+              },
+            });
+            await s3.send(new PutObjectCommand({
+              Bucket: process.env.CF_R2_BUCKET,
+              Key: 'data/me05.json',
+              Body: JSON.stringify(metadata),
+              ContentType: 'application/json',
+              CacheControl: 'public, max-age=3600',
+            }));
+            console.log('R2 seed complete');
+          "
       - name: Capture list of existing individual card files (before generation)
         run: |
           ls pokemon/sets/mega-evolution/pitch-black/cards/ > /tmp/before_list.txt
@@ -42,19 +85,6 @@ jobs:
       - name: Identify orphaned old files (present before, NOT newly created by this run)
         run: |
           DIR="pokemon/sets/mega-evolution/pitch-black/cards"
-          # Real fix: the previous version checked "does this old filename
-          # still exist on disk", which is trivially always true since the
-          # generator never deletes anything -- that's why it reported 0
-          # orphans against 118 real old files. The correct check is
-          # "was THIS filename newly created by THIS run" (git status '??'
-          # = untracked = new), not "does a file with this name exist
-          # somewhere". Any old file NOT in the '??' set is genuinely
-          # orphaned; if an old filename coincidentally matches a new one,
-          # git shows it as modified ('M') rather than untracked, and it's
-          # correctly left alone (it's a real update, not an orphan) --
-          # verified this reasoning against the confirmed real data (old
-          # files aren't zero-padded, new ones are, so zero collisions
-          # actually occur for this specific set).
           echo "=== Orphaned old files (present before, not part of this run's new output) ==="
           removed=0
           while IFS= read -r fname; do
@@ -62,9 +92,6 @@ jobs:
             f="$DIR/$fname"
             status=$(git status --porcelain -- "$f")
             if [[ "$status" != "??"* ]]; then
-              # Not newly created by this run's generation -- if it's also
-              # not shown as modified in place, it's untouched old content,
-              # genuinely orphaned by the new numbering.
               if [[ -z "$status" ]]; then
                 echo "  $fname"
                 removed=$((removed+1))
