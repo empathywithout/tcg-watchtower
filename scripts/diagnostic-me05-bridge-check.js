@@ -403,9 +403,22 @@ async function main() {
 
   await testMerge(cardProducts);
   await checkRarityMappingGaps(cardProducts);
+  await checkSpecificCard(cardProducts, 'misty');
 }
 
 main().catch(e => {
   console.error('Diagnostic script crashed:', e);
   process.exit(1);
 });
+
+// Ad-hoc check for a specific reported card (Misty's Vitality)
+async function checkSpecificCard(cardProducts, searchName) {
+  console.log(`\n=== Checking specific card: "${searchName}" ===`);
+  const matches = cardProducts.filter(p => (p.name || '').toLowerCase().includes(searchName.toLowerCase()));
+  for (const p of matches) {
+    const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
+    const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
+    console.log(`  raw name: "${p.name}" | number: ${numEntry?.value} | rarity: ${rarEntry?.value}`);
+  }
+  if (matches.length === 0) console.log('  No matches found in TCGCSV');
+}
