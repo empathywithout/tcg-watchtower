@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 -9 114 114" width="512" height="512" role="img" aria-label="TCG Watchtower">
+  <path d="M24.6 12.5 A27 27 0 0 1 71.4 12.5" fill="none" stroke="#121536" stroke-width="5.4" stroke-linecap="round"></path>
+  <path d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#121536" stroke-width="5.4" stroke-linecap="round"></path>
+  <rect x="31" y="29" width="7" height="6" rx="1.2" fill="#121536"></rect>
+  <rect x="44.5" y="29" width="7" height="6" rx="1.2" fill="#121536"></rect>
+  <rect x="58" y="29" width="7" height="6" rx="1.2" fill="#121536"></rect>
+  <rect x="30" y="34" width="36" height="9" rx="1.6" fill="#121536"></rect>
+  <path d="M36 43 H60 L63 84 H33 Z" fill="#121536"></path>
+  <rect x="44.6" y="52" width="6.8" height="17" rx="3.4" fill="#121536"></rect>
+  <rect x="28" y="84" width="40" height="7" rx="2.4" fill="#121536"></rect>
+</svg>
