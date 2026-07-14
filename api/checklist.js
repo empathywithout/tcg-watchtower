@@ -55,10 +55,13 @@ const RARITY_ORDER = [
   'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Treasure Rare',
 ];
 
-const SECRET_RARITIES = new Set([
-  'Illustration Rare','Art Rare','Special Illustration Rare','Ultra Rare',
-  'Hyper Rare','Mega Hyper Rare','Mega Attack Rare','Black White Rare','Treasure Rare',
-]);
+// Reverse holo variants only exist for Common, Uncommon, and Rare in real
+// packs. Double Rare (ex cards) is always printed holo/textured as its only
+// version and never gets a separate reverse holo print — confirmed against
+// real pull listings. Previously this was computed as "anything not a
+// secret rarity," which wrongly included Double Rare and produced a
+// duplicate/phantom row for every ex card.
+const RH_RARITIES = new Set(['Common', 'Uncommon', 'Rare']);
 
 const RARITY_ABBREV = {
   'Common':'C','Uncommon':'U','Rare':'R','Double Rare':'DR',
@@ -310,8 +313,9 @@ export default async function handler(req, res) {
     for (const c of cards) { const r = c.rarity || 'Unknown'; (groups[r] = groups[r]||[]).push(c); }
     for (const r of Object.keys(groups)) groups[r].sort((a,b) => naturalSort(a.localId, b.localId));
 
-    // OP has no reverse holos; Pokemon master set includes RH slots
-    const rhCards = (!isOnePiece && master) ? cards.filter(c => !SECRET_RARITIES.has(c.rarity)) : [];
+    // OP has no reverse holos; Pokemon master set includes RH slots for
+    // Common, Uncommon, and Rare only (Double Rare/ex excluded — see note above)
+    const rhCards = (!isOnePiece && master) ? cards.filter(c => RH_RARITIES.has(c.rarity)) : [];
     const slug = setName.replace(/[^a-z0-9]/gi,'-').toLowerCase().replace(/-+/g,'-');
 
     if (format === 'csv') {
@@ -496,7 +500,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today, opts =
     addBlank();
     const rhSecR = rn+1; mergeFull(rhSecR);
     addSectionRow(`Reverse Holos  (RH)  —  ${rhCards.length} cards`);
-    row(cell('A',rn+1,si('Foil versions of all Common, Uncommon, Rare, and Double Rare cards.'),XF_MUTED)+'BCDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
+    row(cell('A',rn+1,si('Foil versions of all Common, Uncommon, and Rare cards.'),XF_MUTED)+'BCDEF'.split('').map(c=>blank(c,rn+1,XF_DEFAULT)).join(''));
     addColHeaderRow();
     for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId))) {
       addCardRow(padId(card.localId)+' RH', card.name, 'RH', card.rarity);
@@ -561,7 +565,7 @@ function buildXLSX(setName, setId, cards, groups, rhCards, master, today, opts =
     'Mega Hyper Rare':         '1 gold star (black border). Gold-etched Mega ex. Mega Evolution era only.',
     'Mega Attack Rare':        'Pink & green stars. Pop-art attack illustrations. Introduced in Ascended Heroes.',
     'Treasure Rare':           'One Piece TCG exclusive rarity.',
-    'RH':                      'Reverse Holo. Foil on card border/background instead of artwork. Available for C / U / R / DR cards.',
+    'RH':                      'Reverse Holo. Foil on card border/background instead of artwork. Available for C / U / R cards only (Double Rare/ex is always its own holo, no separate RH print).',
   };
   const LEGEND_RARITIES = isOnePiece ? [...ro] : [...RARITY_ORDER, 'RH'];
   const LEGEND_ABBREV   = isOnePiece ? { ...ra } : { ...RARITY_ABBREV, 'RH': 'RH' };
@@ -644,7 +648,7 @@ function buildCSV(setName, setId, cards, groups, rhCards, master, today, opts = 
   for (const r of ro) {
     if (ra[r]) rows.push([ra[r], r, rd[r] || '']);
   }
-  if (!isOnePiece) rows.push(['RH', 'Reverse Holo', 'Foil pattern on card border/background. Any C / U / R / DR card can have a RH version.']);
+  if (!isOnePiece) rows.push(['RH', 'Reverse Holo', 'Foil pattern on card border/background. C / U / R cards only — Double Rare/ex is always its own holo, no separate RH print.']);
   rows.push(['']);
 
   // Card list
@@ -664,7 +668,7 @@ function buildCSV(setName, setId, cards, groups, rhCards, master, today, opts = 
 
   if (master && rhCards.length > 0) {
     rows.push([`--- REVERSE HOLOS (RH) -- ${rhCards.length} cards ---`]);
-    rows.push(['Foil versions of all Common, Uncommon, Rare, and Double Rare cards.']);
+    rows.push(['Foil versions of all Common, Uncommon, and Rare cards.']);
     rows.push(['#', 'Card Name', 'Base Rarity', 'Have (Y/N/W)', 'Grade (PSA/BGS/TAG)', 'Notes']);
     for (const card of rhCards.sort((a,b)=>naturalSort(a.localId,b.localId))) {
       rows.push([padId(card.localId)+' RH', card.name, RARITY_ABBREV[card.rarity]||card.rarity, '', '', '']);
