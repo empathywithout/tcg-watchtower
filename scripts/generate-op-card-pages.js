@@ -213,7 +213,7 @@ const cardListUrl = `${SITE_URL}/one-piece/sets/${SET_URL_SLUG}/cards`;
 
 const sharedNav = `<nav>
   <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
     <span>TCG Watchtower</span>
   </a>
   <a href="${cardListUrl}" class="nav-back">← ${SET_FULL_NAME} Card List</a>
@@ -326,8 +326,8 @@ function generateCardPage(card, allCards) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="${img}" fetchpriority="high">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet"></noscript>
 ${gaScriptFor({ set_id: SET_ID, series: 'One Piece', rarity: card.rarity || '(unknown)' })}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -340,7 +340,7 @@ a{color:inherit;text-decoration:none}
 nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
 .nav-back{color:var(--muted);font-size:.85rem;transition:color .2s}
 .nav-back:hover{color:var(--text)}
 .breadcrumb{padding:.75rem 1.5rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
@@ -689,8 +689,8 @@ ${JSON.stringify(faqSchemaOP, null, 2)}
 ${gaScriptFor({ set_id: SET_ID, series: 'One Piece', page_type: 'chase_cards' })}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0514;--surface:#0f172a;--surface2:#1e293b;--border:rgba(255,255,255,.08);--text:#f1f5f9;--muted:#94a3b8;--amber:#fbbf24;--green:#22c55e;--red:#ef4444;}
@@ -699,7 +699,7 @@ a{color:inherit;text-decoration:none}
 nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
 .nav-back{color:var(--muted);font-size:.85rem;transition:color .2s}
 .nav-back:hover{color:var(--text)}
 .breadcrumb{padding:.75rem 1.5rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
@@ -749,7 +749,7 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <body>
 <nav>
   <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
     <span>TCG Watchtower</span>
   </a>
   <a href="/one-piece/sets/${SET_URL_SLUG}/cards" class="nav-back">← ${SET_FULL_NAME} Card List</a>
