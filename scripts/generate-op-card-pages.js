@@ -340,7 +340,7 @@ a{color:inherit;text-decoration:none}
 nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
 .nav-back{color:var(--muted);font-size:.85rem;transition:color .2s}
 .nav-back:hover{color:var(--text)}
 .breadcrumb{padding:.75rem 1.5rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
@@ -699,7 +699,7 @@ a{color:inherit;text-decoration:none}
 nav{background:rgba(10,5,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:.05em}
 .nav-back{color:var(--muted);font-size:.85rem;transition:color .2s}
 .nav-back:hover{color:var(--text)}
 .breadcrumb{padding:.75rem 1.5rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}

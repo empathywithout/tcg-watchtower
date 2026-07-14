@@ -267,7 +267,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 nav.container{padding:24px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
 .nav-links{display:flex;gap:24px;align-items:center}
 .nav-links a{color:var(--text);text-decoration:none;font-weight:500;font-size:.9rem;transition:color .2s}
 .nav-links a:hover{color:white}

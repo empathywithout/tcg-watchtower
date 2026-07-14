@@ -393,7 +393,7 @@ a{color:inherit;text-decoration:none}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
 .nav-back{color:var(--text-muted);font-size:0.85rem;display:flex;align-items:center;gap:6px}
 .nav-back:hover{color:var(--text)}
 .breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:1px solid var(--border)}
@@ -580,7 +580,7 @@ a{color:inherit;text-decoration:none}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
 .nav-back{color:var(--text-muted);font-size:0.85rem}.nav-back:hover{color:var(--text)}
 .breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
 .breadcrumb a:hover{color:var(--text)}

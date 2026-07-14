@@ -196,7 +196,7 @@ a{color:inherit;text-decoration:none}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-size:1.2rem;letter-spacing:0.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;letter-spacing:0.05em}
 .nav-back{color:var(--text-muted);font-size:0.85rem}
 .breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
 .breadcrumb a:hover{color:var(--text)}
