@@ -11,8 +11,8 @@
     <link rel="canonical" href="https://tcgwatchtower.com/discord">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" id="favicon32">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" id="favicon16">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="shortcut icon" href="/favicon.ico">
 
@@ -358,6 +358,32 @@
         const ALERTS_ENDPOINT = '/api/alerts';
         const container = document.getElementById('live-alerts-container');
         function escHtml(str) { if (!str) return ''; return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        // ── Restock-alert favicon blink ──────────────────────────────────
+        const FAVICON_NORMAL = { 32: '/favicon-32x32.png', 16: '/favicon-16x16.png' };
+        const FAVICON_ALERT  = { 32: '/favicon-alert-32.png', 16: '/favicon-alert-16.png' };
+        let faviconBlinkTimer = null;
+        let faviconBlinkOn = false;
+        function setFavicon(urls) {
+            document.getElementById('favicon32').href = urls[32];
+            document.getElementById('favicon16').href = urls[16];
+        }
+        function startFaviconAlert() {
+            if (faviconBlinkTimer) return;
+            faviconBlinkTimer = setInterval(function() {
+                faviconBlinkOn = !faviconBlinkOn;
+                setFavicon(faviconBlinkOn ? FAVICON_ALERT : FAVICON_NORMAL);
+            }, 800);
+        }
+        function stopFaviconAlert() {
+            if (faviconBlinkTimer) { clearInterval(faviconBlinkTimer); faviconBlinkTimer = null; }
+            faviconBlinkOn = false;
+            setFavicon(FAVICON_NORMAL);
+        }
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) stopFaviconAlert();
+        });
+
         function buildAlertCard(alert) {
             const atcBtn = alert.url ? `<a href="${alert.url}" target="_blank" rel="noopener" class="atc-btn">🛒 ATC</a>` : `<span class="info-value atc">ATC</span>`;
             const productImg = alert.image ? `<img src="${escHtml(alert.image)}" alt="${escHtml(alert.title)}" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.05);">` : `<div style="font-size:2rem;">🎴</div>`;
@@ -365,11 +391,17 @@
             const limitBadge = alert.orderLimit ? `<span style="font-size:0.65rem;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;padding:2px 7px;border-radius:999px;font-weight:bold;">Limit: ${escHtml(alert.orderLimit)}</span>` : '';
             return `<div class="alert-card" style="animation:fadeInUp 0.4s ease-out backwards;"><div class="alert-header"><div><span class="app-badge">APP</span><span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span></div><div class="alert-status"><div class="online-indicator"></div><span>Item Restocked</span></div></div><div class="alert-body"><div class="product-image" style="padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">${productImg}</div><div class="product-details"><div class="product-name">${escHtml(alert.title)}</div><div class="product-info"><div><div class="info-label">SKU</div><div class="info-value" style="font-size:0.65rem;">${alert.sku ? escHtml(alert.sku) : '—'}</div></div><div><div class="info-label">Price</div><div class="info-value price">${alert.price ? escHtml(alert.price) : '—'}</div></div><div><div class="info-label">Add to cart</div><div>${atcBtn}</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${stockBadge}${limitBadge}</div><div class="alert-footer">🛒 TCG Watchtower Monitors • ${escHtml(alert.store)} • ${escHtml(alert.timeAgo)}</div></div></div></div>`;
         }
+        let seenAlertIds = new Set();
+        let firstAlertsLoad = true;
         async function fetchAlerts() {
             try {
                 const res = await fetch(ALERTS_ENDPOINT);
                 const data = await res.json();
-                if (!data.alerts || data.alerts.length === 0) { container.innerHTML = `<div class="no-alerts">⏳ No recent alerts — check back soon!</div>`; return; }
+                if (!data.alerts || data.alerts.length === 0) { container.innerHTML = `<div class="no-alerts">⏳ No recent alerts — check back soon!</div>`; firstAlertsLoad = false; return; }
+                const newAlerts = data.alerts.filter((a) => a.id && !seenAlertIds.has(a.id));
+                data.alerts.forEach((a) => { if (a.id) seenAlertIds.add(a.id); });
+                if (!firstAlertsLoad && newAlerts.length > 0 && document.hidden) startFaviconAlert();
+                firstAlertsLoad = false;
                 container.innerHTML = data.alerts.map((a, i) => buildAlertCard(a).replace('backwards;">', `backwards; animation-delay: ${i * 0.1}s;">`)).join('');
             } catch (err) {
                 container.innerHTML = `<div class="alert-card"><div class="alert-header"><div><span class="app-badge">APP</span> <span style="font-size:0.75rem;font-weight:bold;">TCG Watchtower Monitors</span></div><div class="alert-status"><div class="online-indicator"></div><span>Item Restocked</span></div></div><div class="alert-body"><div class="product-image">🎴</div><div class="product-details"><div class="product-name">Pokemon Prismatic Evolutions Tech Sticker Collection</div><div class="product-info"><div><div class="info-label">SKU</div><div class="info-value">1419660941</div></div><div><div class="info-label">Price</div><div class="info-value price">$34.99</div></div><div><div class="info-label">Add to cart</div><div class="info-value atc">ATC</div></div></div><div class="alert-footer">🛒 TCG Watchtower Monitors • Walmart • 2m ago</div></div></div></div>`;
