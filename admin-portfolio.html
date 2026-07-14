@@ -67,8 +67,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0
 
 /* LOADING */
 .loading{text-align:center;padding:80px;color:var(--muted)}
-.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#60a5fa;border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-svg{width:40px;height:40px;margin:0 auto 16px;display:block}
+.spinner-svg .ping,.spinner-svg .p2,.spinner-svg .p3{transform-origin:48px 15px;animation:tower-ping 1.5s ease-out infinite}
+.spinner-svg .p2{animation-delay:.5s}
+.spinner-svg .p3{animation-delay:1s}
+@keyframes tower-ping{0%{opacity:1;transform:scale(.7)}100%{opacity:0;transform:scale(1.6)}}
 
 /* NOTES */
 .notes-box{background:rgba(30,41,59,.4);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px;margin-bottom:32px}
@@ -130,7 +133,7 @@ code{background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;font-fam
     </div>
 
     <div id="dashboard-content">
-      <div class="loading"><div class="spinner"></div>Loading analytics…</div>
+      <div class="loading"><svg class="spinner-svg" viewBox="-9 -9 114 114" role="img" aria-label="Loading"><path class="ping" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><path class="ping p2" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><path class="ping p3" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><rect x="31" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="44.5" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="58" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="30" y="34" width="36" height="9" rx="1.6" fill="#ffffff"></rect><path d="M36 43 H60 L63 84 H33 Z" fill="#ffffff"></path><rect x="44.6" y="52" width="6.8" height="17" rx="3.4" fill="#FED025"></rect><rect x="28" y="84" width="40" height="7" rx="2.4" fill="#ffffff"></rect></svg>Loading analytics…</div>
     </div>
   </div>
 </div>
@@ -164,7 +167,7 @@ async function init() {
 }
 
 async function loadStats() {
-  document.getElementById('dashboard-content').innerHTML = '<div class="loading"><div class="spinner"></div>Loading analytics…</div>';
+  document.getElementById('dashboard-content').innerHTML = '<div class="loading"><svg class="spinner-svg" viewBox="-9 -9 114 114" role="img" aria-label="Loading"><path class="ping" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><path class="ping p2" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><path class="ping p3" d="M35.9 19 A14 14 0 0 1 60.1 19" fill="none" stroke="#FED025" stroke-width="5.4" stroke-linecap="round"></path><rect x="31" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="44.5" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="58" y="29" width="7" height="6" rx="1.2" fill="#ffffff"></rect><rect x="30" y="34" width="36" height="9" rx="1.6" fill="#ffffff"></rect><path d="M36 43 H60 L63 84 H33 Z" fill="#ffffff"></path><rect x="44.6" y="52" width="6.8" height="17" rx="3.4" fill="#FED025"></rect><rect x="28" y="84" width="40" height="7" rx="2.4" fill="#ffffff"></rect></svg>Loading analytics…</div>';
   try {
     const res  = await fetch('/api/admin/stats');
     if (res.status === 401) { location.reload(); return; }
