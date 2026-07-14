@@ -109,8 +109,8 @@ function cardImgUrl(card, setId) {
 // ── Templates (kept in sync with generate-card-pages.js's buildChasePage) ─
 const sharedFonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">`;
 function gaScriptFor(customDims) {
   const dimsJson = JSON.stringify(customDims || {});
@@ -127,7 +127,7 @@ a{color:inherit;text-decoration:none}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:var(--text);letter-spacing:0.05em}
 .nav-back{color:var(--text-muted);font-size:0.85rem}.nav-back:hover{color:var(--text)}
 .breadcrumb{padding:0.75rem 1.5rem;font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
 .breadcrumb a:hover{color:var(--text)}
@@ -370,7 +370,7 @@ ${gaScriptFor({ set_id: info.setId, series: info.seriesSlug, page_type: 'chase_c
 <body>
 <nav>
   <a href="/" class="nav-logo">
-    <img src="/tcg-watchtower-logo.jpg" alt="TCG Watchtower" width="32" height="32">
+    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
     <span>TCG Watchtower</span>
   </a>
   <a href="${cardListUrl}" class="nav-back">← ${info.setFullName} Card List</a>
