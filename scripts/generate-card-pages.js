@@ -231,7 +231,10 @@ if (PHASE === 'jp') {
   const metaRes = await fetch(metaUrl);
   if (!metaRes.ok) throw new Error(`Failed to fetch metadata: ${metaRes.status}`);
   const r2Metadata = await metaRes.json();
-  cards = r2Metadata.cards || [];
+  cards = (r2Metadata.cards || []).map(c => ({
+    ...c,
+    localId: String(c.localId).padStart(3, '0'),
+  }));
   officialCount = r2Metadata.cardCount?.official || cards.length;
   console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
 }
@@ -260,7 +263,10 @@ function cardUrl(card) {
 function cardImgUrl(card) {
   if (PHASE === 'jp' && card.image) return card.image;
   if (PHASE === 'presale' && card.image) return card.image;
-  return `${R2_PUBLIC_URL}/cards/${SET_ID}/${card.localId}.webp`;
+  // R2 image keys are unpadded (sync-images writes them as Scrydex returns them)
+  // but localId is padded for filenames/URLs — strip leading zeros for R2 path
+  const r2Key = String(parseInt(card.localId, 10));
+  return `${R2_PUBLIC_URL}/cards/${SET_ID}/${r2Key}.webp`;
 }
 function tcgpSearchUrl(card) {
   const baseName = card.name.replace(/\s*[-–]\s*[\d/]+.*$/, '').trim();
