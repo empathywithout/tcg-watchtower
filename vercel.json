@@ -553,6 +553,26 @@
       "destination": "/pokemon/sets/scarlet-violet/white-flare/top-chase-cards.html"
     },
     {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/cards",
+      "destination": "/pitch-black-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/sealed-product",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/sealed-product.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
+    },
+    {
       "source": "/privacy-policy",
       "destination": "/privacy-policy.html"
     },
@@ -583,26 +603,6 @@
     {
       "source": "/one-piece/sets/:set/cards/:slug",
       "destination": "/one-piece/sets/:set/cards/:slug.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/pitch-black/cards",
-      "destination": "/pitch-black-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/pitch-black/sealed-product",
-      "destination": "/pitch-black-card-list.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/pitch-black/most-valuable",
-      "destination": "/pokemon/sets/mega-evolution/pitch-black/most-valuable.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards",
-      "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
-    },
-    {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
   ],
   "redirects": [
