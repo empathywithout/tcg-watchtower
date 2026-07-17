@@ -6,8 +6,7 @@
     "short": "SV1",
     "setId": "sv01",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2023-03-31"
+    "live": true
   },
   {
     "slug": "paldea-evolved-card-list",
@@ -16,8 +15,7 @@
     "short": "SV2",
     "setId": "sv02",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2023-06-09"
+    "live": true
   },
   {
     "slug": "obsidian-flames-card-list",
@@ -26,18 +24,7 @@
     "short": "SV3",
     "setId": "sv03",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2023-08-11"
-  },
-  {
-    "slug": "scarlet-violet-151-card-list",
-    "name": "Pokemon 151 (SV3.5)",
-    "series": "Scarlet & Violet",
-    "short": "SV3.5",
-    "setId": "sv3pt5",
-    "phase": "en",
-    "live": true,
-    "releaseDate": "2023-09-22"
+    "live": true
   },
   {
     "slug": "paradox-rift-card-list",
@@ -46,18 +33,25 @@
     "short": "SV4",
     "setId": "sv04",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2023-11-03"
+    "live": true
+  },
+  {
+    "slug": "scarlet-violet-151-card-list",
+    "name": "Scarlet & Violet 151",
+    "series": "Scarlet & Violet",
+    "short": "MEW",
+    "setId": "sv3pt5",
+    "phase": "en",
+    "live": true
   },
   {
     "slug": "paldean-fates-card-list",
-    "name": "Paldean Fates (SV4.5)",
+    "name": "Paldean Fates",
     "series": "Scarlet & Violet",
-    "short": "SV4.5",
+    "short": "PAF",
     "setId": "sv4pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-01-26"
+    "live": true
   },
   {
     "slug": "temporal-forces-card-list",
@@ -66,8 +60,7 @@
     "short": "SV5",
     "setId": "sv05",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-03-22"
+    "live": true
   },
   {
     "slug": "twilight-masquerade-card-list",
@@ -76,18 +69,16 @@
     "short": "SV6",
     "setId": "sv06",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-05-24"
+    "live": true
   },
   {
     "slug": "shrouded-fable-card-list",
-    "name": "Shrouded Fable (SV6.5)",
+    "name": "Shrouded Fable",
     "series": "Scarlet & Violet",
-    "short": "SV6.5",
+    "short": "SFA",
     "setId": "sv6pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-08-02"
+    "live": true
   },
   {
     "slug": "stellar-crown-card-list",
@@ -96,8 +87,7 @@
     "short": "SV7",
     "setId": "sv07",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-09-13"
+    "live": true
   },
   {
     "slug": "surging-sparks-card-list",
@@ -106,18 +96,16 @@
     "short": "SV8",
     "setId": "sv08",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2024-11-08"
+    "live": true
   },
   {
     "slug": "prismatic-evolutions-card-list",
-    "name": "Prismatic Evolutions (SV8.5)",
+    "name": "Prismatic Evolutions",
     "series": "Scarlet & Violet",
-    "short": "SV8.5",
+    "short": "PRE",
     "setId": "sv8pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-01-17"
+    "live": true
   },
   {
     "slug": "journey-together-card-list",
@@ -126,8 +114,7 @@
     "short": "SV9",
     "setId": "sv09",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-03-28"
+    "live": true
   },
   {
     "slug": "destined-rivals-card-list",
@@ -136,58 +123,52 @@
     "short": "SV10",
     "setId": "sv10",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-05-30"
+    "live": true
   },
   {
     "slug": "pokemon/sets/scarlet-violet/black-bolt/cards",
-    "name": "Black Bolt (SV10.5)",
+    "name": "Black Bolt",
     "series": "Scarlet & Violet",
-    "short": "SV10.5",
+    "short": "BBT",
     "setId": "zsv10pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-07-18"
+    "live": true
   },
   {
     "slug": "pokemon/sets/scarlet-violet/white-flare/cards",
-    "name": "White Flare (SV10.5)",
+    "name": "White Flare",
     "series": "Scarlet & Violet",
-    "short": "SV10.5",
+    "short": "WHF",
     "setId": "rsv10pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-07-18"
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/base-set/cards",
     "name": "Mega Evolution (ME1)",
     "series": "Mega Evolution",
-    "short": "ME1",
+    "short": "ME01",
     "setId": "me01",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-10-10"
+    "live": true
   },
   {
     "slug": "phantasmal-flames-card-list",
-    "name": "Phantasmal Flames (ME2)",
+    "name": "Phantasmal Flames",
     "series": "Mega Evolution",
-    "short": "ME2",
+    "short": "PFL",
     "setId": "me02",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2025-11-14"
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/ascended-heroes/cards",
-    "name": "Ascended Heroes (ME2.5)",
+    "name": "Ascended Heroes",
     "series": "Mega Evolution",
-    "short": "ME2.5",
+    "short": "ASC",
     "setId": "me02pt5",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2026-01-15"
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/perfect-order/cards",
@@ -196,8 +177,7 @@
     "short": "ME3",
     "setId": "me03",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2026-03-15"
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/chaos-rising/cards",
@@ -206,9 +186,7 @@
     "short": "ME4",
     "setId": "me04",
     "phase": "en",
-    "live": true,
-    "releaseDate": "2026-05-22",
-    "trending": true
+    "live": true
   },
   {
     "slug": "pokemon/sets/mega-evolution/pitch-black/cards",
@@ -216,9 +194,8 @@
     "series": "Mega Evolution",
     "short": "ME5",
     "setId": "me05",
-    "phase": "jp",
-    "live": true,
-    "releaseDate": "2026-07-17"
+    "phase": "en",
+    "live": true
   },
   {
     "slug": "one-piece/sets/heroines-edition/cards",
