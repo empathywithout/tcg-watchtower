@@ -50,7 +50,7 @@ const SCRYDEX_JP_ID_MAP = {
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
-  'me05': 'm5_ja',
+  // me05 removed — Scrydex EN data live as of July 17 2026
 };
 
 // TCGdex dot-notation map for special sets
@@ -137,7 +137,7 @@ function normalizeRarity(r) {
 // entire time, regardless of what sets.json actually says, silently
 // bypassing the JP-phase bridge code path entirely. Only me05 is
 // currently JP-phase; every other set defaults to 'en' as before.
-const SET_PHASE_MAP = { 'me05': 'jp' };
+const SET_PHASE_MAP = { 'me05': 'en' }; // flipped to EN — Scrydex EN data confirmed available
 async function getSetPhase(setId) {
   return SET_PHASE_MAP[setId] || 'en';
 }
@@ -236,7 +236,7 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v3-getphase-fix';
+  const CACHE_VERSION = 'v4-en-phase-flip'; // bumped — me05 flipped to EN, force fresh Scrydex fetch
   const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
