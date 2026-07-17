@@ -17,57 +17,6 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
-      - name: Seed R2 with correct EN card data from live API
-        env:
-          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
-          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
-          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
-          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
-        run: |
-          node --input-type=module -e "
-            import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-
-            const res = await fetch('https://tcgwatchtower.com/api/cards?set=me05');
-            if (!res.ok) throw new Error('API fetch failed: ' + res.status);
-            const data = await res.json();
-            console.log('Fetched', data.cards?.length, 'cards, phase:', data.phase);
-            if (!data.cards?.length) throw new Error('No cards returned');
-            if (data.cards.length < 118) throw new Error('Too few cards: ' + data.cards.length);
-
-            const metadata = {
-              id: 'me05',
-              phase: 'en',
-              cardCount: { official: 84, total: data.cards.length },
-              cards: data.cards.map(c => ({
-                localId: c.localId,
-                name: c.name,
-                rarity: c.rarity,
-                image: c.image,
-                denominator: c.denominator || '084',
-              })),
-            };
-            console.log('Sample cards 108-113:');
-            metadata.cards.slice(107, 113).forEach(c =>
-              console.log(' ', c.localId, c.name, c.rarity, 'denom:', c.denominator, 'img:', c.image?.slice(0,60))
-            );
-
-            const s3 = new S3Client({
-              region: 'auto',
-              endpoint: process.env.CF_R2_ENDPOINT,
-              credentials: {
-                accessKeyId: process.env.CF_R2_ACCESS_KEY,
-                secretAccessKey: process.env.CF_R2_SECRET_KEY,
-              },
-            });
-            await s3.send(new PutObjectCommand({
-              Bucket: process.env.CF_R2_BUCKET,
-              Key: 'data/me05.json',
-              Body: JSON.stringify(metadata),
-              ContentType: 'application/json',
-              CacheControl: 'public, max-age=3600',
-            }));
-            console.log('R2 seed complete');
-          "
       - name: Capture list of existing individual card files (before generation)
         run: |
           ls pokemon/sets/mega-evolution/pitch-black/cards/ > /tmp/before_list.txt
@@ -80,9 +29,8 @@ jobs:
           SET_SERIES_SLUG: mega-evolution
           SET_SLUG: pitch-black
           SET_SLUG_FULL: pitch-black-card-list
-          PHASE: presale
+          PHASE: en
           TCGP_GROUP_ID: '24688'
-          SET_OFFICIAL_COUNT: '84'
           CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
           CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
           CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
@@ -122,7 +70,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "⚠️ Nothing to commit"
           else
-            git commit -m "Regenerate Pitch Black card pages: presale EN prices + EN images, /084 denominator"
+            git commit -m "Regenerate Pitch Black card pages: EN phase with Scrydex EN data"
             git push origin main
             echo "✅ Committed and pushed"
           fi
