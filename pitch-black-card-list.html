@@ -1436,6 +1436,10 @@ button,a,[onclick]{touch-action:manipulation}
 const SET_ID = 'me05';
 const SET_OFFICIAL_COUNT = 120;
 const SET_PHASE = 'en';  // 'en' | 'jp'
+if (SET_PHASE !== 'jp') {
+  const b = document.getElementById('jp-banner');
+  if (b) b.parentElement.style.display = 'none';
+}
 // ===================================================
 
 const CONFIG = {
