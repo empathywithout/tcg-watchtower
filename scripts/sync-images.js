@@ -43,8 +43,8 @@ if (!SET_ID) { console.error('❌ SET_ID required'); process.exit(1); }
 if (PHASE === 'jp' && !JP_SCRYDEX_ID) { console.error('❌ JP_SCRYDEX_ID required when PHASE=jp'); process.exit(1); }
 if (PHASE === 'jp' && (!SCRYDEX_API_KEY || !SCRYDEX_TEAM_ID)) { console.error('❌ SCRYDEX_API_KEY and SCRYDEX_TEAM_ID required when PHASE=jp'); process.exit(1); }
 
-const CARD_WIDTH  = 400;
-const CARD_HEIGHT = 557;
+const CARD_WIDTH  = 745;
+const CARD_HEIGHT = 1040;
 
 const TCGDEX_ID_MAP = {
   'sv3pt5':'sv03.5','sv4pt5':'sv04.5','sv6pt5':'sv06.5','sv8pt5':'sv08.5','me02pt5':'me02.5',
@@ -67,7 +67,7 @@ async function existsInR2(key) {
 async function uploadToR2(key, body, contentType) {
   await s3.send(new PutObjectCommand({
     Bucket: BUCKET, Key: key, Body: body, ContentType: contentType,
-    CacheControl: 'public, max-age=31536000, immutable',
+    CacheControl: 'public, max-age=604800, stale-while-revalidate=86400',
   }));
 }
 
