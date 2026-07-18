@@ -743,6 +743,8 @@ function buildSeriesNavHtml(order, currentSetId) {
 const SERIES_NAV_HTML = buildSeriesNavHtml(PM_SERIES_ORDER, SET_ID);
 
 let html = readFileSync('set-template.html', 'utf8');
+const SET_PAGE_CSS = readFileSync('static/set-page.css', 'utf8').trim();
+const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim();
 
 const vars = {
   '{{GA_CUSTOM_DIMS}}':     JSON.stringify({ set_id: SET_ID, series: SET_SERIES, page_type: 'set_list' }),
@@ -781,7 +783,8 @@ const vars = {
   '{{FAQ_JSONLD}}':         FAQ_JSONLD,
   '{{SEO_META_DESC}}':      SEO_META_DESC,
   '{{SEO_INTRO}}':          SEO_INTRO,
-  '{{BODY_BACKGROUND}}': 'linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)',
+  '{{SET_PAGE_CSS}}':     SET_PAGE_CSS,
+  '{{SET_PAGE_JS}}':      SET_PAGE_JS,
 };
 
 for (const [placeholder, value] of Object.entries(vars)) {

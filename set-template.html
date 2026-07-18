@@ -127,7 +127,7 @@ window._epn = {campaign: 5339145069};
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet"></noscript>
 
-<link rel="stylesheet" href="/static/set-page.css?v=2">
+<style>{{SET_PAGE_CSS}}</style>
 </head>
 <body>
 <div class="bg-grid"></div>
@@ -380,7 +380,9 @@ const SET_FULL_NAME = '{{SET_FULL_NAME}}';
 const SET_URL_SLUG = '{{SET_URL_SLUG}}';
 const SET_SERIES_SLUG = '{{SET_SERIES_SLUG}}';
 </script>
-<script src="/static/set-page.js" defer></script>
+<script>
+{{SET_PAGE_JS}}
+</script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
 </html>
