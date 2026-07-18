@@ -1441,6 +1441,10 @@ if (SET_PHASE !== 'jp') {
   if (b) b.parentElement.style.display = 'none';
 }
 // ===================================================
+const SET_TCGP_SLUG = 'pitch-black';
+const SET_FULL_NAME = 'Pitch Black';
+const SET_URL_SLUG = 'pitch-black';
+const SET_SERIES_SLUG = 'mega-evolution';
 
 const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
@@ -1925,7 +1929,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${card.localId} Pitch Black Pokemon Card" width="245" height="337" loading="lazy"
+      <img src="${imgUrl}" alt="${SET_FULL_NAME} Card List ${card.localId}/${SET_OFFICIAL_COUNT} ${card.name} ${card.rarity || ''} Pokemon Card" width="245" height="337" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>

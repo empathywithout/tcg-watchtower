@@ -42,7 +42,7 @@ document.querySelectorAll('#hero-stack img[data-id]').forEach(img => {
 // Wire up set logo in hero stats
 const setLogoHero = document.getElementById('set-logo-hero');
 if (setLogoHero) {
-  setLogoHero.src = setLogoUrl('me04');
+  setLogoHero.src = setLogoUrl(SET_ID);
   setLogoHero.onerror = function() {
     // Hide logo stat card if image fails to load
     this.parentElement.style.display = 'none';
@@ -60,7 +60,7 @@ function ebayLinkNew(query) {
   return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}&LH_ItemCondition=1000&mkcid=1&mkrid=${CONFIG.ebay.mkrid}&siteid=0&campid=${CONFIG.ebay.campaign}&customid=&toolid=10001&mkevt=1`;
 }
 function tcgplayerLink(query) {
-  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/chaos-rising?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
+  return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent('https://www.tcgplayer.com/search/pokemon/' + SET_TCGP_SLUG + '?productLineName=pokemon&q=' + query + '&view=grid&productTypeName=Cards')}`;
 }
 function tcgplayerAffiliate(directUrl) {
   return `${CONFIG.tcgplayer.baseUrl}?u=${encodeURIComponent(directUrl)}`;
@@ -101,11 +101,11 @@ function renderChaseCards(cards) {
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
           searchName: `${c.name} ${c.localId}/122 Chaos Rising Pokemon Card`,
-          img: c.image || cardImg('me04', c.localId),
+          img: c.image || cardImg(SET_ID, c.localId),
         };
       });
   } else {
-    currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg('me04', c.id) }));
+    currentChaseList = CHASE_CARDS.map(c => ({ ...c, img: cardImg(SET_ID, c.id) }));
   }
 
   // Render immediately — loadTCGPlayerPrices() re-renders once prices arrive
@@ -154,7 +154,7 @@ function renderChaseCardsHTML(grid) {
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/122', 'chaos-rising')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGp</a>
         </div>
       </div>
     </div>`;
@@ -198,7 +198,7 @@ function productImgUrl(q) {
 function renderProducts() {
   const grid = document.getElementById('products-grid');
   grid.innerHTML = Object.entries(PRODUCT_META).map(([asin, p]) => {
-    const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/me04/${asin}.jpg` : null);
+    const img = p.image || (CONFIG.r2 ? `${CONFIG.r2}/products/${SET_ID}/${asin}.jpg` : null);
     const amazonUrl = p.noAmazon ? null : `https://www.amazon.com/s?k=${encodeURIComponent(p.q)}&linkCode=ll2&tag=${CONFIG.amazon.tag}&language=en_US`;
     const tcgpUrl   = p.tcgpId ? tcgplayerAffiliate(`https://www.tcgplayer.com/product/${p.tcgpId}`) : tcgplayerLink(p.q);
     const ebayUrl   = ebayLinkNew(p.q);
@@ -291,7 +291,7 @@ function loadTCGPlayerPrices() {
           .sort((a, b) => b.price - a.price)
           .slice(0, 3);
         document.querySelectorAll('#hero-stack img').forEach((img, i) => {
-          if (top3[i]) img.src = top3[i].img || cardImg('me04', top3[i].id);
+          if (top3[i]) img.src = top3[i].img || cardImg(SET_ID, top3[i].id);
         });
       }
 
@@ -356,7 +356,7 @@ async function loadCards() {
 
     // Try R2 API first
     try {
-      const res = await fetch('/api/cards?set=me04');
+      const res = await fetch('/api/cards?set=' + SET_ID);
       if (res.ok) {
         const json = await res.json();
         if (json && (json.cards || json).length > 0) data = json;
@@ -365,7 +365,7 @@ async function loadCards() {
 
     // Fall back to TCGdex directly
     if (!data) {
-      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/me04');
+      const setRes = await fetch('https://api.tcgdex.net/v2/en/sets/' + SET_ID);
       if (!setRes.ok) throw new Error('TCGdex failed');
       const setData = await setRes.json();
       const basicCards = setData.cards || [];
@@ -374,7 +374,7 @@ async function loadCards() {
       for (let i = 0; i < basicCards.length; i += BATCH) {
         const batch = basicCards.slice(i, i + BATCH);
         const results = await Promise.allSettled(
-          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/me04-${c.localId}`).then(r => r.json()))
+          batch.map(c => fetch(`https://api.tcgdex.net/v2/en/cards/${SET_ID}-${c.localId}`).then(r => r.json()))
         );
         results.forEach((result, idx) => {
           const basic = batch[idx];
@@ -383,7 +383,7 @@ async function loadCards() {
             localId: basic.localId,
             name: basic.name,
             // FIX 3: was hardcoded "/sv/" — now derives series from SET_ID at runtime
-            image: cardImg('me04', basic.localId),
+            image: cardImg(SET_ID, basic.localId),
             rarity: detail.rarity || ''
           });
         });
@@ -441,7 +441,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = card.image || cardImg('me04', card.localId);
+    const imgUrl = card.image || cardImg(SET_ID, card.localId);
     const el = document.createElement('div');
     el.className = 'card-item';
     el.dataset.localId = card.localId;
@@ -452,7 +452,7 @@ function renderCards(reset) {
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
-      <img src="${imgUrl}" alt="${card.name} ${card.localId} Chaos Rising Pokemon Card" width="245" height="337" loading="lazy"
+      <img src="${imgUrl}" alt="${SET_FULL_NAME} Card List ${card.localId}/${SET_OFFICIAL_COUNT} ${card.name} ${card.rarity || ''} Pokemon Card" width="245" height="337" loading="lazy"
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
@@ -532,7 +532,7 @@ function toCardSlug(name, localId) {
 }
 function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!directUrl) directUrl = priceCache[localId]?.url || priceCache[localId.padStart(3,'0')]?.url || null;
-  if (!imgUrl) imgUrl = cardImg('me04', localId);
+  if (!imgUrl) imgUrl = cardImg(SET_ID, localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
     <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
@@ -547,10 +547,10 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>🔍 Find on eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/122', 'chaos-rising')}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener">
           <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
         </a>
-        <a class="modal-buy-link" href="/pokemon/sets/mega-evolution/chaos-rising/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+        <a class="modal-buy-link" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>📄 View Card Page</span><span>→</span>
         </a>
       </div>
