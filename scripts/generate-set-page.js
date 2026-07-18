@@ -118,7 +118,7 @@ const GROUP_ID_MAP = {
   'sv6pt5': '23529', 'sv07': '23537', 'sv08': '23651', 'sv8pt5': '23821',
   'sv09': '24073', 'sv10': '24269',
   'me01': '24380', 'me02': '24448', 'me02pt5': '24541', 'me03': '24587',
-  'me04': '24655', 'me05': '0', // me05 (Pitch Black) is still JP-phase --
+  'me04': '24655', 'me05': '24688',
                                   // no English TCGplayer listing exists yet,
                                   // so no real group ID exists to put here.
                                   // Update once Pitch Black actually releases
