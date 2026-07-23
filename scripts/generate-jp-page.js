@@ -101,7 +101,11 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
       const raw     = await res.json();
       setData       = raw.data || raw;
       officialCount = setData.total || setData.printedTotal || 0;
-      printedTotal  = setData.printedTotal || setData.total || 0;
+      printedTotal  = setData.printedTotal || setData.total || setConfig.printedTotal || 0;
+      // For High Class Packs, Scrydex may not split printedTotal — use sets-jp.json value
+      if (setConfig.printedTotal && setConfig.printedTotal < officialCount) {
+        printedTotal = setConfig.printedTotal;
+      }
       console.log(`✅  Scrydex JP: ${setData.name || SET_FULL_NAME} — ${officialCount} official cards`);
     } else {
       console.warn(`⚠️  Scrydex ${res.status} — using manual values`);
@@ -444,29 +448,29 @@ const scrydexJpPatch = `
     };
   })();
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Re-wire hero stack images with overridden cardImg
-    document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
-      img.src = window.cardImg(img.dataset.set, img.dataset.id);
-    });
+  // Run immediately — this script is at end of body, DOM is ready
+  // Re-wire hero stack images with overridden cardImg
+  document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
+    img.src = window.cardImg(img.dataset.set, img.dataset.id);
+  });
 
-    // Filter buttons: hide EN-only product types not in JP sets
-    var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
-    document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
-      var filter = btn.dataset.filter;
-      if (filter && !jpValidFilters.includes(filter)) {
-        btn.style.display = 'none';
-      }
-    });
-
-    // Sealed products section header: update to JP-appropriate copy
-    var sealedTitle = document.querySelector('#section-products h2');
-    if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
-      sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
+  // Filter buttons: hide EN-only product types not in JP sets
+  var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
+  document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
+    var filter = btn.dataset.filter;
+    if (filter && !jpValidFilters.includes(filter)) {
+      btn.style.display = 'none';
     }
   });
+
+  // Sealed products section header: update to JP-appropriate copy
+  var sealedTitle = document.querySelector('#section-products h2');
+  if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
+    sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
+  }
 </script>`;
-html = html.replace('</head>', scrydexJpPatch + '\n</head>');
+// Inject JP patch right before </body> so it runs after set-page.js defines cardImg
+html = html.replace('</body>', scrydexJpPatch + '\n</body>');
 
 // Inject SEO intro if present
 if (SEO_INTRO) {
