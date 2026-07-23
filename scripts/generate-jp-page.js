@@ -471,6 +471,11 @@ const scrydexJpPatch = `
 // Inject JP patch right before </body> so it runs after set-page.js defines cardImg
 html = html.replace('</body>', scrydexJpPatch + '\n</body>');
 
+// Add EN equivalent link in <head> for SEO cross-referencing
+const enPageUrl = `https://tcgwatchtower.com/pokemon/sets/mega-evolution/${EN_SET_ID}/cards`;
+const enLinkTag = `<link rel="alternate" hreflang="en" href="${enPageUrl}">\n<link rel="alternate" hreflang="ja-x-jp" href="https://tcgwatchtower.com/${SET_SEO_PATH}">`;
+html = html.replace('</head>', enLinkTag + '\n</head>');
+
 // Inject SEO intro if present
 if (SEO_INTRO) {
   html = html.replace(/\{\{#IF_SEO_INTRO\}\}([\s\S]*?)\{\{\/IF_SEO_INTRO\}\}/g, '$1');
