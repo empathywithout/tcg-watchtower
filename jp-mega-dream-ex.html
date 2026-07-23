@@ -1342,7 +1342,7 @@ button,a,[onclick]{touch-action:manipulation}</style>
 const SET_ID = 'm2a_ja';
 const SET_PHASE = 'jp';
 const SET_OFFICIAL_COUNT = 250;
-const TCGP_GROUP_ID = '0';
+const TCGP_GROUP_ID = '24499';
 const CHASE_CARDS = [];
 const SET_TCGP_SLUG = 'm2a-high-class-pack-mega-dream-ex';
 const SET_FULL_NAME = 'MEGA Dream ex (M2a)';
@@ -1505,7 +1505,7 @@ function renderChaseCardsHTML(grid) {
       data-search="${c.searchName.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
       data-img="${c.img}"
       onclick="handleChaseClick(this)">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Chaos Rising Pokemon Card" width="200" height="279" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -1595,7 +1595,8 @@ function loadTCGPlayerPrices() {
   if (_pricesFetchPromise) return _pricesFetchPromise;
   _pricesFetchPromise = (async () => {
     try {
-      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}`);
+      const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
+      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
@@ -1902,7 +1903,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
     <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
     <div>
       <div class="modal-name">${name}</div>
-      <div class="modal-meta">#${localId} / Chaos Rising</div>
+      <div class="modal-meta">#${localId} / ${SET_FULL_NAME}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
@@ -2283,6 +2284,11 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   }
 
   // Override cardImg for JP sets to use Scrydex CDN — must run before set-page.js uses it
+  (function() {
+    var style = document.createElement('style');
+    style.textContent = '.set-stats { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 12px !important; } .stat-card { min-width: 0 !important; }';
+    document.head.appendChild(style);
+  })();
   (function() {
     var _orig = window.cardImg;
     window.cardImg = function(setId, localId) {
