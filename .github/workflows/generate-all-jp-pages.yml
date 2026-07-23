@@ -1,0 +1,55 @@
+name: Generate All JP Set Pages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate all JP set pages
+        env:
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
+          CF_R2_PUBLIC_URL:  ${{ secrets.CF_R2_PUBLIC_URL }}
+          CF_R2_ENDPOINT:    ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY:  ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY:  ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:      ${{ secrets.CF_R2_BUCKET }}
+        run: |
+          declare -A SETS=(
+            ["m1l_ja"]="Mega Brave (M1L)"
+            ["m1s_ja"]="Mega Symphonia (M1S)"
+            ["m2_ja"]="Inferno X (M2)"
+            ["m2a_ja"]="MEGA Dream ex (M2a)"
+            ["m3_ja"]="Nihil Zero (M3)"
+            ["m4_ja"]="Ninja Spinner (M4)"
+            ["m5_ja"]="Abyss Eye (M5)"
+          )
+          ORDER="m1l_ja m1s_ja m2_ja m2a_ja m3_ja m4_ja m5_ja"
+          for SET_ID in $ORDER; do
+            SET_FULL_NAME="${SETS[$SET_ID]}"
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "Generating: $SET_FULL_NAME ($SET_ID)"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            SET_ID=$SET_ID SET_FULL_NAME="$SET_FULL_NAME" node scripts/generate-jp-page.js
+          done
+
+      - name: Commit and push all generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "generate all JP pages: M1L M1S M2 M2a M3 M4 M5"
+          git pull origin feature/jp-set-pages --no-rebase -X ours
+          git push
