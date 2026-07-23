@@ -31,14 +31,14 @@ const SET_TO_GROUP = {
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
   // JP sets — categoryId 85 on TCGCSV (Pokemon Japan)
-  // TODO: verify these group IDs at https://tcgcsv.com/tcgplayer/85/groups
-  'm1l_ja': null, // Mega Brave
-  'm1s_ja': null, // Mega Symphonia
-  'm2_ja':  null, // Inferno X
-  'm2a_ja': null, // MEGA Dream ex
-  'm3_ja':  null, // Nihil Zero
-  'm4_ja':  null, // Ninja Spinner
-  'm5_ja':  null, // Abyss Eye
+  // Group IDs confirmed from tcgcsv.com/tcgplayer/85/groups
+  'm1l_ja': '24399', // Mega Brave
+  'm1s_ja': '24400', // Mega Symphonia
+  'm2_ja':  '24459', // Inferno X
+  'm2a_ja': '24499', // MEGA Dream ex
+  'm3_ja':  '24600', // Nihil Zero
+  'm4_ja':  '24653', // Ninja Spinner
+  'm5_ja':  '24711', // Abyss Eye
 };
 
 // Our internal setId → Scrydex EN expansion ID
