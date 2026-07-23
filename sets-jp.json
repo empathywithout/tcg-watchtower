@@ -2,7 +2,7 @@
   {
     "slug": "mega-brave",
     "name": "Mega Brave (M1L)",
-    "nameJP": "\u30e1\u30ac\u30d6\u30ec\u30a4\u30d6",
+    "nameJP": "メガブレイブ",
     "series": "Mega Evolution",
     "short": "M1L",
     "setId": "m1l_ja",
@@ -21,7 +21,7 @@
   {
     "slug": "mega-symphonia",
     "name": "Mega Symphonia (M1S)",
-    "nameJP": "\u30e1\u30ac\u30b7\u30f3\u30d5\u30a9\u30cb\u30a2",
+    "nameJP": "メガシンフォニア",
     "series": "Mega Evolution",
     "short": "M1S",
     "setId": "m1s_ja",
@@ -40,7 +40,7 @@
   {
     "slug": "inferno-x",
     "name": "Inferno X (M2)",
-    "nameJP": "\u30a4\u30f3\u30d5\u30a7\u30eb\u30ceX",
+    "nameJP": "インフェルノX",
     "series": "Mega Evolution",
     "short": "M2",
     "setId": "m2_ja",
@@ -59,7 +59,7 @@
   {
     "slug": "mega-dream-ex",
     "name": "MEGA Dream ex (M2a)",
-    "nameJP": "MEGA\u30c9\u30ea\u30fc\u30e0ex",
+    "nameJP": "MEGAドリームex",
     "series": "Mega Evolution",
     "short": "M2a",
     "setId": "m2a_ja",
@@ -86,7 +86,7 @@
   {
     "slug": "nihil-zero",
     "name": "Nihil Zero (M3)",
-    "nameJP": "\u30cb\u30d2\u30eb\u30bc\u30ed",
+    "nameJP": "ニヒルゼロ",
     "series": "Mega Evolution",
     "short": "M3",
     "setId": "m3_ja",
@@ -105,7 +105,7 @@
   {
     "slug": "ninja-spinner",
     "name": "Ninja Spinner (M4)",
-    "nameJP": "\u30cb\u30f3\u30b8\u30e3\u30b9\u30d4\u30ca\u30fc",
+    "nameJP": "ニンジャスピナー",
     "series": "Mega Evolution",
     "short": "M4",
     "setId": "m4_ja",
@@ -124,7 +124,7 @@
   {
     "slug": "abyss-eye",
     "name": "Abyss Eye (M5)",
-    "nameJP": "\u30a2\u30d3\u30b9\u30a2\u30a4",
+    "nameJP": "アビスアイ",
     "series": "Mega Evolution",
     "short": "M5",
     "setId": "m5_ja",
