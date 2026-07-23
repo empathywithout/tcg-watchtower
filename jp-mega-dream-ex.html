@@ -1074,18 +1074,12 @@ button,a,[onclick]{touch-action:manipulation}</style>
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. JP card images via Scrydex CDN
-    document.querySelectorAll('img[data-set="m2a_ja"]').forEach(function(img) {
+    // 1. JP card images via Scrydex CDN    document.querySelectorAll('img[data-set="m2a_ja"]').forEach(function(img) {
       var localId = String(img.dataset.id || '').padStart(3, '0');
       img.src = 'https://images.scrydex.com/pokemon/m2a_ja-' + localId + '/medium';
     });
 
-    // 2. Logo: use EN equivalent logo from R2
-    var logoEl = document.getElementById('set-logo-hero');
-    if (logoEl) {
-      logoEl.src = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02pt5.png';
-      logoEl.onerror = function() { this.style.display = 'none'; };
-    }
+    // 2. JP card images are loaded via Scrydex CDN (set on DOMContentLoaded)
 
     // 3. Filter buttons: hide EN-only product types not in JP sets
     var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
@@ -1140,16 +1134,21 @@ button,a,[onclick]{touch-action:manipulation}</style>
         <div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;"><a href="/pokemon/sets/mega-evolution-jp/inferno-x/cards" style="color:var(--text-muted);text-decoration:none;">&larr; Previous: Inferno X (M2)</a><a href="/pokemon/sets/mega-evolution-jp/nihil-zero/cards" style="color:var(--text-muted);text-decoration:none;">Next: Nihil Zero (M3) &rarr;</a></div>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
-            <img id="set-logo-hero" alt="MEGA Dream ex (M2a) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;">
+            <img id="set-logo-hero" src="https://images.scrydex.com/pokemon/m2a_ja-logo/logo" alt="MEGA Dream ex (M2a) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;" onerror="this.closest('.stat-card-logo').style.display='none'">
             <div class="stat-label">M2a</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-total-count">…</div>
+            <div class="stat-value">250</div>
+            <div class="stat-label">Main Set</div>
+          </div>
+          
+          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
+            <div class="stat-value" style="color:#4ade80;" id="stat-total-count">250</div>
             <div class="stat-label">Total Cards</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">November 28, 2025</div>
-            <div class="stat-label">Release Date</div>
+            <div class="stat-value">Nov</div>
+            <div class="stat-label">2025</div>
           </div>
         </div>
       </div>
@@ -1178,12 +1177,12 @@ button,a,[onclick]{touch-action:manipulation}</style>
 <!-- ===== SECTION NAV ===== -->
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">🏠 Home</span><span class="nav-short">🏠 Home</span></a>
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/top-chase-cards"><span class="nav-full">🔥 Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/cards"><span class="nav-full">📋 Card List</span><span class="nav-short">Cards</span></button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/sealed-product"><span class="nav-full">🛒 Sealed Products</span><span class="nav-short">Sealed</span></button>
+    <a href="/" class="section-nav-btn nav-home-btn" style="text-decoration:none"><span class="nav-full">Home</span><span class="nav-short">Home</span></a>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/mega-evolution-jp/mega-dream-ex/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">📦 Sets ▾</span><span class="nav-short">Sets ▾</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">Sets ▾</span><span class="nav-short">Sets ▾</span></button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
@@ -1498,7 +1497,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/122 Chaos Rising Pokemon Card`,
+          searchName: `${c.name} ${c.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`,
           img: c.image || cardImg(SET_ID, c.localId),
         };
       });
@@ -1861,7 +1860,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/122 Chaos Rising Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
