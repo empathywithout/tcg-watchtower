@@ -613,14 +613,6 @@
       "destination": "/jp-mega-symphonia.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution-jp/inferno-x/cards",
-      "destination": "/jp-inferno-x.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution-jp/inferno-x/sealed-product",
-      "destination": "/jp-inferno-x.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution-jp/mega-dream-ex/cards",
       "destination": "/jp-mega-dream-ex.html"
     },
@@ -635,6 +627,14 @@
     {
       "source": "/pokemon/sets/mega-evolution-jp/mega-brave/sealed-product",
       "destination": "/jp-mega-brave.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/inferno-x/cards",
+      "destination": "/jp-inferno-x.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/inferno-x/sealed-product",
+      "destination": "/jp-inferno-x.html"
     }
   ],
   "redirects": [
