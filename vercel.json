@@ -611,6 +611,14 @@
     {
       "source": "/pokemon/sets/mega-evolution-jp/mega-dream-ex/sealed-product",
       "destination": "/jp-mega-dream-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/mega-brave/cards",
+      "destination": "/jp-mega-brave.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/mega-brave/sealed-product",
+      "destination": "/jp-mega-brave.html"
     }
   ],
   "redirects": [
