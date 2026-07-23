@@ -274,20 +274,8 @@ const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} Japanese 
 const SEO_OG_TITLE   = SEO_META_TITLE;
 const SEO_INTRO      = seoData.intro || '';
 
-// ── JP-specific intro banner (shown above card list) ───────────────────────────
-// Injected into {{#IF_JP_PHASE}} block in template
-const JP_BANNER_HTML = `
-<div style="background:rgba(255,200,0,0.08);border:1px solid rgba(255,200,0,0.2);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;">
-  <span style="font-size:1.4rem;flex-shrink:0;">🇯🇵</span>
-  <div>
-    <p style="margin:0 0 4px;font-weight:700;color:var(--text-light);font-size:0.9rem;">Japanese Set — ${SET_FULL_NAME}</p>
-    <p style="margin:0;color:var(--text-muted);font-size:0.85rem;line-height:1.5;">
-      This is the original Japanese source set. The English adaptation is
-      <a href="/pokemon/sets/mega-evolution/${EN_SET_ID === 'me01' ? 'base-set' : setConfig.slug.replace(/_ja$/, '')}/cards" style="color:var(--accent);">${EN_EQUIVALENT}</a>.
-      Card names shown in English where translations are available.
-    </p>
-  </div>
-</div>`;
+// Note: JP banner HTML lives in set-template.html inside {{#IF_JP_PHASE}} block.
+// Generator just strips the conditional tags to show it on JP pages.
 
 // ── Fill template ──────────────────────────────────────────────────────────────
 let html = readFileSync('set-template.html', 'utf8');
@@ -340,11 +328,8 @@ for (const [placeholder, value] of Object.entries(vars)) {
 }
 
 // ── Handle JP phase conditional blocks ────────────────────────────────────────
-// JP pages always show the JP banner
+// JP pages always show the JP banner (template already contains banner HTML)
 html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
-
-// Inject JP banner into the conditional block content
-html = html.replace('{{JP_BANNER}}', JP_BANNER_HTML);
 
 // Register Scrydex JP ID for client-side price fetching
 const scrydexJpPatch = `
