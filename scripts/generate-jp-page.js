@@ -327,7 +327,7 @@ const SEO_OG_TITLE   = SEO_META_TITLE;
 const SEO_INTRO      = seoData.intro || '';
 
 // Dedicated JP pages don't need the "Japanese Set Preview" banner — strip it
-html = html.replace(/\{\{#IF_JP_PHASE\}\}[\s\S]*?\{\{\/IF_JP_PHASE\}\}/g, '');// Generator just strips the conditional tags to show it on JP pages.
+// Dedicated JP pages don't need the "Japanese Set Preview" banner — strip it (runs after template is read below)
 
 // ── Fill template ──────────────────────────────────────────────────────────────
 let html = readFileSync('set-template.html', 'utf8');
@@ -381,7 +381,8 @@ for (const [placeholder, value] of Object.entries(vars)) {
 
 // ── Handle JP phase conditional blocks ────────────────────────────────────────
 // JP pages always show the JP banner (template already contains banner HTML)
-html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
+// Dedicated JP pages strip the JP preview banner — it's designed for EN pages showing JP cards
+html = html.replace(/\{\{#IF_JP_PHASE\}\}[\s\S]*?\{\{\/IF_JP_PHASE\}\}/g, '');
 
 // Inject const PRODUCT_META right before renderProductCard in the JS section.
 // We cannot use the /* ===== PRODUCTS ===== */ comment as anchor because it
