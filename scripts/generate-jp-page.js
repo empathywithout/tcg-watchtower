@@ -441,6 +441,11 @@ const scrydexJpPatch = `
 
   // Override cardImg for JP sets to use Scrydex CDN — must run before set-page.js uses it
   (function() {
+    var style = document.createElement('style');
+    style.textContent = '.set-stats { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 12px !important; } .stat-card { min-width: 0 !important; }';
+    document.head.appendChild(style);
+  })();
+  (function() {
     var _orig = window.cardImg;
     window.cardImg = function(setId, localId) {
       if (setId && setId.indexOf('_ja') !== -1) {

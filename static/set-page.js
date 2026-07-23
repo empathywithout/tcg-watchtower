@@ -154,7 +154,7 @@ function renderChaseCardsHTML(grid) {
       data-search="${c.searchName.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
       data-img="${c.img}"
       onclick="handleChaseClick(this)">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Chaos Rising Pokemon Card" width="200" height="279" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
@@ -549,7 +549,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
     <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
     <div>
       <div class="modal-name">${name}</div>
-      <div class="modal-meta">#${localId} / Chaos Rising</div>
+      <div class="modal-meta">#${localId} / ${SET_FULL_NAME}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
