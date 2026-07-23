@@ -621,14 +621,6 @@
       "destination": "/jp-mega-dream-ex.html"
     },
     {
-      "source": "/pokemon/sets/mega-evolution-jp/nihil-zero/cards",
-      "destination": "/jp-nihil-zero.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution-jp/nihil-zero/sealed-product",
-      "destination": "/jp-nihil-zero.html"
-    },
-    {
       "source": "/pokemon/sets/mega-evolution-jp/ninja-spinner/cards",
       "destination": "/jp-ninja-spinner.html"
     },
@@ -659,6 +651,14 @@
     {
       "source": "/pokemon/sets/mega-evolution-jp/inferno-x/sealed-product",
       "destination": "/jp-inferno-x.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/nihil-zero/cards",
+      "destination": "/jp-nihil-zero.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/nihil-zero/sealed-product",
+      "destination": "/jp-nihil-zero.html"
     }
   ],
   "redirects": [
