@@ -1097,7 +1097,7 @@ button,a,[onclick]{touch-action:manipulation}</style>
         </h1>
         <p class="set-series-label" style="font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-blue);margin-top:-8px;margin-bottom:8px;">Mega Evolution</p>
         <p class="set-desc">
-          Complete guide to Mega Symphonia (M1S) — full Japanese card list with English translations, chase cards ranked by price, and where to buy sealed product.
+          Browse the complete Mega Symphonia card list — 92 JP cards with English name translations, live prices on TCG Watchtower, and a buying guide for the Japanese Mega Evolution series.
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">Mega Symphonia (M1S) is the companion set to Mega Brave, released simultaneously on August 1, 2025. Together Mega Brave and Mega Symphonia form the Japanese foundation of the English Mega Evolution Base Set (ME1). Mega Symphonia contains 92 cards and introduces a distinct lineup of Mega Evolution Pokémon ex alongside Mega Brave. This complete Mega Symphonia card list covers all JP cards with EN name translations, rarity filters, and live prices on TCG Watchtower.</p>
         <div class="series-nav" style="margin:0 0 16px;font-size:0.85rem;">
@@ -2306,8 +2306,26 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     };
   })();
 
-  // Run immediately — this script is at end of body, DOM is ready
-  // Re-wire hero stack images with overridden cardImg
+  // Override fetch to serve JP sets when sets.json is requested on JP pages
+  var _origFetch = window.fetch;
+  window.fetch = function(url, opts) {
+    if (typeof url === 'string' && url.includes('/sets.json')) {
+      return _origFetch('/sets-jp.json', opts).then(function(res) {
+        if (!res.ok) return _origFetch(url, opts);
+        return res.json().then(function(jpSets) {
+          var mapped = jpSets.filter(function(s) { return s.live; }).map(function(s) {
+            return Object.assign({}, s, {
+              slug: 'pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
+              series: 'Mega Evolution JP',
+            });
+          });
+          var blob = new Blob([JSON.stringify(mapped)], {type: 'application/json'});
+          return new Response(blob, {status: 200, headers: {'Content-Type': 'application/json'}});
+        });
+      });
+    }
+    return _origFetch.apply(this, arguments);
+  };
   document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
     img.src = window.cardImg(img.dataset.set, img.dataset.id);
   });
