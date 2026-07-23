@@ -473,26 +473,21 @@ const scrydexJpPatch = `
   })();
 
   // Override sets dropdown to show JP ME sets instead of EN sets
-  document.addEventListener('DOMContentLoaded', function() {
-    // Wait for fetchSets to be defined then override it
-    setTimeout(function() {
-      if (typeof fetchSets === 'function') {
-        window.fetchSets = async function() {
-          try {
-            const res = await fetch('/sets-jp.json');
-            if (!res.ok) return;
-            const jpSets = await res.json();
-            allSets = jpSets.filter(s => s.live).map(s => ({
-              ...s,
-              slug: '/pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
-              series: 'Mega Evolution JP',
-            }));
-            renderSets();
-          } catch(e) {}
+  window.addEventListener('load', function() {
+    fetch('/sets-jp.json').then(r => r.json()).then(function(jpSets) {
+      var liveSets = jpSets.filter(function(s) { return s.live; }).map(function(s) {
+        return {
+          setId: s.setId,
+          name: s.name,
+          short: s.short,
+          series: 'Mega Evolution JP',
+          slug: '/pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
+          live: true,
         };
-        fetchSets();
-      }
-    }, 100);
+      });
+      allSets = liveSets;
+      if (typeof renderSets === 'function') renderSets();
+    }).catch(function() {});
   });
   document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
     img.src = window.cardImg(img.dataset.set, img.dataset.id);
