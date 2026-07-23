@@ -242,7 +242,7 @@ export default async function handler(req, res) {
 
   const setId = (req.query.set || '').trim();
   const game  = (req.query.game || '').trim().toLowerCase(); // 'onepiece' or 'pokemon' (default)
-  if (!setId || !/^[a-z0-9]+$/.test(setId)) {
+  if (!setId || !/^[a-z0-9_]+$/.test(setId)) {
     return res.status(400).json({ error: 'Missing or invalid ?set= parameter' });
   }
 
