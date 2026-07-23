@@ -2306,28 +2306,26 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     };
   })();
 
-  // Override sets dropdown to show JP ME sets instead of EN sets
-  document.addEventListener('DOMContentLoaded', function() {
-    // Wait for fetchSets to be defined then override it
-    setTimeout(function() {
-      if (typeof fetchSets === 'function') {
-        window.fetchSets = async function() {
-          try {
-            const res = await fetch('/sets-jp.json');
-            if (!res.ok) return;
-            const jpSets = await res.json();
-            allSets = jpSets.filter(s => s.live).map(s => ({
-              ...s,
-              slug: '/pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
+  // Override fetch to serve JP sets when sets.json is requested on JP pages
+  var _origFetch = window.fetch;
+  window.fetch = function(url, opts) {
+    if (typeof url === 'string' && url.includes('/sets.json')) {
+      return _origFetch('/sets-jp.json', opts).then(function(res) {
+        if (!res.ok) return _origFetch(url, opts);
+        return res.json().then(function(jpSets) {
+          var mapped = jpSets.filter(function(s) { return s.live; }).map(function(s) {
+            return Object.assign({}, s, {
+              slug: 'pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
               series: 'Mega Evolution JP',
-            }));
-            renderSets();
-          } catch(e) {}
-        };
-        fetchSets();
-      }
-    }, 100);
-  });
+            });
+          });
+          var blob = new Blob([JSON.stringify(mapped)], {type: 'application/json'});
+          return new Response(blob, {status: 200, headers: {'Content-Type': 'application/json'}});
+        });
+      });
+    }
+    return _origFetch.apply(this, arguments);
+  };
   document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
     img.src = window.cardImg(img.dataset.set, img.dataset.id);
   });
