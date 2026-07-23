@@ -349,17 +349,34 @@ const scrydexJpPatch = `
   } else {
     window.SCRYDEX_JP_ID_MAP = { ${JSON.stringify(SET_ID)}: ${JSON.stringify(SCRYDEX_ID)} };
   }
-  // JP card images: use Scrydex CDN directly (R2 has no JP images yet)
-  // Scrydex card IDs look like "m2a_ja-001"
+
   document.addEventListener('DOMContentLoaded', function() {
+    // 1. JP card images via Scrydex CDN
     document.querySelectorAll('img[data-set="${SET_ID}"]').forEach(function(img) {
       var localId = String(img.dataset.id || '').padStart(3, '0');
       img.src = 'https://images.scrydex.com/pokemon/${SET_ID}-' + localId + '/medium';
     });
-    // Logo: fall back to EN equivalent logo which exists in R2
+
+    // 2. Logo: use EN equivalent logo from R2
     var logoEl = document.getElementById('set-logo-hero');
     if (logoEl) {
       logoEl.src = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/${enEquivalent}.png';
+      logoEl.onerror = function() { this.style.display = 'none'; };
+    }
+
+    // 3. Filter buttons: hide EN-only product types not in JP sets
+    var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
+    document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
+      var filter = btn.dataset.filter;
+      if (filter && !jpValidFilters.includes(filter)) {
+        btn.style.display = 'none';
+      }
+    });
+
+    // 4. Sealed products section header: update to JP-appropriate copy
+    var sealedTitle = document.querySelector('#section-products h2');
+    if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
+      sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
     }
   });
 </script>`;
