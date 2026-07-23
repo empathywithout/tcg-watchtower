@@ -331,11 +331,12 @@ for (const [placeholder, value] of Object.entries(vars)) {
 // JP pages always show the JP banner (template already contains banner HTML)
 html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
 
-// Inject const PRODUCT_META before SET_PAGE_JS runs
-// (EN generator does this via {{PRODUCT_META_JSON}} placeholder in set-page.js,
-// but JP generator needs to inject it explicitly)
-const productMetaInjection = `\n/* ===== PRODUCTS ===== */\nconst PRODUCT_META = ${productMetaJson};\n`;
-html = html.replace('/* ===== PRODUCTS ===== */', productMetaInjection);
+// Inject const PRODUCT_META into ALL occurrences of the PRODUCTS section marker.
+// set-page.js contains this marker — after SET_PAGE_JS is injected it appears
+// inside the <script> block. Replace all occurrences so the browser gets
+// PRODUCT_META defined where it runs.
+const productMetaDeclaration = '/* ===== PRODUCTS ===== */\nconst PRODUCT_META = ' + productMetaJson + ';';
+html = html.replaceAll('/* ===== PRODUCTS ===== */', productMetaDeclaration);
 const enEquivalent = setConfig.enEquivalent || SET_ID;
 const scrydexJpPatch = `
 <script>
