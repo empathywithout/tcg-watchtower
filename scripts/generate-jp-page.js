@@ -377,15 +377,19 @@ try {
   console.log(`\n📋 Fetching card metadata for SEO table from ${metaUrl}...`);
   const metaRes = await fetch(metaUrl);
   if (metaRes.ok) {
-    const metaJson = await metaRes.json();
-    const seoCards = metaJson.cards || [];
-    if (seoCards.length > 0) {
-      const rows = seoCards.map(c => {
-        const enName = c.nameEN || c.name;
-        const cardPath = `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${enName.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${c.localId}`;
-        return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${enName}</a></td><td>${c.rarity || ''}</td></tr>`;
-      }).join('\n');
-      const staticTable = `
+    const contentType = metaRes.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      console.warn(`⚠️  SEO table: unexpected content-type (${contentType}) — skipping`);
+    } else {
+      const metaJson = await metaRes.json();
+      const seoCards = metaJson.cards || [];
+      if (seoCards.length > 0) {
+        const rows = seoCards.map(c => {
+          const enName = c.nameEN || c.name;
+          const cardPath = `/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${enName.toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${c.localId}`;
+          return `<tr><td>${c.localId}</td><td><a href="${cardPath}">${enName}</a></td><td>${c.rarity || ''}</td></tr>`;
+        }).join('\n');
+        const staticTable = `
 <!-- SEO: static card list for search engine indexing -->
 <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0" aria-hidden="true">
 <h2>${SET_FULL_NAME} Card List — All ${seoCards.length} Cards (Japanese)</h2>
@@ -396,8 +400,9 @@ ${rows}
 </tbody>
 </table>
 </div>`;
-      html = html.replace('</body>', staticTable + '\n</body>');
-      console.log(`✅  Injected static SEO table with ${seoCards.length} cards`);
+        html = html.replace('</body>', staticTable + '\n</body>');
+        console.log(`✅  Injected static SEO table with ${seoCards.length} cards`);
+      }
     }
   } else {
     console.warn(`⚠️  Could not fetch card metadata (${metaRes.status}) — skipping SEO table`);
