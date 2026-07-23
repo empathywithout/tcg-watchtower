@@ -123,6 +123,50 @@ const SET_TCGP_SLUG   = setConfig.tcgpSlug;
 
 console.log(`✅  ${SET_SUBTITLE} — ${officialCount} cards, released ${releaseDate}`);
 
+// ── Download JP logo from Scrydex and upload to R2 ────────────────────────────
+let jpLogoR2Url = null;
+const r2LogoKey = `logos/${SET_ID}.png`;
+if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLIC_URL) {
+  try {
+    const r2 = new S3Client({
+      region: 'auto',
+      endpoint: process.env.CF_R2_ENDPOINT,
+      credentials: { accessKeyId: process.env.CF_R2_ACCESS_KEY, secretAccessKey: process.env.CF_R2_SECRET_KEY },
+    });
+    // Check if logo already in R2
+    let logoExists = false;
+    try {
+      await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2LogoKey }));
+      logoExists = true;
+      jpLogoR2Url = `${R2_PUBLIC_URL}/${r2LogoKey}`;
+      console.log(`✅  JP logo already in R2: ${jpLogoR2Url}`);
+    } catch {}
+
+    if (!logoExists && setData.logo) {
+      // Download from Scrydex (requires auth headers)
+      const logoRes = await fetch(setData.logo, {
+        headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+      });
+      if (logoRes.ok) {
+        const buf = Buffer.from(await logoRes.arrayBuffer());
+        await r2.send(new PutObjectCommand({
+          Bucket: process.env.CF_R2_BUCKET,
+          Key: r2LogoKey,
+          Body: buf,
+          ContentType: 'image/png',
+          CacheControl: 'public, max-age=31536000, immutable',
+        }));
+        jpLogoR2Url = `${R2_PUBLIC_URL}/${r2LogoKey}`;
+        console.log(`✅  JP logo uploaded to R2: ${jpLogoR2Url}`);
+      } else {
+        console.warn(`⚠️  Could not download JP logo from Scrydex: ${logoRes.status}`);
+      }
+    }
+  } catch (logoErr) {
+    console.warn(`⚠️  JP logo R2 upload failed: ${logoErr.message}`);
+  }
+}
+
 // ── Hero cards ─────────────────────────────────────────────────────────────────
 // JP sets use Scrydex CDN images directly — no R2 pipeline needed
 let HERO_CARD_1 = process.env.HERO_CARD_1 || '001';
@@ -351,13 +395,13 @@ const releaseYear  = setConfig.releaseDate
   ? new Date(setConfig.releaseDate).getFullYear()
   : '';
 
-const jpLogoUrl = setData.logo || `https://images.scrydex.com/pokemon/${SCRYDEX_ID}-logo/logo`;
+const jpLogoUrl = jpLogoR2Url || setData.logo || null;
 
 const jpStatCards = `<div class="set-stats">
-          <div class="stat-card stat-card-logo">
+          ${jpLogoUrl ? `<div class="stat-card stat-card-logo">
             <img id="set-logo-hero" src="${jpLogoUrl}" alt="${SET_FULL_NAME} Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;" onerror="this.closest('.stat-card-logo').style.display='none'">
             <div class="stat-label">${SET_SHORT_NAME}</div>
-          </div>
+          </div>` : ''}
           <div class="stat-card">
             <div class="stat-value">${printedTotal || officialCount || '—'}</div>
             <div class="stat-label">Main Set</div>

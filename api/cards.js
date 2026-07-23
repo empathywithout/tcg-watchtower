@@ -266,7 +266,7 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v4-en-phase-flip'; // bumped — me05 flipped to EN, force fresh Scrydex fetch
+  const CACHE_VERSION = 'v5-medium-images'; // bumped — use medium images for JP sets
   const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
