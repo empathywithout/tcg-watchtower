@@ -449,7 +449,7 @@ export default async function handler(req, res) {
                 const jpShaped = allCards.map((c) => {
                   const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
                   const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
-                  const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                  const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
                   return {
                     localId,
                     name: c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim(),
@@ -478,7 +478,7 @@ export default async function handler(req, res) {
                 const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
                 const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
-                const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
                 const image = phase === 'en'
                   ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                   : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);

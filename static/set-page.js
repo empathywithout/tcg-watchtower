@@ -110,7 +110,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/122 Chaos Rising Pokemon Card`,
+          searchName: `${c.name} ${c.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`,
           img: c.image || cardImg(SET_ID, c.localId),
         };
       });
@@ -471,7 +471,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/122 Chaos Rising Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
