@@ -432,15 +432,25 @@ const scrydexJpPatch = `
     window.SCRYDEX_JP_ID_MAP = { ${JSON.stringify(SET_ID)}: ${JSON.stringify(SCRYDEX_ID)} };
   }
 
+  // Override cardImg for JP sets to use Scrydex CDN — must run before set-page.js uses it
+  (function() {
+    var _orig = window.cardImg;
+    window.cardImg = function(setId, localId) {
+      if (setId && setId.indexOf('_ja') !== -1) {
+        var id = parseInt(localId, 10) || 1;
+        return 'https://images.scrydex.com/pokemon/' + setId + '-' + id + '/medium';
+      }
+      return _orig ? _orig(setId, localId) : '';
+    };
+  })();
+
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. JP card images via Scrydex CDN    document.querySelectorAll('img[data-set="${SET_ID}"]').forEach(function(img) {
-      var localId = String(img.dataset.id || '').padStart(3, '0');
-      img.src = 'https://images.scrydex.com/pokemon/${SET_ID}-' + localId + '/medium';
+    // Re-wire hero stack images with overridden cardImg
+    document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
+      img.src = window.cardImg(img.dataset.set, img.dataset.id);
     });
 
-    // 2. JP card images are loaded via Scrydex CDN (set on DOMContentLoaded)
-
-    // 3. Filter buttons: hide EN-only product types not in JP sets
+    // Filter buttons: hide EN-only product types not in JP sets
     var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
     document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
       var filter = btn.dataset.filter;
@@ -449,7 +459,7 @@ const scrydexJpPatch = `
       }
     });
 
-    // 4. Sealed products section header: update to JP-appropriate copy
+    // Sealed products section header: update to JP-appropriate copy
     var sealedTitle = document.querySelector('#section-products h2');
     if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
       sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
