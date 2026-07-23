@@ -82,9 +82,12 @@ function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
     ? `<a href="${next.url}" style="color:var(--text-muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
     : '<span></span>';
   const enLinkHtml = enSlug
-    ? `<a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 12px;white-space:nowrap;">🇬🇧 EN: <span style="color:var(--primary-blue);">${enSetName}</span></a>`
-    : '<span></span>';
-  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${enLinkHtml}${nextHtml}</div>`;
+    ? `<div style="text-align:center;margin-top:8px;"><a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 14px;font-size:0.82rem;white-space:nowrap;">🇬🇧 English: <span style="color:var(--primary-blue);">${enSetName}</span> →</a></div>`
+    : '';
+  return `<div class="series-nav" style="margin:0 0 16px;font-size:0.85rem;">
+    <div style="display:flex;justify-content:space-between;gap:16px;">${prevHtml}${nextHtml}</div>
+    ${enLinkHtml}
+  </div>`;
 }
 
 const SERIES_NAV_HTML = buildSeriesNavHtml(JP_ME_SERIES_ORDER, SET_ID, setConfig.enSlug, setConfig.enSetName);
