@@ -175,6 +175,12 @@ async function getSetPhase(setId) {
 // Background-write card metadata + images to R2 after a Scrydex hit.
 // Runs async — does NOT block the response. Next request hits R2 for free.
 async function cacheToR2InBackground(setId, cards, phase) {
+  // Skip R2 image caching for JP sets — use Scrydex CDN directly
+  // R2 has no JP card images and we don't want small images cached there
+  if (phase === 'jp' || setId.endsWith('_ja')) {
+    console.log(`[r2-cache] Skipping JP set ${setId} — using Scrydex CDN directly`);
+    return;
+  }
   const endpoint  = process.env.CF_R2_ENDPOINT;
   const accessKey = process.env.CF_R2_ACCESS_KEY;
   const secretKey = process.env.CF_R2_SECRET_KEY;
@@ -266,7 +272,7 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v5-medium-images'; // bumped — use medium images for JP sets
+  const CACHE_VERSION = 'v6-scrydex-images'; // bumped — use medium images for JP sets
   const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
@@ -446,10 +452,14 @@ export default async function handler(req, res) {
                 const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId, tcgcsvCategory);
                 const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
 
+                // Build Scrydex image map keyed by localId so we can restore after merge
+                const scrydexImageMap = {};
                 const jpShaped = allCards.map((c) => {
                   const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
                   const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
                   const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
+                  const paddedId = String(localId).padStart(3, '0');
+                  if (scrydexImage) scrydexImageMap[paddedId] = scrydexImage;
                   return {
                     localId,
                     name: c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim(),
@@ -463,7 +473,8 @@ export default async function handler(req, res) {
                   localId: c.localId,
                   name: c.name,
                   rarity: normalizeRarity(c.rarity),
-                  image: c.image || `${R2_BASE}/cards/${setId}/${c.localId}.webp`,
+                  // Prefer Scrydex medium image over TCGplayer thumbnail
+                  image: scrydexImageMap[String(c.localId).padStart(3, '0')] || c.image || null,
                   source: c.source,
                   phase,
                 }));
