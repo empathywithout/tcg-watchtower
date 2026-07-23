@@ -79,20 +79,30 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
-  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
+  // Normalize TCGCSV rarity names to match our internal display names
+  const RARITY_ALIAS = {
+    'Special Art Rare': 'Special Illustration Rare',
+    'Art Rare': 'Illustration Rare',
+    'Super Rare': 'Ultra Rare',
+    'Mega Attack Rare': 'Mega Attack Rare',
+  };
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare', 'Mega Attack Rare', 'Special Art Rare', 'Art Rare', 'Super Rare'];
+  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Special Art Rare': 2, 'Ultra Rare': 3, 'Super Rare': 3, 'Illustration Rare': 4, 'Art Rare': 4, 'Mega Attack Rare': 2 };
+  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Special Art Rare': 'SAR', 'Ultra Rare': 'UR', 'Super Rare': 'SR', 'Illustration Rare': 'IR', 'Art Rare': 'AR', 'Mega Attack Rare': 'MA' };
+  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Special Art Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Super Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir', 'Art Rare': 'rarity-ir', 'Mega Attack Rare': 'rarity-sir' };
 
   if (cards && cards.length) {
     currentChaseList = cards
-      .filter(c => CHASE_RARITIES.includes((c.rarity||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ')))
+      .filter(c => {
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        return CHASE_RARITIES.includes(nr(c.rarity||''));
+      })
       .sort((a, b) => {
-        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         return (RARITY_TIER[nr(a.rarity)] ?? 99) - (RARITY_TIER[nr(b.rarity)] ?? 99);
       })
       .map(c => {
-        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         const rarity = nr(c.rarity);
         return {
           id: c.localId,
