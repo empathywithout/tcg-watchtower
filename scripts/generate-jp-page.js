@@ -472,7 +472,9 @@ const scrydexJpPatch = `
 html = html.replace('</body>', scrydexJpPatch + '\n</body>');
 
 // Add EN equivalent link in <head> for SEO cross-referencing
-const enPageUrl = `https://tcgwatchtower.com/pokemon/sets/mega-evolution/${EN_SET_ID}/cards`;
+const enPageUrl = setConfig.enSlug
+  ? `https://tcgwatchtower.com/pokemon/sets/mega-evolution/${setConfig.enSlug}/cards`
+  : `https://tcgwatchtower.com/pokemon/sets/mega-evolution/${EN_SET_ID}/cards`;
 const enLinkTag = `<link rel="alternate" hreflang="en" href="${enPageUrl}">\n<link rel="alternate" hreflang="ja-x-jp" href="https://tcgwatchtower.com/${SET_SEO_PATH}">`;
 html = html.replace('</head>', enLinkTag + '\n</head>');
 
