@@ -603,6 +603,14 @@
     {
       "source": "/one-piece/sets/:set/cards/:slug",
       "destination": "/one-piece/sets/:set/cards/:slug.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/mega-dream-ex/cards",
+      "destination": "/jp-mega-dream-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/mega-dream-ex/sealed-product",
+      "destination": "/jp-mega-dream-ex.html"
     }
   ],
   "redirects": [
