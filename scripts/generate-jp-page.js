@@ -82,7 +82,7 @@ function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
     ? `<a href="${next.url}" style="color:var(--text-muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
     : '<span></span>';
   const enLinkHtml = enSlug
-    ? `<a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="color:var(--text-muted);text-decoration:none;">English adaptation: <span style="color:var(--primary-blue);">${enSetName}</span> &rarr;</a>`
+    ? `<a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 12px;white-space:nowrap;">🇬🇧 EN: <span style="color:var(--primary-blue);">${enSetName}</span></a>`
     : '<span></span>';
   return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${enLinkHtml}${nextHtml}</div>`;
 }
