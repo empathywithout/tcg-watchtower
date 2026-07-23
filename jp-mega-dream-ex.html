@@ -1725,10 +1725,11 @@ async function loadCards() {
   try {
     let data = null;
 
-    // Try R2 API first
+    // Try R2 API first (passes phase so API uses Scrydex JP for JP sets)
     try {
-      const res = await fetch('/api/cards?set=' + SET_ID);
-      if (res.ok) {
+      const phaseParam = (typeof SET_PHASE !== 'undefined' && SET_PHASE === 'jp') ? '&phase=jp' : '';
+      const res = await fetch('/api/cards?set=' + SET_ID + phaseParam);
+      if (res.ok && res.status !== 204) {
         const json = await res.json();
         if (json && (json.cards || json).length > 0) data = json;
       }
