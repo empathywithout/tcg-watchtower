@@ -1,0 +1,60 @@
+name: Generate JP Set Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      set_id:
+        description: 'JP Set ID from sets-jp.json (e.g. m1l_ja, m2a_ja, m4_ja)'
+        required: true
+      set_full_name:
+        description: 'Full set name (e.g. "Mega Brave (M1L)")'
+        required: true
+      hero_card_1:
+        description: 'Hero card 1 local ID (e.g. 001) — leave blank to use default'
+        required: false
+        default: ''
+      hero_card_2:
+        description: 'Hero card 2 local ID (e.g. 002) — leave blank to use default'
+        required: false
+        default: ''
+      hero_card_3:
+        description: 'Hero card 3 local ID (e.g. 003) — leave blank to use default'
+        required: false
+        default: ''
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate JP set page
+        env:
+          SET_ID:          ${{ github.event.inputs.set_id }}
+          SET_FULL_NAME:   ${{ github.event.inputs.set_full_name }}
+          HERO_CARD_1:     ${{ github.event.inputs.hero_card_1 }}
+          HERO_CARD_2:     ${{ github.event.inputs.hero_card_2 }}
+          HERO_CARD_3:     ${{ github.event.inputs.hero_card_3 }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
+          CF_R2_PUBLIC_URL:  ${{ secrets.CF_R2_PUBLIC_URL }}
+          CF_R2_ENDPOINT:    ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY:  ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY:  ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:      ${{ secrets.CF_R2_BUCKET }}
+        run: node scripts/generate-jp-page.js
+
+      - name: Commit and push generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "generate JP page: ${{ github.event.inputs.set_full_name }}"
+          git push
