@@ -301,13 +301,39 @@ export default async function handler(req, res) {
         const originalByKey = {};
         for (const c of cards) originalByKey[`${c.name.toLowerCase()}|${(c.rarity||'').toLowerCase()}`] = c;
 
+        // Fetch TCGplayer EN prices for JP sets via TCGCSV
+        let priceMap = {};
+        try {
+          const tcgcsvCategory = set.endsWith('_ja') ? TCGCSV_CATEGORY_JP : 3;
+          const pricesRes = await fetch(`https://tcgcsv.com/tcgplayer/${tcgcsvCategory}/${bridgeGroupId}/prices`, {
+            headers: { 'User-Agent': 'TCGWatchtower/1.0' },
+            signal: AbortSignal.timeout(10000),
+          });
+          if (pricesRes.ok) {
+            const pricesData = await pricesRes.json();
+            for (const p of (pricesData.results || [])) {
+              if (p.subTypeName === 'Normal' || p.subTypeName === 'Holofoil') {
+                const existing = priceMap[p.productId];
+                if (!existing || (p.marketPrice != null && (existing.market == null || p.marketPrice > existing.market))) {
+                  priceMap[p.productId] = { market: p.marketPrice };
+                }
+              }
+            }
+            console.log(`[scrydex-cards] TCGCSV prices fetched for ${set}: ${Object.keys(priceMap).length} priced products`);
+          }
+        } catch (priceErr) {
+          console.warn(`[scrydex-cards] TCGCSV price fetch failed for ${set}:`, priceErr.message);
+        }
+
         cards = mergedIdentity.map(m => {
           const key = `${m.name.toLowerCase()}|${(m.rarity||'').toLowerCase()}`;
           const original = originalByKey[key];
+          const priceEntry = m.productId ? priceMap[m.productId] : null;
+          const market = priceEntry?.market ?? null;
           if (original) {
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source };
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: undefined, isEstimate: false };
           }
-          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market: null, source: m.source };
+          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market, source: m.source };
         });
         console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
       } catch (e) {
