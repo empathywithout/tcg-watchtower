@@ -40,6 +40,10 @@ export default async function handler(req, res) {
 
   const debugMode = req.query.debug === '1';
   const debugCard = req.query.card;
+  // Optional: explicit sealed product IDs to include regardless of Number field
+  const sealedProductIdSet = req.query.sealedIds
+    ? new Set(req.query.sealedIds.split(',').map(id => parseInt(id.trim(), 10)).filter(Boolean))
+    : null;
 
   if (!debugMode) {
     const cached = cache.get(CACHE_VERSION + groupId);
@@ -282,7 +286,9 @@ export default async function handler(req, res) {
     for (const product of products) {
       const extData  = product.extendedData || [];
       const hasNumber = extData.some(e => e.name === 'Number');
-      if (hasNumber) continue;
+      // Include if: no Number field (standard sealed) OR explicitly listed in sealedIds
+      const isExplicitSealed = sealedProductIdSet && sealedProductIdSet.has(product.productId);
+      if (hasNumber && !isExplicitSealed) continue;
       const priceObj = priceByProductId[product.productId];
       if (!priceObj || bestPrice(priceObj) == null) continue;
       sealedPrices[String(product.productId)] = bestPrice(priceObj);
