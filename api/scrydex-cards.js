@@ -10,7 +10,16 @@ const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 // confirmed value (verified via diagnostic script against live data).
 const SET_TO_GROUP = {
   'me05': '24688',
+  // JP sets — categoryId 85
+  'm1l_ja': '24399',
+  'm1s_ja': '24400',
+  'm2_ja':  '24459',
+  'm2a_ja': '24499',
+  'm3_ja':  '24600',
+  'm4_ja':  '24653',
+  'm5_ja':  '24711',
 };
+const TCGCSV_CATEGORY_JP = 85;
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const KV_URL          = process.env.KV_REST_API_URL;
 const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
@@ -283,7 +292,8 @@ export default async function handler(req, res) {
     const bridgeGroupId = isJP ? SET_TO_GROUP[set] : null;
     if (bridgeGroupId) {
       try {
-        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+        const tcgcsvCategory = set.endsWith('_ja') ? TCGCSV_CATEGORY_JP : undefined;
+        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId, tcgcsvCategory);
         const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
         const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
         const { cards: mergedIdentity, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
