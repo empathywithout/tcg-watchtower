@@ -89,6 +89,7 @@ const SERIES_NAV_HTML = buildSeriesNavHtml(JP_ME_SERIES_ORDER, SET_ID);
 // ── Fetch JP set metadata from Scrydex ────────────────────────────────────────
 let setData      = {};
 let officialCount = 0;
+let printedTotal = 0;
 
 if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
   console.log(`\n📋 Fetching JP set metadata from Scrydex (${SCRYDEX_ID})…`);
@@ -99,7 +100,8 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
     if (res.ok) {
       const raw     = await res.json();
       setData       = raw.data || raw;
-      officialCount = setData.printedTotal || setData.total || 0;
+      officialCount = setData.total || setData.printedTotal || 0;
+      printedTotal  = setData.printedTotal || setData.total || 0;
       console.log(`✅  Scrydex JP: ${setData.name || SET_FULL_NAME} — ${officialCount} official cards`);
     } else {
       console.warn(`⚠️  Scrydex ${res.status} — using manual values`);
@@ -340,6 +342,36 @@ html = html.replace(
   'function renderProductCard(',
   'const PRODUCT_META = ' + productMetaJson + ';\n\nfunction renderProductCard('
 );
+// ── Replace stat cards to match EN page structure ─────────────────────────────
+const secretRares  = officialCount && printedTotal && officialCount > printedTotal ? officialCount - printedTotal : 0;
+const releaseMonth = setConfig.releaseDate
+  ? new Date(setConfig.releaseDate).toLocaleString('en-US', { month: 'short' })
+  : '???';
+const releaseYear  = setConfig.releaseDate
+  ? new Date(setConfig.releaseDate).getFullYear()
+  : '';
+
+const jpStatCards = `<div class="set-stats">
+          <div class="stat-card">
+            <div class="stat-value">${printedTotal || officialCount || '—'}</div>
+            <div class="stat-label">Main Set</div>
+          </div>
+          ${secretRares > 0 ? `<div class="stat-card">
+            <div class="stat-value" style="color:#fbbf24;">${secretRares}</div>
+            <div class="stat-label">Secret Rares</div>
+          </div>` : ''}
+          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
+            <div class="stat-value" style="color:#4ade80;" id="stat-total-count">${officialCount || '—'}</div>
+            <div class="stat-label">Total Cards</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${releaseMonth}</div>
+            <div class="stat-label">${releaseYear}</div>
+          </div>
+        </div>`;
+
+html = html.replace(/(<div class="set-stats">)[\s\S]*?(<\/div>\s*<\/div>\s*<div class="hero-visual">)/, jpStatCards + '\n      </div>\n      <div class="hero-visual">');
+
 const enEquivalent = setConfig.enEquivalent || SET_ID;
 const scrydexJpPatch = `
 <script>
