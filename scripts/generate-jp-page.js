@@ -357,11 +357,9 @@ const scrydexJpPatch = `
       img.src = 'https://images.scrydex.com/pokemon/${SET_ID}-' + localId + '/medium';
     });
 
-    // 2. Logo: hide for JP pages since no JP logo exists in R2
-    var logoEl = document.getElementById('set-logo-hero');
-    if (logoEl) {
-      logoEl.closest('.stat-card') && (logoEl.closest('.stat-card').style.display = 'none');
-    }
+    // 2. Remove logo stat card for JP pages (no JP logo in R2)
+    var logoCard = document.querySelector('.stat-card-logo');
+    if (logoCard) logoCard.style.display = 'none';
 
     // 3. Filter buttons: hide EN-only product types not in JP sets
     var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
