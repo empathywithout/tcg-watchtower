@@ -79,20 +79,30 @@ let currentChaseList = [];
 function renderChaseCards(cards) {
   const grid = document.getElementById('chase-grid');
 
-  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare'];
-  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Ultra Rare': 3, 'Illustration Rare': 4 };
-  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Ultra Rare': 'UR', 'Illustration Rare': 'IR' };
-  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir' };
+  // Normalize TCGCSV rarity names to match our internal display names
+  const RARITY_ALIAS = {
+    'Special Art Rare': 'Special Illustration Rare',
+    'Art Rare': 'Illustration Rare',
+    'Super Rare': 'Ultra Rare',
+    'Mega Attack Rare': 'Mega Attack Rare',
+  };
+  const CHASE_RARITIES = ['Special Illustration Rare', 'Hyper Rare', 'Mega Hyper Rare', 'Mega Ultra Rare', 'Ultra Rare', 'Illustration Rare', 'Mega Attack Rare', 'Special Art Rare', 'Art Rare', 'Super Rare'];
+  const RARITY_TIER = { 'Mega Ultra Rare': 0, 'Mega Hyper Rare': 0, 'Hyper Rare': 1, 'Special Illustration Rare': 2, 'Special Art Rare': 2, 'Ultra Rare': 3, 'Super Rare': 3, 'Illustration Rare': 4, 'Art Rare': 4, 'Mega Attack Rare': 2 };
+  const RARITY_LABEL = { 'Mega Ultra Rare': 'MUR', 'Mega Hyper Rare': 'MHR', 'Hyper Rare': 'HR', 'Special Illustration Rare': 'SIR', 'Special Art Rare': 'SAR', 'Ultra Rare': 'UR', 'Super Rare': 'SR', 'Illustration Rare': 'IR', 'Art Rare': 'AR', 'Mega Attack Rare': 'MA' };
+  const RARITY_CLASS = { 'Mega Ultra Rare': 'rarity-hr', 'Mega Hyper Rare': 'rarity-hr', 'Hyper Rare': 'rarity-hr', 'Special Illustration Rare': 'rarity-sir', 'Special Art Rare': 'rarity-sir', 'Ultra Rare': 'rarity-ur', 'Super Rare': 'rarity-ur', 'Illustration Rare': 'rarity-ir', 'Art Rare': 'rarity-ir', 'Mega Attack Rare': 'rarity-sir' };
 
   if (cards && cards.length) {
     currentChaseList = cards
-      .filter(c => CHASE_RARITIES.includes((c.rarity||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ')))
+      .filter(c => {
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        return CHASE_RARITIES.includes(nr(c.rarity||''));
+      })
       .sort((a, b) => {
-        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         return (RARITY_TIER[nr(a.rarity)] ?? 99) - (RARITY_TIER[nr(b.rarity)] ?? 99);
       })
       .map(c => {
-        const nr = r => (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
+        const nr = r => RARITY_ALIAS[r] || (r||'').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w).join(' ');
         const rarity = nr(c.rarity);
         return {
           id: c.localId,
@@ -100,7 +110,7 @@ function renderChaseCards(cards) {
           rarity,
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
-          searchName: `${c.name} ${c.localId}/122 Chaos Rising Pokemon Card`,
+          searchName: `${c.name} ${c.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`,
           img: c.image || cardImg(SET_ID, c.localId),
         };
       });
@@ -144,11 +154,11 @@ function renderChaseCardsHTML(grid) {
       data-search="${c.searchName.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
       data-img="${c.img}"
       onclick="handleChaseClick(this)">
-      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} Chaos Rising Pokemon Card" width="200" height="279" loading="lazy"
+      <img class="chase-card-img" src="${c.img}" alt="${c.name} ${c.id} ${SET_FULL_NAME} Pokemon Card" width="200" height="279" loading="lazy"
            onerror="this.style.background='#1e293b';this.style.minHeight='180px'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
-        <div class="chase-card-number">#${c.id}/122</div>
+        <div class="chase-card-number">#${c.id}/${SET_OFFICIAL_COUNT}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge ${c.rarityClass}">${c.label}</span></div>
         ${priceHTML}
         <div class="buy-links">
@@ -232,7 +242,11 @@ function loadTCGPlayerPrices() {
   if (_pricesFetchPromise) return _pricesFetchPromise;
   _pricesFetchPromise = (async () => {
     try {
-      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}`);
+      const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
+      const sealedIds = SET_PHASE === 'jp'
+        ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',')
+        : '';
+      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}${sealedIds}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
@@ -354,10 +368,11 @@ async function loadCards() {
   try {
     let data = null;
 
-    // Try R2 API first
+    // Try R2 API first (passes phase so API uses Scrydex JP for JP sets)
     try {
-      const res = await fetch('/api/cards?set=' + SET_ID);
-      if (res.ok) {
+      const phaseParam = (typeof SET_PHASE !== 'undefined' && SET_PHASE === 'jp') ? '&phase=jp' : '';
+      const res = await fetch('/api/cards?set=' + SET_ID + phaseParam);
+      if (res.ok && res.status !== 204) {
         const json = await res.json();
         if (json && (json.cards || json).length > 0) data = json;
       }
@@ -427,7 +442,7 @@ async function loadCards() {
     filteredCards = allCards;
     setTimeout(() => {
       renderCards(true);
-      if (SET_PHASE === 'en' || SET_PHASE === 'presale') loadTCGPlayerPrices();
+      if (SET_PHASE === 'en' || SET_PHASE === 'presale' || SET_PHASE === 'jp') loadTCGPlayerPrices();
       if (SET_PHASE === 'presale' || SET_PHASE === 'jp') loadScrydexJPPrices();
     }, 0);
   } catch(e) {
@@ -460,7 +475,7 @@ function renderCards(reset) {
         <div class="card-item-price ${priceClass}">${priceText}</div>
       </div>`;
     el.addEventListener('click', () => {
-      const sq = `${card.name} ${card.localId}/122 Chaos Rising Pokemon Card`;
+      const sq = `${card.name} ${card.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`;
       const directUrl = priceCache[card.localId]?.url || null;
       openModal(card.localId, card.name, card.rarity || '', sq, imgUrl, directUrl);
     });
@@ -538,7 +553,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
     <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
     <div>
       <div class="modal-name">${name}</div>
-      <div class="modal-meta">#${localId} / Chaos Rising</div>
+      <div class="modal-meta">#${localId} / ${SET_FULL_NAME}</div>
       ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
       <div class="modal-links">
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">

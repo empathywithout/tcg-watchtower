@@ -10,7 +10,16 @@ const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 // confirmed value (verified via diagnostic script against live data).
 const SET_TO_GROUP = {
   'me05': '24688',
+  // JP sets — categoryId 85
+  'm1l_ja': '24399',
+  'm1s_ja': '24400',
+  'm2_ja':  '24459',
+  'm2a_ja': '24499',
+  'm3_ja':  '24600',
+  'm4_ja':  '24653',
+  'm5_ja':  '24711',
 };
+const TCGCSV_CATEGORY_JP = 85;
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const KV_URL          = process.env.KV_REST_API_URL;
 const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
@@ -26,7 +35,11 @@ const SCRYDEX_EN_ID_MAP = {
 };
 
 const SCRYDEX_JP_ID_MAP = {
+  // EN set IDs → Scrydex JP expansion IDs (used by EN pages with phase=jp)
   'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
+  // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
+  'm1l_ja':'m1l_ja','m1s_ja':'m1s_ja','m2_ja':'m2_ja','m2a_ja':'m2a_ja',
+  'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja',
 };
 
 // JPY→USD conversion for JP-phase sets (no English TCGplayer prices exist yet).
@@ -238,7 +251,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v3-getphase-fix:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v5-jp-prices:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     // Same reasoning as api/cards.js: JP-phase data is actively volatile
@@ -279,7 +292,8 @@ export default async function handler(req, res) {
     const bridgeGroupId = isJP ? SET_TO_GROUP[set] : null;
     if (bridgeGroupId) {
       try {
-        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+        const tcgcsvCategory = set.endsWith('_ja') ? TCGCSV_CATEGORY_JP : undefined;
+        const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId, tcgcsvCategory);
         const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
         const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
         const { cards: mergedIdentity, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
@@ -287,13 +301,39 @@ export default async function handler(req, res) {
         const originalByKey = {};
         for (const c of cards) originalByKey[`${c.name.toLowerCase()}|${(c.rarity||'').toLowerCase()}`] = c;
 
+        // Fetch TCGplayer EN prices for JP sets via TCGCSV
+        let priceMap = {};
+        try {
+          const tcgcsvCategory = set.endsWith('_ja') ? TCGCSV_CATEGORY_JP : 3;
+          const pricesRes = await fetch(`https://tcgcsv.com/tcgplayer/${tcgcsvCategory}/${bridgeGroupId}/prices`, {
+            headers: { 'User-Agent': 'TCGWatchtower/1.0' },
+            signal: AbortSignal.timeout(10000),
+          });
+          if (pricesRes.ok) {
+            const pricesData = await pricesRes.json();
+            for (const p of (pricesData.results || [])) {
+              if (p.subTypeName === 'Normal' || p.subTypeName === 'Holofoil') {
+                const existing = priceMap[p.productId];
+                if (!existing || (p.marketPrice != null && (existing.market == null || p.marketPrice > existing.market))) {
+                  priceMap[p.productId] = { market: p.marketPrice };
+                }
+              }
+            }
+            console.log(`[scrydex-cards] TCGCSV prices fetched for ${set}: ${Object.keys(priceMap).length} priced products`);
+          }
+        } catch (priceErr) {
+          console.warn(`[scrydex-cards] TCGCSV price fetch failed for ${set}:`, priceErr.message);
+        }
+
         cards = mergedIdentity.map(m => {
           const key = `${m.name.toLowerCase()}|${(m.rarity||'').toLowerCase()}`;
           const original = originalByKey[key];
+          const priceEntry = m.productId ? priceMap[m.productId] : null;
+          const market = priceEntry?.market ?? null;
           if (original) {
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source };
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: undefined, isEstimate: false };
           }
-          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market: null, source: m.source };
+          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market, source: m.source };
         });
         console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
       } catch (e) {

@@ -12,6 +12,7 @@ import { fetch as undiciFetch } from 'undici';
 
 const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
+const POKEMON_JP_CATEGORY = 85;
 const ONE_PIECE_CATEGORY  = 68;
 
 const TCGCSV_HEADERS = {
@@ -31,7 +32,7 @@ export default async function handler(req, res) {
 
   const groupId = req.query.groupId;
   const game    = (req.query.game || 'pokemon').toLowerCase();
-  const category = game === 'onepiece' ? ONE_PIECE_CATEGORY : POKEMON_CATEGORY;
+  const category = game === 'onepiece' ? ONE_PIECE_CATEGORY : (game === 'pokemon-japan' ? POKEMON_JP_CATEGORY : POKEMON_CATEGORY);
 
   if (!groupId || !/^\d+$/.test(groupId)) {
     return res.status(400).json({ error: 'Missing or invalid ?groupId= parameter' });
@@ -39,6 +40,10 @@ export default async function handler(req, res) {
 
   const debugMode = req.query.debug === '1';
   const debugCard = req.query.card;
+  // Optional: explicit sealed product IDs to include regardless of Number field
+  const sealedProductIdSet = req.query.sealedIds
+    ? new Set(req.query.sealedIds.split(',').map(id => parseInt(id.trim(), 10)).filter(Boolean))
+    : null;
 
   if (!debugMode) {
     const cached = cache.get(CACHE_VERSION + groupId);
@@ -281,7 +286,9 @@ export default async function handler(req, res) {
     for (const product of products) {
       const extData  = product.extendedData || [];
       const hasNumber = extData.some(e => e.name === 'Number');
-      if (hasNumber) continue;
+      // Include if: no Number field (standard sealed) OR explicitly listed in sealedIds
+      const isExplicitSealed = sealedProductIdSet && sealedProductIdSet.has(product.productId);
+      if (hasNumber && !isExplicitSealed) continue;
       const priceObj = priceByProductId[product.productId];
       if (!priceObj || bestPrice(priceObj) == null) continue;
       sealedPrices[String(product.productId)] = bestPrice(priceObj);

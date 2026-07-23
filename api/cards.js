@@ -10,7 +10,8 @@
 //      GET /api/cards?set=sv9b          (Japanese set ID — handled via sets.json phase)
 //      GET /api/cards?set=me02pt5
 
-import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
+import { fetchTcgcsvProducts, filterCardProducts, mergeCards, TCGCSV_CATEGORY_POKEMON } from './_lib/tcgcsv-bridge.js';
+const TCGCSV_CATEGORY_POKEMON_JP = 85;
 
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
@@ -29,6 +30,15 @@ const SET_TO_GROUP = {
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
+  // JP sets — categoryId 85 on TCGCSV (Pokemon Japan)
+  // Group IDs confirmed from tcgcsv.com/tcgplayer/85/groups
+  'm1l_ja': '24399', // Mega Brave
+  'm1s_ja': '24400', // Mega Symphonia
+  'm2_ja':  '24459', // Inferno X
+  'm2a_ja': '24499', // MEGA Dream ex
+  'm3_ja':  '24600', // Nihil Zero
+  'm4_ja':  '24653', // Ninja Spinner
+  'm5_ja':  '24711', // Abyss Eye
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -45,12 +55,22 @@ const SCRYDEX_EN_ID_MAP = {
 // e.g. 'sv11': 'sv9b'  (Ninja Spinner / Chaos Rising)
 // This map is auto-populated by generate-set-page.js when PHASE=jp
 const SCRYDEX_JP_ID_MAP = {
+  // EN set IDs → Scrydex JP expansion IDs (used by EN pages with PHASE=jp)
   'me01': 'me01',
   'me02': 'me02',
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
   // me05 removed — Scrydex EN data live as of July 17 2026
+
+  // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
+  'm1l_ja': 'm1l_ja',
+  'm1s_ja': 'm1s_ja',
+  'm2_ja':  'm2_ja',
+  'm2a_ja': 'm2a_ja',
+  'm3_ja':  'm3_ja',
+  'm4_ja':  'm4_ja',
+  'm5_ja':  'm5_ja',
 };
 
 // TCGdex dot-notation map for special sets
@@ -137,7 +157,17 @@ function normalizeRarity(r) {
 // entire time, regardless of what sets.json actually says, silently
 // bypassing the JP-phase bridge code path entirely. Only me05 is
 // currently JP-phase; every other set defaults to 'en' as before.
-const SET_PHASE_MAP = { 'me05': 'en' }; // flipped to EN — Scrydex EN data confirmed available
+const SET_PHASE_MAP = {
+  'me05': 'en', // flipped to EN — Scrydex EN data confirmed available
+  // Dedicated JP set pages — always use Scrydex JP endpoint
+  'm1l_ja': 'jp',
+  'm1s_ja': 'jp',
+  'm2_ja':  'jp',
+  'm2a_ja': 'jp',
+  'm3_ja':  'jp',
+  'm4_ja':  'jp',
+  'm5_ja':  'jp',
+};
 async function getSetPhase(setId) {
   return SET_PHASE_MAP[setId] || 'en';
 }
@@ -145,6 +175,12 @@ async function getSetPhase(setId) {
 // Background-write card metadata + images to R2 after a Scrydex hit.
 // Runs async — does NOT block the response. Next request hits R2 for free.
 async function cacheToR2InBackground(setId, cards, phase) {
+  // Skip R2 image caching for JP sets — use Scrydex CDN directly
+  // R2 has no JP card images and we don't want small images cached there
+  if (phase === 'jp' || setId.endsWith('_ja')) {
+    console.log(`[r2-cache] Skipping JP set ${setId} — using Scrydex CDN directly`);
+    return;
+  }
   const endpoint  = process.env.CF_R2_ENDPOINT;
   const accessKey = process.env.CF_R2_ACCESS_KEY;
   const secretKey = process.env.CF_R2_SECRET_KEY;
@@ -222,7 +258,7 @@ export default async function handler(req, res) {
 
   const setId = (req.query.set || '').trim();
   const game  = (req.query.game || '').trim().toLowerCase(); // 'onepiece' or 'pokemon' (default)
-  if (!setId || !/^[a-z0-9]+$/.test(setId)) {
+  if (!setId || !/^[a-z0-9_]+$/.test(setId)) {
     return res.status(400).json({ error: 'Missing or invalid ?set= parameter' });
   }
 
@@ -236,7 +272,7 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v4-en-phase-flip'; // bumped — me05 flipped to EN, force fresh Scrydex fetch
+  const CACHE_VERSION = 'v6-scrydex-images'; // bumped — use medium images for JP sets
   const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
@@ -412,13 +448,18 @@ export default async function handler(req, res) {
 
             if (bridgeGroupId) {
               try {
-                const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+                const tcgcsvCategory = setId.endsWith('_ja') ? TCGCSV_CATEGORY_POKEMON_JP : TCGCSV_CATEGORY_POKEMON;
+                const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId, tcgcsvCategory);
                 const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
 
+                // Build Scrydex image map keyed by localId so we can restore after merge
+                const scrydexImageMap = {};
                 const jpShaped = allCards.map((c) => {
                   const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
                   const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
-                  const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                  const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
+                  const paddedId = String(localId).padStart(3, '0');
+                  if (scrydexImage) scrydexImageMap[paddedId] = scrydexImage;
                   return {
                     localId,
                     name: c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim(),
@@ -432,7 +473,8 @@ export default async function handler(req, res) {
                   localId: c.localId,
                   name: c.name,
                   rarity: normalizeRarity(c.rarity),
-                  image: c.image || `${R2_BASE}/cards/${setId}/${c.localId}.webp`,
+                  // Prefer Scrydex medium image over TCGplayer thumbnail
+                  image: scrydexImageMap[String(c.localId).padStart(3, '0')] || c.image || null,
                   source: c.source,
                   phase,
                 }));
@@ -447,7 +489,7 @@ export default async function handler(req, res) {
                 const rawId   = c.id ? c.id.split('-').slice(1).join('-') : '';
                 const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
-                const scrydexImage = c.images?.[0]?.small || c.images?.[0]?.medium || null;
+                const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
                 const image = phase === 'en'
                   ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                   : (scrydexImage || `${R2_BASE}/cards/${setId}/${localId}.webp`);

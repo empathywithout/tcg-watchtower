@@ -26203,4 +26203,39 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/mega-dream-ex/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/mega-brave/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/mega-symphonia/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/inferno-x/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/nihil-zero/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/ninja-spinner/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/mega-evolution-jp/abyss-eye/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

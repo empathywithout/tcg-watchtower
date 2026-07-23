@@ -15,7 +15,15 @@
     "releaseDate": "2025-08-01",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "base-set",
+    "tcgpGroupId": "24399",
+    "printedTotal": 63,
+    "heroCards": [
+      "067",
+      "068",
+      "069"
+    ]
   },
   {
     "slug": "mega-symphonia",
@@ -33,7 +41,15 @@
     "releaseDate": "2025-08-01",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "base-set",
+    "tcgpGroupId": "24400",
+    "printedTotal": 63,
+    "heroCards": [
+      "067",
+      "068",
+      "069"
+    ]
   },
   {
     "slug": "inferno-x",
@@ -51,7 +67,15 @@
     "releaseDate": "2025-09-26",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "phantasmal-flames",
+    "tcgpGroupId": "24459",
+    "printedTotal": 84,
+    "heroCards": [
+      "100",
+      "101",
+      "102"
+    ]
   },
   {
     "slug": "mega-dream-ex",
@@ -70,7 +94,16 @@
     "packsPerBox": 10,
     "cardsPerPack": 10,
     "language": "Japanese",
-    "isHighClassPack": true
+    "isHighClassPack": true,
+    "printedTotal": 193,
+    "secretRares": 57,
+    "heroCards": [
+      "240",
+      "234",
+      "246"
+    ],
+    "enSlug": "ascended-heroes",
+    "tcgpGroupId": "24499"
   },
   {
     "slug": "nihil-zero",
@@ -88,7 +121,15 @@
     "releaseDate": "2026-01-23",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "perfect-order",
+    "tcgpGroupId": "24600",
+    "printedTotal": 84,
+    "heroCards": [
+      "100",
+      "101",
+      "102"
+    ]
   },
   {
     "slug": "ninja-spinner",
@@ -106,7 +147,15 @@
     "releaseDate": "2026-03-13",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "chaos-rising",
+    "tcgpGroupId": "24653",
+    "printedTotal": 83,
+    "heroCards": [
+      "100",
+      "101",
+      "102"
+    ]
   },
   {
     "slug": "abyss-eye",
@@ -124,6 +173,14 @@
     "releaseDate": "2026-05-22",
     "packsPerBox": 30,
     "cardsPerPack": 5,
-    "language": "Japanese"
+    "language": "Japanese",
+    "enSlug": "pitch-black",
+    "tcgpGroupId": "24711",
+    "printedTotal": 81,
+    "heroCards": [
+      "100",
+      "101",
+      "102"
+    ]
   }
 ]
