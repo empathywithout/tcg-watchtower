@@ -72,7 +72,12 @@
     "language": "Japanese",
     "isHighClassPack": true,
     "printedTotal": 193,
-    "secretRares": 57
+    "secretRares": 57,
+    "heroCards": [
+      "240",
+      "234",
+      "246"
+    ]
   },
   {
     "slug": "nihil-zero",

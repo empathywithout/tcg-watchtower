@@ -172,10 +172,9 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
 }
 
 // ── Hero cards ─────────────────────────────────────────────────────────────────
-// JP sets use Scrydex CDN images directly — no R2 pipeline needed
-let HERO_CARD_1 = process.env.HERO_CARD_1 || '001';
-let HERO_CARD_2 = process.env.HERO_CARD_2 || '002';
-let HERO_CARD_3 = process.env.HERO_CARD_3 || '003';
+let HERO_CARD_1 = (setConfig.heroCards?.[0] || process.env.HERO_CARD_1 || '001');
+let HERO_CARD_2 = (setConfig.heroCards?.[1] || process.env.HERO_CARD_2 || '002');
+let HERO_CARD_3 = (setConfig.heroCards?.[2] || process.env.HERO_CARD_3 || '003');
 let HERO_ALT_1  = process.env.HERO_ALT_1  || 'Card 1';
 let HERO_ALT_2  = process.env.HERO_ALT_2  || 'Card 2';
 let HERO_ALT_3  = process.env.HERO_ALT_3  || 'Card 3';
@@ -421,6 +420,10 @@ const jpStatCards = `<div class="set-stats">
           <div class="stat-card">
             <div class="stat-value">${releaseMonth}</div>
             <div class="stat-label">${releaseYear}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${setConfig.packsPerBox || 30}</div>
+            <div class="stat-label">${setConfig.isHighClassPack ? 'Packs / Box' : 'Packs / Box'}</div>
           </div>
         </div>`;
 
