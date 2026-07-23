@@ -351,7 +351,13 @@ const releaseYear  = setConfig.releaseDate
   ? new Date(setConfig.releaseDate).getFullYear()
   : '';
 
+const jpLogoUrl = setData.logo || `https://images.scrydex.com/pokemon/${SCRYDEX_ID}-logo/logo`;
+
 const jpStatCards = `<div class="set-stats">
+          <div class="stat-card stat-card-logo">
+            <img id="set-logo-hero" src="${jpLogoUrl}" alt="${SET_FULL_NAME} Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;" onerror="this.closest('.stat-card-logo').style.display='none'">
+            <div class="stat-label">${SET_SHORT_NAME}</div>
+          </div>
           <div class="stat-card">
             <div class="stat-value">${printedTotal || officialCount || '—'}</div>
             <div class="stat-label">Main Set</div>
@@ -383,15 +389,12 @@ const scrydexJpPatch = `
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. JP card images via Scrydex CDN
-    document.querySelectorAll('img[data-set="${SET_ID}"]').forEach(function(img) {
+    // 1. JP card images via Scrydex CDN    document.querySelectorAll('img[data-set="${SET_ID}"]').forEach(function(img) {
       var localId = String(img.dataset.id || '').padStart(3, '0');
       img.src = 'https://images.scrydex.com/pokemon/${SET_ID}-' + localId + '/medium';
     });
 
-    // 2. Remove logo stat card for JP pages (no JP logo in R2)
-    var logoCard = document.querySelector('.stat-card-logo');
-    if (logoCard) logoCard.style.display = 'none';
+    // 2. JP card images are loaded via Scrydex CDN (set on DOMContentLoaded)
 
     // 3. Filter buttons: hide EN-only product types not in JP sets
     var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
