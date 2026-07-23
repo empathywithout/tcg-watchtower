@@ -323,8 +323,8 @@ const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} Japanese 
 const SEO_OG_TITLE   = SEO_META_TITLE;
 const SEO_INTRO      = seoData.intro || '';
 
-// Note: JP banner HTML lives in set-template.html inside {{#IF_JP_PHASE}} block.
-// Generator just strips the conditional tags to show it on JP pages.
+// Dedicated JP pages don't need the "Japanese Set Preview" banner — strip it
+html = html.replace(/\{\{#IF_JP_PHASE\}\}[\s\S]*?\{\{\/IF_JP_PHASE\}\}/g, '');// Generator just strips the conditional tags to show it on JP pages.
 
 // ── Fill template ──────────────────────────────────────────────────────────────
 let html = readFileSync('set-template.html', 'utf8');
@@ -413,10 +413,6 @@ const jpStatCards = `<div class="set-stats">
             <div class="stat-value" style="color:#fbbf24;">${secretRares}</div>
             <div class="stat-label">Secret Rares</div>
           </div>` : ''}
-          <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
-            <div class="stat-value" style="color:#4ade80;" id="stat-total-count">${officialCount || '—'}</div>
-            <div class="stat-label">Total Cards</div>
-          </div>
           <div class="stat-card">
             <div class="stat-value">${releaseMonth}</div>
             <div class="stat-label">${releaseYear}</div>
