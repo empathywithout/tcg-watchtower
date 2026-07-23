@@ -10,7 +10,8 @@
 //      GET /api/cards?set=sv9b          (Japanese set ID — handled via sets.json phase)
 //      GET /api/cards?set=me02pt5
 
-import { fetchTcgcsvProducts, filterCardProducts, mergeCards } from './_lib/tcgcsv-bridge.js';
+import { fetchTcgcsvProducts, filterCardProducts, mergeCards, TCGCSV_CATEGORY_POKEMON } from './_lib/tcgcsv-bridge.js';
+const TCGCSV_CATEGORY_POKEMON_JP = 85;
 
 const R2_BASE = process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
 
@@ -29,6 +30,15 @@ const SET_TO_GROUP = {
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
+  // JP sets — categoryId 85 on TCGCSV (Pokemon Japan)
+  // TODO: verify these group IDs at https://tcgcsv.com/tcgplayer/85/groups
+  'm1l_ja': null, // Mega Brave
+  'm1s_ja': null, // Mega Symphonia
+  'm2_ja':  null, // Inferno X
+  'm2a_ja': null, // MEGA Dream ex
+  'm3_ja':  null, // Nihil Zero
+  'm4_ja':  null, // Ninja Spinner
+  'm5_ja':  null, // Abyss Eye
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -432,7 +442,8 @@ export default async function handler(req, res) {
 
             if (bridgeGroupId) {
               try {
-                const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId);
+                const tcgcsvCategory = setId.endsWith('_ja') ? TCGCSV_CATEGORY_POKEMON_JP : TCGCSV_CATEGORY_POKEMON;
+                const tcgcsvProducts = await fetchTcgcsvProducts(bridgeGroupId, tcgcsvCategory);
                 const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
 
                 const jpShaped = allCards.map((c) => {
