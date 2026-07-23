@@ -1100,7 +1100,7 @@ button,a,[onclick]{touch-action:manipulation}</style>
           Complete guide to MEGA Dream ex (M2a) — full Japanese card list with English translations, chase cards ranked by price, and where to buy sealed product.
         </p>
         <p class="set-desc" style="margin-top:12px;font-size:0.95rem;opacity:0.85;">MEGA Dream ex (M2a) is the High Class Pack subset of the Japanese Pokémon TCG Mega Evolution series, released November 28, 2025. As the Japanese source for the English Ascended Heroes (ME2.5), MEGA Dream ex is a reprint-heavy premium set focused entirely on Mega Evolution Pokémon ex including new Mega Evolution cards based on Pokémon Legends: Z-A. Each booster pack contains 10 cards with a guaranteed Pokémon ex or Mega Evolution Pokémon ex. This complete MEGA Dream ex card list covers all JP cards with EN name translations, rarity filters, and live prices on TCG Watchtower.</p>
-        <div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;"><a href="/pokemon/sets/mega-evolution-jp/inferno-x/cards" style="color:var(--text-muted);text-decoration:none;">&larr; Previous: Inferno X (M2)</a><a href="/pokemon/sets/mega-evolution/ascended-heroes/cards" style="color:var(--text-muted);text-decoration:none;">English adaptation: <span style="color:var(--primary-blue);">Ascended Heroes (ME2.5)</span> &rarr;</a><a href="/pokemon/sets/mega-evolution-jp/nihil-zero/cards" style="color:var(--text-muted);text-decoration:none;">Next: Nihil Zero (M3) &rarr;</a></div>
+        <div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;"><a href="/pokemon/sets/mega-evolution-jp/inferno-x/cards" style="color:var(--text-muted);text-decoration:none;">&larr; Previous: Inferno X (M2)</a><a href="/pokemon/sets/mega-evolution/ascended-heroes/cards" style="color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 12px;white-space:nowrap;">🇬🇧 EN: <span style="color:var(--primary-blue);">Ascended Heroes (ME2.5)</span></a><a href="/pokemon/sets/mega-evolution-jp/nihil-zero/cards" style="color:var(--text-muted);text-decoration:none;">Next: Nihil Zero (M3) &rarr;</a></div>
         <div class="set-stats">
           <div class="stat-card stat-card-logo">
             <img id="set-logo-hero" src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/m2a_ja.png" alt="MEGA Dream ex (M2a) Logo" width="150" height="60" style="width: 100%; max-width: 150px; height: auto; object-fit: contain;" onerror="this.closest('.stat-card-logo').style.display='none'">
@@ -1596,7 +1596,10 @@ function loadTCGPlayerPrices() {
   _pricesFetchPromise = (async () => {
     try {
       const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
-      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}`);
+      const sealedIds = SET_PHASE === 'jp'
+        ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',')
+        : '';
+      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}${sealedIds}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
