@@ -334,13 +334,52 @@ html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1'
 // Register Scrydex JP ID for client-side price fetching
 const scrydexJpPatch = `
 <script>
+  // Register Scrydex JP ID for this set
   if (window.SCRYDEX_JP_ID_MAP) {
     window.SCRYDEX_JP_ID_MAP[${JSON.stringify(SET_ID)}] = ${JSON.stringify(SCRYDEX_ID)};
   } else {
     window.SCRYDEX_JP_ID_MAP = { ${JSON.stringify(SET_ID)}: ${JSON.stringify(SCRYDEX_ID)} };
   }
+
+  // Override cardImg to use Scrydex CDN for JP sets
+  // JP card IDs in Scrydex look like "m2a_ja-001" — build that from setId + localId
+  window.__JP_CARD_IMG_OVERRIDE__ = function(setId, localId) {
+    if (!setId || !setId.includes('_ja')) return null;
+    // Pad localId to 3 digits
+    const paddedId = String(localId).padStart(3, '0');
+    return 'https://images.scrydex.com/pokemon/' + setId + '-' + paddedId + '/medium';
+  };
+
+  // Override set logo to use R2 with EN equivalent fallback
+  window.__JP_LOGO_OVERRIDE__ = ${JSON.stringify(setConfig.enEquivalent || SET_ID)};
 </script>`;
 html = html.replace('</head>', scrydexJpPatch + '\n</head>');
+
+// Also patch cardImg and setLogoUrl calls in the page to use JP overrides
+// Inject override after CONFIG is defined
+const jpImgPatch = `
+// ── JP image overrides ────────────────────────────────────────────────────────
+(function() {
+  const _origCardImg = typeof cardImg === 'function' ? cardImg : null;
+  if (window.__JP_CARD_IMG_OVERRIDE__) {
+    window.cardImg = function(setId, localId) {
+      const jpUrl = window.__JP_CARD_IMG_OVERRIDE__(setId, localId);
+      if (jpUrl) return jpUrl;
+      return _origCardImg ? _origCardImg(setId, localId) : '';
+    };
+  }
+  const _origLogoUrl = typeof setLogoUrl === 'function' ? setLogoUrl : null;
+  if (window.__JP_LOGO_OVERRIDE__ && _origLogoUrl) {
+    window.setLogoUrl = function(setId) {
+      if (setId && setId.includes('_ja')) return _origLogoUrl(window.__JP_LOGO_OVERRIDE__);
+      return _origLogoUrl(setId);
+    };
+  }
+})();
+// ─────────────────────────────────────────────────────────────────────────────
+`;
+// Inject right after the CONFIG block closes
+html = html.replace('// ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────', jpImgPatch + '\n// ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────');
 
 // Inject SEO intro if present
 if (SEO_INTRO) {
