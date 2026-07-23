@@ -651,6 +651,14 @@
     {
       "source": "/pokemon/sets/mega-evolution-jp/ninja-spinner/sealed-product",
       "destination": "/jp-ninja-spinner.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/abyss-eye/cards",
+      "destination": "/jp-abyss-eye.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/abyss-eye/sealed-product",
+      "destination": "/jp-abyss-eye.html"
     }
   ],
   "redirects": [
