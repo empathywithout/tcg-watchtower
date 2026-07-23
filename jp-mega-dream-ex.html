@@ -1064,39 +1064,6 @@ footer {
 .nav-dropdown-set img { width:32px; height:20px; object-fit:contain; }
 .nav-dropdown-series { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 8px 12px 4px; }
 button,a,[onclick]{touch-action:manipulation}</style>
-
-<script>
-  // Register Scrydex JP ID for client-side price/card fetching
-  if (window.SCRYDEX_JP_ID_MAP) {
-    window.SCRYDEX_JP_ID_MAP["m2a_ja"] = "m2a_ja";
-  } else {
-    window.SCRYDEX_JP_ID_MAP = { "m2a_ja": "m2a_ja" };
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    // 1. JP card images via Scrydex CDN    document.querySelectorAll('img[data-set="m2a_ja"]').forEach(function(img) {
-      var localId = String(img.dataset.id || '').padStart(3, '0');
-      img.src = 'https://images.scrydex.com/pokemon/m2a_ja-' + localId + '/medium';
-    });
-
-    // 2. JP card images are loaded via Scrydex CDN (set on DOMContentLoaded)
-
-    // 3. Filter buttons: hide EN-only product types not in JP sets
-    var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
-    document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
-      var filter = btn.dataset.filter;
-      if (filter && !jpValidFilters.includes(filter)) {
-        btn.style.display = 'none';
-      }
-    });
-
-    // 4. Sealed products section header: update to JP-appropriate copy
-    var sealedTitle = document.querySelector('#section-products h2');
-    if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
-      sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
-    }
-  });
-</script>
 </head>
 <body>
 <div class="bg-grid"></div>
@@ -1138,10 +1105,13 @@ button,a,[onclick]{touch-action:manipulation}</style>
             <div class="stat-label">M2a</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">250</div>
+            <div class="stat-value">193</div>
             <div class="stat-label">Main Set</div>
           </div>
-          
+          <div class="stat-card">
+            <div class="stat-value" style="color:#fbbf24;">57</div>
+            <div class="stat-label">Secret Rares</div>
+          </div>
           <div class="stat-card" style="background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);">
             <div class="stat-value" style="color:#4ade80;" id="stat-total-count">250</div>
             <div class="stat-label">Total Cards</div>
@@ -2309,6 +2279,48 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 })();
 </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
+
+<script>
+  // Register Scrydex JP ID for client-side price/card fetching
+  if (window.SCRYDEX_JP_ID_MAP) {
+    window.SCRYDEX_JP_ID_MAP["m2a_ja"] = "m2a_ja";
+  } else {
+    window.SCRYDEX_JP_ID_MAP = { "m2a_ja": "m2a_ja" };
+  }
+
+  // Override cardImg for JP sets to use Scrydex CDN — must run before set-page.js uses it
+  (function() {
+    var _orig = window.cardImg;
+    window.cardImg = function(setId, localId) {
+      if (setId && setId.indexOf('_ja') !== -1) {
+        var id = parseInt(localId, 10) || 1;
+        return 'https://images.scrydex.com/pokemon/' + setId + '-' + id + '/medium';
+      }
+      return _orig ? _orig(setId, localId) : '';
+    };
+  })();
+
+  // Run immediately — this script is at end of body, DOM is ready
+  // Re-wire hero stack images with overridden cardImg
+  document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
+    img.src = window.cardImg(img.dataset.set, img.dataset.id);
+  });
+
+  // Filter buttons: hide EN-only product types not in JP sets
+  var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
+  document.querySelectorAll('#product-filters .filter-btn').forEach(function(btn) {
+    var filter = btn.dataset.filter;
+    if (filter && !jpValidFilters.includes(filter)) {
+      btn.style.display = 'none';
+    }
+  });
+
+  // Sealed products section header: update to JP-appropriate copy
+  var sealedTitle = document.querySelector('#section-products h2');
+  if (sealedTitle && sealedTitle.textContent.includes('ETBS')) {
+    sealedTitle.innerHTML = sealedTitle.innerHTML.replace('BOOSTER BOXES &amp; ETBS', 'BOOSTER BOXES &amp; PACKS');
+  }
+</script>
 </body>
 </html>
 
