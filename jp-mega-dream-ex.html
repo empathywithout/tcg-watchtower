@@ -1066,24 +1066,25 @@ footer {
 button,a,[onclick]{touch-action:manipulation}</style>
 
 <script>
-  // Register Scrydex JP ID for this set
+  // Register Scrydex JP ID for client-side price/card fetching
   if (window.SCRYDEX_JP_ID_MAP) {
     window.SCRYDEX_JP_ID_MAP["m2a_ja"] = "m2a_ja";
   } else {
     window.SCRYDEX_JP_ID_MAP = { "m2a_ja": "m2a_ja" };
   }
-
-  // Override cardImg to use Scrydex CDN for JP sets
-  // JP card IDs in Scrydex look like "m2a_ja-001" — build that from setId + localId
-  window.__JP_CARD_IMG_OVERRIDE__ = function(setId, localId) {
-    if (!setId || !setId.includes('_ja')) return null;
-    // Pad localId to 3 digits
-    const paddedId = String(localId).padStart(3, '0');
-    return 'https://images.scrydex.com/pokemon/' + setId + '-' + paddedId + '/medium';
-  };
-
-  // Override set logo to use R2 with EN equivalent fallback
-  window.__JP_LOGO_OVERRIDE__ = "me02pt5";
+  // JP card images: use Scrydex CDN directly (R2 has no JP images yet)
+  // Scrydex card IDs look like "m2a_ja-001"
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('img[data-set="m2a_ja"]').forEach(function(img) {
+      var localId = String(img.dataset.id || '').padStart(3, '0');
+      img.src = 'https://images.scrydex.com/pokemon/m2a_ja-' + localId + '/medium';
+    });
+    // Logo: fall back to EN equivalent logo which exists in R2
+    var logoEl = document.getElementById('set-logo-hero');
+    if (logoEl) {
+      logoEl.src = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/me02pt5.png';
+    }
+  });
 </script>
 </head>
 <body>
@@ -1375,27 +1376,6 @@ const CONFIG = {
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
   r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
 };
-
-
-// ── JP image overrides ────────────────────────────────────────────────────────
-(function() {
-  const _origCardImg = typeof cardImg === 'function' ? cardImg : null;
-  if (window.__JP_CARD_IMG_OVERRIDE__) {
-    window.cardImg = function(setId, localId) {
-      const jpUrl = window.__JP_CARD_IMG_OVERRIDE__(setId, localId);
-      if (jpUrl) return jpUrl;
-      return _origCardImg ? _origCardImg(setId, localId) : '';
-    };
-  }
-  const _origLogoUrl = typeof setLogoUrl === 'function' ? setLogoUrl : null;
-  if (window.__JP_LOGO_OVERRIDE__ && _origLogoUrl) {
-    window.setLogoUrl = function(setId) {
-      if (setId && setId.includes('_ja')) return _origLogoUrl(window.__JP_LOGO_OVERRIDE__);
-      return _origLogoUrl(setId);
-    };
-  }
-})();
-// ─────────────────────────────────────────────────────────────────────────────
 
 // ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────
 // e.g. "sv1" → "sv", "sv8pt5" → "sv", "me1" → "me", "me2" → "me"
