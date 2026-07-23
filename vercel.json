@@ -663,6 +663,11 @@
   ],
   "redirects": [
     {
+      "source": "/pokemon/sets/mega-evolution-jp/:set/cards/:card",
+      "destination": "/pokemon/sets/mega-evolution-jp/:set/cards",
+      "permanent": false
+    },
+    {
       "source": "/pokemon/sets/mega-evolution/pitch-black/cards/annihilape-39",
       "destination": "/pokemon/sets/mega-evolution/pitch-black/cards",
       "permanent": true
