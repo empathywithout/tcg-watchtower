@@ -2306,8 +2306,28 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     };
   })();
 
-  // Run immediately — this script is at end of body, DOM is ready
-  // Re-wire hero stack images with overridden cardImg
+  // Override sets dropdown to show JP ME sets instead of EN sets
+  document.addEventListener('DOMContentLoaded', function() {
+    // Wait for fetchSets to be defined then override it
+    setTimeout(function() {
+      if (typeof fetchSets === 'function') {
+        window.fetchSets = async function() {
+          try {
+            const res = await fetch('/sets-jp.json');
+            if (!res.ok) return;
+            const jpSets = await res.json();
+            allSets = jpSets.filter(s => s.live).map(s => ({
+              ...s,
+              slug: '/pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
+              series: 'Mega Evolution JP',
+            }));
+            renderSets();
+          } catch(e) {}
+        };
+        fetchSets();
+      }
+    }, 100);
+  });
   document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
     img.src = window.cardImg(img.dataset.set, img.dataset.id);
   });
