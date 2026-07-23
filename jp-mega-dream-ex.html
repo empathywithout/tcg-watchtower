@@ -1505,7 +1505,7 @@ function renderChaseCardsHTML(grid) {
       ? `<div class="chase-card-price-wrap"${
           c.priceIsEstimate ? ' title="Estimated from Japanese market price, converted to USD"' :
           SET_PHASE === 'presale' ? ' title="Presale price — may change at release"' : ''
-        }><span class="price-value">${c.priceIsEstimate ? '~' : ''}${c.price.toFixed(2)}${c.priceIsEstimate ? ' 〜' : SET_PHASE === 'presale' ? ' ❆' : ''}</span></div>`
+        }><span class="price-value">${c.priceIsEstimate ? '~' : ''}$${c.price.toFixed(2)}${c.priceIsEstimate ? ' 〜' : SET_PHASE === 'presale' ? ' ❆' : ''}</span></div>`
       : `<div class="chase-card-price-wrap chase-card-price-loading">—</div>`;
     return `
     <div class="chase-card"
@@ -1545,16 +1545,7 @@ function renderProductCard(p) {
       <div class="product-info">
         <span class="rarity-badge ${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">${p.type}</span>
         <div class="product-name">${p.name}</div>
-        <div class="product-price" data-tcgp-id="${p.tcgpId}" style="font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem;">${p.price ? '
-</script>
-<script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
-</body>
-</html>
-
-
-
-
- + p.price.toFixed(2) : ''}</div>
+        <div class="product-price" data-tcgp-id="${p.tcgpId}" style="font-size:1.1rem;font-weight:700;color:#22c55e;margin:6px 0;min-height:1.5rem;">${p.price ? '$' + p.price.toFixed(2) : ''}</div>
 
         <div class="product-links">
           ${!p.noAmazon && p.amazonUrl ? `<a class="product-link-row pl-amazon" href="${p.amazonUrl}" target="_blank" rel="noopener">
@@ -1641,10 +1632,10 @@ function loadTCGPlayerPrices() {
         if (!priceEl) return;
         if (cached?.price) {
           if (SET_PHASE === 'presale') {
-            priceEl.textContent = `${cached.price.toFixed(2)} ❆`;
+            priceEl.textContent = `$${cached.price.toFixed(2)} ❆`;
             priceEl.title = 'Presale price — may change at release';
           } else {
-            priceEl.textContent = `${cached.price.toFixed(2)}`;
+            priceEl.textContent = `$${cached.price.toFixed(2)}`;
           }
           priceEl.classList.remove('loading');
         } else {
@@ -1661,16 +1652,7 @@ function loadTCGPlayerPrices() {
         const tid = el.dataset.tcgpId;
         const price = sealedPrices[tid];
         if (price != null) {
-          el.textContent = '
-</script>
-<script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
-</body>
-</html>
-
-
-
-
- + price.toFixed(2);
+          el.textContent = '$' + price.toFixed(2);
         }
       });
 
@@ -1723,7 +1705,7 @@ function loadScrydexJPPrices() {
         const cached  = priceCache[id];
         const priceEl = el.querySelector('.card-item-price');
         if (!priceEl || !cached?.estimate || !cached?.price) return;
-        priceEl.textContent = `~${cached.price.toFixed(2)} 〜`;
+        priceEl.textContent = `~$${cached.price.toFixed(2)} 〜`;
         priceEl.title = 'Estimated from Japanese market price, converted to USD';
         priceEl.classList.remove('loading');
       });
@@ -1837,7 +1819,7 @@ function renderCards(reset) {
     el.dataset.name = card.name;
 
     const cached = priceCache[card.localId];
-    const priceText = cached?.price ? (cached.estimate ? `~${cached.price.toFixed(2)} 〜` : (SET_PHASE === 'presale' ? `${cached.price.toFixed(2)} ❆` : `${cached.price.toFixed(2)}`)) : '';
+    const priceText = cached?.price ? (cached.estimate ? `~$${cached.price.toFixed(2)} 〜` : (SET_PHASE === 'presale' ? `$${cached.price.toFixed(2)} ❆` : `$${cached.price.toFixed(2)}`)) : '';
     const priceClass = cached === undefined || (!cached && !(card.localId in priceCache)) ? 'loading' : '';
 
     el.innerHTML = `
