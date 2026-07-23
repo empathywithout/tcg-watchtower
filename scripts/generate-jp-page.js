@@ -331,12 +331,15 @@ for (const [placeholder, value] of Object.entries(vars)) {
 // JP pages always show the JP banner (template already contains banner HTML)
 html = html.replace(/\{\{#IF_JP_PHASE\}\}([\s\S]*?)\{\{\/IF_JP_PHASE\}\}/g, '$1');
 
-// Inject const PRODUCT_META into ALL occurrences of the PRODUCTS section marker.
-// set-page.js contains this marker — after SET_PAGE_JS is injected it appears
-// inside the <script> block. Replace all occurrences so the browser gets
-// PRODUCT_META defined where it runs.
-const productMetaDeclaration = '/* ===== PRODUCTS ===== */\nconst PRODUCT_META = ' + productMetaJson + ';';
-html = html.replaceAll('/* ===== PRODUCTS ===== */', productMetaDeclaration);
+// Inject const PRODUCT_META right before renderProductCard in the JS section.
+// We cannot use the /* ===== PRODUCTS ===== */ comment as anchor because it
+// exists in BOTH set-page.css and set-page.js — replacing it puts PRODUCT_META
+// inside <style> where the browser ignores it. renderProductCard only exists
+// once, in the JS section, making it a safe unique anchor.
+html = html.replace(
+  'function renderProductCard(',
+  'const PRODUCT_META = ' + productMetaJson + ';\n\nfunction renderProductCard('
+);
 const enEquivalent = setConfig.enEquivalent || SET_ID;
 const scrydexJpPatch = `
 <script>
