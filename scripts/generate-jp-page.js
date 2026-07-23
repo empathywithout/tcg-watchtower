@@ -340,15 +340,15 @@ const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim().replace(
 
 // ── Per-set short description ─────────────────────────────────────────────────
 const SET_DESCRIPTIONS = {
-  'm1l_ja': `Browse the complete Mega Brave card list — 92 JP cards with English name translations, TCGplayer prices, and a buying guide for the Japanese Mega Evolution series.`,
-  'm1s_ja': `Browse the complete Mega Symphonia card list — 92 JP cards with English name translations, TCGplayer prices, and a buying guide for the Japanese Mega Evolution series.`,
-  'm2_ja':  `Browse the complete Inferno X card list — 116 JP cards headlined by Mega Charizard X ex, with English translations, TCGplayer prices, and sealed product guide.`,
-  'm2a_ja': `Browse the complete MEGA Dream ex card list — all 250 JP High Class Pack cards with English translations, TCGplayer prices, and where to buy booster boxes.`,
-  'm3_ja':  `Browse the complete Nihil Zero card list — JP cards headlined by Mega Zygarde ex, with English translations, TCGplayer prices, and sealed product guide.`,
-  'm4_ja':  `Browse the complete Ninja Spinner card list — 120 JP cards headlined by Mega Greninja ex, with English translations, TCGplayer prices, and sealed product guide.`,
-  'm5_ja':  `Browse the complete Abyss Eye card list — 118 JP cards headlined by Mega Darkrai ex, with English translations, TCGplayer prices, and sealed product guide.`,
+  'm1l_ja': `Browse the complete Mega Brave card list — 92 JP cards with English name translations, live prices on TCG Watchtower, and a buying guide for the Japanese Mega Evolution series.`,
+  'm1s_ja': `Browse the complete Mega Symphonia card list — 92 JP cards with English name translations, live prices on TCG Watchtower, and a buying guide for the Japanese Mega Evolution series.`,
+  'm2_ja':  `Browse the complete Inferno X card list — 116 JP cards headlined by Mega Charizard X ex, with English translations, live prices, and sealed product guide on TCG Watchtower.`,
+  'm2a_ja': `Browse the complete MEGA Dream ex card list — all 250 JP High Class Pack cards with English translations, live prices, and where to buy booster boxes on TCG Watchtower.`,
+  'm3_ja':  `Browse the complete Nihil Zero card list — JP cards headlined by Mega Zygarde ex, with English translations, live prices, and sealed product guide on TCG Watchtower.`,
+  'm4_ja':  `Browse the complete Ninja Spinner card list — 120 JP cards headlined by Mega Greninja ex, with English translations, live prices, and sealed product guide on TCG Watchtower.`,
+  'm5_ja':  `Browse the complete Abyss Eye card list — 118 JP cards headlined by Mega Darkrai ex, with English translations, live prices, and sealed product guide on TCG Watchtower.`,
 };
-const SET_DESCRIPTION_TEXT = SET_DESCRIPTIONS[SET_ID] || `Browse the complete ${SET_FULL_NAME} card list — Japanese Pokémon TCG cards with English translations, TCGplayer prices, and sealed product guide.`;
+const SET_DESCRIPTION_TEXT = SET_DESCRIPTIONS[SET_ID] || `Browse the complete ${SET_FULL_NAME} card list — Japanese Pokémon TCG cards with English translations, live prices, and sealed product guide.`;
 
 const vars = {
   '{{GA_CUSTOM_DIMS}}':        JSON.stringify({ set_id: SET_ID, series: SET_SERIES, page_type: 'set_list', language: 'jp' }),
