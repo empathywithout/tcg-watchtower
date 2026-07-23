@@ -357,11 +357,10 @@ const scrydexJpPatch = `
       img.src = 'https://images.scrydex.com/pokemon/${SET_ID}-' + localId + '/medium';
     });
 
-    // 2. Logo: use EN equivalent logo from R2
+    // 2. Logo: hide for JP pages since no JP logo exists in R2
     var logoEl = document.getElementById('set-logo-hero');
     if (logoEl) {
-      logoEl.src = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/logos/${enEquivalent}.png';
-      logoEl.onerror = function() { this.style.display = 'none'; };
+      logoEl.closest('.stat-card') && (logoEl.closest('.stat-card').style.display = 'none');
     }
 
     // 3. Filter buttons: hide EN-only product types not in JP sets
