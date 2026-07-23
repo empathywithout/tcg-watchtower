@@ -45,12 +45,22 @@ const SCRYDEX_EN_ID_MAP = {
 // e.g. 'sv11': 'sv9b'  (Ninja Spinner / Chaos Rising)
 // This map is auto-populated by generate-set-page.js when PHASE=jp
 const SCRYDEX_JP_ID_MAP = {
+  // EN set IDs → Scrydex JP expansion IDs (used by EN pages with PHASE=jp)
   'me01': 'me01',
   'me02': 'me02',
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
   // me05 removed — Scrydex EN data live as of July 17 2026
+
+  // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
+  'm1l_ja': 'm1l_ja',
+  'm1s_ja': 'm1s_ja',
+  'm2_ja':  'm2_ja',
+  'm2a_ja': 'm2a_ja',
+  'm3_ja':  'm3_ja',
+  'm4_ja':  'm4_ja',
+  'm5_ja':  'm5_ja',
 };
 
 // TCGdex dot-notation map for special sets
@@ -137,7 +147,17 @@ function normalizeRarity(r) {
 // entire time, regardless of what sets.json actually says, silently
 // bypassing the JP-phase bridge code path entirely. Only me05 is
 // currently JP-phase; every other set defaults to 'en' as before.
-const SET_PHASE_MAP = { 'me05': 'en' }; // flipped to EN — Scrydex EN data confirmed available
+const SET_PHASE_MAP = {
+  'me05': 'en', // flipped to EN — Scrydex EN data confirmed available
+  // Dedicated JP set pages — always use Scrydex JP endpoint
+  'm1l_ja': 'jp',
+  'm1s_ja': 'jp',
+  'm2_ja':  'jp',
+  'm2a_ja': 'jp',
+  'm3_ja':  'jp',
+  'm4_ja':  'jp',
+  'm5_ja':  'jp',
+};
 async function getSetPhase(setId) {
   return SET_PHASE_MAP[setId] || 'en';
 }
