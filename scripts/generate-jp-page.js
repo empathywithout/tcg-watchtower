@@ -354,7 +354,7 @@ const vars = {
   '{{SET_OFFICIAL_COUNT}}':    String(officialCount),
   '{{SET_SEARCH_NAME}}':       SET_SEARCH_NAME,
   '{{SET_TCGP_SLUG}}':         SET_TCGP_SLUG,
-  '{{TCGP_GROUP_ID}}':         '0',   // JP sets use Scrydex for prices, not TCGCSV
+  '{{TCGP_GROUP_ID}}':         setConfig.tcgpGroupId || '0',
   '{{SET_PHASE}}':             'jp',  // Always jp for JP pages
   '{{SET_SLUG}}':              SET_SLUG,
   '{{HERO_CARD_1}}':           HERO_CARD_1,

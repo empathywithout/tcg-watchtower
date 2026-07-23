@@ -242,7 +242,8 @@ function loadTCGPlayerPrices() {
   if (_pricesFetchPromise) return _pricesFetchPromise;
   _pricesFetchPromise = (async () => {
     try {
-      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}`);
+      const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
+      const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
 
