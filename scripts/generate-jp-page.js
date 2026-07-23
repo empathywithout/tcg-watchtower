@@ -71,7 +71,7 @@ const JP_ME_SERIES_ORDER = [
   { setId: 'm5_ja',  url: '/pokemon/sets/mega-evolution-jp/abyss-eye/cards',       name: 'Abyss Eye',       short: 'M5'  },
 ];
 
-function buildSeriesNavHtml(order, currentSetId) {
+function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
   const idx     = order.findIndex(s => s.setId === currentSetId);
   const prev    = idx > 0 ? order[idx - 1] : null;
   const next    = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
@@ -81,10 +81,13 @@ function buildSeriesNavHtml(order, currentSetId) {
   const nextHtml = next
     ? `<a href="${next.url}" style="color:var(--text-muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
     : '<span></span>';
-  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${nextHtml}</div>`;
+  const enLinkHtml = enSlug
+    ? `<a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="color:var(--text-muted);text-decoration:none;">English adaptation: <span style="color:var(--primary-blue);">${enSetName}</span> &rarr;</a>`
+    : '<span></span>';
+  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${enLinkHtml}${nextHtml}</div>`;
 }
 
-const SERIES_NAV_HTML = buildSeriesNavHtml(JP_ME_SERIES_ORDER, SET_ID);
+const SERIES_NAV_HTML = buildSeriesNavHtml(JP_ME_SERIES_ORDER, SET_ID, setConfig.enSlug, setConfig.enSetName);
 
 // ── Fetch JP set metadata from Scrydex ────────────────────────────────────────
 let setData      = {};
