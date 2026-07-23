@@ -489,6 +489,65 @@ if (remaining.length) {
   console.warn(`⚠️  Unreplaced placeholders: ${[...new Set(remaining)].join(', ')}`);
 }
 
+// ── Upload card data JSON to R2 for SEO table ──────────────────────────────────
+if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLIC_URL) {
+  try {
+    const r2 = new S3Client({
+      region: 'auto',
+      endpoint: process.env.CF_R2_ENDPOINT,
+      credentials: { accessKeyId: process.env.CF_R2_ACCESS_KEY, secretAccessKey: process.env.CF_R2_SECRET_KEY },
+    });
+    const dataKey = `data/${SET_ID}.json`;
+    // Check if already uploaded
+    let dataExists = false;
+    try {
+      await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: dataKey }));
+      dataExists = true;
+      console.log(`✅  Card data already in R2: ${dataKey}`);
+    } catch {}
+
+    if (!dataExists) {
+      console.log(`\n📋 Fetching all JP cards from Scrydex for R2 data upload...`);
+      let allJpCards = [];
+      let page = 1;
+      while (true) {
+        const res = await fetch(
+          `https://api.scrydex.com/pokemon/v1/ja/expansions/${SCRYDEX_ID}/cards?select=id,name,translation,rarity&pageSize=100&page=${page}`,
+          { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID } }
+        );
+        if (!res.ok) break;
+        const data = await res.json();
+        const cards = data.data || [];
+        allJpCards = allJpCards.concat(cards.map(c => {
+          const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
+          const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+          return {
+            localId: String(localId).padStart(3, '0'),
+            name: c.translation?.en?.name || c.name || '',
+            nameJP: c.name || '',
+            rarity: c.translation?.en?.rarity || c.rarity || '',
+          };
+        }));
+        if (cards.length < 100) break;
+        page++;
+      }
+      if (allJpCards.length > 0) {
+        const jsonData = JSON.stringify({ cards: allJpCards, setId: SET_ID, total: allJpCards.length });
+        await r2.send(new PutObjectCommand({
+          Bucket: process.env.CF_R2_BUCKET,
+          Key: dataKey,
+          Body: jsonData,
+          ContentType: 'application/json',
+          CacheControl: 'public, max-age=86400',
+        }));
+        console.log(`✅  Uploaded ${allJpCards.length} cards to R2: ${dataKey}`);
+      }
+    }
+  } catch (dataErr) {
+    console.warn(`⚠️  Card data R2 upload failed: ${dataErr.message}`);
+  }
+}
+
 // ── Inject static SEO card table ───────────────────────────────────────────────
 // Uses JP set ID namespaced under ja: prefix in R2
 try {
