@@ -71,6 +71,10 @@ const SCRYDEX_JP_ID_MAP = {
   'm3_ja':  'm3_ja',
   'm4_ja':  'm4_ja',
   'm5_ja':  'm5_ja',
+  // SV JP sets
+  'sv1s_ja': 'sv1s_ja',
+  'sv1v_ja': 'sv1v_ja',
+  'sv1a_ja': 'sv1a_ja',
 };
 
 // TCGdex dot-notation map for special sets

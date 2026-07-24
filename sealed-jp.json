@@ -1,32 +1,187 @@
 {
   "m1l_ja": [
-    { "tcgpId": "647500", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Mega Brave Booster Box (30 Packs)",              "q": "Pokemon Japanese Mega Brave Booster Box M1L" },
-    { "tcgpId": "647498", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Mega Brave Booster Pack",                        "q": "Pokemon Japanese Mega Brave Booster Pack M1L" },
-    { "tcgpId": "648589", "type": "Premium Trainer Box",   "filterKey": "ptb",     "badgeClass": "badge-etb",    "name": "Premium Trainer Box MEGA Brave & Symphonia",     "q": "Pokemon Japanese Premium Trainer Box Mega Brave Symphonia", "noAmazon": true }
+    {
+      "tcgpId": "647500",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Mega Brave Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Mega Brave Booster Box M1L"
+    },
+    {
+      "tcgpId": "647498",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Mega Brave Booster Pack",
+      "q": "Pokemon Japanese Mega Brave Booster Pack M1L"
+    },
+    {
+      "tcgpId": "648589",
+      "type": "Premium Trainer Box",
+      "filterKey": "ptb",
+      "badgeClass": "badge-etb",
+      "name": "Premium Trainer Box MEGA Brave & Symphonia",
+      "q": "Pokemon Japanese Premium Trainer Box Mega Brave Symphonia",
+      "noAmazon": true
+    }
   ],
   "m1s_ja": [
-    { "tcgpId": "647501", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Mega Symphonia Booster Box (30 Packs)",          "q": "Pokemon Japanese Mega Symphonia Booster Box M1S" },
-    { "tcgpId": "647499", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Mega Symphonia Booster Pack",                    "q": "Pokemon Japanese Mega Symphonia Booster Pack M1S" },
-    { "tcgpId": "648589", "type": "Premium Trainer Box",   "filterKey": "ptb",     "badgeClass": "badge-etb",    "name": "Premium Trainer Box MEGA Brave & Symphonia",     "q": "Pokemon Japanese Premium Trainer Box Mega Brave Symphonia", "noAmazon": true }
+    {
+      "tcgpId": "647501",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Mega Symphonia Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Mega Symphonia Booster Box M1S"
+    },
+    {
+      "tcgpId": "647499",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Mega Symphonia Booster Pack",
+      "q": "Pokemon Japanese Mega Symphonia Booster Pack M1S"
+    },
+    {
+      "tcgpId": "648589",
+      "type": "Premium Trainer Box",
+      "filterKey": "ptb",
+      "badgeClass": "badge-etb",
+      "name": "Premium Trainer Box MEGA Brave & Symphonia",
+      "q": "Pokemon Japanese Premium Trainer Box Mega Brave Symphonia",
+      "noAmazon": true
+    }
   ],
   "m2_ja": [
-    { "tcgpId": "655968", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Inferno X Booster Box (30 Packs)",               "q": "Pokemon Japanese Inferno X Booster Box M2" },
-    { "tcgpId": "655970", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Inferno X Booster Pack",                         "q": "Pokemon Japanese Inferno X Booster Pack M2" }
+    {
+      "tcgpId": "655968",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Inferno X Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Inferno X Booster Box M2"
+    },
+    {
+      "tcgpId": "655970",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Inferno X Booster Pack",
+      "q": "Pokemon Japanese Inferno X Booster Pack M2"
+    }
   ],
   "m2a_ja": [
-    { "tcgpId": "666254", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "MEGA Dream ex Booster Box (10 Packs)",           "q": "Pokemon Japanese MEGA Dream ex Booster Box M2a" },
-    { "tcgpId": "666255", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "MEGA Dream ex Booster Pack",                     "q": "Pokemon Japanese MEGA Dream ex Booster Pack M2a" }
+    {
+      "tcgpId": "666254",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "MEGA Dream ex Booster Box (10 Packs)",
+      "q": "Pokemon Japanese MEGA Dream ex Booster Box M2a"
+    },
+    {
+      "tcgpId": "666255",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "MEGA Dream ex Booster Pack",
+      "q": "Pokemon Japanese MEGA Dream ex Booster Pack M2a"
+    }
   ],
   "m3_ja": [
-    { "tcgpId": "674449", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Nihil Zero Booster Box (30 Packs)",              "q": "Pokemon Japanese Nihil Zero Booster Box M3" },
-    { "tcgpId": "674454", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Nihil Zero Booster Pack",                        "q": "Pokemon Japanese Nihil Zero Booster Pack M3" }
+    {
+      "tcgpId": "674449",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Nihil Zero Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Nihil Zero Booster Box M3"
+    },
+    {
+      "tcgpId": "674454",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Nihil Zero Booster Pack",
+      "q": "Pokemon Japanese Nihil Zero Booster Pack M3"
+    }
   ],
   "m4_ja": [
-    { "tcgpId": "683774", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Ninja Spinner Booster Box (30 Packs)",           "q": "Pokemon Japanese Ninja Spinner Booster Box M4" },
-    { "tcgpId": "683776", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Ninja Spinner Booster Pack",                     "q": "Pokemon Japanese Ninja Spinner Booster Pack M4" }
+    {
+      "tcgpId": "683774",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Ninja Spinner Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Ninja Spinner Booster Box M4"
+    },
+    {
+      "tcgpId": "683776",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Ninja Spinner Booster Pack",
+      "q": "Pokemon Japanese Ninja Spinner Booster Pack M4"
+    }
   ],
   "m5_ja": [
-    { "tcgpId": "695112", "type": "Booster Box",           "filterKey": "box",     "badgeClass": "badge-box",    "name": "Abyss Eye Booster Box (30 Packs)",               "q": "Pokemon Japanese Abyss Eye Booster Box M5" },
-    { "tcgpId": "695111", "type": "Booster Pack",          "filterKey": "pack",    "badgeClass": "badge-pack",   "name": "Abyss Eye Booster Pack",                         "q": "Pokemon Japanese Abyss Eye Booster Pack M5" }
-  ]
+    {
+      "tcgpId": "695112",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Abyss Eye Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Abyss Eye Booster Box M5"
+    },
+    {
+      "tcgpId": "695111",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Abyss Eye Booster Pack",
+      "q": "Pokemon Japanese Abyss Eye Booster Pack M5"
+    }
+  ],
+  "sv1s_ja": {
+    "565247": {
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Scarlet ex Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Scarlet ex SV1S Booster Box"
+    },
+    "565246": {
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Scarlet ex Booster Pack",
+      "q": "Pokemon Japanese Scarlet ex SV1S Booster Pack"
+    }
+  },
+  "sv1v_ja": {
+    "565245": {
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Violet ex Booster Pack",
+      "q": "Pokemon Japanese Violet ex SV1V Booster Pack"
+    }
+  },
+  "sv1a_ja": {
+    "565248": {
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Triplet Beat Booster Box (30 Packs)",
+      "q": "Pokemon Japanese Triplet Beat SV1a Booster Box"
+    },
+    "565249": {
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Triplet Beat Booster Pack",
+      "q": "Pokemon Japanese Triplet Beat SV1a Booster Pack"
+    }
+  }
 }

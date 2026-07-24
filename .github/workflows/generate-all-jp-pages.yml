@@ -34,8 +34,11 @@ jobs:
             ["m3_ja"]="Nihil Zero (M3)"
             ["m4_ja"]="Ninja Spinner (M4)"
             ["m5_ja"]="Abyss Eye (M5)"
+            ["sv1s_ja"]="Scarlet ex (SV1S)"
+            ["sv1v_ja"]="Violet ex (SV1V)"
+            ["sv1a_ja"]="Triplet Beat (SV1a)"
           )
-          ORDER="m1l_ja m1s_ja m2_ja m2a_ja m3_ja m4_ja m5_ja"
+          ORDER="m1l_ja m1s_ja m2_ja m2a_ja m3_ja m4_ja m5_ja sv1s_ja sv1v_ja sv1a_ja"
           for SET_ID in $ORDER; do
             SET_FULL_NAME="${SETS[$SET_ID]}"
             echo ""

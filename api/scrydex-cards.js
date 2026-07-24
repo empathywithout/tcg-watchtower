@@ -18,6 +18,10 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
+  // SV JP sets — categoryId 85
+  'sv1s_ja': '23605',
+  'sv1v_ja': '23606',
+  'sv1a_ja': '23598',
 };
 const TCGCSV_CATEGORY_JP = 85;
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';

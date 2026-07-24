@@ -71,7 +71,18 @@ const JP_ME_SERIES_ORDER = [
   { setId: 'm5_ja',  url: '/pokemon/sets/mega-evolution-jp/abyss-eye/cards',       name: 'Abyss Eye',       short: 'M5'  },
 ];
 
-function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
+const JP_SV_SERIES_ORDER = [
+  { setId: 'sv1s_ja', url: '/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards',   name: 'Scarlet ex',    short: 'SV1S' },
+  { setId: 'sv1v_ja', url: '/pokemon/sets/scarlet-violet-jp/violet-ex/cards',    name: 'Violet ex',     short: 'SV1V' },
+  { setId: 'sv1a_ja', url: '/pokemon/sets/scarlet-violet-jp/triplet-beat/cards', name: 'Triplet Beat',  short: 'SV1a' },
+];
+
+// Pick correct series order based on set ID
+const IS_SV_JP = SET_ID.startsWith('sv');
+const SERIES_ORDER = IS_SV_JP ? JP_SV_SERIES_ORDER : JP_ME_SERIES_ORDER;
+const EN_SERIES_PATH = IS_SV_JP ? 'scarlet-violet' : 'mega-evolution';
+
+function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName, enSeriesPath = 'mega-evolution') {
   const idx     = order.findIndex(s => s.setId === currentSetId);
   const prev    = idx > 0 ? order[idx - 1] : null;
   const next    = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
@@ -82,7 +93,7 @@ function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
     ? `<a href="${next.url}" style="color:var(--text-muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
     : '<span></span>';
   const enLinkHtml = enSlug
-    ? `<div style="text-align:center;margin-top:8px;"><a href="/pokemon/sets/mega-evolution/${enSlug}/cards" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 14px;font-size:0.82rem;white-space:nowrap;">🇬🇧 English: <span style="color:var(--primary-blue);">${enSetName}</span> →</a></div>`
+    ? `<div style="text-align:center;margin-top:8px;"><a href="/pokemon/sets/${enSeriesPath}/${enSlug}/cards" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:3px 14px;font-size:0.82rem;white-space:nowrap;">🇬🇧 English: <span style="color:var(--primary-blue);">${enSetName}</span> →</a></div>`
     : '';
   return `<div class="series-nav" style="margin:0 0 16px;font-size:0.85rem;">
     <div style="display:flex;justify-content:space-between;gap:16px;">${prevHtml}${nextHtml}</div>
@@ -90,7 +101,7 @@ function buildSeriesNavHtml(order, currentSetId, enSlug, enSetName) {
   </div>`;
 }
 
-const SERIES_NAV_HTML = buildSeriesNavHtml(JP_ME_SERIES_ORDER, SET_ID, setConfig.enSlug, setConfig.enSetName);
+const SERIES_NAV_HTML = buildSeriesNavHtml(SERIES_ORDER, SET_ID, setConfig.enSlug, setConfig.enSetName, EN_SERIES_PATH);
 
 // ── Fetch JP set metadata from Scrydex ────────────────────────────────────────
 let setData      = {};
@@ -290,6 +301,45 @@ const SEO_DATA = {
       { q: 'How many cards are in Abyss Eye?', a: 'Abyss Eye contains 118 cards in total — 81 main set cards plus 37 secret rares across Art Rare, Special Art Rare, and Mega Ultra Rare tiers.' },
       { q: 'Are Japanese Abyss Eye cards worth buying?', a: 'Japanese Abyss Eye cards are a strong option for Mega Darkrai ex collectors, with JP versions typically priced lower than the English Pitch Black equivalents. The booster box offers 30 packs of 5 cards.' },
       { q: 'Where can I buy Abyss Eye Japanese booster boxes?', a: 'Abyss Eye Japanese booster boxes are available on TCGplayer, Amazon, and eBay from Japanese import sellers. Each box contains 30 packs of 5 cards. Check the Sealed Products section above for current prices.' },
+    ],
+  },
+  'sv1s_ja': {
+    metaTitle: `Scarlet ex Card List (SV1S): Japanese Pokémon TCG Prices & Guide | TCG Watchtower`,
+    metaDesc:  `Complete Scarlet ex (SV1S) Japanese card list — 108 JP cards with English translations, Gardevoir ex SAR chase pulls, and live prices on TCG Watchtower.`,
+    intro: `Scarlet ex (SV1S) is the first Japanese expansion of the Scarlet & Violet era, released January 20, 2023 alongside its companion set <a href="/pokemon/sets/scarlet-violet-jp/violet-ex/cards" style="color:var(--accent);">Violet ex (SV1V)</a>. Together the two sets introduced the ex mechanic and Terastal forms to the modern Pokémon TCG. Scarlet ex contains 108 cards and is the Japanese source for the English <a href="/pokemon/sets/scarlet-violet/scarlet-violet-base-set/cards" style="color:var(--accent);">Scarlet & Violet Base Set (SV1)</a>. The top chase card is Gardevoir ex SAR (#101), one of the most iconic Special Art Rares of the generation. This complete Scarlet ex card list covers all 108 JP cards with English name translations, rarity filters, and live prices on TCG Watchtower.`,
+    faq: [
+      { q: 'What is Scarlet ex?', a: 'Scarlet ex (SV1S) is the first Japanese expansion in the Pokémon TCG Scarlet & Violet era, released January 20, 2023 alongside Violet ex (SV1V). It is the Japanese source for the English Scarlet & Violet Base Set (SV1).' },
+      { q: 'What is the English equivalent of Scarlet ex?', a: 'Scarlet ex (SV1S) is one of the two Japanese source sets for the English Scarlet & Violet Base Set (SV1). Browse the English card list and prices on TCG Watchtower.' },
+      { q: 'What is the difference between Scarlet ex and Violet ex?', a: 'Scarlet ex features Koraidon ex and Gardevoir ex as key pulls, while Violet ex features Miraidon ex. They released simultaneously and together form the Japanese basis of the English Scarlet & Violet Base Set.' },
+      { q: 'What is the top chase card in Scarlet ex?', a: 'The top chase card in Scarlet ex is Gardevoir ex SAR (#101/078) — one of the most popular Special Art Rares of the Scarlet & Violet era and consistently one of the most valuable JP singles from the set.' },
+      { q: 'How many cards are in Scarlet ex?', a: 'Scarlet ex contains 108 cards in total — 78 main set cards plus 30 secret rares across Art Rare, Super Rare, Special Art Rare, and Ultra Rare tiers.' },
+      { q: 'Where can I buy Scarlet ex Japanese booster boxes?', a: 'Scarlet ex Japanese booster boxes are available on TCGplayer, Amazon, and eBay from Japanese import sellers. Each box contains 30 packs of 5 cards. Check the Sealed Products section above for current prices.' },
+    ],
+  },
+  'sv1v_ja': {
+    metaTitle: `Violet ex Card List (SV1V): Japanese Pokémon TCG Prices & Guide | TCG Watchtower`,
+    metaDesc:  `Complete Violet ex (SV1V) Japanese card list — 108 JP cards with English translations, Miraidon ex SAR chase pulls, and live prices on TCG Watchtower.`,
+    intro: `Violet ex (SV1V) is the companion set to <a href="/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards" style="color:var(--accent);">Scarlet ex (SV1S)</a>, released simultaneously on January 20, 2023. Together the two sets launched the Scarlet & Violet era and are the Japanese source for the English <a href="/pokemon/sets/scarlet-violet/scarlet-violet-base-set/cards" style="color:var(--accent);">Scarlet & Violet Base Set (SV1)</a>. Violet ex contains 108 cards and is headlined by Miraidon ex SAR (#102) as its most coveted pull. This complete Violet ex card list covers all 108 JP cards with English name translations, rarity filters, and live prices on TCG Watchtower.`,
+    faq: [
+      { q: 'What is Violet ex?', a: 'Violet ex (SV1V) is the second Japanese expansion in the Pokémon TCG Scarlet & Violet era, released January 20, 2023 alongside Scarlet ex (SV1S). It is the Japanese source for the English Scarlet & Violet Base Set (SV1).' },
+      { q: 'What is the English equivalent of Violet ex?', a: 'Violet ex (SV1V) is one of the two Japanese source sets for the English Scarlet & Violet Base Set (SV1). Browse the English card list and prices on TCG Watchtower.' },
+      { q: 'What is the top chase card in Violet ex?', a: 'The top chase card in Violet ex is Miraidon ex SAR (#102/078) — the box legendary of the Scarlet & Violet era and one of the most sought-after JP singles from the first generation of the era.' },
+      { q: 'How many cards are in Violet ex?', a: 'Violet ex contains 108 cards in total — 78 main set cards plus 30 secret rares across Art Rare, Super Rare, Special Art Rare, and Ultra Rare tiers.' },
+      { q: 'Are Japanese Violet ex cards worth buying?', a: 'Japanese Violet ex cards are popular with collectors targeting Miraidon ex and other Scarlet & Violet era chase cards at lower prices than their English counterparts. Each booster box contains 30 packs of 5 cards.' },
+      { q: 'Where can I buy Violet ex Japanese booster boxes?', a: 'Violet ex Japanese booster boxes are available on TCGplayer, Amazon, and eBay from Japanese import sellers. Each box contains 30 packs of 5 cards. Check the Sealed Products section above for current prices.' },
+    ],
+  },
+  'sv1a_ja': {
+    metaTitle: `Triplet Beat Card List (SV1a): Japanese Pokémon TCG Prices & Guide | TCG Watchtower`,
+    metaDesc:  `Complete Triplet Beat (SV1a) Japanese card list — 103 JP cards with English translations, Meowscarada ex SAR chase pulls, and live prices on TCG Watchtower.`,
+    intro: `Triplet Beat (SV1a) is the first subset of the Japanese Scarlet & Violet era, released March 10, 2023. The set is built around the three Paldean starter final evolutions — Meowscarada ex, Skeledirge ex, and Quaquaval ex — and is the Japanese source for the English <a href="/pokemon/sets/scarlet-violet/paldea-evolved/cards" style="color:var(--accent);">Paldea Evolved (SV2)</a>. Triplet Beat contains 103 cards with Meowscarada ex SAR (#096) as the top pull and the iconic Magikarp AR as one of the most beloved Art Rares of the era. This complete Triplet Beat card list covers all 103 JP cards with English name translations, rarity filters, and live prices on TCG Watchtower.`,
+    faq: [
+      { q: 'What is Triplet Beat?', a: 'Triplet Beat (SV1a) is the first Japanese subset of the Scarlet & Violet era, released March 10, 2023. It features the three Paldean starter final evolutions and is the Japanese source for the English Paldea Evolved (SV2).' },
+      { q: 'What is the English equivalent of Triplet Beat?', a: 'Triplet Beat (SV1a) is the Japanese source for Paldea Evolved (SV2), which released in English on June 9, 2023. Browse the English card list and prices on TCG Watchtower.' },
+      { q: 'What is the top chase card in Triplet Beat?', a: 'The top chase card in Triplet Beat is Meowscarada ex SAR (#096/073) — one of the most popular starter Pokémon SARs of the generation. The Magikarp AR (#080/073) is also a beloved and sought-after pull.' },
+      { q: 'How many cards are in Triplet Beat?', a: 'Triplet Beat contains 103 cards in total — 73 main set cards plus 30 secret rares across Art Rare, Super Rare, Special Art Rare, and Ultra Rare tiers.' },
+      { q: 'Are Japanese Triplet Beat cards worth buying?', a: 'Japanese Triplet Beat cards are popular with collectors targeting Meowscarada ex SAR and the starter trio at lower prices than their English Paldea Evolved equivalents. Each booster box contains 30 packs of 5 cards.' },
+      { q: 'Where can I buy Triplet Beat Japanese booster boxes?', a: 'Triplet Beat Japanese booster boxes are available on TCGplayer, Amazon, and eBay from Japanese import sellers. Each box contains 30 packs of 5 cards. Check the Sealed Products section above for current prices.' },
     ],
   },
 };
