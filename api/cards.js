@@ -520,17 +520,13 @@ export default async function handler(req, res) {
                 cards = mergedCards.map(c => {
                   const scrydexImg = scrydexImageMap[String(c.localId).padStart(3, '0')];
                   const tcgcsvImg  = c.image || null;
-                  const tcgpCdnImg = c.productId
-                    ? `https://tcgplayer-cdn.tcgplayer.com/product/${c.productId}_400w.jpg`
-                    : null;
-                  // Use Scrydex images — missing cards will be uploaded to R2
+                  // Scrydex medium images are high quality; missing ones uploaded to R2
                   const image = scrydexImg || tcgcsvImg || null;
                   return {
                     localId: c.localId,
                     name: c.name,
                     rarity: normalizeRarity(c.rarity),
                     image,
-                    fallbackImage: isSVJP ? scrydexImg : tcgcsvImg,
                     source: c.source,
                     phase,
                   };
