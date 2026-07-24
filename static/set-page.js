@@ -254,10 +254,9 @@ function loadTCGPlayerPrices() {
       const urls   = data.tcgpUrls || {};
       const productIds = data.productIds || {};
 
-      // For JP sets: patch missing card images using TCGplayer CDN
+      // For JP sets: patch card images using TCGplayer CDN where available
       if (SET_PHASE === 'jp' && Object.keys(productIds).length > 0) {
         document.querySelectorAll('.card-item[data-local-id] img').forEach(img => {
-          if (img.src && !img.src.includes('scrydex')) return; // already has good image
           const localId = img.closest('[data-local-id]')?.dataset.localId;
           if (!localId) return;
           const withZeros = localId.padStart(3, '0');
