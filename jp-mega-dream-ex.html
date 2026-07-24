@@ -1476,7 +1476,7 @@ function renderChaseCards(cards) {
           rarityClass: RARITY_CLASS[rarity] || 'rarity-ir',
           label: RARITY_LABEL[rarity] || c.rarity,
           searchName: `${c.name} ${c.localId}/${SET_OFFICIAL_COUNT} ${SET_FULL_NAME} Pokemon Card`,
-          img: SET_PHASE === 'jp' ? cardImg(SET_ID, c.localId) : (c.image || cardImg(SET_ID, c.localId)),
+          img: c.image || cardImg(SET_ID, c.localId),
         };
       });
   } else {
@@ -1826,9 +1826,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = SET_PHASE === 'jp'
-      ? (cardImg(SET_ID, card.localId) || card.image)
-      : (card.image || cardImg(SET_ID, card.localId));
+    const imgUrl = card.image || cardImg(SET_ID, card.localId);
     const fallbackUrl = SET_PHASE === 'jp' ? (card.image || null) : (card.fallbackImage || null);
     const el = document.createElement('div');
     el.className = 'card-item';
