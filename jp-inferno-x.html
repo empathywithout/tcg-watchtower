@@ -1378,7 +1378,10 @@ function tcgdexSeriesId(setId) {
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
   if (CONFIG.r2) {
-    return `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
+    const isJP = setId.endsWith('_ja');
+    return isJP
+      ? `${CONFIG.r2}/cards/jp/${setId}/${localId}.webp`
+      : `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
   // FIX 1: was hardcoded "/sv/" — now derives series from setId
   const series = tcgdexSeriesId(setId);
@@ -1616,6 +1619,9 @@ function loadTCGPlayerPrices() {
 
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
+      const productIds = data.productIds || {};
+
+      
 
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
@@ -1821,6 +1827,7 @@ function renderCards(reset) {
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
     const imgUrl = card.image || cardImg(SET_ID, card.localId);
+    const fallbackUrl = card.fallbackImage || null;
     const el = document.createElement('div');
     el.className = 'card-item';
     el.dataset.localId = card.localId;
@@ -1832,6 +1839,7 @@ function renderCards(reset) {
 
     el.innerHTML = `
       <img src="${imgUrl}" alt="${SET_FULL_NAME} Card List ${card.localId}/${SET_OFFICIAL_COUNT} ${card.name} ${card.rarity || ''} Pokemon Card" width="245" height="337" loading="lazy"
+        ${fallbackUrl ? `onerror="if(this.src!=='${fallbackUrl}'){this.src='${fallbackUrl}'}"` : `onerror="this.onerror=null;this.style.opacity='0.3'"`}
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
@@ -2334,9 +2342,29 @@ fetch('/nav.html').then(r => r.text()).then(html => {
     }
     return _origFetch.apply(this, arguments);
   };
-  document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
-    img.src = window.cardImg(img.dataset.set, img.dataset.id);
-  });
+  // For SV JP sets, fetch hero images from API (Scrydex CDN requires auth)
+  var heroImgs = document.querySelectorAll('#hero-stack img[data-set]');
+  if (heroImgs.length) {
+    var setIdForHero = heroImgs[0].dataset.set;
+    if (setIdForHero && setIdForHero.indexOf('_ja') !== -1) {
+      fetch('/api/cards?set=' + setIdForHero)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var cards = d.cards || [];
+          var byId = {};
+          cards.forEach(function(c) { byId[String(c.localId).replace(/^0+/,'')] = c; });
+          heroImgs.forEach(function(img) {
+            var id = String(img.dataset.id || '').replace(/^0+/,'');
+            var card = byId[id];
+            if (card && card.image) img.src = card.image;
+          });
+        }).catch(function() {});
+    } else {
+      heroImgs.forEach(function(img) {
+        img.src = window.cardImg(img.dataset.set, img.dataset.id);
+      });
+    }
+  }
 
   // Filter buttons: hide EN-only product types not in JP sets
   var jpValidFilters = ['all', 'box', 'pack', 'ptb'];
