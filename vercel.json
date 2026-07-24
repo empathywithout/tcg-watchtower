@@ -661,20 +661,20 @@
       "destination": "/jp-abyss-eye.html"
     },
     {
-      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards",
-      "destination": "/jp-scarlet-ex.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/sealed-product",
-      "destination": "/jp-scarlet-ex.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet-jp/triplet-beat/cards",
       "destination": "/jp-triplet-beat.html"
     },
     {
       "source": "/pokemon/sets/scarlet-violet-jp/triplet-beat/sealed-product",
       "destination": "/jp-triplet-beat.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards",
+      "destination": "/jp-scarlet-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/sealed-product",
+      "destination": "/jp-scarlet-ex.html"
     }
   ],
   "redirects": [
