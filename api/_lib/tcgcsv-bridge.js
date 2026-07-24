@@ -65,10 +65,19 @@ function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
 
   for (const p of tcgcsvCardProducts) {
     const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
-    if (!numEntry) continue;
-    const numParts = numEntry.value.split('/');
-    const num = numParts[0].trim().padStart(3, '0');
-    const denominator = numParts[1] ? numParts[1].trim() : null; // e.g. "084" -- TCGplayer's real main-set-count denominator, previously discarded
+    let num, denominator;
+    if (numEntry) {
+      const numParts = numEntry.value.split('/');
+      num = numParts[0].trim().padStart(3, '0');
+      denominator = numParts[1] ? numParts[1].trim() : null;
+    } else {
+      // Fallback: extract number from product name e.g. "Drowzee - 086/078"
+      const nameMatch = (p.name || '').match(/[-–]\s*(\d+)\/(\d+)\s*$/);
+      if (!nameMatch) continue;
+      num = nameMatch[1].padStart(3, '0');
+      denominator = nameMatch[2];
+    }
+    // (denominator = e.g. "084" -- TCGplayer's real main-set-count denominator)
     const rarEntry = (p.extendedData || []).find(e => e.name === 'Rarity');
     const cleanName = (p.name || '').replace(/\s*-\s*\d+\/\d+\s*$/, '').trim();
     merged[num] = {
