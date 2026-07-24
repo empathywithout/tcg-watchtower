@@ -1,5 +1,74 @@
 [
   {
+    "setId": "sv1s_ja",
+    "name": "Scarlet ex (SV1S)",
+    "slug": "scarlet-ex",
+    "short": "SV1S",
+    "series": "Scarlet & Violet JP",
+    "scrydexId": "sv1s_ja",
+    "releaseDate": "2023-01-20",
+    "printedTotal": 78,
+    "total": 108,
+    "packsPerBox": 30,
+    "tcgpGroupId": "23605",
+    "enEquivalent": "sv01",
+    "enSlug": "scarlet-violet-base-set",
+    "enSetName": "Scarlet & Violet Base Set (SV1)",
+    "heroCards": [
+      "101",
+      "084",
+      "083"
+    ],
+    "live": true,
+    "tcgpSlug": "sv1s-scarlet-ex"
+  },
+  {
+    "setId": "sv1v_ja",
+    "name": "Violet ex (SV1V)",
+    "slug": "violet-ex",
+    "short": "SV1V",
+    "series": "Scarlet & Violet JP",
+    "scrydexId": "sv1v_ja",
+    "releaseDate": "2023-01-20",
+    "printedTotal": 78,
+    "total": 108,
+    "packsPerBox": 30,
+    "tcgpGroupId": "23606",
+    "enEquivalent": "sv01",
+    "enSlug": "scarlet-violet-base-set",
+    "enSetName": "Scarlet & Violet Base Set (SV1)",
+    "heroCards": [
+      "102",
+      "094",
+      "107"
+    ],
+    "live": true,
+    "tcgpSlug": "sv1v-violet-ex"
+  },
+  {
+    "setId": "sv1a_ja",
+    "name": "Triplet Beat (SV1a)",
+    "slug": "triplet-beat",
+    "short": "SV1a",
+    "series": "Scarlet & Violet JP",
+    "scrydexId": "sv1a_ja",
+    "releaseDate": "2023-03-10",
+    "printedTotal": 73,
+    "total": 103,
+    "packsPerBox": 30,
+    "tcgpGroupId": "23598",
+    "enEquivalent": "sv02",
+    "enSlug": "paldea-evolved",
+    "enSetName": "Paldea Evolved (SV2)",
+    "heroCards": [
+      "096",
+      "097",
+      "098"
+    ],
+    "live": true,
+    "tcgpSlug": "sv1a-triplet-beat"
+  },
+  {
     "slug": "mega-brave",
     "name": "Mega Brave (M1L)",
     "nameJP": "メガブレイブ",
@@ -182,74 +251,5 @@
       "101",
       "102"
     ]
-  },
-  {
-    "setId": "sv1s_ja",
-    "name": "Scarlet ex (SV1S)",
-    "slug": "scarlet-ex",
-    "short": "SV1S",
-    "series": "Scarlet & Violet JP",
-    "scrydexId": "sv1s_ja",
-    "releaseDate": "2023-01-20",
-    "printedTotal": 78,
-    "total": 108,
-    "packsPerBox": 30,
-    "tcgpGroupId": "23605",
-    "enEquivalent": "sv01",
-    "enSlug": "scarlet-violet-base-set",
-    "enSetName": "Scarlet & Violet Base Set (SV1)",
-    "heroCards": [
-      "101",
-      "084",
-      "083"
-    ],
-    "live": true,
-    "tcgpSlug": "sv1s-scarlet-ex"
-  },
-  {
-    "setId": "sv1v_ja",
-    "name": "Violet ex (SV1V)",
-    "slug": "violet-ex",
-    "short": "SV1V",
-    "series": "Scarlet & Violet JP",
-    "scrydexId": "sv1v_ja",
-    "releaseDate": "2023-01-20",
-    "printedTotal": 78,
-    "total": 108,
-    "packsPerBox": 30,
-    "tcgpGroupId": "23606",
-    "enEquivalent": "sv01",
-    "enSlug": "scarlet-violet-base-set",
-    "enSetName": "Scarlet & Violet Base Set (SV1)",
-    "heroCards": [
-      "102",
-      "094",
-      "107"
-    ],
-    "live": true,
-    "tcgpSlug": "sv1v-violet-ex"
-  },
-  {
-    "setId": "sv1a_ja",
-    "name": "Triplet Beat (SV1a)",
-    "slug": "triplet-beat",
-    "short": "SV1a",
-    "series": "Scarlet & Violet JP",
-    "scrydexId": "sv1a_ja",
-    "releaseDate": "2023-03-10",
-    "printedTotal": 73,
-    "total": 103,
-    "packsPerBox": 30,
-    "tcgpGroupId": "23598",
-    "enEquivalent": "sv02",
-    "enSlug": "paldea-evolved",
-    "enSetName": "Paldea Evolved (SV2)",
-    "heroCards": [
-      "096",
-      "097",
-      "098"
-    ],
-    "live": true,
-    "tcgpSlug": "sv1a-triplet-beat"
   }
 ]
