@@ -302,6 +302,7 @@ export default async function handler(req, res) {
       prices,
       tcgpUrls,
       sealedPrices,
+      productIds: bestProductId,
     };
 
     cache.set(CACHE_VERSION + groupId, { ts: Date.now(), data: responseData });

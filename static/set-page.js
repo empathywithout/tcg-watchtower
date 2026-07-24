@@ -252,6 +252,23 @@ function loadTCGPlayerPrices() {
 
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
+      const productIds = data.productIds || {};
+
+      // For JP sets: patch missing card images using TCGplayer CDN
+      if (SET_PHASE === 'jp' && Object.keys(productIds).length > 0) {
+        document.querySelectorAll('.card-item[data-local-id] img').forEach(img => {
+          if (img.src && !img.src.includes('scrydex')) return; // already has good image
+          const localId = img.closest('[data-local-id]')?.dataset.localId;
+          if (!localId) return;
+          const withZeros = localId.padStart(3, '0');
+          const withoutZeros = String(parseInt(localId, 10));
+          const pid = productIds[withZeros] || productIds[withoutZeros];
+          if (pid) {
+            const cdnUrl = `https://tcgplayer-cdn.tcgplayer.com/product/${pid}_200w.jpg`;
+            img.src = cdnUrl;
+          }
+        });
+      }
 
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
