@@ -2222,11 +2222,6 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   btn.addEventListener('click', async e => {
     e.stopPropagation();
     const isOpen = !dropdown.classList.contains('open');
-    if (isOpen) {
-      const rect = btn.getBoundingClientRect();
-      dropdown.style.top = (rect.bottom + 4) + 'px';
-      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
-    }
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
     if (isOpen) { lockBodyScroll(); } else { unlockBodyScroll(); }
