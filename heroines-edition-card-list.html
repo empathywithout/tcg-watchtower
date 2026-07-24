@@ -151,7 +151,19 @@ nav.container{padding:24px 0;display:flex;justify-content:space-between;align-it
 .rarity-sr{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(251,191,36,.2));border:1px solid rgba(239,68,68,.4);color:#f87171}
 .rarity-r{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-links{display:flex;gap:6px;margin-top:auto;padding-top:8px;flex-wrap:nowrap}
-.buy-link{flex:1;min-width:0;padding:5px 4px;border-radius:6px;font-size:.7rem;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden}
+.buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }
+.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
+.buy-link {
+  padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;
+  text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
+}
+.buy-amazon { background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.3); color:var(--accent-amber); }
+.buy-amazon:hover { background:rgba(251,191,36,0.25); }
+.buy-ebay { background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#93c5fd; }
+.buy-ebay:hover { background:rgba(59,130,246,0.25); }
+.buy-tcgp { background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); color:var(--accent-green); }
+.buy-tcgp{font-size:0.5rem}
+.buy-tcgp:hover { background:rgba(74,222,128,0.25); }
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}.buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-tcgp{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
 
