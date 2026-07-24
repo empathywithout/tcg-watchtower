@@ -659,6 +659,14 @@
     {
       "source": "/pokemon/sets/mega-evolution-jp/abyss-eye/sealed-product",
       "destination": "/jp-abyss-eye.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards",
+      "destination": "/jp-scarlet-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/sealed-product",
+      "destination": "/jp-scarlet-ex.html"
     }
   ],
   "redirects": [

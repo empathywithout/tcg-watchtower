@@ -26238,4 +26238,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://tcgwatchtower.com/pokemon/sets/scarlet-violet-jp/scarlet-ex/cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
