@@ -22,6 +22,34 @@ const SCRYDEX_BASE    = 'https://api.scrydex.com/pokemon/v1';
 const cache        = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
+// Redis helpers for JP sets (shared with scrydex-cards.js)
+const KV_URL   = process.env.KV_REST_API_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v1';
+const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
+
+async function redisGetJP(key) {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const res = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
+    if (!res.ok) return null;
+    const { result } = await res.json();
+    return result ? JSON.parse(result) : null;
+  } catch { return null; }
+}
+
+async function redisSetJP(key, value) {
+  if (!KV_URL || !KV_TOKEN) return;
+  try {
+    await fetch(`${KV_URL}/setex/${encodeURIComponent(key)}/${JP_CARDS_TTL_SEC}/${encodeURIComponent(JSON.stringify(value))}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
+  } catch {}
+}
+
 // TCGplayer groupId map — used for TCGCSV fallback
 const SET_TO_GROUP = {
   'sv01':'22873','sv02':'23120','sv03':'23228','sv3pt5':'23237',
@@ -296,6 +324,19 @@ export default async function handler(req, res) {
       ? 's-maxage=60, stale-while-revalidate=300'
       : 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json(cached.data);
+  }
+
+  // For JP sets: check Redis before hitting Scrydex (shared with scrydex-cards.js)
+  const isJPSet = setId.endsWith('_ja');
+  if (isJPSet) {
+    const redisCacheKey = `${JP_CARDS_CACHE_VERSION}:${setId}`;
+    const redisHit = await redisGetJP(redisCacheKey);
+    if (redisHit) {
+      res.setHeader('X-Cache', 'REDIS-HIT');
+      cache.set(cacheKey, { ts: Date.now(), data: redisHit });
+      res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+      return res.status(200).json(redisHit);
+    }
   }
 
   // ── One Piece: read from R2 data/op/{setId}.json ─────────────────────────
@@ -590,6 +631,10 @@ export default async function handler(req, res) {
     // Only cache to in-memory if we got a reasonable card count
     // Avoid caching suspiciously small results that might be partial
     cache.set(cacheKey, { ts: Date.now(), data: responseData });
+    // Also write to Redis for JP sets so scrydex-cards.js can reuse
+    if (isJPSet && cards.length > 10) {
+      redisSetJP(`${JP_CARDS_CACHE_VERSION}:${setId}`, responseData).catch(() => {});
+    }
     res.setHeader('X-Cache', 'MISS');
     res.setHeader('Cache-Control', phase === 'jp'
       ? 's-maxage=60, stale-while-revalidate=300'

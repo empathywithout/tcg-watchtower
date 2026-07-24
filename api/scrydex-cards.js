@@ -260,15 +260,34 @@ export default async function handler(req, res) {
   const cacheKey = `scrydex:cards:v10-mid-price:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
-    // Same reasoning as api/cards.js: JP-phase data is actively volatile
-    // right now, and a long edge-cache window here masked the bridge fix
-    // for a while after it deployed today, independent of the Redis TTL.
     res.setHeader('Cache-Control', isJP
       ? 's-maxage=60, stale-while-revalidate=300'
       : 's-maxage=3600, stale-while-revalidate=86400');
     res.setHeader('X-Cache', 'HIT');
     const cards = JSON.parse(cached);
     return res.status(200).json({ cards, total: cards.length, cached: true });
+  }
+
+  // For JP sets: check shared Redis key written by api/cards.js
+  // This avoids a duplicate Scrydex call when cards.js already fetched the data
+  if (isJP) {
+    const sharedKey = `jp-cards:v1:${set}`;
+    const sharedCache = await redisGet(sharedKey);
+    if (sharedCache) {
+      try {
+        const parsed = JSON.parse(sharedCache);
+        const sharedCards = parsed.cards || [];
+        if (sharedCards.length > 0) {
+          // Still need to fetch prices from TCGCSV — but skip Scrydex card fetch
+          res.setHeader('X-Cache', 'SHARED-HIT');
+          // Run through price fetch and return
+          // Store as scrydex cache too so next hit is faster
+          await redisSetEx(cacheKey, JSON.stringify(sharedCards), CACHE_TTL_SEC);
+          res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+          return res.status(200).json({ cards: sharedCards, total: sharedCards.length, cached: true });
+        }
+      } catch {}
+    }
   }
 
   res.setHeader('Cache-Control', isJP
