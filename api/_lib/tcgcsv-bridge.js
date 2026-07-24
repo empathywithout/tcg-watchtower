@@ -47,8 +47,8 @@ function filterCardProducts(products) {
   return products.filter(p => {
     // Primary: has a Number extendedData field
     if ((p.extendedData || []).some(e => e.name === 'Number')) return true;
-    // Fallback: number extractable from product name e.g. "Drowzee - 086/078"
-    return /[-–]\s*\d+\/\d+\s*$/.test(p.name || '');
+    // Fallback: number extractable from product name e.g. "Drowzee - 086/078" or "Drowzee - 086/078 - SV1V"
+    return /[-–]\s*\d+\/\d+/.test(p.name || '');
   });
 }
 
@@ -76,8 +76,8 @@ function mergeCards(tcgcsvCardProducts, jpScrydexCards) {
       num = numParts[0].trim().padStart(3, '0');
       denominator = numParts[1] ? numParts[1].trim() : null;
     } else {
-      // Fallback: extract number from product name e.g. "Drowzee - 086/078"
-      const nameMatch = (p.name || '').match(/[-–]\s*(\d+)\/(\d+)\s*$/);
+      // Fallback: extract number from product name e.g. "Drowzee - 086/078" or "Drowzee - 086/078 - SV1V"
+      const nameMatch = (p.name || '').match(/[-–]\s*(\d+)\/(\d+)/);
       if (!nameMatch) continue;
       num = nameMatch[1].padStart(3, '0');
       denominator = nameMatch[2];
