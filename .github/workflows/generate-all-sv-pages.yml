@@ -1,0 +1,64 @@
+name: Generate All S&V Set Pages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate all S&V set pages
+        env:
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
+          CF_R2_PUBLIC_URL:  ${{ secrets.CF_R2_PUBLIC_URL }}
+          CF_R2_ENDPOINT:    ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY:  ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY:  ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET:      ${{ secrets.CF_R2_BUCKET }}
+        run: |
+          declare -A SETS=(
+            ["sv01"]="Scarlet & Violet Base Set (SV1)"
+            ["sv02"]="Paldea Evolved (SV2)"
+            ["sv03"]="Obsidian Flames (SV3)"
+            ["sv3pt5"]="Pokemon 151 (SV3.5)"
+            ["sv04"]="Paradox Rift (SV4)"
+            ["sv4pt5"]="Paldean Fates (SV4.5)"
+            ["sv05"]="Temporal Forces (SV5)"
+            ["sv06"]="Twilight Masquerade (SV6)"
+            ["sv6pt5"]="Shrouded Fable (SV6.5)"
+            ["sv07"]="Stellar Crown (SV7)"
+            ["sv08"]="Surging Sparks (SV8)"
+            ["sv8pt5"]="Prismatic Evolutions (SV8.5)"
+            ["sv09"]="Journey Together (SV9)"
+            ["sv10"]="Destined Rivals (SV10)"
+            ["zsv10pt5"]="Black Bolt (SV10.5)"
+            ["rsv10pt5"]="White Flare (SV10.5)"
+          )
+          ORDER="sv01 sv02 sv03 sv3pt5 sv04 sv4pt5 sv05 sv06 sv6pt5 sv07 sv08 sv8pt5 sv09 sv10 zsv10pt5 rsv10pt5"
+          for SET_ID in $ORDER; do
+            SET_FULL_NAME="${SETS[$SET_ID]}"
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "Generating: $SET_FULL_NAME ($SET_ID)"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            SET_ID=$SET_ID SET_FULL_NAME="$SET_FULL_NAME" node scripts/generate-set-page.js
+          done
+
+      - name: Commit and push all generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "generate all S&V pages: SV1-SV10.5"
+          git pull origin main --no-rebase -X ours
+          git push
