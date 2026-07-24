@@ -41,9 +41,11 @@ const SCRYDEX_EN_ID_MAP = {
 const SCRYDEX_JP_ID_MAP = {
   // EN set IDs → Scrydex JP expansion IDs (used by EN pages with phase=jp)
   'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
-  // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
+  // ME JP set IDs
   'm1l_ja':'m1l_ja','m1s_ja':'m1s_ja','m2_ja':'m2_ja','m2a_ja':'m2a_ja',
   'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja',
+  // SV JP set IDs
+  'sv1s_ja':'sv1s_ja','sv1v_ja':'sv1v_ja','sv1a_ja':'sv1a_ja',
 };
 
 // JPY→USD conversion for JP-phase sets (no English TCGplayer prices exist yet).

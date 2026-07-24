@@ -203,7 +203,8 @@
       "084",
       "083"
     ],
-    "live": true
+    "live": true,
+    "tcgpSlug": "sv1s-scarlet-ex"
   },
   {
     "setId": "sv1v_ja",
@@ -225,7 +226,8 @@
       "094",
       "107"
     ],
-    "live": true
+    "live": true,
+    "tcgpSlug": "sv1v-violet-ex"
   },
   {
     "setId": "sv1a_ja",
@@ -247,6 +249,7 @@
       "097",
       "098"
     ],
-    "live": true
+    "live": true,
+    "tcgpSlug": "sv1a-triplet-beat"
   }
 ]
