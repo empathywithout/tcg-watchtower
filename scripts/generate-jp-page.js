@@ -614,8 +614,8 @@ const scrydexJpPatch = `
         return res.json().then(function(jpSets) {
           var mapped = jpSets.filter(function(s) { return s.live; }).map(function(s) {
             return Object.assign({}, s, {
-              slug: 'pokemon/sets/mega-evolution-jp/' + s.slug + '/cards',
-              series: 'Mega Evolution JP',
+              slug: 'pokemon/sets/' + (s.setId && s.setId.startsWith('sv') ? 'scarlet-violet-jp' : 'mega-evolution-jp') + '/' + s.slug + '/cards',
+              series: s.setId && s.setId.startsWith('sv') ? 'Scarlet & Violet JP' : 'Mega Evolution JP',
             });
           });
           var blob = new Blob([JSON.stringify(mapped)], {type: 'application/json'});
