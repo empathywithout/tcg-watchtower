@@ -218,6 +218,7 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
       page++;
     }
 
+    const FORCE_UPLOAD = process.env.FORCE_UPLOAD === 'true';
     let uploaded = 0, skipped = 0, failed = 0;
     for (const c of allCards) {
       const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
@@ -228,12 +229,14 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
 
       const r2Key = `cards/jp/${SET_ID}/${paddedId}.webp`;
 
-      // Skip if already in R2
-      try {
-        await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2Key }));
-        skipped++;
-        continue;
-      } catch {}
+      // Skip if already in R2 (unless FORCE_UPLOAD=true)
+      if (!FORCE_UPLOAD) {
+        try {
+          await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2Key }));
+          skipped++;
+          continue;
+        } catch {}
+      }
 
       // Download from Scrydex (requires auth)
       try {
