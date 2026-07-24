@@ -188,6 +188,76 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
   }
 }
 
+// ── Upload card images to R2 ──────────────────────────────────────────────────
+// Downloads each card image from Scrydex (with auth) and uploads to R2.
+// This eliminates per-page-load Scrydex CDN hits — R2 serves images instead.
+// Skips cards already in R2.
+if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLIC_URL) {
+  try {
+    const r2 = new S3Client({
+      region: 'auto',
+      endpoint: process.env.CF_R2_ENDPOINT,
+      credentials: { accessKeyId: process.env.CF_R2_ACCESS_KEY, secretAccessKey: process.env.CF_R2_SECRET_KEY },
+    });
+
+    console.log(`\n📸 Syncing card images to R2 for ${SET_ID}...`);
+
+    // Fetch all cards with images from Scrydex
+    let allCards = [];
+    let page = 1;
+    while (true) {
+      const res = await fetch(
+        `https://api.scrydex.com/pokemon/v1/ja/expansions/${SCRYDEX_ID}/cards?select=id,name,translation,rarity,images&pageSize=100&page=${page}`,
+        { headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID } }
+      );
+      if (!res.ok) break;
+      const data = await res.json();
+      const cards = data.data || [];
+      allCards = allCards.concat(cards);
+      if (cards.length < 100) break;
+      page++;
+    }
+
+    let uploaded = 0, skipped = 0, failed = 0;
+    for (const c of allCards) {
+      const rawId = c.id ? c.id.split('-').slice(1).join('-') : '';
+      const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
+      const paddedId = String(localId).padStart(3, '0');
+      const imgUrl = c.images?.[0]?.medium || c.images?.[0]?.small || null;
+      if (!imgUrl) { failed++; continue; }
+
+      const r2Key = `cards/${SET_ID}/${paddedId}.webp`;
+
+      // Skip if already in R2
+      try {
+        await r2.send(new HeadObjectCommand({ Bucket: process.env.CF_R2_BUCKET, Key: r2Key }));
+        skipped++;
+        continue;
+      } catch {}
+
+      // Download from Scrydex (requires auth)
+      try {
+        const imgRes = await fetch(imgUrl, {
+          headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+        });
+        if (!imgRes.ok) { failed++; continue; }
+        const buf = Buffer.from(await imgRes.arrayBuffer());
+        await r2.send(new PutObjectCommand({
+          Bucket: process.env.CF_R2_BUCKET,
+          Key: r2Key,
+          Body: buf,
+          ContentType: 'image/webp',
+          CacheControl: 'public, max-age=31536000, immutable',
+        }));
+        uploaded++;
+      } catch { failed++; }
+    }
+    console.log(`✅  Card images: ${uploaded} uploaded, ${skipped} already in R2, ${failed} failed`);
+  } catch (imgErr) {
+    console.warn(`⚠️  Card image R2 sync failed: ${imgErr.message}`);
+  }
+}
+
 // ── Hero cards ─────────────────────────────────────────────────────────────────
 let HERO_CARD_1 = (setConfig.heroCards?.[0] || process.env.HERO_CARD_1 || '001');
 let HERO_CARD_2 = (setConfig.heroCards?.[1] || process.env.HERO_CARD_2 || '002');
