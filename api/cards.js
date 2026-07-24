@@ -25,7 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 // Redis helpers for JP sets (shared with scrydex-cards.js)
 const KV_URL   = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-const JP_CARDS_CACHE_VERSION = 'jp-cards:v18';
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v19';
 const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 async function redisGetJP(key) {
@@ -518,11 +518,8 @@ export default async function handler(req, res) {
 
                 const { cards: mergedCards, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
                 cards = mergedCards.map(c => {
-                  const r2Img = `${R2_BASE}/cards/jp/${setId}/${String(c.localId).padStart(3,'0')}.webp`;
-                  // R2 is primary for JP cards (uploaded during generation)
-                  // Scrydex medium as fallback for any gaps
                   const scrydexImg = scrydexImageMap[String(c.localId).padStart(3, '0')];
-                  const image = r2Img || scrydexImg || c.image || null;
+                  const image = scrydexImg || c.image || null;
                   return {
                     localId: c.localId,
                     name: c.name,
@@ -546,7 +543,7 @@ export default async function handler(req, res) {
                 const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
                 const image = phase === 'en'
                   ? `${R2_BASE}/cards/${setId}/${localId}.webp`
-                  : `${R2_BASE}/cards/jp/${setId}/${localId}.webp`;
+                  : (scrydexImage || null);
 
                 const name = phase === 'jp'
                   ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
