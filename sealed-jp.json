@@ -143,45 +143,50 @@
       "q": "Pokemon Japanese Abyss Eye Booster Pack M5"
     }
   ],
-  "sv1s_ja": {
-    "565247": {
+  "sv1s_ja": [
+    {
+      "tcgpId": "565247",
       "type": "Booster Box",
       "filterKey": "box",
       "badgeClass": "badge-box",
       "name": "Scarlet ex Booster Box (30 Packs)",
       "q": "Pokemon Japanese Scarlet ex SV1S Booster Box"
     },
-    "565246": {
+    {
+      "tcgpId": "565246",
       "type": "Booster Pack",
       "filterKey": "pack",
       "badgeClass": "badge-pack",
       "name": "Scarlet ex Booster Pack",
       "q": "Pokemon Japanese Scarlet ex SV1S Booster Pack"
     }
-  },
-  "sv1v_ja": {
-    "565245": {
+  ],
+  "sv1v_ja": [
+    {
+      "tcgpId": "565245",
       "type": "Booster Pack",
       "filterKey": "pack",
       "badgeClass": "badge-pack",
       "name": "Violet ex Booster Pack",
       "q": "Pokemon Japanese Violet ex SV1V Booster Pack"
     }
-  },
-  "sv1a_ja": {
-    "565248": {
+  ],
+  "sv1a_ja": [
+    {
+      "tcgpId": "565248",
       "type": "Booster Box",
       "filterKey": "box",
       "badgeClass": "badge-box",
       "name": "Triplet Beat Booster Box (30 Packs)",
       "q": "Pokemon Japanese Triplet Beat SV1a Booster Box"
     },
-    "565249": {
+    {
+      "tcgpId": "565249",
       "type": "Booster Pack",
       "filterKey": "pack",
       "badgeClass": "badge-pack",
       "name": "Triplet Beat Booster Pack",
       "q": "Pokemon Japanese Triplet Beat SV1a Booster Pack"
     }
-  }
+  ]
 }

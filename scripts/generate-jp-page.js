@@ -44,7 +44,7 @@ if (!setConfig) {
 }
 
 const SET_SERIES      = 'Mega Evolution';
-const SET_SERIES_SLUG = 'mega-evolution-jp';
+const SET_SERIES_SLUG = SET_ID.startsWith('sv') ? 'scarlet-violet-jp' : 'mega-evolution-jp';
 const SET_URL_SLUG    = setConfig.slug;           // e.g. "mega-brave"
 const SET_SLUG        = `jp-${setConfig.slug}`;  // e.g. "jp-mega-brave" — the HTML filename
 const SET_SHORT_NAME  = setConfig.short;          // e.g. "M1L"
@@ -197,7 +197,7 @@ let HERO_ALT_2  = process.env.HERO_ALT_2  || 'Card 2';
 let HERO_ALT_3  = process.env.HERO_ALT_3  || 'Card 3';
 
 // ── Sealed products ────────────────────────────────────────────────────────────
-const setProducts = sealedJP[SET_ID] || [];
+const setProducts = sealedJP[SET_ID] || {};
 const productMeta = {};
 
 for (const p of setProducts) {
