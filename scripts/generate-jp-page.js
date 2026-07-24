@@ -550,9 +550,29 @@ const scrydexJpPatch = `
     }
     return _origFetch.apply(this, arguments);
   };
-  document.querySelectorAll('#hero-stack img[data-set]').forEach(function(img) {
-    img.src = window.cardImg(img.dataset.set, img.dataset.id);
-  });
+  // For SV JP sets, fetch hero images from API (Scrydex CDN requires auth)
+  var heroImgs = document.querySelectorAll('#hero-stack img[data-set]');
+  if (heroImgs.length) {
+    var setIdForHero = heroImgs[0].dataset.set;
+    if (setIdForHero && setIdForHero.indexOf('_ja') !== -1) {
+      fetch('/api/cards?set=' + setIdForHero)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var cards = d.cards || [];
+          var byId = {};
+          cards.forEach(function(c) { byId[String(c.localId).replace(/^0+/,'')] = c; });
+          heroImgs.forEach(function(img) {
+            var id = String(img.dataset.id || '').replace(/^0+/,'');
+            var card = byId[id];
+            if (card && card.image) img.src = card.image;
+          });
+        }).catch(function() {});
+    } else {
+      heroImgs.forEach(function(img) {
+        img.src = window.cardImg(img.dataset.set, img.dataset.id);
+      });
+    }
+  }
 
   // Filter buttons: hide EN-only product types not in JP sets
   var jpValidFilters = ['all', 'box', 'pack', 'ptb'];

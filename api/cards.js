@@ -171,6 +171,9 @@ const SET_PHASE_MAP = {
   'm3_ja':  'jp',
   'm4_ja':  'jp',
   'm5_ja':  'jp',
+  'sv1s_ja': 'jp',
+  'sv1v_ja': 'jp',
+  'sv1a_ja': 'jp',
 };
 async function getSetPhase(setId) {
   return SET_PHASE_MAP[setId] || 'en';
