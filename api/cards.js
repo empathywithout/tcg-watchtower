@@ -25,7 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 // Redis helpers for JP sets (shared with scrydex-cards.js)
 const KV_URL   = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-const JP_CARDS_CACHE_VERSION = 'jp-cards:v9';
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v10';
 const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 async function redisGetJP(key) {
@@ -521,12 +521,14 @@ export default async function handler(req, res) {
                   const scrydexImg = scrydexImageMap[String(c.localId).padStart(3, '0')];
                   const tcgcsvImg  = c.image || null;
                   const tcgpCdnImg = c.productId
-                    ? `https://tcgplayer-cdn.tcgplayer.com/product/${c.productId}_200w.jpg`
+                    ? `https://tcgplayer-cdn.tcgplayer.com/product/${c.productId}_400w.jpg`
                     : null;
                   const isSVJP = setId.startsWith('sv');
-                  // SV JP: Scrydex first (high quality), fall back to TCGCSV, then TCGplayer CDN
-                  // ME JP: same order
-                  const image = scrydexImg || tcgcsvImg || tcgpCdnImg || null;
+                  // SV JP: use TCGplayer CDN (consistent, no card backs)
+                  // ME JP: Scrydex has real art, prefer it
+                  const image = isSVJP
+                    ? (tcgpCdnImg || tcgcsvImg || scrydexImg || null)
+                    : (scrydexImg || tcgcsvImg || null);
                   return {
                     localId: c.localId,
                     name: c.name,

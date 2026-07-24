@@ -257,7 +257,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v15-targeted-fix:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v16-tcgp-400w-all:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', isJP
@@ -351,14 +351,16 @@ export default async function handler(req, res) {
           const market = priceEntry?.market ?? original?.market ?? null;
           const localIdPadded = String(m.localId).padStart(3, '0');
           const tcgpCdnImage = productIdByLocalId[localIdPadded]
-            ? `https://tcgplayer-cdn.tcgplayer.com/product/${productIdByLocalId[localIdPadded]}_200w.jpg`
+            ? `https://tcgplayer-cdn.tcgplayer.com/product/${productIdByLocalId[localIdPadded]}_400w.jpg`
             : null;
           if (original) {
-            // original has Scrydex image — use it (it has real art)
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: market === original?.market ? original?.marketJPY : undefined, isEstimate: market === original?.market ? original?.isEstimate : false };
+            // SV JP: use TCGplayer CDN for consistent quality (no card backs)
+            const image = set.startsWith('sv')
+              ? (tcgpCdnImage || m.image || original.image)
+              : (m.image || original.image);
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image, source: m.source, market, marketJPY: market === original?.market ? original?.marketJPY : undefined, isEstimate: market === original?.market ? original?.isEstimate : false };
           }
-          // No Scrydex match — this card might show a card back, use TCGplayer CDN
-          const image = tcgpCdnImage || m.image;
+          const image = set.startsWith('sv') ? (tcgpCdnImage || m.image) : m.image;
           return { localId: m.localId, name: m.name, rarity: m.rarity, image, market, source: m.source };
         });
         console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
