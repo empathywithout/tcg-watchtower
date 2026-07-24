@@ -257,7 +257,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v7-low-price-fallback:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v8-scrydex-jp-fallback:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     // Same reasoning as api/cards.js: JP-phase data is actively volatile
@@ -336,9 +336,10 @@ export default async function handler(req, res) {
           const key = `${m.name.toLowerCase()}|${(m.rarity||'').toLowerCase()}`;
           const original = originalByKey[key];
           const priceEntry = m.productId ? priceMap[m.productId] : null;
-          const market = priceEntry?.market ?? null;
+          // Use EN TCGplayer price if available, fall back to JP Scrydex price
+          const market = priceEntry?.market ?? original?.market ?? null;
           if (original) {
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: undefined, isEstimate: false };
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: market === original?.market ? original?.marketJPY : undefined, isEstimate: market === original?.market ? original?.isEstimate : false };
           }
           return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market, source: m.source };
         });
