@@ -44,7 +44,12 @@ async function fetchTcgcsvProducts(groupId, category = TCGCSV_CATEGORY_POKEMON) 
  * product, which has no "Number" extendedData field).
  */
 function filterCardProducts(products) {
-  return products.filter(p => (p.extendedData || []).some(e => e.name === 'Number'));
+  return products.filter(p => {
+    // Primary: has a Number extendedData field
+    if ((p.extendedData || []).some(e => e.name === 'Number')) return true;
+    // Fallback: number extractable from product name e.g. "Drowzee - 086/078"
+    return /[-–]\s*\d+\/\d+\s*$/.test(p.name || '');
+  });
 }
 
 /**
