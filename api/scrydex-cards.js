@@ -257,7 +257,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v8-scrydex-jp-fallback:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v9-force-refresh:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     // Same reasoning as api/cards.js: JP-phase data is actively volatile
