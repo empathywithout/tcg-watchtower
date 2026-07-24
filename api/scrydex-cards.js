@@ -257,7 +257,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v11-bridge-fix:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v12-tcgp-cdn-image:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', isJP
@@ -323,6 +323,17 @@ export default async function handler(req, res) {
         const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
         const { cards: mergedIdentity, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
 
+        // Build productId lookup by localId for TCGplayer CDN images
+        const productIdByLocalId = {};
+        for (const p of tcgcsvCardProducts) {
+          const numEntry = (p.extendedData || []).find(e => e.name === 'Number');
+          const nameMatch = !numEntry && (p.name || '').match(/[-–]\s*(\d+)\/(\d+)/);
+          const num = numEntry
+            ? numEntry.value.split('/')[0].trim().padStart(3, '0')
+            : (nameMatch ? nameMatch[1].padStart(3, '0') : null);
+          if (num && p.productId) productIdByLocalId[num] = p.productId;
+        }
+
         const originalByKey = {};
         for (const c of cards) originalByKey[`${c.name.toLowerCase()}|${(c.rarity||'').toLowerCase()}`] = c;
 
@@ -357,10 +368,17 @@ export default async function handler(req, res) {
           const priceEntry = m.productId ? priceMap[m.productId] : null;
           // Use EN TCGplayer price if available, fall back to JP Scrydex price
           const market = priceEntry?.market ?? original?.market ?? null;
+          const localIdPadded = String(m.localId).padStart(3, '0');
+          const tcgpCdnImage = set.startsWith('sv') && productIdByLocalId[localIdPadded]
+            ? `https://tcgplayer-cdn.tcgplayer.com/product/${productIdByLocalId[localIdPadded]}_200w.jpg`
+            : null;
           if (original) {
-            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image: m.image || original.image, source: m.source, market, marketJPY: market === original?.market ? original?.marketJPY : undefined, isEstimate: market === original?.market ? original?.isEstimate : false };
+            // For SV JP: prefer TCGplayer CDN over Scrydex (avoids card backs)
+            const image = set.startsWith('sv') ? (tcgpCdnImage || m.image || original.image) : (m.image || original.image);
+            return { ...original, localId: m.localId, name: m.name, rarity: m.rarity, image, source: m.source, market, marketJPY: market === original?.market ? original?.marketJPY : undefined, isEstimate: market === original?.market ? original?.isEstimate : false };
           }
-          return { localId: m.localId, name: m.name, rarity: m.rarity, image: m.image, market, source: m.source };
+          const image = set.startsWith('sv') ? (tcgpCdnImage || m.image) : m.image;
+          return { localId: m.localId, name: m.name, rarity: m.rarity, image, market, source: m.source };
         });
         console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
       } catch (e) {
