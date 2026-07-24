@@ -675,6 +675,14 @@
     {
       "source": "/pokemon/sets/scarlet-violet-jp/scarlet-ex/sealed-product",
       "destination": "/jp-scarlet-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/violet-ex/cards",
+      "destination": "/jp-violet-ex.html"
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet-jp/violet-ex/sealed-product",
+      "destination": "/jp-violet-ex.html"
     }
   ],
   "redirects": [
