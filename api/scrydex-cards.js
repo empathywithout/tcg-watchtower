@@ -271,7 +271,7 @@ export default async function handler(req, res) {
   // For JP sets: check shared Redis key written by api/cards.js
   // This avoids a duplicate Scrydex call when cards.js already fetched the data
   if (isJP) {
-    const sharedKey = `jp-cards:v1:${set}`;
+    const sharedKey = `jp-cards:v7:${set}`;
     const sharedCache = await redisGet(sharedKey);
     if (sharedCache) {
       try {
