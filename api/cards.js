@@ -25,7 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 // Redis helpers for JP sets (shared with scrydex-cards.js)
 const KV_URL   = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-const JP_CARDS_CACHE_VERSION = 'jp-cards:v12';
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v13';
 const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 async function redisGetJP(key) {
@@ -523,11 +523,12 @@ export default async function handler(req, res) {
                   const tcgpCdnImg = c.productId
                     ? `https://tcgplayer-cdn.tcgplayer.com/product/${c.productId}_400w.jpg`
                     : null;
-                  // tcgcsvImg null = TCGCSV has no imageUrl for this card
-                  // In that case Scrydex likely returns a card back, use TCGplayer CDN
-                  const image = tcgcsvImg
-                    ? (scrydexImg || tcgcsvImg || tcgpCdnImg || null)
-                    : (tcgpCdnImg || scrydexImg || null);
+                  // SV JP: TCGplayer CDN 400w is consistent quality with no card backs
+                  // ME JP: Scrydex has verified real art
+                  const isSVJP = setId.startsWith('sv');
+                  const image = isSVJP
+                    ? (tcgpCdnImg || scrydexImg || tcgcsvImg || null)
+                    : (scrydexImg || tcgcsvImg || tcgpCdnImg || null);
                   return {
                     localId: c.localId,
                     name: c.name,
