@@ -226,7 +226,7 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
       const imgUrl = c.images?.[0]?.medium || c.images?.[0]?.small || null;
       if (!imgUrl) { failed++; continue; }
 
-      const r2Key = `cards/${SET_ID}/${paddedId}.webp`;
+      const r2Key = `cards/jp/${SET_ID}/${paddedId}.webp`;
 
       // Skip if already in R2
       try {
