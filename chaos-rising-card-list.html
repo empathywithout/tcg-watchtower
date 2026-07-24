@@ -120,7 +120,8 @@
 
 <style>html{background:#0a0514}:root{--body-bg:linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)}body{background:linear-gradient(to bottom right, #0f172a, #1e1b4b, #581c87)}button,a,[onclick]{touch-action:manipulation}
 .buy-links { display:flex; gap:3px; margin-top:auto; padding-top:10px; flex-wrap:wrap; justify-content:center; }
-.buy-links .buy-link {
+.buy-links .buy-link { flex:1; text-align:center; justify-content:center; min-width:0; }
+.buy-link {
   padding:3px 3px; border-radius:6px; font-size:0.6rem; font-weight:700; white-space:nowrap; overflow:hidden;
   text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;
 }
