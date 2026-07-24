@@ -1600,7 +1600,6 @@ const PAGE_SIZE = 60;
 
 // ── TCGplayer price system ───────────────────────────────────────────────────
 const priceCache = {};
-const tcgpProductIds = {}; // card localId → TCGplayer product ID (for JP sets)
 let _pricesFetchPromise = null;
 
 function loadTCGPlayerPrices() {
@@ -1618,15 +1617,6 @@ function loadTCGPlayerPrices() {
       const prices = data.prices || {};
       const urls   = data.tcgpUrls || {};
       const productIds = data.productIds || {};
-
-      // Store product IDs globally for use in card rendering
-      if (SET_PHASE === 'jp') {
-        Object.entries(productIds).forEach(([num, pid]) => {
-          tcgpProductIds[num.padStart(3,'0')] = pid;
-          tcgpProductIds[String(parseInt(num,10))] = pid;
-        });
-        if (Object.keys(productIds).length > 0) renderCards(false);
-      }
 
       
 
@@ -1833,10 +1823,7 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const tcgpImg = SET_PHASE === 'jp' && tcgpProductIds[card.localId]
-      ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcgpProductIds[card.localId]}_200w.jpg`
-      : null;
-    const imgUrl = tcgpImg || card.image || cardImg(SET_ID, card.localId);
+    const imgUrl = card.image || cardImg(SET_ID, card.localId);
     const fallbackUrl = card.fallbackImage || null;
     const el = document.createElement('div');
     el.className = 'card-item';
