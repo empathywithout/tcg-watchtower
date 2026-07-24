@@ -2197,35 +2197,13 @@ fetch('/nav.html').then(r => r.text()).then(html => {
   const btn      = document.getElementById('nav-sets-btn');
   const dropdown = document.getElementById('nav-sets-dropdown');
   if (!btn || !dropdown) return;
-  // Reparent to <body>: .section-nav has backdrop-filter, which creates a
-  // new containing block for position:fixed descendants, breaking viewport-
-  // relative positioning. Moving it out of that ancestor fixes this.
-  document.body.appendChild(dropdown);
-
   let populated = false;
-  let touchMoveHandler = null;
-
-  function lockBodyScroll() {
-    document.body.style.overflow = 'hidden';
-    touchMoveHandler = function(e) {
-      if (!dropdown.contains(e.target)) e.preventDefault();
-    };
-    document.addEventListener('touchmove', touchMoveHandler, { passive: false });
-  }
-  function unlockBodyScroll() {
-    document.body.style.overflow = '';
-    if (touchMoveHandler) {
-      document.removeEventListener('touchmove', touchMoveHandler);
-      touchMoveHandler = null;
-    }
-  }
 
   btn.addEventListener('click', async e => {
     e.stopPropagation();
     const isOpen = !dropdown.classList.contains('open');
     dropdown.classList.toggle('open', isOpen);
     btn.classList.toggle('open', isOpen);
-    if (isOpen) { lockBodyScroll(); } else { unlockBodyScroll(); }
     if (isOpen && !populated) await populateNavSets();
   });
   document.addEventListener('click', e => {
