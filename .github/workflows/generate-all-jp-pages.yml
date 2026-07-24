@@ -51,5 +51,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --cached --quiet || git commit -m "generate all JP pages: M1L M1S M2 M2a M3 M4 M5"
-          git pull origin feature/jp-set-pages --no-rebase -X ours
+          git pull origin main --no-rebase -X ours
           git push
