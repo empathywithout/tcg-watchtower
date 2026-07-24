@@ -25,7 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 // Redis helpers for JP sets (shared with scrydex-cards.js)
 const KV_URL   = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-const JP_CARDS_CACHE_VERSION = 'jp-cards:v1';
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v2';
 const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 async function redisGetJP(key) {
@@ -517,15 +517,26 @@ export default async function handler(req, res) {
                 });
 
                 const { cards: mergedCards, jpFallbackCount } = mergeCards(tcgcsvCardProducts, jpShaped);
-                cards = mergedCards.map(c => ({
-                  localId: c.localId,
-                  name: c.name,
-                  rarity: normalizeRarity(c.rarity),
-                  // Prefer Scrydex medium image over TCGplayer thumbnail
-                  image: scrydexImageMap[String(c.localId).padStart(3, '0')] || c.image || null,
-                  source: c.source,
-                  phase,
-                }));
+                cards = mergedCards.map(c => {
+                  const scrydexImg = scrydexImageMap[String(c.localId).padStart(3, '0')];
+                  const tcgcsvImg  = c.image || null;
+                  // For SV JP sets: use TCGCSV image as primary since Scrydex
+                  // returns card backs for common/energy cards in older sets.
+                  // For ME JP sets: Scrydex images are verified good, prefer them.
+                  const isSVJP = setId.startsWith('sv');
+                  const image = isSVJP
+                    ? (tcgcsvImg || scrydexImg || null)
+                    : (scrydexImg || tcgcsvImg || null);
+                  return {
+                    localId: c.localId,
+                    name: c.name,
+                    rarity: normalizeRarity(c.rarity),
+                    image,
+                    fallbackImage: isSVJP ? scrydexImg : tcgcsvImg,
+                    source: c.source,
+                    phase,
+                  };
+                });
                 console.log(`[api/cards] TCGCSV bridge hit for ${setId}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
               } catch (e) {
                 console.warn(`[api/cards] TCGCSV bridge failed for ${setId}, falling back to Scrydex-only:`, e.message);

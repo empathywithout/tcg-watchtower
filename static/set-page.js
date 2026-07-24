@@ -457,6 +457,7 @@ function renderCards(reset) {
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
     const imgUrl = card.image || cardImg(SET_ID, card.localId);
+    const fallbackUrl = card.fallbackImage || null;
     const el = document.createElement('div');
     el.className = 'card-item';
     el.dataset.localId = card.localId;
@@ -468,6 +469,7 @@ function renderCards(reset) {
 
     el.innerHTML = `
       <img src="${imgUrl}" alt="${SET_FULL_NAME} Card List ${card.localId}/${SET_OFFICIAL_COUNT} ${card.name} ${card.rarity || ''} Pokemon Card" width="245" height="337" loading="lazy"
+        ${fallbackUrl ? `onerror="if(this.src!=='${fallbackUrl}'){this.src='${fallbackUrl}'}"` : `onerror="this.onerror=null;this.style.opacity='0.3'"`}
            onerror="this.style.background='#1e293b'" width="245" height="337">
       <div class="card-item-info">
         <div class="card-item-name">${card.name}</div>
