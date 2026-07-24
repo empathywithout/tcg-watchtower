@@ -257,7 +257,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v13-force-fresh:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v14-no-shared-cache:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', isJP
@@ -268,27 +268,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ cards, total: cards.length, cached: true });
   }
 
-  // For JP sets: check shared Redis key written by api/cards.js
-  // This avoids a duplicate Scrydex call when cards.js already fetched the data
-  if (isJP) {
-    const sharedKey = `jp-cards:v7:${set}`;
-    const sharedCache = await redisGet(sharedKey);
-    if (sharedCache) {
-      try {
-        const parsed = JSON.parse(sharedCache);
-        const sharedCards = parsed.cards || [];
-        if (sharedCards.length > 0) {
-          // Still need to fetch prices from TCGCSV — but skip Scrydex card fetch
-          res.setHeader('X-Cache', 'SHARED-HIT');
-          // Run through price fetch and return
-          // Store as scrydex cache too so next hit is faster
-          await redisSetEx(cacheKey, JSON.stringify(sharedCards), CACHE_TTL_SEC);
-          res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-          return res.status(200).json({ cards: sharedCards, total: sharedCards.length, cached: true });
-        }
-      } catch {}
-    }
-  }
+  // Shared cache disabled — scrydex-cards builds images differently from cards.js
+  // if (isJP) { ... }
 
   res.setHeader('Cache-Control', isJP
     ? 's-maxage=60, stale-while-revalidate=300'
