@@ -255,7 +255,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v6-sv-jp:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v7-low-price-fallback:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     // Same reasoning as api/cards.js: JP-phase data is actively volatile
@@ -318,8 +318,9 @@ export default async function handler(req, res) {
             for (const p of (pricesData.results || [])) {
               if (p.subTypeName === 'Normal' || p.subTypeName === 'Holofoil') {
                 const existing = priceMap[p.productId];
-                if (!existing || (p.marketPrice != null && (existing.market == null || p.marketPrice > existing.market))) {
-                  priceMap[p.productId] = { market: p.marketPrice };
+                const price = p.marketPrice ?? p.lowPrice ?? null;
+                if (!existing || (price != null && (existing.market == null || price > existing.market))) {
+                  priceMap[p.productId] = { market: price };
                 }
               }
             }
