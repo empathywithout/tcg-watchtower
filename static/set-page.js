@@ -236,6 +236,7 @@ const PAGE_SIZE = 60;
 
 // ── TCGplayer price system ───────────────────────────────────────────────────
 const priceCache = {};
+const tcgpProductIds = {}; // card localId → TCGplayer product ID (for JP sets)
 let _pricesFetchPromise = null;
 
 function loadTCGPlayerPrices() {
@@ -254,20 +255,16 @@ function loadTCGPlayerPrices() {
       const urls   = data.tcgpUrls || {};
       const productIds = data.productIds || {};
 
-      // For JP sets: patch card images using TCGplayer CDN where available
-      if (SET_PHASE === 'jp' && Object.keys(productIds).length > 0) {
-        document.querySelectorAll('.card-item[data-local-id] img').forEach(img => {
-          const localId = img.closest('[data-local-id]')?.dataset.localId;
-          if (!localId) return;
-          const withZeros = localId.padStart(3, '0');
-          const withoutZeros = String(parseInt(localId, 10));
-          const pid = productIds[withZeros] || productIds[withoutZeros];
-          if (pid) {
-            const cdnUrl = `https://tcgplayer-cdn.tcgplayer.com/product/${pid}_200w.jpg`;
-            img.src = cdnUrl;
-          }
+      // Store product IDs globally for use in card rendering
+      if (SET_PHASE === 'jp') {
+        Object.entries(productIds).forEach(([num, pid]) => {
+          tcgpProductIds[num.padStart(3,'0')] = pid;
+          tcgpProductIds[String(parseInt(num,10))] = pid;
         });
+        if (Object.keys(productIds).length > 0) renderCards(false);
       }
+
+      
 
       Object.entries(prices).forEach(([num, price]) => {
         const withZeros    = num.padStart(3, '0');
@@ -472,7 +469,10 @@ function renderCards(reset) {
   if (reset) { grid.innerHTML = ''; displayedCount = 0; }
   const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
   slice.forEach(card => {
-    const imgUrl = card.image || cardImg(SET_ID, card.localId);
+    const tcgpImg = SET_PHASE === 'jp' && tcgpProductIds[card.localId]
+      ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcgpProductIds[card.localId]}_200w.jpg`
+      : null;
+    const imgUrl = tcgpImg || card.image || cardImg(SET_ID, card.localId);
     const fallbackUrl = card.fallbackImage || null;
     const el = document.createElement('div');
     el.className = 'card-item';
