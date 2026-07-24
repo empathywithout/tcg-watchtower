@@ -242,6 +242,8 @@ if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID && process.env.CF_R2_ENDPOINT && R2_PUBLI
         });
         if (!imgRes.ok) { failed++; continue; }
         const buf = Buffer.from(await imgRes.arrayBuffer());
+        // Skip card backs — Scrydex returns small placeholder images (~5KB) for missing art
+        if (buf.length < 10000) { failed++; continue; }
         await r2.send(new PutObjectCommand({
           Bucket: process.env.CF_R2_BUCKET,
           Key: r2Key,
