@@ -332,7 +332,9 @@ function generateCardPage(card, allCards) {
   const url         = cardUrl(card);
   const img         = cardImgUrl(card);
   const related     = getRelated(card, allCards);
-  const title       = `${card.name} ${card.localId} Price, Rarity & Card Info | Pokémon TCG`;
+  const cardTotal   = card.denominator || metadata.cardCount?.official || '';
+  const cardNum     = cardTotal ? `${card.localId}/${cardTotal}` : card.localId;
+  const title       = `${card.name} ${cardNum} — ${SET_FULL_NAME} | Price & Card Info | TCG Watchtower`;
   const description = `View the price, rarity, and card details for ${card.name} #${card.localId} from the ${SET_FULL_NAME} Pokémon TCG expansion. Current market price and where to buy.`;
   return `<!-- Generated: ${new Date().toISOString()} -->
 <!DOCTYPE html>
