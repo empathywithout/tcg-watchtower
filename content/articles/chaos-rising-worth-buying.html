@@ -458,8 +458,8 @@ footer a{color:var(--accent);}
       <div class="summary-item">
         <div class="summary-label">Openers</div>
         <div class="summary-buyer">Cracking boxes</div>
-        <div class="summary-verdict-text">Box EV is close to neutral at the current price. Not a losing bet near its all-time low, but singles are still better value for anyone chasing specific cards.</div>
-        <span class="verdict-hold">Neutral</span>
+        <div class="summary-verdict-text">Box expected value is what an average box is worth in singles based on pull rates and current card prices. Right now it sits below the box price, meaning most openers lose money on average. Not a lot — but singles are still better value for anyone chasing specific cards.</div>
+        <span class="verdict-hold" id="summary-opener-badge">Neutral</span>
       </div>
       <div class="summary-item">
         <div class="summary-label">Sealed holders</div>
@@ -1032,8 +1032,23 @@ async function loadAllPrices() {
       if (mhrLabelEl && mhrPrice) mhrLabelEl.innerHTML = `<a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR Mega Greninja ex</a> (~0.04 per box, ~$${Math.round(parseFloat(mhrPrice))})`;
 
 
-      // Update prose price spans
-      const sirEl2 = document.getElementById('prose-sir-price');
+      // Update opener summary badge based on live EV vs box price
+      const totalEVNum = 48 + 24 + parseFloat(sirEV) + parseFloat(mhrEV) + 20;
+      const boxPriceNum = boxPrice ? parseFloat(boxPrice) : 185;
+      const evRatio = totalEVNum / boxPriceNum;
+      const badge = document.getElementById('summary-opener-badge');
+      if (badge) {
+        if (evRatio >= 1.0) {
+          badge.textContent = 'Positive EV';
+          badge.className = 'verdict-open';
+        } else if (evRatio >= 0.85) {
+          badge.textContent = 'Neutral';
+          badge.className = 'verdict-hold';
+        } else {
+          badge.textContent = 'Singles win';
+          badge.className = 'verdict-singles';
+        }
+      }
       if (sirEl2) {
         const grenSIR = getPrice(singles, '116');
         if (grenSIR) sirEl2.textContent = `$${Math.round(parseFloat(grenSIR))}`;
