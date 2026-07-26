@@ -192,8 +192,35 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 .hero-card-img{width:160px;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.8);margin:0 auto 32px;display:block;}
 
-/* PAGE WRAP */
-.page-wrap{max-width:860px;margin:0 auto;padding:0 24px 140px;}
+/* PAGE LAYOUT */
+.page-outer{max-width:1200px;margin:0 auto;padding:0 24px 140px;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start;}
+.page-wrap{min-width:0;}
+.sidebar{position:sticky;top:72px;}
+.sidebar-section{margin-bottom:24px;}
+.sidebar-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sidebar-card{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;}
+.sidebar-card:last-child{border-bottom:none;}
+.sidebar-card:hover .sidebar-card-title{color:var(--accent);}
+.sidebar-card-img{width:60px;height:84px;object-fit:cover;border-radius:6px;flex-shrink:0;}
+.sidebar-card-info{min-width:0;}
+.sidebar-card-eyebrow{font-size:10px;color:var(--text-dim);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
+.sidebar-card-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;transition:color 0.15s;}
+.sidebar-price-box{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.sidebar-price-label{font-size:11px;color:var(--text-dim);margin-bottom:4px;}
+.sidebar-price-value{font-size:24px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;margin-bottom:4px;}
+.sidebar-price-msrp{font-size:11px;color:var(--text-dim);margin-bottom:12px;}
+.sidebar-btn{display:block;padding:9px 14px;border-radius:6px;font-size:13px;font-weight:700;text-align:center;text-decoration:none;margin-bottom:6px;transition:all 0.15s;}
+.sidebar-btn.primary{background:#f97316;color:#fff;}
+.sidebar-btn.primary:hover{background:#ea6c0a;}
+.sidebar-btn.secondary{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#22c55e;}
+.sidebar-btn.secondary:hover{background:rgba(34,197,94,0.25);}
+.sidebar-btn.tertiary{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#f59e0b;}
+.sidebar-btn.tertiary:hover{background:rgba(245,158,11,0.25);}
+.sidebar-card-price{font-size:13px;font-weight:700;color:var(--green);margin-top:3px;font-variant-numeric:tabular-nums;}
+@media(max-width:900px){
+  .page-outer{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
 
 /* VERDICT BADGES */
 .verdict-open,.verdict-hold,.verdict-singles{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;}
@@ -411,6 +438,7 @@ footer a{color:var(--accent);}
   </div>
 </div>
 
+<div class="page-outer">
 <div class="page-wrap">
 
   <!-- QUICK SUMMARY -->
@@ -514,7 +542,7 @@ footer a{color:var(--accent);}
       </tbody>
     </table>
 
-    <p>The MHR rate is worth sitting with. At 1 in 956 packs, you would need to open roughly 26 booster boxes on average to pull a single Mega Greninja ex Mega Hyper Rare. The MHR currently sells for around <span id="prose-mhr-price">$375</span>. The math does not support opening for it.</p>
+    <p>The MHR rate is worth sitting with. At 1 in 956 packs, you would need to open roughly 26 booster boxes on average to pull a single <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">Mega Greninja ex Mega Hyper Rare</a>. The MHR currently sells for around <span id="prose-mhr-price">$375</span>. The math does not support opening for it.</p>
 
     <div class="calc-box">
       <div class="calc-title">How many boxes would it cost to hit your target card?</div>
@@ -588,7 +616,7 @@ footer a{color:var(--accent);}
     <div class="section-label">Sealed investment</div>
     <h2>The case for holding Chaos Rising sealed</h2>
     <p>The sealed hold argument for Chaos Rising rests on three things: the collector base behind Mega Greninja ex, the set's position in the Mega Evolution era, and where the box price currently sits.</p>
-    <p>Greninja has spent over a decade near the top of worldwide Pokemon popularity polls. It received special treatment in Smash Bros, expanding its fanbase beyond core TCG players. The Mega form debuted in Chaos Rising, and there is no earlier version to compare against, which keeps demand concentrated on this set. The Froakie IR triptych (Froakie, Frogadier, and Mega Greninja ex sharing a connected art scene across three cards) has held collector attention better than almost any single card in the set below the SIR tier.</p>
+    <p>Greninja has spent over a decade near the top of worldwide Pokemon popularity polls. It received special treatment in Smash Bros, expanding its fanbase beyond core TCG players. The Mega form debuted in Chaos Rising, and there is no earlier version to compare against, which keeps demand concentrated on this set. The Froakie IR triptych (<a href="/pokemon/sets/mega-evolution/chaos-rising/cards/froakie-88" style="color:var(--accent)">Froakie</a>, Frogadier, and <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex</a> sharing a connected art scene across three cards) has held collector attention better than almost any single card in the set below the SIR tier.</p>
     <p>The box is currently at its all-time low of <span id="prose-box-price-2">$185</span>, down from a launch high of $275. That 33% correction over two months tracks closely with Perfect Order (ME03), which dropped roughly 40% post-launch before stabilising. If Chaos Rising follows that pattern, the floor may be close.</p>
     <p>The risks are real. A Mega Greninja ex Premium Collection released July 3, 2026, adding supply. Pitch Black launched July 17 and redirected collector capital. Print run expansions are always possible. Sealed holds are a long-term thesis. Boxes typically require 12-24 months before meaningful appreciation, and there are no guarantees.</p>
 
@@ -620,7 +648,7 @@ footer a{color:var(--accent);}
   <div class="section">
     <div class="section-label">Singles vs opening</div>
     <h2>Why buying singles almost always wins</h2>
-    <p>If you know which Chaos Rising card you want, buying it directly costs a fraction of what you would spend opening boxes to find it. The Mega Greninja ex SIR currently trades around <span id="prose-sir-price">$470</span>. To hit that card on average through opening, you would need roughly 14 booster boxes at <span id="prose-box-price-3">$185</span> each. The single costs less than one box's worth of expected value on that specific pull.</p>
+    <p>If you know which Chaos Rising card you want, buying it directly costs a fraction of what you would spend opening boxes to find it. The <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex SIR</a> currently trades around <span id="prose-sir-price">$470</span>. To hit that card on average through opening, you would need roughly 14 booster boxes at <span id="prose-box-price-3">$185</span> each. The single costs less than one box's worth of expected value on that specific pull.</p>
     <p>The only scenario where opening beats buying singles is if you hit an above-average number of SIRs or land the MHR in a small number of boxes. That happens, but it is luck, not expectation. For anyone with a specific card in mind, the secondary market is the rational choice.</p>
     <p>Singles have also corrected meaningfully since launch. The Mega Greninja ex SIR peaked near launch and has settled as supply increased. Anyone who waited is paying less than day-one buyers. See the full <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent);">Chaos Rising chase cards page</a> for live prices on every chase card ranked by current market value.</p>
 
@@ -647,7 +675,7 @@ footer a{color:var(--accent);}
           <span class="verdict-singles">Best option: Singles</span>
           <span class="buyer-type">Collectors chasing specific cards</span>
         </div>
-        <div class="buyer-body">Buy the cards you want directly. The Mega Greninja ex SIR, MHR, and most SIRs have all corrected from their launch peaks. You are paying less now than at release, and far less than what opening boxes would cost you to hit the same cards. Use the <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent);">chase cards page</a> to check current prices before buying.</div>
+        <div class="buyer-body">Buy the cards you want directly. The <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex SIR</a>, <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR</a>, and most SIRs have all corrected from their launch peaks. You are paying less now than at release, and far less than what opening boxes would cost you to hit the same cards. Use the <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent);">chase cards page</a> to check current prices before buying.</div>
       </div>
 
       <div class="buyer-block wait">
@@ -807,6 +835,99 @@ footer a{color:var(--accent);}
 
 </div>
 
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <!-- Live box price -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Booster Box Price</div>
+    <div class="sidebar-price-box">
+      <div class="sidebar-price-label">Current secondary market</div>
+      <div class="sidebar-price-value" id="sidebar-box-price">Loading...</div>
+      <div class="sidebar-price-msrp">MSRP: $160.99</div>
+      <a class="sidebar-btn primary" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Booster%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+      <a class="sidebar-btn secondary" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Booster%20Box%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+      <a class="sidebar-btn" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#f59e0b;display:block;padding:9px 14px;border-radius:6px;font-size:13px;font-weight:700;text-align:center;text-decoration:none;transition:all 0.15s;" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Booster%20Box%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+    </div>
+  </div>
+
+  <!-- Top chase cards -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Top Chase Cards</div>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/116.webp" alt="Mega Greninja ex SIR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">SIR · #116</div>
+        <div class="sidebar-card-title">Mega Greninja ex</div>
+        <div class="sidebar-card-price" data-sidebar-card="116">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/122.webp" alt="Mega Greninja ex MHR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">MHR · #122</div>
+        <div class="sidebar-card-title">Mega Greninja ex</div>
+        <div class="sidebar-card-price" data-sidebar-card="122">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/cinccino-ex-119" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/119.webp" alt="Cinccino ex SIR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">SIR · #119</div>
+        <div class="sidebar-card-title">Cinccino ex</div>
+        <div class="sidebar-card-price" data-sidebar-card="119">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/azs-tranquility-120" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/120.webp" alt="AZ's Tranquility SIR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">SIR · #120</div>
+        <div class="sidebar-card-title">AZ's Tranquility</div>
+        <div class="sidebar-card-price" data-sidebar-card="120">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-floette-ex-117" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/117.webp" alt="Mega Floette ex SIR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">SIR · #117</div>
+        <div class="sidebar-card-title">Mega Floette ex</div>
+        <div class="sidebar-card-price" data-sidebar-card="117">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/roxies-performance-121" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/121.webp" alt="Roxie's Performance SIR" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">SIR · #121</div>
+        <div class="sidebar-card-title">Roxie's Performance</div>
+        <div class="sidebar-card-price" data-sidebar-card="121">—</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="font-size:12px;color:var(--accent);display:block;padding-top:10px;text-decoration:none;">See all 36 chase cards →</a>
+  </div>
+
+  <!-- Related articles -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Related Articles</div>
+    <a href="/content/articles/pitch-black-most-valuable-cards" class="sidebar-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/116.webp" alt="Pitch Black most valuable" class="sidebar-card-img" loading="lazy">
+      <div class="sidebar-card-info">
+        <div class="sidebar-card-eyebrow">Article · Pitch Black</div>
+        <div class="sidebar-card-title">The 10 Most Valuable Cards in Pitch Black</div>
+      </div>
+    </a>
+  </div>
+
+</aside>
+
+</div>
+
 <footer>
   <p>© 2026 TCG Watchtower · <a href="/pokemon">Pokémon TCG</a> · <a href="/pokemon/sets/mega-evolution/chaos-rising/cards">Chaos Rising</a></p>
 </footer>
@@ -945,6 +1066,19 @@ async function loadAllPrices() {
     if (pct > 1.5)  return ` <span style="color:#22c55e;font-size:12px">▲ ${pct.toFixed(0)}%</span>`;
     if (pct < -1.5) return ` <span style="color:#f87171;font-size:12px">▼ ${Math.abs(pct).toFixed(0)}%</span>`;
     return ` <span style="color:#64748b;font-size:12px">→</span>`;
+  }
+
+  // Update sidebar card prices
+  document.querySelectorAll('[data-sidebar-card]').forEach(el => {
+    const num = el.dataset.sidebarCard;
+    const price = getPrice(singles, num);
+    if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
+  });
+
+  // Update sidebar box price
+  const sidebarBoxPrice = document.getElementById('sidebar-box-price');
+  if (sidebarBoxPrice && boxPrice) {
+    sidebarBoxPrice.textContent = `$${parseFloat(boxPrice).toFixed(2)}`;
   }
 
   // Feed prices into calculator
