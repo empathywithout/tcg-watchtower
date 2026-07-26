@@ -193,7 +193,7 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .hero-card-img{width:160px;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.8);margin:0 auto 32px;display:block;}
 
 /* PAGE LAYOUT */
-.page-outer{max-width:1200px;margin:0 auto;padding:0 24px 140px;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start;}
+.page-outer{max-width:1200px;margin:0 auto;padding:0 24px 80px;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start;}
 .page-wrap{min-width:0;}
 .sidebar{position:sticky;top:72px;}
 .sidebar-section{margin-bottom:24px;}
@@ -358,19 +358,6 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .product-btn.ebay{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#f59e0b;}
 .product-btn.ebay:hover{background:rgba(245,158,11,0.25);}
 
-/* STICKY PRICE BAR */
-.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:200;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,0.4);}
-.sticky-bar-info{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.sticky-bar-label{font-size:12px;color:var(--text-dim);}
-.sticky-bar-price{font-size:20px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
-.sticky-bar-btns{display:flex;gap:8px;flex-shrink:0;}
-.sticky-bar-btn{padding:8px 16px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;border:none;cursor:pointer;}
-.sticky-bar-btn.primary{background:#f97316;color:#fff;}
-.sticky-bar-btn.primary:hover{background:#ea6c0a;}
-.sticky-bar-btn.secondary{background:var(--bg-card-hover);color:var(--text-muted);border:1px solid var(--border);}
-.sticky-bar-btn.secondary:hover{color:var(--text);}
-@media(max-width:500px){.sticky-bar-label{display:none;}.sticky-bar-btn.secondary{display:none;}}
-
 /* PULL RATE CALCULATOR */
 .calc-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0;}
 .calc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;}
@@ -414,18 +401,6 @@ footer a{color:var(--accent);}
   <a href="/pokemon/sets/mega-evolution/chaos-rising/cards" class="nav-back">← Chaos Rising Card List</a>
 </nav>
 <div class="affiliate-bar">This site contains affiliate links for which we may be compensated.</div>
-
-<!-- STICKY PRICE BAR -->
-<div class="sticky-bar" id="sticky-bar">
-  <div class="sticky-bar-info">
-    <span class="sticky-bar-label">Chaos Rising Booster Box</span>
-    <span class="sticky-bar-price" id="sticky-price">Loading...</span>
-  </div>
-  <div class="sticky-bar-btns">
-    <a class="sticky-bar-btn secondary" href="/pokemon/sets/mega-evolution/chaos-rising/sealed-product">All products</a>
-    <a class="sticky-bar-btn primary" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Booster%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">Buy on TCGplayer</a>
-  </div>
-</div>
 <div class="breadcrumb">
   <a href="/">Home</a><span class="sep">›</span>
   <a href="/pokemon">Pokémon TCG</a><span class="sep">›</span>
@@ -1082,12 +1057,6 @@ async function loadAllPrices() {
 
   // Feed prices into calculator
   if (window._calcPrices) window._calcPrices(boxPrice, singles);
-
-  // Update sticky bar
-  const stickyPrice = document.getElementById('sticky-price');
-  if (stickyPrice && boxPrice) {
-    stickyPrice.textContent = `$${parseFloat(boxPrice).toFixed(2)}`;
-  }
 
   // Store today's singles snapshot for tomorrow
   if (hasSingles) {
