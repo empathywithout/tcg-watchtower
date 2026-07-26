@@ -275,10 +275,68 @@
     padding: 40px 0 32px;
     border-bottom: 1px solid var(--border);
   }
-  .intro-section p {
+  .intro-section p:last-of-type { margin-bottom: 0; }
+
+  /* METHODOLOGY BOX */
+  .methodology-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .methodology-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .methodology-text {
+    font-size: 13px;
     color: var(--text-muted);
-    font-size: 15px;
-    margin-bottom: 16px;
+    margin-bottom: 14px !important;
+  }
+  .methodology-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) { .methodology-grid { grid-template-columns: 1fr; } }
+  .methodology-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .methodology-phase {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .methodology-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .methodology-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  #verdict-methodology {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .methodology-caveat {
+    font-size: 11px;
+    color: var(--text-dim);
   }
   .intro-section p:last-child { margin-bottom: 0; }
 
@@ -926,6 +984,25 @@
   <div class="intro-section">
     <p>Pitch Black is the fifth expansion of the Mega Evolution era, a small focused set built almost entirely around one Pokémon. <a href="/pokemon/sets/mega-evolution/pitch-black/cards/mega-darkrai-ex-116" style="color:var(--accent);text-decoration:none">Mega Darkrai ex</a> is the reason this set exists. The name points straight at it, and almost everything worth money sits in the Darkrai tier or just below it.</p>
     <p>The English launch saw the kind of fast correction the market has been learning to expect. Cards priced as presale lottery tickets corrected within the first weekend. Anyone who waited is already ahead. The cards below are ranked by current market price, with context on what each card actually is and whether it's worth buying right now. For the full <a href="/pokemon/sets/mega-evolution/pitch-black/cards" style="color:var(--accent);text-decoration:none">Pitch Black card list</a> with prices on all 120 cards, or the Japanese source set <a href="/pokemon/sets/mega-evolution-jp/abyss-eye/cards" style="color:var(--accent);text-decoration:none">Abyss Eye</a> where English prices have JP comps to compare against, those pages are linked at the bottom.</p>
+
+    <div class="methodology-box">
+      <div class="methodology-title">How we determine verdicts</div>
+      <p class="methodology-text">Prices and verdicts update automatically every time this page loads. Here's what drives each verdict:</p>
+      <div class="methodology-grid">
+        <div class="methodology-item">
+          <div class="methodology-phase">First 4 weeks</div>
+          <div class="methodology-desc">We compare each card's current price against its English presale price. If a card has dropped more than 30% from presale it's a better entry point; if it's still within 15% of presale we flag it as no urgency. 24-hour price movement from TCGplayer also shows as a trend arrow (▲▼) next to each price.</div>
+        </div>
+        <div class="methodology-item">
+          <div class="methodology-phase">After 4 weeks</div>
+          <div class="methodology-desc">Presale prices become stale context. We switch to 30-day trend data — stored weekly in our database from TCGplayer market prices. A card down 15%+ over 30 days signals a buying window. A card near its recent all-time low is flagged as a historically good entry. A card that's been flat for a month gets a stable rating.</div>
+        </div>
+      </div>
+      <div class="methodology-footer">
+        <span id="verdict-methodology">Calculating based on available price history...</span>
+        <span class="methodology-caveat">Verdicts are price-based context, not financial advice. Always check current listings before buying.</span>
+      </div>
+    </div>
   </div>
 
   <!-- INFO GRID -->
@@ -1354,141 +1431,177 @@ tldrBody.innerHTML = CARDS.map(card => {
   </tr>`;
 }).join('');
 
-// Fetch live prices + yesterday snapshot for trends
+// Fetch live prices + snapshots for trend arrows and verdicts
 async function fetchPrices() {
   const GROUP_ID = '24688';
+
+  const [liveRes, snapRes] = await Promise.allSettled([
+    fetch(`/api/tcgplayer-prices?groupId=${GROUP_ID}`),
+    fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`)
+  ]);
+
+  let prices = {};
+  let yesterday = null;
+  let weeks = {};
+
   try {
-    // Fetch live prices and yesterday's snapshot in parallel
-    const [liveRes, snapRes] = await Promise.all([
-      fetch(`/api/tcgplayer-prices?groupId=${GROUP_ID}`),
-      fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`)
-    ]);
-
-    if (!liveRes.ok) throw new Error('Price API error');
-    const liveData = await liveRes.json();
-    const prices   = liveData.prices || {};
-
-    const snapData    = snapRes.ok ? await snapRes.json() : null;
-    const yesterday   = snapData?.snapshot || null;
-
-    // Helper to get price by card number
-    function getPrice(num) {
-      return prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))] ?? null;
+    if (liveRes.status === 'fulfilled' && liveRes.value.ok) {
+      prices = (await liveRes.value.json()).prices || {};
     }
-    function getYesterdayPrice(num) {
-      if (!yesterday) return null;
-      return yesterday[String(num).padStart(3,'0')] ?? yesterday[String(parseInt(num,10))] ?? null;
-    }
+  } catch(e) {}
 
-    // Trend arrow based on 24h change
-    function trendArrow(current, prev) {
-      if (prev == null || current == null) return '';
-      const pct = ((current - prev) / prev) * 100;
-      if (pct > 1.5)  return `<span style="color:#22c55e;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▲ ${pct.toFixed(0)}%</span>`;
-      if (pct < -1.5) return `<span style="color:#f87171;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▼ ${Math.abs(pct).toFixed(0)}%</span>`;
-      return `<span style="color:#64748b;font-size:11px;margin-left:4px">→</span>`;
+  try {
+    if (snapRes.status === 'fulfilled' && snapRes.value.ok) {
+      const snap = await snapRes.value.json();
+      yesterday = snap.yesterday || null;
+      weeks     = snap.weeks     || {};
     }
+  } catch(e) {}
 
-    // Update price displays with trend arrows
-    document.querySelectorAll('[data-tcgp-id]').forEach(el => {
-      const id    = el.dataset.tcgpId;
-      const price = getPrice(id);
-      const prev  = getYesterdayPrice(id);
-      if (price != null) {
-        el.innerHTML = `$${parseFloat(price).toFixed(2)}${trendArrow(price, prev)}`;
+  const hasPrices = Object.keys(prices).length > 0;
+
+  // Fallback static prices if API down
+  if (!hasPrices) {
+    const fb = { '116':306.74,'120':196.33,'117':130.99,'114':72.37,
+                 '115':55.14,'119':41.41,'111':34.75,'118':31.57,'090':23.01,'087':15.48 };
+    Object.entries(fb).forEach(([k,v]) => { prices[k.padStart(3,'0')] = v; });
+  }
+
+  function getPrice(num, src) {
+    if (!src) src = prices;
+    return src[String(num).padStart(3,'0')] ?? src[String(parseInt(num,10))] ?? null;
+  }
+
+  // Get price from N weeks ago (use oldest available week as long-term anchor)
+  function getLongTermPrice(num) {
+    const weekKeys = Object.keys(weeks).sort(); // oldest first
+    if (!weekKeys.length) return null;
+    return getPrice(num, weeks[weekKeys[0]]);
+  }
+
+  // Get price from ~4 weeks ago if available
+  function get4WeekPrice(num) {
+    const weekKeys = Object.keys(weeks).sort();
+    // Find a snapshot from 3-5 weeks ago
+    const target = weekKeys.find(w => {
+      const snap = weeks[w];
+      return snap && weekKeys.indexOf(w) >= 3;
+    }) || weekKeys[Math.min(3, weekKeys.length - 1)];
+    return target ? getPrice(num, weeks[target]) : null;
+  }
+
+  function trendArrow(current, prev) {
+    if (prev == null || current == null) return '';
+    const pct = ((current - prev) / prev) * 100;
+    if (pct > 1.5)  return `<span style="color:#22c55e;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▲ ${pct.toFixed(0)}%</span>`;
+    if (pct < -1.5) return `<span style="color:#f87171;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▼ ${Math.abs(pct).toFixed(0)}%</span>`;
+    return `<span style="color:#64748b;font-size:11px;margin-left:4px" title="Stable vs yesterday">→</span>`;
+  }
+
+  // Update card prices with 24h trend arrows
+  document.querySelectorAll('[data-tcgp-id]').forEach(el => {
+    const num   = el.dataset.tcgpId;
+    const price = getPrice(num);
+    const prev  = yesterday ? getPrice(num, yesterday) : null;
+    if (price != null) {
+      const est = hasPrices ? '' : ' <span style="font-size:10px;color:var(--text-dim);font-weight:400">est.</span>';
+      el.innerHTML = `$${parseFloat(price).toFixed(2)}${trendArrow(price, prev)}${est}`;
+    }
+  });
+
+  document.querySelectorAll('.live-price-inline').forEach(el => {
+    const price = getPrice(el.dataset.id);
+    if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
+  });
+
+  document.querySelectorAll('[data-tldr-id]').forEach(el => {
+    const num   = el.dataset.tldrId;
+    const price = getPrice(num);
+    const prev  = yesterday ? getPrice(num, yesterday) : null;
+    if (price != null) {
+      el.innerHTML = `$${parseFloat(price).toFixed(2)}${trendArrow(price, prev)}`;
+    }
+  });
+
+  // Smart verdicts — priority: 4-week trend > presale ratio > stable
+  const weekCount = Object.keys(weeks).length;
+
+  function calcVerdict(num, livePrice, presale) {
+    // 1. If we have 4+ weeks of data, use 30-day trend as primary signal
+    if (weekCount >= 4) {
+      const fourWeekPrice = get4WeekPrice(num);
+      if (fourWeekPrice) {
+        const pct30d = ((livePrice - fourWeekPrice) / fourWeekPrice) * 100;
+        if (pct30d < -15) return { cls: 'buy',    label: '✓ Down 15%+ over 30 days — good window', short: 'Trending down' };
+        if (pct30d >  10) return { cls: 'wait',   label: '⟳ Up 10%+ over 30 days — watch first',  short: 'Trending up'   };
       }
-    });
-
-    // Update presale inline prices
-    document.querySelectorAll('.live-price-inline').forEach(el => {
-      const id    = el.dataset.id;
-      const price = getPrice(id);
-      if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
-    });
-
-    // Update TL;DR table prices
-    document.querySelectorAll('[data-tldr-id]').forEach(el => {
-      const id    = el.dataset.tldrId;
-      const price = getPrice(id);
-      if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
-    });
-
-    // Dynamic verdicts — trend-based when we have yesterday, presale-based otherwise
-    function calcVerdict(livePrice, prevPrice, presale) {
-      if (prevPrice != null) {
-        const pct = ((livePrice - prevPrice) / prevPrice) * 100;
-        if (pct < -3)  return { cls: 'buy',    label: '✓ Prices falling — good window',  short: 'Falling' };
-        if (pct >  3)  return { cls: 'wait',   label: '⟳ Prices rising — watch first',   short: 'Rising' };
-        if (presale) {
-          const ratio = livePrice / presale;
-          if (ratio < 0.70) return { cls: 'buy',     label: '✓ Good time to buy',              short: 'Good time' };
-          if (ratio < 0.85) return { cls: 'neutral',  label: '→ Correction still ongoing',      short: 'Watching' };
-        }
-        return { cls: 'neutral', label: '→ Stable — no urgency',           short: 'Stable' };
+      // Stable over 4 weeks — check long-term floor proximity
+      const longTermPrice = getLongTermPrice(num);
+      if (longTermPrice) {
+        const floorPct = ((livePrice - longTermPrice) / longTermPrice) * 100;
+        if (floorPct < 5)  return { cls: 'buy',     label: '✓ Near recent low — historically good entry', short: 'Near low'   };
+        if (floorPct > 20) return { cls: 'wait',    label: '⟳ Above recent low — patience may pay',        short: 'Above low'  };
       }
-      // No yesterday data yet — fall back to presale comparison
-      if (presale) {
-        const ratio = livePrice / presale;
-        if (ratio < 0.70) return { cls: 'buy',    label: '✓ Good time to buy',         short: 'Good time' };
-        if (ratio < 0.85) return { cls: 'neutral', label: '→ Correction still ongoing', short: 'Watching' };
-        return               { cls: 'wait',   label: '⟳ Still near presale',        short: 'No urgency' };
-      }
-      return null;
+      return { cls: 'neutral', label: '→ Stable over 30 days — no urgency', short: 'Stable' };
     }
 
-    document.querySelectorAll('[data-verdict]').forEach(el => {
-      const num     = el.dataset.number;
-      const presale = parseFloat(el.dataset.presale) || 0;
-      const price   = getPrice(num);
-      const prev    = getYesterdayPrice(num);
-      if (price == null) return;
-      const v = calcVerdict(parseFloat(price), prev ? parseFloat(prev) : null, presale || null);
-      if (!v) return;
-      el.className = `verdict ${v.cls}`;
-      el.querySelector('.verdict-label').textContent = v.label;
-    });
+    // 2. Under 4 weeks of data — use 24h trend + presale ratio
+    const prevPrice = yesterday ? getPrice(num, yesterday) : null;
+    if (prevPrice) {
+      const pct24h = ((livePrice - prevPrice) / prevPrice) * 100;
+      if (pct24h < -3) return { cls: 'buy',  label: '✓ Prices falling — good window',  short: 'Falling' };
+      if (pct24h >  3) return { cls: 'wait', label: '⟳ Prices rising — watch first',   short: 'Rising'  };
+    }
 
-    document.querySelectorAll('[data-tldr-verdict]').forEach(el => {
-      const num     = el.dataset.number;
-      const presale = parseFloat(el.dataset.presale) || 0;
-      const price   = getPrice(num);
-      const prev    = getYesterdayPrice(num);
-      if (price == null) return;
-      const v = calcVerdict(parseFloat(price), prev ? parseFloat(prev) : null, presale || null);
-      if (!v) return;
-      el.className = `tldr-verdict ${v.cls}`;
-      el.textContent = v.short;
-    });
+    // 3. Presale ratio fallback
+    if (presale) {
+      const ratio = livePrice / presale;
+      if (ratio < 0.70) return { cls: 'buy',     label: '✓ Good time to buy',         short: 'Good time' };
+      if (ratio < 0.85) return { cls: 'neutral',  label: '→ Correction still ongoing', short: 'Watching'  };
+      return               { cls: 'wait',    label: '⟳ Still near presale',        short: 'No urgency' };
+    }
 
-    // POST today's prices to snapshot API for tomorrow's trend comparison
-    // Fire-and-forget — don't await, don't block the page
+    return null;
+  }
+
+  document.querySelectorAll('[data-verdict]').forEach(el => {
+    const num     = el.dataset.number;
+    const presale = parseFloat(el.dataset.presale) || 0;
+    const price   = getPrice(num);
+    if (price == null) return;
+    const v = calcVerdict(num, parseFloat(price), presale || null);
+    if (!v) return;
+    el.className = `verdict ${v.cls}`;
+    el.querySelector('.verdict-label').textContent = v.label;
+  });
+
+  document.querySelectorAll('[data-tldr-verdict]').forEach(el => {
+    const num     = el.dataset.number;
+    const presale = parseFloat(el.dataset.presale) || 0;
+    const price   = getPrice(num);
+    if (price == null) return;
+    const v = calcVerdict(num, parseFloat(price), presale || null);
+    if (!v) return;
+    el.className = `tldr-verdict ${v.cls}`;
+    el.textContent = v.short;
+  });
+
+  // Update methodology note with current data age
+  const methodEl = document.getElementById('verdict-methodology');
+  if (methodEl) {
+    const dataAge = weekCount >= 4 ? `${weekCount}-week price history` :
+                    weekCount >= 1 ? `${weekCount} week${weekCount>1?'s':''} of history (building — full analysis at 4 weeks)` :
+                    'launch-week data (presale comparison)';
+    methodEl.textContent = `Based on ${dataAge} from TCGplayer market prices.`;
+  }
+
+  // Store today's snapshot — fire and forget
+  if (hasPrices) {
     fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prices })
     }).catch(() => {});
-
-  } catch (e) {
-    // Fallback: show static prices if API unavailable
-    const fallback = {
-      '116': 306.74, '120': 196.33, '117': 130.99,
-      '114': 72.37,  '115': 55.14,  '119': 41.41,
-      '111': 34.75,  '118': 31.57,  '090': 23.01, '087': 15.48
-    };
-    document.querySelectorAll('[data-tcgp-id]').forEach(el => {
-      const key = String(el.dataset.tcgpId).padStart(3,'0');
-      if (fallback[key] != null) {
-        el.innerHTML = `$${fallback[key].toFixed(2)} <span style="font-size:10px;color:var(--text-dim);font-weight:400">est.</span>`;
-      }
-    });
-    document.querySelectorAll('.live-price-inline').forEach(el => {
-      const key = String(el.dataset.id).padStart(3,'0');
-      if (fallback[key] != null) el.textContent = `$${fallback[key].toFixed(2)}`;
-    });
-    document.querySelectorAll('[data-tldr-id]').forEach(el => {
-      const key = String(el.dataset.tldrId).padStart(3,'0');
-      if (fallback[key] != null) el.textContent = `$${fallback[key].toFixed(2)}`;
-    });
   }
 }
 
