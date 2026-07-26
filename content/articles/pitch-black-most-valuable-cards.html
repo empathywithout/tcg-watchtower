@@ -1289,7 +1289,7 @@ function buildCard(card) {
       </div>
     </div>` : '';
 
-  const verdictIcon = card.verdict === 'buy' ? '✓ Buy now' : card.verdict === 'wait' ? '⟳ Wait' : '→ Context';
+  const verdictIcon = card.verdict === 'buy' ? '✓ Good time to buy' : card.verdict === 'wait' ? '⟳ No urgency' : '→ Context';
 
   return `
   <div class="card-entry" id="card-${card.rank}">
@@ -1336,7 +1336,7 @@ document.getElementById('card-list').innerHTML = CARDS.map(buildCard).join('');
 // Build TL;DR table
 const tldrBody = document.getElementById('tldr-body');
 tldrBody.innerHTML = CARDS.map(card => {
-  const verdictLabel = card.verdict === 'buy' ? 'Buy now' : card.verdict === 'wait' ? 'Wait' : 'Context';
+  const verdictLabel = card.verdict === 'buy' ? 'Good time' : card.verdict === 'wait' ? 'No urgency' : 'Context';
   return `
   <tr onclick="document.getElementById('card-${card.rank}').scrollIntoView({behavior:'smooth', block:'start'})">
     <td class="tldr-rank">#${card.rank}</td>
