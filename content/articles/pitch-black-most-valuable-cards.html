@@ -157,30 +157,36 @@
 }
 </script>
 
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y',{"page_type":"article","set_id":"me05","series":"Mega Evolution"});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','affiliate_click',{retailer:'tcgplayer',page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','affiliate_click',{retailer:'amazon',page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','affiliate_click',{retailer:'ebay',page_path:location.pathname});}},true);</script>
 <style>
   :root {
-    --bg: #0f1117;
-    --bg-card: #1a1d27;
-    --bg-card-hover: #1f2335;
-    --border: #2a2d3e;
-    --border-light: #353848;
-    --text: #e8eaf0;
-    --text-muted: #8b8fa8;
-    --text-dim: #5a5e75;
-    --accent: #6c7bff;
-    --accent-glow: rgba(108, 123, 255, 0.15);
-    --green: #4caf7d;
-    --green-bg: rgba(76, 175, 125, 0.1);
-    --yellow: #f0b429;
-    --yellow-bg: rgba(240, 180, 41, 0.1);
-    --red: #f06292;
-    --gold: #d4a843;
-    --sir: #9b6fff;
-    --ir: #4db6ac;
-    --ur: #64b5f6;
-    --mhr: #d4a843;
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #263548;
+    --border: #334155;
+    --border-light: #475569;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.15);
+    --green: #22c55e;
+    --green-bg: rgba(34, 197, 94, 0.1);
+    --yellow: #f59e0b;
+    --yellow-bg: rgba(245, 158, 11, 0.1);
+    --red: #f87171;
+    --gold: #fbbf24;
+    --sir: #fbbf24;
+    --ir: #a5b4fc;
+    --ur: #f87171;
+    --mhr: #fbbf24;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -188,26 +194,12 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 16px;
     line-height: 1.7;
   }
 
   /* NAV */
-  .site-nav {
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-  .site-nav a { color: var(--text-muted); text-decoration: none; }
-  .site-nav a:hover { color: var(--text); }
-  .site-nav .sep { color: var(--text-dim); }
-  .nav-logo { display: flex; align-items: center; gap: 8px; color: var(--text) !important; font-weight: 600; font-size: 14px; }
-  .nav-logo svg { width: 22px; height: 22px; }
 
   /* HERO */
   .hero {
@@ -836,27 +828,47 @@
   .tldr-verdict.buy { background: var(--green-bg); color: var(--green); }
   .tldr-verdict.neutral { background: rgba(90,94,117,0.15); color: var(--text-dim); }
   .tldr-verdict.wait { background: var(--yellow-bg); color: var(--yellow); }
-  @media (max-width: 500px) {
-    .tldr-table thead th:nth-child(3),
-    .tldr-table tbody td:nth-child(3) { display: none; }
+  /* SITE NAV — matches tcgwatchtower.com */
+  nav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+  .nav-logo span { font-family: 'Saira Condensed', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 1.2rem; color: var(--text); letter-spacing: 0.05em; }
+  .nav-back { color: var(--text-muted); font-size: 0.85rem; text-decoration: none; }
+  .nav-back:hover { color: var(--text); }
+  .affiliate-bar { padding: 3px 16px; text-align: center; font-size: 0.65rem; color: rgba(148,163,184,0.4); letter-spacing: 0.02em; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .breadcrumb { padding: 0.75rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--border); }
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb span.sep { color: var(--text-dim); }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="site-nav">
+<nav>
   <a href="/" class="nav-logo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    TCG Watchtower
+    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
   </a>
-  <span class="sep">›</span>
-  <a href="/pokemon">Pokémon TCG</a>
-  <span class="sep">›</span>
-  <a href="/pokemon/sets/mega-evolution/pitch-black/cards">Pitch Black</a>
-  <span class="sep">›</span>
-  <span>Top 10 Most Valuable Cards</span>
+  <a href="/pokemon/sets/mega-evolution/pitch-black/cards" class="nav-back">← Pitch Black Card List</a>
 </nav>
+<div class="affiliate-bar">This site contains affiliate links for which we may be compensated.</div>
+<div class="breadcrumb">
+  <a href="/">Home</a><span class="sep">›</span>
+  <a href="/pokemon">Pokémon TCG</a><span class="sep">›</span>
+  <a href="/pokemon/sets/mega-evolution/pitch-black/cards">Pitch Black</a><span class="sep">›</span>
+  <span>Top 10 Most Valuable Cards</span>
+</div>
 
 <!-- HERO -->
 <div class="hero">
