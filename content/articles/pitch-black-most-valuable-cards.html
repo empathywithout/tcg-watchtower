@@ -277,6 +277,7 @@
   }
   .intro-section p {
     color: var(--text-muted);
+    font-size: 15px;
     margin-bottom: 16px;
   }
   .intro-section p:last-child { margin-bottom: 0; }
@@ -361,7 +362,7 @@
 
   .card-entry-inner {
     display: grid;
-    grid-template-columns: 160px 1fr;
+    grid-template-columns: 210px 1fr;
     gap: 0;
   }
   @media (max-width: 580px) {
@@ -405,15 +406,15 @@
   }
 
   .card-img {
-    width: 120px;
+    width: 170px;
     height: auto;
     border-radius: 6px;
     display: block;
     object-fit: contain;
   }
   .card-img-placeholder {
-    width: 120px;
-    height: 168px;
+    width: 170px;
+    height: 238px;
     background: var(--border);
     border-radius: 6px;
     display: flex;
@@ -489,9 +490,9 @@
   .card-artist strong { color: var(--text-muted); }
 
   .card-body {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-muted);
-    line-height: 1.65;
+    line-height: 1.7;
     margin-bottom: 16px;
   }
 
@@ -1089,9 +1090,7 @@ const CARDS = [
     slug: 'mega-zeraora-ex-114',
     name: 'Mega Zeraora ex',
     rarity: 'SIR',
-    artist: null,
-    presale: 170,
-    tcgpId: 704871,
+    artist: 'GIDORA',
     tcgpQ: 'Mega+Zeraora+ex+114%2F120',
     ebayQ: 'Mega+Zeraora+ex+114+Pitch+Black+Pokemon+Card',
     amzQ: 'Mega+Zeraora+ex+114+Pitch+Black+Pokemon+Card',
@@ -1101,7 +1100,7 @@ const CARDS = [
       { name: 'Mega Floette ex SIR', set: 'Chaos Rising', number: 117, r2: 'me04', url: '/pokemon/sets/mega-evolution/chaos-rising/cards/mega-floette-ex-117', label: 'Mega ex SIR same tier · ~$75' },
       { name: 'Umbreon ex SIR', set: 'Prismatic Evolutions', number: 161, r2: 'sv8pt5', url: '/pokemon/sets/scarlet-violet/prismatic-evolutions/cards/umbreon-ex-161', label: 'Dark-type SIR · ~$190' }
     ],
-    body: 'Zeraora is the set\'s hero, the Mythical Pokémon leading the fight against Mega Darkrai alongside Chandelure and Excadrill. As a Mythical from Generation VII it carries a dedicated collector base, and Mega Zeraora is one of the few Mythical Pokémon to receive a Mega form in the modern TCG. Worth noting: Zeraora was the one card that actually climbed after Japan\'s Abyss Eye launch. The English market didn\'t repeat that, and it corrected from $170 presale to roughly $72.'
+    body: 'Zeraora is the set\'s hero, the Mythical Pokémon leading the fight against Mega Darkrai alongside Chandelure and Excadrill. Illustrator GIDORA shows the Thunderclap Pokémon lit entirely by its own crackling electricity — all attention to color and light, like a still shot from a shonen anime that doesn\'t exist. As a Mythical from Generation VII it carries a dedicated collector base, and Mega Zeraora is one of the few Mythical Pokémon to receive a Mega form in the modern TCG. Worth noting: Zeraora was the one card that actually climbed after Japan\'s Abyss Eye launch. The English market didn\'t repeat that, and it corrected from $170 presale to roughly $72.'
   },
   {
     rank: 5,
@@ -1189,7 +1188,7 @@ const CARDS = [
     slug: 'slowbro-090',
     name: 'Slowbro',
     rarity: 'IR',
-    artist: null,
+    artist: 'Mékayu',
     presale: null,
     tcgpId: 704847,
     tcgpQ: 'Slowbro+090%2F120',
@@ -1201,7 +1200,7 @@ const CARDS = [
       { name: 'Piplup IR', set: 'Phantasmal Flames', number: 98, r2: 'me02', url: '/pokemon/sets/mega-evolution/phantasmal-flames/cards/piplup-098', label: 'Fan fave IR previous set · ~$14' },
       { name: 'Froakie IR', set: 'Chaos Rising', number: 88, r2: 'me04', url: '/pokemon/sets/mega-evolution/chaos-rising/cards', label: 'Fan fave IR last set · ~$26' }
     ],
-    body: 'The standout binder card in Pitch Black. The Slowbro Illustration Rare depicts the Gen I Pokémon at rest under a streetlamp, a cozy nocturnal scene that sits in sharp tonal contrast to the cosmic horror at the top of the set. It became a collector favorite when Abyss Eye spoilers dropped and that affection carried into the English release. At $23, Slowbro leads all Illustration Rares in the set by a significant margin, which reflects genuine collector demand rather than just rarity.'
+    body: 'The standout binder card in Pitch Black. Illustrator Mékayu uses imperfect lines and solid colors to emulate a storybook style, and the Slowbro IR is one of their best results — a cozy nocturnal scene with a warped streetlamp perspective that somehow makes the whole thing feel more real. It became a collector favorite when Abyss Eye spoilers dropped and that affection carried into the English release. At $23, Slowbro leads all Illustration Rares in the set by a significant margin, which reflects genuine collector demand rather than just rarity.'
   },
   {
     rank: 10,
@@ -1209,7 +1208,7 @@ const CARDS = [
     slug: 'goldeen-087',
     name: 'Goldeen',
     rarity: 'IR',
-    artist: null,
+    artist: 'Gemi',
     presale: null,
     tcgpId: 704844,
     tcgpQ: 'Goldeen+087%2F120',
@@ -1221,7 +1220,7 @@ const CARDS = [
       { name: 'Flygon IR', set: 'Phantasmal Flames', number: 101, r2: 'me02', url: '/pokemon/sets/mega-evolution/phantasmal-flames/cards/flygon-101', label: 'Gen fave IR previous set · ~$12' },
       { name: 'Eevee ex SIR', set: 'Prismatic Evolutions', number: 167, r2: 'sv8pt5', url: '/pokemon/sets/scarlet-violet/prismatic-evolutions/cards/eevee-ex-167', label: 'Popular SV chase · ~$22' }
     ],
-    body: 'The most affordable card on this list, Goldeen closes the top 10 with a simple case: a charming Gen I Water-type Illustration Rare in a set that doesn\'t have many of them. It isn\'t here for competitive relevance or character prestige. The art is good, the card is easy to love, and it punches well above the typical IR weight class alongside Slowbro, Primarina, Armarouge, and Dhelmise.'
+    body: 'The most affordable card on this list, Goldeen closes the top 10 with a simple case: illustrator Gemi loves depicting the interplay between light and water, and the Goldeen IR is one of their most dazzling examples. The texture of the water\'s surface is reflected in the lines of light on the floor of the pond — a genuinely beautiful card for the price. It punches well above the typical IR weight class alongside Slowbro, Primarina, Armarouge, and Dhelmise.'
   }
 ];
 
