@@ -1239,7 +1239,7 @@ function buildCard(card) {
   const presaleHtml = card.presale ? `
     <div class="presale-row">
       <span class="presale-chip was"><span class="chip-label">Presale</span>$${card.presale}</span>
-      <span class="presale-chip now"><span class="chip-label">Now</span><span class="live-price-inline" data-id="${card.tcgpId}">—</span></span>
+      <span class="presale-chip now"><span class="chip-label">Now</span><span class="live-price-inline" data-id="${card.number}">—</span></span>
     </div>` : '';
 
   const artistHtml = card.artist ? `<div class="card-artist">Illustrated by <strong>${card.artist}</strong></div>` : '<div class="card-artist" style="height:14px"></div>';
@@ -1279,7 +1279,7 @@ function buildCard(card) {
           <div class="card-img-placeholder" style="display:none">No image</div>
         </a>
         <div class="card-price-below">
-          <div class="price-value" data-tcgp-id="${card.tcgpId}"><span class="price-loading">—</span></div>
+          <div class="price-value" data-tcgp-id="${card.number}"><span class="price-loading">—</span></div>
           <div class="price-label">Market Price</div>
         </div>
       </div>
@@ -1323,49 +1323,43 @@ tldrBody.innerHTML = CARDS.map(card => {
       <div class="tldr-num">${card.number}/084</div>
     </td>
     <td><span class="rarity-pill ${rarityClass(card.rarity)}">${card.rarity}</span></td>
-    <td class="tldr-price" data-tldr-id="${card.tcgpId}">—</td>
+    <td class="tldr-price" data-tldr-id="${card.number}">—</td>
     <td><span class="tldr-verdict ${card.verdict}">${verdictLabel}</span></td>
   </tr>`;
 }).join('');
 
-// Fetch live prices from your API
+// Fetch live prices from the correct API
 async function fetchPrices() {
   try {
-    const res = await fetch('/api/cards?set=me05');
+    const res = await fetch('/api/tcgplayer-prices?groupId=24688');
     if (!res.ok) throw new Error('API error');
     const data = await res.json();
+    const prices = data.prices || {};
 
-    // Build a map of tcgpId -> price
-    const priceMap = {};
-    const cards = data.cards || data;
-    cards.forEach(c => {
-      if (c.tcgpId && c.marketPrice) {
-        priceMap[c.tcgpId] = c.marketPrice;
-      }
-    });
-
-    // Update price displays
+    // Update card price displays — prices keyed by padded card number e.g. "116"
     document.querySelectorAll('[data-tcgp-id]').forEach(el => {
       const id = el.dataset.tcgpId;
-      if (priceMap[id] != null) {
-        const price = priceMap[id];
-        el.innerHTML = `$${price.toFixed(2)}`;
+      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+      if (price != null) {
+        el.innerHTML = `$${parseFloat(price).toFixed(2)}`;
       }
     });
 
     // Update presale inline prices
     document.querySelectorAll('.live-price-inline').forEach(el => {
       const id = el.dataset.id;
-      if (priceMap[id] != null) {
-        el.textContent = `$${priceMap[id].toFixed(2)}`;
+      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+      if (price != null) {
+        el.textContent = `$${parseFloat(price).toFixed(2)}`;
       }
     });
 
     // Update TL;DR table prices
     document.querySelectorAll('[data-tldr-id]').forEach(el => {
       const id = el.dataset.tldrId;
-      if (priceMap[id] != null) {
-        el.textContent = `$${priceMap[id].toFixed(2)}`;
+      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+      if (price != null) {
+        el.textContent = `$${parseFloat(price).toFixed(2)}`;
       }
     });
 
