@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/content/articles/chaos-rising-worth-buying",
+      "destination": "/content/articles/chaos-rising-worth-buying.html"
+    },
+    {
       "source": "/content/articles/pitch-black-most-valuable-cards",
       "destination": "/content/articles/pitch-black-most-valuable-cards.html"
     },
