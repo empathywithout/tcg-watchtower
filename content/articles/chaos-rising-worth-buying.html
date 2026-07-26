@@ -217,6 +217,16 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .sidebar-btn.tertiary{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#f59e0b;}
 .sidebar-btn.tertiary:hover{background:rgba(245,158,11,0.25);}
 .sidebar-card-price{font-size:13px;font-weight:700;color:var(--green);margin-top:3px;font-variant-numeric:tabular-nums;}
+
+/* SIDEBAR ARTICLE CARDS — card art with overlay, same as bottom grid */
+.sidebar-article-card{position:relative;display:block;border-radius:8px;overflow:hidden;aspect-ratio:16/9;margin-bottom:8px;text-decoration:none;}
+.sidebar-article-card:last-child{margin-bottom:0;}
+.sidebar-article-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;}
+.sidebar-article-card:hover img{transform:scale(1.05);}
+.sidebar-article-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.2) 65%,transparent 100%);}
+.sidebar-article-text{position:absolute;bottom:0;left:0;right:0;padding:10px;z-index:1;}
+.sidebar-article-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.55);margin-bottom:3px;}
+.sidebar-article-title{font-size:12px;font-weight:700;color:#fff;line-height:1.3;}
 @media(max-width:900px){
   .page-outer{grid-template-columns:1fr;}
   .sidebar{display:none;}
@@ -914,14 +924,32 @@ footer a{color:var(--accent);}
 
   <!-- Related articles -->
   <div class="sidebar-section">
-    <div class="sidebar-label">Related Articles</div>
-    <a href="/content/articles/pitch-black-most-valuable-cards" class="sidebar-card">
-      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/116.webp" alt="Pitch Black most valuable" class="sidebar-card-img" loading="lazy">
-      <div class="sidebar-card-info">
-        <div class="sidebar-card-eyebrow">Article · Pitch Black</div>
-        <div class="sidebar-card-title">The 10 Most Valuable Cards in Pitch Black</div>
+    <div class="sidebar-label">More from TCG Watchtower</div>
+
+    <a href="/content/articles/pitch-black-most-valuable-cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/116.webp" alt="Pitch Black most valuable cards" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Pitch Black · Article</div>
+        <div class="sidebar-article-title">The 10 Most Valuable Cards in Pitch Black</div>
       </div>
     </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/122.webp" alt="Chaos Rising chase cards" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Chaos Rising · Price Guide</div>
+        <div class="sidebar-article-title">All Chase Cards Ranked by Price</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/ascended-heroes/cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me02pt5/284.webp" alt="Ascended Heroes" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Ascended Heroes · Card List</div>
+        <div class="sidebar-article-title">Ascended Heroes: Full Card List</div>
+      </div>
+    </a>
+
   </div>
 
 </aside>
