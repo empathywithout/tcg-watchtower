@@ -303,6 +303,24 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .author-bio-brand{color:var(--accent);font-weight:400;font-size:13px;}
 .author-bio-text{font-size:13px;color:var(--text-muted);line-height:1.6;}
 
+/* PRODUCTS */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin:20px 0;}
+.product-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.product-img{width:100%;aspect-ratio:1;object-fit:contain;background:var(--bg-card-hover);padding:12px;}
+.product-info{padding:14px;}
+.product-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.4;}
+.product-msrp{font-size:11px;color:var(--text-dim);margin-bottom:6px;}
+.product-price-live{font-size:20px;font-weight:700;color:var(--green);margin-bottom:12px;font-variant-numeric:tabular-nums;min-height:28px;}
+.product-price-live.loading{color:var(--text-dim);font-size:13px;}
+.product-btns{display:flex;flex-direction:column;gap:6px;}
+.product-btn{display:block;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;text-align:center;text-decoration:none;border:1px solid transparent;transition:all 0.15s;}
+.product-btn.tcgp{background:#f97316;border-color:#f97316;color:#fff;}
+.product-btn.tcgp:hover{background:#ea6c0a;}
+.product-btn.amz{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:#22c55e;}
+.product-btn.amz:hover{background:rgba(34,197,94,0.25);}
+.product-btn.ebay{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#f59e0b;}
+.product-btn.ebay:hover{background:rgba(245,158,11,0.25);}
+
 /* DISCLAIMER */
 .disclaimer{font-size:11px;color:var(--text-dim);line-height:1.6;padding:16px 0;border-top:1px solid var(--border);margin-top:8px;}
 
@@ -474,13 +492,13 @@ footer a{color:var(--accent);}
       </div>
       <div class="ev-row">
         <div class="ev-rarity">Any SIR (~0.43 per box, avg $100 across 6 SIRs)</div>
-        <div class="ev-contribution">~$43</div>
-        <div class="ev-note">Greninja SIR pulls avg up sharply</div>
+        <div class="ev-contribution" id="ev-sir">~$43</div>
+        <div class="ev-note" id="ev-sir-note">Greninja SIR pulls avg up sharply</div>
       </div>
       <div class="ev-row">
         <div class="ev-rarity">MHR Mega Greninja ex (~0.04 per box, ~$375)</div>
-        <div class="ev-contribution">~$15</div>
-        <div class="ev-note">Low probability, high ceiling</div>
+        <div class="ev-contribution" id="ev-mhr">~$15</div>
+        <div class="ev-note" id="ev-mhr-note">Low probability, high ceiling</div>
       </div>
       <div class="ev-row">
         <div class="ev-rarity">Commons, Uncommons, Double Rares</div>
@@ -489,7 +507,7 @@ footer a{color:var(--accent);}
       </div>
       <div class="ev-row ev-total">
         <div class="ev-rarity">Estimated average box return</div>
-        <div class="ev-contribution">~$150</div>
+        <div class="ev-contribution" id="ev-total">~$150</div>
         <div class="ev-note">vs ~$185 box cost</div>
       </div>
     </div>
@@ -583,6 +601,87 @@ footer a{color:var(--accent);}
     </div>
   </div>
 
+  <!-- PRODUCTS -->
+  <div class="section">
+    <div class="section-label">Where to buy</div>
+    <h2>Current prices on every Chaos Rising product</h2>
+    <p>Prices update live from the secondary market. MSRP shown for reference — if you can find product at or near those prices at retail, it represents meaningfully better value than the secondary market figures below.</p>
+    <div class="products-grid">
+
+      <div class="product-card">
+        <img src="https://product-images.tcgplayer.com/fit-in/437x437/684444.jpg" alt="Chaos Rising Booster Box" class="product-img" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">Booster Box (36 Packs)</div>
+          <div class="product-msrp">MSRP: $160.99</div>
+          <div class="product-price-live loading" data-sealed-id="684444">Loading...</div>
+          <div class="product-btns">
+            <a class="product-btn tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Booster%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+            <a class="product-btn amz" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Booster%20Box%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+            <a class="product-btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Booster%20Box%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://product-images.tcgplayer.com/fit-in/437x437/684450.jpg" alt="Chaos Rising Elite Trainer Box" class="product-img" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">Elite Trainer Box</div>
+          <div class="product-msrp">MSRP: $49.99</div>
+          <div class="product-price-live loading" data-sealed-id="684450">Loading...</div>
+          <div class="product-btns">
+            <a class="product-btn tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Elite%20Trainer%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+            <a class="product-btn amz" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Elite%20Trainer%20Box%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+            <a class="product-btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Elite%20Trainer%20Box%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://product-images.tcgplayer.com/fit-in/437x437/684452.jpg" alt="Chaos Rising Pokemon Center ETB" class="product-img" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">Pokemon Center Elite Trainer Box</div>
+          <div class="product-msrp">MSRP: $59.99</div>
+          <div class="product-price-live loading" data-sealed-id="684452">Loading...</div>
+          <div class="product-btns">
+            <a class="product-btn tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Pokemon%20Center%20Elite%20Trainer%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+            <a class="product-btn amz" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Pokemon%20Center%20Elite%20Trainer%20Box%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+            <a class="product-btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Pokemon%20Center%20Elite%20Trainer%20Box%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://product-images.tcgplayer.com/fit-in/437x437/684456.jpg" alt="Chaos Rising Booster Bundle" class="product-img" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">Booster Bundle (6 Packs)</div>
+          <div class="product-msrp">MSRP: $26.94</div>
+          <div class="product-price-live loading" data-sealed-id="684456">Loading...</div>
+          <div class="product-btns">
+            <a class="product-btn tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Booster%20Bundle%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+            <a class="product-btn amz" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Booster%20Bundle%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+            <a class="product-btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Booster%20Bundle%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://product-images.tcgplayer.com/fit-in/437x437/684454.jpg" alt="Chaos Rising Build and Battle Box" class="product-img" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">Build &amp; Battle Box</div>
+          <div class="product-msrp">MSRP: $14.99</div>
+          <div class="product-price-live loading" data-sealed-id="684454">Loading...</div>
+          <div class="product-btns">
+            <a class="product-btn tcgp" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Build%20Battle%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">TCGplayer</a>
+            <a class="product-btn amz" href="https://www.amazon.com/s?k=Pokemon%20Chaos%20Rising%20Build%20Battle%20Box%20ME4&linkCode=ll2&tag=cehutto01-20&language=en_US" target="_blank" rel="noopener">Amazon</a>
+            <a class="product-btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=Pokemon%20Chaos%20Rising%20Build%20Battle%20Box%20ME4&campid=5339145069" target="_blank" rel="noopener">eBay</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);">For the full breakdown of every Chaos Rising sealed product with price history, see the <a href="/pokemon/sets/mega-evolution/chaos-rising/sealed-product" style="color:var(--accent);">Chaos Rising sealed product page</a>.</p>
+  </div>
+
   <!-- AUTHOR BIO -->
   <div class="author-bio-section">
     <div class="author-bio-avatar">
@@ -615,31 +714,135 @@ footer a{color:var(--accent);}
 </noscript>
 
 <script>
-// Fetch live Chaos Rising booster box price and singles prices
 const SINGLES_GROUP = '24655';
-const SEALED_GROUP  = '24655';
-const BOX_TCGP_ID   = '684444';
+const SEALED_IDS    = ['684444','684450','684451','684452','684454','684456'];
 
-async function loadPrices() {
-  try {
-    const res = await fetch(`/api/tcgplayer-prices?groupId=${SINGLES_GROUP}&sealedIds=${BOX_TCGP_ID}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const prices = data.prices || {};
+// SIR card numbers and their slugs for internal linking
+const CHASE_CARDS = [
+  { num: '116', name: 'Mega Greninja ex SIR',    slug: 'mega-greninja-ex-116',    fallback: 470 },
+  { num: '122', name: 'Mega Greninja ex MHR',    slug: 'mega-greninja-ex-122',    fallback: 375 },
+  { num: '119', name: 'Cinccino ex SIR',          slug: 'cinccino-ex-119',         fallback: 100 },
+  { num: '118', name: 'Mega Dragalge ex SIR',     slug: 'mega-dragalge-ex-118',    fallback: 105 },
+  { num: '117', name: 'Mega Floette ex SIR',      slug: 'mega-floette-ex-117',     fallback:  75 },
+  { num: '120', name: "AZ's Tranquility SIR",    slug: 'azs-tranquility-120',     fallback:  39 },
+  { num: '121', name: "Roxie's Performance SIR", slug: 'roxies-performance-121',  fallback:  55 },
+];
 
-    // Update live box price display
-    const boxPrice = prices[BOX_TCGP_ID] ?? prices['booster-box'];
-    if (boxPrice) {
-      const fmt = `$${parseFloat(boxPrice).toFixed(0)}`;
-      const el1 = document.getElementById('live-box-price');
-      const el2 = document.getElementById('stat-box-price');
-      if (el1) el1.textContent = fmt;
-      if (el2) el2.textContent = fmt;
-    }
-  } catch(e) {}
+function getPrice(prices, num) {
+  return prices[num.padStart(3,'0')] ?? prices[String(parseInt(num,10))] ?? null;
 }
 
-loadPrices();
+async function loadAllPrices() {
+  const GROUP_ID = SINGLES_GROUP;
+
+  // Fetch singles prices, sealed prices, and yesterday snapshot in parallel
+  const [singlesRes, snapRes] = await Promise.allSettled([
+    fetch(`/api/tcgplayer-prices?groupId=${GROUP_ID}`),
+    fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`)
+  ]);
+
+  let singles = {};
+  let yesterday = null;
+  let weeks = {};
+
+  try {
+    if (singlesRes.status === 'fulfilled' && singlesRes.value.ok) {
+      const d = await singlesRes.value.json();
+      singles = d.prices || {};
+    }
+  } catch(e) {}
+
+  try {
+    if (snapRes.status === 'fulfilled' && snapRes.value.ok) {
+      const d = await snapRes.value.json();
+      yesterday = d.yesterday || null;
+      weeks     = d.weeks     || {};
+    }
+  } catch(e) {}
+
+  // Sealed prices are keyed by tcgpId in the same prices object when sealedIds passed
+  // Fetch separately with sealedIds param
+  let sealedPrices = {};
+  try {
+    const sr = await fetch(`/api/tcgplayer-prices?groupId=${GROUP_ID}&sealedIds=${SEALED_IDS.join(',')}`);
+    if (sr.ok) {
+      const sd = await sr.json();
+      sealedPrices = sd.prices || {};
+    }
+  } catch(e) {}
+
+  // --- UPDATE SEALED PRODUCT PRICES ---
+  document.querySelectorAll('[data-sealed-id]').forEach(el => {
+    const id = el.dataset.sealedId;
+    const price = sealedPrices[id] ?? singles[id];
+    if (price != null) {
+      el.textContent = `$${parseFloat(price).toFixed(2)}`;
+      el.classList.remove('loading');
+    }
+  });
+
+  // Update scenario box current price
+  const boxPrice = sealedPrices['684444'] ?? singles['684444'];
+  if (boxPrice) {
+    const fmt = `$${Math.round(parseFloat(boxPrice))}`;
+    const el1 = document.getElementById('live-box-price');
+    const el2 = document.getElementById('stat-box-price');
+    if (el1) el1.textContent = fmt;
+    if (el2) el2.textContent = fmt;
+  }
+
+  // --- UPDATE EV TABLE WITH LIVE SINGLES PRICES ---
+  const hasSingles = Object.keys(singles).length > 0;
+  if (hasSingles) {
+    // Get live SIR prices to calculate average
+    const sirPrices = CHASE_CARDS
+      .filter(c => !['122'].includes(c.num)) // exclude MHR from SIR avg
+      .map(c => getPrice(singles, c.num))
+      .filter(Boolean)
+      .map(p => parseFloat(p));
+
+    const mhrPrice = getPrice(singles, '122');
+
+    if (sirPrices.length > 0) {
+      const sirAvg = sirPrices.reduce((a,b) => a+b, 0) / sirPrices.length;
+      const sirEV = (sirAvg * (36/83)).toFixed(0); // 36 packs / 83 packs per SIR
+      const mhrEV = mhrPrice ? (parseFloat(mhrPrice) * (36/956)).toFixed(0) : '15';
+      const totalEV = (48 + 24 + parseFloat(sirEV) + parseFloat(mhrEV) + 20).toFixed(0);
+
+      const sirEl  = document.getElementById('ev-sir');
+      const mhrEl  = document.getElementById('ev-mhr');
+      const totEl  = document.getElementById('ev-total');
+      const sirNoteEl = document.getElementById('ev-sir-note');
+      const mhrNoteEl = document.getElementById('ev-mhr-note');
+
+      if (sirEl)  sirEl.textContent  = `~$${sirEV}`;
+      if (mhrEl)  mhrEl.textContent  = `~$${mhrEV}`;
+      if (totEl)  totEl.textContent  = `~$${totalEV}`;
+      if (sirNoteEl) sirNoteEl.textContent = `Avg SIR: $${sirAvg.toFixed(0)} across ${sirPrices.length} cards`;
+      if (mhrNoteEl && mhrPrice) mhrNoteEl.textContent = `MHR at $${Math.round(parseFloat(mhrPrice))} live`;
+    }
+  }
+
+  // --- TREND ARROWS ON BOX PRICE ---
+  function trendArrow(current, prev) {
+    if (!prev || !current) return '';
+    const pct = ((current - prev) / prev) * 100;
+    if (pct > 1.5)  return ` <span style="color:#22c55e;font-size:12px">▲ ${pct.toFixed(0)}%</span>`;
+    if (pct < -1.5) return ` <span style="color:#f87171;font-size:12px">▼ ${Math.abs(pct).toFixed(0)}%</span>`;
+    return ` <span style="color:#64748b;font-size:12px">→</span>`;
+  }
+
+  // Store today's singles snapshot for tomorrow
+  if (hasSingles) {
+    fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prices: singles })
+    }).catch(() => {});
+  }
+}
+
+loadAllPrices();
 </script>
 </body>
 </html>
