@@ -586,7 +586,7 @@ footer a{color:var(--accent);}
         </div>
       </div>
       <div class="ev-row">
-        <div class="ev-rarity">Illustration Rares (~4 per box, avg $12 each)</div>
+        <div class="ev-rarity" id="ev-label-ir">Illustration Rares (~4 per box, avg $12 each)</div>
         <div class="ev-contribution">~$48</div>
         <div class="ev-note"><a href="/pokemon/sets/mega-evolution/chaos-rising/cards/froakie-88" style="color:var(--accent)">Froakie triptych</a> adds premium</div>
       </div>
@@ -596,12 +596,12 @@ footer a{color:var(--accent);}
         <div class="ev-note">Most sub-$10 at market</div>
       </div>
       <div class="ev-row">
-        <div class="ev-rarity">Any SIR (~0.43 per box, avg $100 across <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent)">6 SIRs</a>)</div>
+        <div class="ev-rarity" id="ev-label-sir">Any SIR (~0.43 per box, avg $100 across <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent)">6 SIRs</a>)</div>
         <div class="ev-contribution" id="ev-sir">~$43</div>
         <div class="ev-note" id="ev-sir-note">Greninja SIR pulls avg up sharply</div>
       </div>
       <div class="ev-row">
-        <div class="ev-rarity"><a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR Mega Greninja ex</a> (~0.04 per box, ~$375)</div>
+        <div class="ev-rarity" id="ev-label-mhr"><a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR Mega Greninja ex</a> (~0.04 per box, ~$375)</div>
         <div class="ev-contribution" id="ev-mhr">~$15</div>
         <div class="ev-note" id="ev-mhr-note">Low probability, high ceiling</div>
       </div>
@@ -1001,6 +1001,19 @@ async function loadAllPrices() {
       if (totEl)  totEl.textContent  = `~$${totalEV}`;
       if (sirNoteEl) sirNoteEl.textContent = `Avg SIR: $${sirAvg.toFixed(0)} across ${sirPrices.length} cards`;
       if (mhrNoteEl && mhrPrice) mhrNoteEl.textContent = `MHR at $${Math.round(parseFloat(mhrPrice))} live`;
+
+      // Update row label text with live averages
+      const irPrices = [getPrice(singles,'088'),getPrice(singles,'089'),getPrice(singles,'090'),
+                        getPrice(singles,'091'),getPrice(singles,'093'),getPrice(singles,'094')]
+                        .filter(Boolean).map(p=>parseFloat(p));
+      const irAvg = irPrices.length ? (irPrices.reduce((a,b)=>a+b,0)/irPrices.length).toFixed(0) : 12;
+      const sirLabelEl = document.getElementById('ev-label-sir');
+      const mhrLabelEl = document.getElementById('ev-label-mhr');
+      const irLabelEl  = document.getElementById('ev-label-ir');
+      if (irLabelEl)  irLabelEl.textContent  = `Illustration Rares (~4 per box, avg $${irAvg} each)`;
+      if (sirLabelEl) sirLabelEl.innerHTML   = `Any SIR (~0.43 per box, avg $${sirAvg.toFixed(0)} across <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" style="color:var(--accent)">6 SIRs</a>)`;
+      if (mhrLabelEl && mhrPrice) mhrLabelEl.innerHTML = `<a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR Mega Greninja ex</a> (~0.04 per box, ~$${Math.round(parseFloat(mhrPrice))})`;
+
 
       // Update prose price spans
       const sirEl2 = document.getElementById('prose-sir-price');
