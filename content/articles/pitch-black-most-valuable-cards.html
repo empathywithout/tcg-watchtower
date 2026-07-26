@@ -1274,7 +1274,7 @@ function buildCard(card) {
       <div class="compare-cards">
         ${card.compare.map(c => {
           const imgUrl = c.r2
-            ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/${c.r2}/${c.number}.webp`
+            ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/${c.r2}/${String(c.number).padStart(3,'0')}.webp`
             : (c.img || '');
           return `
         <a href="${c.url}" class="compare-card">
