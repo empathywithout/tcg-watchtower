@@ -744,15 +744,16 @@
   .author-bio-avatar {
     width: 48px;
     height: 48px;
-    background: var(--accent-glow);
-    border: 1px solid rgba(108,123,255,0.4);
     border-radius: 50%;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
   }
-  .author-bio-avatar svg { width: 22px; height: 22px; color: var(--accent); }
+  .author-bio-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .author-bio-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
   .author-bio-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
   .author-bio-brand { color: var(--accent); font-weight: 400; font-size: 13px; }
@@ -1109,7 +1110,7 @@
 
   <div class="author-bio-section">
     <div class="author-bio-avatar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <img src="/logo-mark.svg" alt="TCG Watchtower" width="48" height="48">
     </div>
     <div class="author-bio-content">
       <div class="author-bio-label">Written by</div>
