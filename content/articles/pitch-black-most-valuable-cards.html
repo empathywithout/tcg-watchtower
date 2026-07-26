@@ -1355,8 +1355,9 @@ function buildCard(card) {
       <div class="compare-label">${compareLabel}</div>
       <div class="compare-cards">
         ${card.compare.map(c => {
+          const PADDED_SETS = ['me02', 'me02pt5'];
           const imgUrl = c.r2
-            ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/${c.r2}/${String(c.number).padStart(3,'0')}.webp`
+            ? `https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/${c.r2}/${PADDED_SETS.includes(c.r2) ? String(c.number).padStart(3,'0') : c.number}.webp`
             : (c.img || '');
           return `
         <a href="${c.url}" class="compare-card">
