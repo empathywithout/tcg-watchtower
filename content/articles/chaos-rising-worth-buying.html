@@ -238,6 +238,14 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .verdict-hold{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(245,158,11,0.3);}
 .verdict-singles{background:var(--accent-glow);color:var(--accent);border:1px solid rgba(59,130,246,0.3);}
 
+/* QUICK REFERENCE */
+.quick-ref{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:0 0 32px;}
+.quick-ref-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+.quick-ref-links{display:flex;flex-direction:column;gap:2px;}
+.quick-ref-link{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:6px;text-decoration:none;color:var(--text-muted);font-size:13px;transition:all 0.15s;}
+.quick-ref-link:hover{background:var(--bg-card-hover);color:var(--accent);}
+.quick-ref-num{font-size:10px;font-weight:700;color:var(--text-dim);min-width:20px;font-variant-numeric:tabular-nums;}
+
 /* SUMMARY BOX */
 .summary-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:32px 0;}
 .summary-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);}
@@ -451,8 +459,43 @@ footer a{color:var(--accent);}
     </div>
   </div>
 
+  <!-- QUICK REFERENCE -->
+  <div class="quick-ref">
+    <div class="quick-ref-label">In this article</div>
+    <div class="quick-ref-links">
+      <a href="#sec-price" class="quick-ref-link">
+        <span class="quick-ref-num">01</span>
+        <span>MSRP vs what you actually pay</span>
+      </a>
+      <a href="#sec-pullrates" class="quick-ref-link">
+        <span class="quick-ref-num">02</span>
+        <span>Pull rates: real odds per box</span>
+      </a>
+      <a href="#sec-ev" class="quick-ref-link">
+        <span class="quick-ref-num">03</span>
+        <span>Box value breakdown</span>
+      </a>
+      <a href="#sec-sealed" class="quick-ref-link">
+        <span class="quick-ref-num">04</span>
+        <span>Sealed hold thesis</span>
+      </a>
+      <a href="#sec-singles" class="quick-ref-link">
+        <span class="quick-ref-num">05</span>
+        <span>Singles vs opening</span>
+      </a>
+      <a href="#sec-verdicts" class="quick-ref-link">
+        <span class="quick-ref-num">06</span>
+        <span>Final verdicts by buyer type</span>
+      </a>
+      <a href="#sec-products" class="quick-ref-link">
+        <span class="quick-ref-num">07</span>
+        <span>Where to buy with live prices</span>
+      </a>
+    </div>
+  </div>
+
   <!-- THE MSRP PROBLEM -->
-  <div class="section">
+  <div class="section" id="sec-price">
     <div class="section-label">The price reality</div>
     <h2>Most people never paid MSRP. Here's what you're actually paying.</h2>
     <p>The Chaos Rising booster box MSRP is <strong>$160.99</strong>. That price exists at Best Buy, Walmart, and Target, in theory. In practice, hot Mega Evolution sets sell out at retail within hours on release day. The Pokemon Center exclusive ETB sold out in under two hours when preorders opened in April. By launch day on May 22, secondary market boxes were already trading between $239 and $307.</p>
@@ -479,7 +522,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- PULL RATES -->
-  <div class="section">
+  <div class="section" id="sec-pullrates">
     <div class="section-label">Pull rate math</div>
     <h2>What you can realistically expect from a box</h2>
     <p>These rates are based on TCGplayer's sample of over 8,500 packs opened pre-launch, confirmed by community data. A standard Chaos Rising booster box contains 36 packs.</p>
@@ -548,7 +591,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- BOX VALUE BREAKDOWN -->
-  <div class="section">
+  <div class="section" id="sec-ev">
     <div class="section-label">Box value breakdown</div>
     <h2>What an average Chaos Rising box is worth in singles</h2>
     <p>The total value of all cards in Chaos Rising is around $795 if you pulled every card in the set. But that figure is misleading: most of that value sits in the <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex SIR</a> and <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-122" style="color:var(--accent)">MHR</a>, which require luck to pull. Here is how the expected value actually breaks down per box, using current market prices and confirmed pull rates.</p>
@@ -597,7 +640,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- SEALED HOLD THESIS -->
-  <div class="section">
+  <div class="section" id="sec-sealed">
     <div class="section-label">Sealed investment</div>
     <h2>The case for holding Chaos Rising sealed</h2>
     <p>The sealed hold argument for Chaos Rising rests on three things: the collector base behind <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex</a>, the set's position in the Mega Evolution era, and where the box price currently sits.</p>
@@ -630,7 +673,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- SINGLES -->
-  <div class="section">
+  <div class="section" id="sec-singles">
     <div class="section-label">Singles vs opening</div>
     <h2>Why buying singles almost always wins</h2>
     <p>If you know which Chaos Rising card you want, buying it directly costs a fraction of what you would spend opening boxes to find it. The <a href="/pokemon/sets/mega-evolution/chaos-rising/cards/mega-greninja-ex-116" style="color:var(--accent)">Mega Greninja ex SIR</a> currently trades around <span id="prose-sir-price">$470</span>. To hit that card on average through opening, you would need roughly 14 booster boxes at <span id="prose-box-price-3">$185</span> each. The single costs less than one box's worth of expected value on that specific pull.</p>
@@ -650,7 +693,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- BUYER VERDICTS -->
-  <div class="section">
+  <div class="section" id="sec-verdicts">
     <div class="section-label">Final verdicts</div>
     <h2>The answer depends on what you're trying to do</h2>
 
@@ -682,7 +725,7 @@ footer a{color:var(--accent);}
   </div>
 
   <!-- PRODUCTS -->
-  <div class="section">
+  <div class="section" id="sec-products">
     <div class="section-label">Where to buy</div>
     <h2>Current prices on every Chaos Rising product</h2>
     <p>Prices update live from the secondary market. MSRP shown for reference. If you can find product at or near those prices at retail, it represents meaningfully better value than the secondary market figures below.</p>
