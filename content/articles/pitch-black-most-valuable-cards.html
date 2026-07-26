@@ -639,7 +639,33 @@
   }
   .buy-link.cardpage:hover { color: var(--text); border-color: var(--accent); }
 
-  /* CLOSING SECTION */
+  /* PAGE LAYOUT — two column with sidebar */
+  .page-outer{max-width:1200px;margin:0 auto;padding:0 24px 80px;display:grid;grid-template-columns:1fr 280px;gap:40px;align-items:start;}
+  .page-wrap{min-width:0;}
+  .sidebar{position:sticky;top:72px;}
+  .sidebar-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .sidebar-article-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .sidebar-article-card{position:relative;display:block;border-radius:6px;overflow:hidden;aspect-ratio:4/3;text-decoration:none;}
+  .sidebar-article-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;}
+  .sidebar-article-card:hover img{transform:scale(1.05);}
+  .sidebar-article-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.3) 60%,transparent 100%);}
+  .sidebar-article-text{position:absolute;bottom:0;left:0;right:0;padding:7px 8px;z-index:1;}
+  .sidebar-article-eyebrow{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:rgba(255,255,255,0.5);margin-bottom:2px;}
+  .sidebar-article-title{font-size:10px;font-weight:700;color:#fff;line-height:1.3;}
+  @media(max-width:900px){.page-outer{grid-template-columns:1fr;}.sidebar{display:none;}}
+
+  /* READ NEXT */
+  .read-next{padding:36px 0 0;border-top:1px solid var(--border);margin-top:8px;}
+  .read-next-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;}
+  .read-next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media(max-width:600px){.read-next-grid{grid-template-columns:1fr;}}
+  .read-next-card{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/9;display:block;text-decoration:none;}
+  .read-next-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;}
+  .read-next-card:hover img{transform:scale(1.05);}
+  .read-next-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 60%,transparent 100%);}
+  .read-next-card-text{position:absolute;bottom:0;left:0;right:0;padding:12px;z-index:1;}
+  .read-next-card-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:4px;}
+  .read-next-card-title{font-size:13px;font-weight:700;color:#fff;line-height:1.3;}
   .closing-section {
     border-top: 1px solid var(--border);
     padding-top: 40px;
@@ -979,6 +1005,7 @@
   </div>
 </div>
 
+<div class="page-outer">
 <div class="page-wrap">
 
   <!-- INTRO -->
@@ -1108,6 +1135,37 @@
     </div>
   </div>
 
+  <div class="read-next">
+    <div class="read-next-label">More from TCG Watchtower</div>
+    <div class="read-next-grid">
+
+      <a href="/content/articles/chaos-rising-worth-buying" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/116.webp" alt="Is Chaos Rising worth buying" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Chaos Rising · Article</div>
+          <div class="read-next-card-title">Is Chaos Rising Worth Buying Now?</div>
+        </div>
+      </a>
+
+      <a href="/pokemon/sets/mega-evolution/pitch-black/top-chase-cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/120.webp" alt="Pitch Black chase cards" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Pitch Black · Price Guide</div>
+          <div class="read-next-card-title">All Chase Cards Ranked by Price</div>
+        </div>
+      </a>
+
+      <a href="/pokemon/sets/mega-evolution/chaos-rising/cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/122.webp" alt="Chaos Rising card list" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Chaos Rising · Card List</div>
+          <div class="read-next-card-title">Chaos Rising Full Card List and Prices</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
   <div class="author-bio-section">
     <div class="author-bio-avatar">
       <img src="/logo-mark.svg" alt="TCG Watchtower" width="48" height="48">
@@ -1122,6 +1180,64 @@
   <div class="disclaimer">
     Prices shown are market prices fetched live and may differ from current listings. Pull rate estimates are based on Mega Evolution era community data. TCG Watchtower participates in affiliate programs. Purchases made through links on this page may earn us a commission at no cost to you.
   </div>
+
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-label">More from TCG Watchtower</div>
+  <div class="sidebar-article-grid">
+
+    <a href="/content/articles/chaos-rising-worth-buying" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/116.webp" alt="Is Chaos Rising worth buying" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Chaos Rising · Article</div>
+        <div class="sidebar-article-title">Is Chaos Rising Worth Buying?</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/pitch-black/top-chase-cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/120.webp" alt="Pitch Black chase cards" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Pitch Black · Chase Cards</div>
+        <div class="sidebar-article-title">All 36 Chase Cards Ranked</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/chaos-rising/cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/122.webp" alt="Chaos Rising card list" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Chaos Rising · Card List</div>
+        <div class="sidebar-article-title">Chaos Rising Card List</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/ascended-heroes/cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me02pt5/284.webp" alt="Ascended Heroes" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Ascended Heroes · Card List</div>
+        <div class="sidebar-article-title">Ascended Heroes Card List</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/pitch-black/sealed-product" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/116.webp" alt="Pitch Black sealed products" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Pitch Black · Sealed</div>
+        <div class="sidebar-article-title">Sealed Product Prices</div>
+      </div>
+    </a>
+
+    <a href="/pokemon/sets/mega-evolution/phantasmal-flames/cards" class="sidebar-article-card">
+      <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me02/130.webp" alt="Phantasmal Flames" loading="lazy">
+      <div class="sidebar-article-text">
+        <div class="sidebar-article-eyebrow">Phantasmal Flames · Card List</div>
+        <div class="sidebar-article-title">Phantasmal Flames Card List</div>
+      </div>
+    </a>
+
+  </div>
+</aside>
 
 </div>
 
