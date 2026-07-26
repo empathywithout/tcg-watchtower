@@ -995,7 +995,7 @@
         </div>
         <div class="methodology-item">
           <div class="methodology-phase">After 4 weeks</div>
-          <div class="methodology-desc">Presale prices become stale. We switch to 30-day trend data stored weekly in our database from TCGplayer market prices. A card down 15% or more over 30 days signals a buying window. A card within 5% of its lowest recorded price since we started tracking is flagged as a historically good entry. A card that has been flat for a month gets a stable rating.</div>
+          <div class="methodology-desc">Presale prices become stale. We switch to 30-day trend data stored weekly in our database from secondary market prices. A card down 15% or more over 30 days signals a buying window. A card within 5% of its lowest recorded price since we started tracking is flagged as a historically good entry. A card that has been flat for a month gets a stable rating.</div>
         </div>
       </div>
       <div class="methodology-footer">
@@ -1590,9 +1590,9 @@ async function fetchPrices() {
   const methodEl = document.getElementById('verdict-methodology');
   if (methodEl) {
     const dataAge = weekCount >= 4 ? `${weekCount}-week price history` :
-                    weekCount >= 1 ? `${weekCount} week${weekCount>1?'s':''} of history (building — full analysis at 4 weeks)` :
+                    weekCount >= 1 ? `${weekCount} week${weekCount>1?'s':''} of history (building, full analysis at 4 weeks)` :
                     'launch-week data (presale comparison)';
-    methodEl.textContent = `Based on ${dataAge} from TCGplayer market prices.`;
+    methodEl.textContent = `Based on ${dataAge} from secondary market prices.`;
   }
 
   // Store today's snapshot — fire and forget
