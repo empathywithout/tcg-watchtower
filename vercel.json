@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/content/articles/pitch-black-most-valuable-cards",
+      "destination": "/content/articles/pitch-black-most-valuable-cards.html"
+    },
+    {
       "source": "/api/binder-pdf",
       "destination": "/api/binder-pdf.js"
     },
