@@ -671,6 +671,10 @@
   .compare-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
   .compare-set { font-size: 11px; color: var(--text-dim); margin-bottom: 2px; }
   .compare-price-label { font-size: 11px; color: var(--accent); }
+  .price-trend { font-size: 11px; margin-left: 3px; font-weight: 700; }
+  .price-trend.up { color: #22c55e; }
+  .price-trend.down { color: #f87171; }
+  .price-trend.flat { color: var(--text-dim); }
   .author-bio-section {
     display: flex;
     gap: 16px;
@@ -708,7 +712,7 @@
   /* CARD FAN */
   .card-fan-wrap {
     margin-bottom: 36px;
-    height: 280px;
+    height: 360px;
     position: relative;
     display: flex;
     align-items: center;
@@ -716,24 +720,24 @@
   }
   .card-fan {
     position: relative;
-    width: 160px;
-    height: 224px;
+    width: 200px;
+    height: 280px;
   }
   .fan-card {
     position: absolute;
-    width: 130px;
-    border-radius: 8px;
+    width: 180px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.8);
     transition: transform 0.3s ease;
   }
   .fan-card img { width: 100%; display: block; }
-  .fan-card:hover { transform: translateY(-12px) scale(1.06) !important; z-index: 10 !important; }
-  .fan-1 { transform: rotate(-22deg) translateX(-190px) translateY(10px); z-index: 1; }
-  .fan-2 { transform: rotate(-11deg) translateX(-95px); z-index: 2; }
-  .fan-3 { transform: rotate(0deg) translateX(0px) translateY(-14px); z-index: 5; }
-  .fan-4 { transform: rotate(11deg) translateX(95px); z-index: 2; }
-  .fan-5 { transform: rotate(22deg) translateX(190px) translateY(10px); z-index: 1; }
+  .fan-card:hover { transform: translateY(-16px) scale(1.06) !important; z-index: 10 !important; }
+  .fan-1 { transform: rotate(-22deg) translateX(-230px) translateY(14px); z-index: 1; }
+  .fan-2 { transform: rotate(-11deg) translateX(-120px); z-index: 2; }
+  .fan-3 { transform: rotate(0deg) translateX(0px) translateY(-18px); z-index: 5; }
+  .fan-4 { transform: rotate(11deg) translateX(120px); z-index: 2; }
+  .fan-5 { transform: rotate(22deg) translateX(230px) translateY(14px); z-index: 1; }
 
   /* AUTHOR */
   .author-row {
@@ -1465,36 +1469,25 @@ async function fetchPrices() {
     }).catch(() => {});
 
   } catch (e) {
-    // Fallback: show static prices from research if API unavailable
+    // Fallback: show static prices if API unavailable
     const fallback = {
-      704873: 306.74,  // Mega Darkrai ex SIR 116
-      704877: 196.33,  // Mega Darkrai ex MHR 120
-      704874: 130.99,  // Morpeko ex SIR 117
-      704871: 72.37,   // Mega Zeraora ex SIR 114
-      704872: 55.14,   // Mega Chandelure ex SIR 115
-      704876: 41.41,   // Gwynn SIR 119
-      704868: 34.75,   // Misty's Vitality UR 111
-      704875: 31.57,   // Gladion's Final Battle SIR 118
-      704847: 23.01,   // Slowbro IR 090
-      704844: 15.48,   // Goldeen IR 087
+      '116': 306.74, '120': 196.33, '117': 130.99,
+      '114': 72.37,  '115': 55.14,  '119': 41.41,
+      '111': 34.75,  '118': 31.57,  '090': 23.01, '087': 15.48
     };
     document.querySelectorAll('[data-tcgp-id]').forEach(el => {
-      const id = parseInt(el.dataset.tcgpId);
-      if (fallback[id] != null) {
-        el.innerHTML = `$${fallback[id].toFixed(2)} <span style="font-size:10px;color:var(--text-dim);font-weight:400">est.</span>`;
+      const key = String(el.dataset.tcgpId).padStart(3,'0');
+      if (fallback[key] != null) {
+        el.innerHTML = `$${fallback[key].toFixed(2)} <span style="font-size:10px;color:var(--text-dim);font-weight:400">est.</span>`;
       }
     });
     document.querySelectorAll('.live-price-inline').forEach(el => {
-      const id = parseInt(el.dataset.id);
-      if (fallback[id] != null) {
-        el.textContent = `$${fallback[id].toFixed(2)}`;
-      }
+      const key = String(el.dataset.id).padStart(3,'0');
+      if (fallback[key] != null) el.textContent = `$${fallback[key].toFixed(2)}`;
     });
     document.querySelectorAll('[data-tldr-id]').forEach(el => {
-      const id = parseInt(el.dataset.tldrId);
-      if (fallback[id] != null) {
-        el.textContent = `$${fallback[id].toFixed(2)}`;
-      }
+      const key = String(el.dataset.tldrId).padStart(3,'0');
+      if (fallback[key] != null) el.textContent = `$${fallback[key].toFixed(2)}`;
     });
   }
 }
