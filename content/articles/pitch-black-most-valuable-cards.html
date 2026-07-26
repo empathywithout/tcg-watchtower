@@ -707,8 +707,8 @@
 
   /* CARD FAN */
   .card-fan-wrap {
-    margin-bottom: 32px;
-    height: 180px;
+    margin-bottom: 36px;
+    height: 280px;
     position: relative;
     display: flex;
     align-items: center;
@@ -716,24 +716,24 @@
   }
   .card-fan {
     position: relative;
-    width: 120px;
-    height: 168px;
+    width: 160px;
+    height: 224px;
   }
   .fan-card {
     position: absolute;
-    width: 90px;
-    border-radius: 6px;
+    width: 130px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7);
     transition: transform 0.3s ease;
   }
   .fan-card img { width: 100%; display: block; }
-  .fan-card:hover { transform: translateY(-8px) scale(1.05) !important; z-index: 10 !important; }
-  .fan-1 { transform: rotate(-24deg) translateX(-140px); z-index: 1; }
-  .fan-2 { transform: rotate(-12deg) translateX(-70px); z-index: 2; }
-  .fan-3 { transform: rotate(0deg) translateX(0px) translateY(-10px); z-index: 5; }
-  .fan-4 { transform: rotate(12deg) translateX(70px); z-index: 2; }
-  .fan-5 { transform: rotate(24deg) translateX(140px); z-index: 1; }
+  .fan-card:hover { transform: translateY(-12px) scale(1.06) !important; z-index: 10 !important; }
+  .fan-1 { transform: rotate(-22deg) translateX(-190px) translateY(10px); z-index: 1; }
+  .fan-2 { transform: rotate(-11deg) translateX(-95px); z-index: 2; }
+  .fan-3 { transform: rotate(0deg) translateX(0px) translateY(-14px); z-index: 5; }
+  .fan-4 { transform: rotate(11deg) translateX(95px); z-index: 2; }
+  .fan-5 { transform: rotate(22deg) translateX(190px) translateY(10px); z-index: 1; }
 
   /* AUTHOR */
   .author-row {
@@ -1350,56 +1350,95 @@ tldrBody.innerHTML = CARDS.map(card => {
   </tr>`;
 }).join('');
 
-// Fetch live prices from the correct API
+// Fetch live prices + yesterday snapshot for trends
 async function fetchPrices() {
+  const GROUP_ID = '24688';
   try {
-    const res = await fetch('/api/tcgplayer-prices?groupId=24688');
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    const prices = data.prices || {};
+    // Fetch live prices and yesterday's snapshot in parallel
+    const [liveRes, snapRes] = await Promise.all([
+      fetch(`/api/tcgplayer-prices?groupId=${GROUP_ID}`),
+      fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`)
+    ]);
 
-    // Update card price displays — prices keyed by padded card number e.g. "116"
+    if (!liveRes.ok) throw new Error('Price API error');
+    const liveData = await liveRes.json();
+    const prices   = liveData.prices || {};
+
+    const snapData    = snapRes.ok ? await snapRes.json() : null;
+    const yesterday   = snapData?.snapshot || null;
+
+    // Helper to get price by card number
+    function getPrice(num) {
+      return prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))] ?? null;
+    }
+    function getYesterdayPrice(num) {
+      if (!yesterday) return null;
+      return yesterday[String(num).padStart(3,'0')] ?? yesterday[String(parseInt(num,10))] ?? null;
+    }
+
+    // Trend arrow based on 24h change
+    function trendArrow(current, prev) {
+      if (prev == null || current == null) return '';
+      const pct = ((current - prev) / prev) * 100;
+      if (pct > 1.5)  return `<span style="color:#22c55e;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▲ ${pct.toFixed(0)}%</span>`;
+      if (pct < -1.5) return `<span style="color:#f87171;font-size:11px;margin-left:4px" title="${pct.toFixed(1)}% vs yesterday">▼ ${Math.abs(pct).toFixed(0)}%</span>`;
+      return `<span style="color:#64748b;font-size:11px;margin-left:4px">→</span>`;
+    }
+
+    // Update price displays with trend arrows
     document.querySelectorAll('[data-tcgp-id]').forEach(el => {
-      const id = el.dataset.tcgpId;
-      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
+      const id    = el.dataset.tcgpId;
+      const price = getPrice(id);
+      const prev  = getYesterdayPrice(id);
       if (price != null) {
-        el.innerHTML = `$${parseFloat(price).toFixed(2)}`;
+        el.innerHTML = `$${parseFloat(price).toFixed(2)}${trendArrow(price, prev)}`;
       }
     });
 
     // Update presale inline prices
     document.querySelectorAll('.live-price-inline').forEach(el => {
-      const id = el.dataset.id;
-      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
-      if (price != null) {
-        el.textContent = `$${parseFloat(price).toFixed(2)}`;
-      }
+      const id    = el.dataset.id;
+      const price = getPrice(id);
+      if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
     });
 
     // Update TL;DR table prices
     document.querySelectorAll('[data-tldr-id]').forEach(el => {
-      const id = el.dataset.tldrId;
-      const price = prices[String(id).padStart(3,'0')] ?? prices[String(parseInt(id,10))];
-      if (price != null) {
-        el.textContent = `$${parseFloat(price).toFixed(2)}`;
-      }
+      const id    = el.dataset.tldrId;
+      const price = getPrice(id);
+      if (price != null) el.textContent = `$${parseFloat(price).toFixed(2)}`;
     });
 
-    // Dynamic verdicts — recalculate based on live price vs presale
-    function calcVerdict(livePrice, presale) {
-      if (!presale) return null; // no presale data — keep manual verdict
-      const ratio = livePrice / presale;
-      if (ratio < 0.70) return { cls: 'buy',     label: '✓ Good time to buy',      short: 'Good time' };
-      if (ratio < 0.85) return { cls: 'neutral',  label: '→ Correction still ongoing', short: 'Watching' };
-      return               { cls: 'wait',    label: '⟳ Still near presale',     short: 'No urgency' };
+    // Dynamic verdicts — trend-based when we have yesterday, presale-based otherwise
+    function calcVerdict(livePrice, prevPrice, presale) {
+      if (prevPrice != null) {
+        const pct = ((livePrice - prevPrice) / prevPrice) * 100;
+        if (pct < -3)  return { cls: 'buy',    label: '✓ Prices falling — good window',  short: 'Falling' };
+        if (pct >  3)  return { cls: 'wait',   label: '⟳ Prices rising — watch first',   short: 'Rising' };
+        if (presale) {
+          const ratio = livePrice / presale;
+          if (ratio < 0.70) return { cls: 'buy',     label: '✓ Good time to buy',              short: 'Good time' };
+          if (ratio < 0.85) return { cls: 'neutral',  label: '→ Correction still ongoing',      short: 'Watching' };
+        }
+        return { cls: 'neutral', label: '→ Stable — no urgency',           short: 'Stable' };
+      }
+      // No yesterday data yet — fall back to presale comparison
+      if (presale) {
+        const ratio = livePrice / presale;
+        if (ratio < 0.70) return { cls: 'buy',    label: '✓ Good time to buy',         short: 'Good time' };
+        if (ratio < 0.85) return { cls: 'neutral', label: '→ Correction still ongoing', short: 'Watching' };
+        return               { cls: 'wait',   label: '⟳ Still near presale',        short: 'No urgency' };
+      }
+      return null;
     }
 
     document.querySelectorAll('[data-verdict]').forEach(el => {
       const num     = el.dataset.number;
       const presale = parseFloat(el.dataset.presale) || 0;
-      const price   = prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))];
-      if (price == null || !presale) return;
-      const v = calcVerdict(parseFloat(price), presale);
+      const price   = getPrice(num);
+      const prev    = getYesterdayPrice(num);
+      if (price == null) return;
+      const v = calcVerdict(parseFloat(price), prev ? parseFloat(prev) : null, presale || null);
       if (!v) return;
       el.className = `verdict ${v.cls}`;
       el.querySelector('.verdict-label').textContent = v.label;
@@ -1408,13 +1447,22 @@ async function fetchPrices() {
     document.querySelectorAll('[data-tldr-verdict]').forEach(el => {
       const num     = el.dataset.number;
       const presale = parseFloat(el.dataset.presale) || 0;
-      const price   = prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))];
-      if (price == null || !presale) return;
-      const v = calcVerdict(parseFloat(price), presale);
+      const price   = getPrice(num);
+      const prev    = getYesterdayPrice(num);
+      if (price == null) return;
+      const v = calcVerdict(parseFloat(price), prev ? parseFloat(prev) : null, presale || null);
       if (!v) return;
       el.className = `tldr-verdict ${v.cls}`;
       el.textContent = v.short;
     });
+
+    // POST today's prices to snapshot API for tomorrow's trend comparison
+    // Fire-and-forget — don't await, don't block the page
+    fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prices })
+    }).catch(() => {});
 
   } catch (e) {
     // Fallback: show static prices from research if API unavailable
