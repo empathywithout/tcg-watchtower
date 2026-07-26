@@ -542,21 +542,44 @@
   }
   .buy-link {
     font-size: 12px;
-    font-weight: 500;
-    padding: 6px 12px;
+    font-weight: 600;
+    padding: 7px 14px;
     border-radius: 6px;
     text-decoration: none;
-    border: 1px solid var(--border-light);
-    color: var(--text-muted);
+    border: 1px solid transparent;
     transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
-  .buy-link:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--accent); }
+  /* TCGplayer — orange, urgency/action */
   .buy-link.primary {
-    background: var(--accent-glow);
-    border-color: rgba(108,123,255,0.4);
-    color: var(--accent);
+    background: #f97316;
+    border-color: #f97316;
+    color: #fff;
   }
-  .buy-link.primary:hover { background: rgba(108,123,255,0.2); }
+  .buy-link.primary:hover { background: #ea6c0a; border-color: #ea6c0a; }
+  /* eBay — amber/gold, secondary market */
+  .buy-link.ebay {
+    background: rgba(245,158,11,0.15);
+    border-color: rgba(245,158,11,0.4);
+    color: #f59e0b;
+  }
+  .buy-link.ebay:hover { background: rgba(245,158,11,0.25); }
+  /* Amazon — green, trust */
+  .buy-link.amazon {
+    background: rgba(34,197,94,0.15);
+    border-color: rgba(34,197,94,0.4);
+    color: #22c55e;
+  }
+  .buy-link.amazon:hover { background: rgba(34,197,94,0.25); }
+  /* Card Page — subtle, informational */
+  .buy-link.cardpage {
+    background: transparent;
+    border-color: var(--border-light);
+    color: var(--text-muted);
+  }
+  .buy-link.cardpage:hover { color: var(--text); border-color: var(--accent); }
 
   /* CLOSING SECTION */
   .closing-section {
@@ -1297,9 +1320,9 @@ function buildCard(card) {
         </div>
         <div class="buy-links">
           <a class="buy-link primary" href="${tcgpUrl}" target="_blank" rel="noopener">TCGplayer</a>
-          <a class="buy-link" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
-          <a class="buy-link" href="${amzUrl}" target="_blank" rel="noopener">Amazon</a>
-          <a class="buy-link" href="${cardPageUrl}">Card Page</a>
+          <a class="buy-link ebay" href="${ebayUrl}" target="_blank" rel="noopener">eBay</a>
+          <a class="buy-link amazon" href="${amzUrl}" target="_blank" rel="noopener">Amazon</a>
+          <a class="buy-link cardpage" href="${cardPageUrl}">Card Page</a>
         </div>
         ${compareHtml}
       </div>
