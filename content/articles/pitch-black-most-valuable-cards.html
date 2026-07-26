@@ -1314,7 +1314,7 @@ function buildCard(card) {
         ${artistHtml}
         ${presaleHtml}
         <div class="card-body">${card.body}</div>
-        <div class="verdict ${card.verdict}">
+        <div class="verdict ${card.verdict}" data-verdict data-number="${card.number}" data-presale="${card.presale || ''}">
           <div class="verdict-label">${verdictIcon}</div>
           <div class="verdict-text">${card.verdictText}</div>
         </div>
@@ -1346,7 +1346,7 @@ tldrBody.innerHTML = CARDS.map(card => {
     </td>
     <td><span class="rarity-pill ${rarityClass(card.rarity)}">${card.rarity}</span></td>
     <td class="tldr-price" data-tldr-id="${card.number}">—</td>
-    <td><span class="tldr-verdict ${card.verdict}">${verdictLabel}</span></td>
+    <td><span class="tldr-verdict ${card.verdict}" data-tldr-verdict data-number="${card.number}" data-presale="${card.presale || ''}">${verdictLabel}</span></td>
   </tr>`;
 }).join('');
 
@@ -1383,6 +1383,37 @@ async function fetchPrices() {
       if (price != null) {
         el.textContent = `$${parseFloat(price).toFixed(2)}`;
       }
+    });
+
+    // Dynamic verdicts — recalculate based on live price vs presale
+    function calcVerdict(livePrice, presale) {
+      if (!presale) return null; // no presale data — keep manual verdict
+      const ratio = livePrice / presale;
+      if (ratio < 0.70) return { cls: 'buy',     label: '✓ Good time to buy',      short: 'Good time' };
+      if (ratio < 0.85) return { cls: 'neutral',  label: '→ Correction still ongoing', short: 'Watching' };
+      return               { cls: 'wait',    label: '⟳ Still near presale',     short: 'No urgency' };
+    }
+
+    document.querySelectorAll('[data-verdict]').forEach(el => {
+      const num     = el.dataset.number;
+      const presale = parseFloat(el.dataset.presale) || 0;
+      const price   = prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))];
+      if (price == null || !presale) return;
+      const v = calcVerdict(parseFloat(price), presale);
+      if (!v) return;
+      el.className = `verdict ${v.cls}`;
+      el.querySelector('.verdict-label').textContent = v.label;
+    });
+
+    document.querySelectorAll('[data-tldr-verdict]').forEach(el => {
+      const num     = el.dataset.number;
+      const presale = parseFloat(el.dataset.presale) || 0;
+      const price   = prices[String(num).padStart(3,'0')] ?? prices[String(parseInt(num,10))];
+      if (price == null || !presale) return;
+      const v = calcVerdict(parseFloat(price), presale);
+      if (!v) return;
+      el.className = `tldr-verdict ${v.cls}`;
+      el.textContent = v.short;
     });
 
   } catch (e) {
