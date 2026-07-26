@@ -193,7 +193,7 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .hero-card-img{width:160px;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.8);margin:0 auto 32px;display:block;}
 
 /* PAGE WRAP */
-.page-wrap{max-width:860px;margin:0 auto;padding:0 24px 80px;}
+.page-wrap{max-width:860px;margin:0 auto;padding:0 24px 140px;}
 
 /* VERDICT BADGES */
 .verdict-open,.verdict-hold,.verdict-singles{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;}
@@ -321,6 +321,44 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 1.
 .product-btn.ebay{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#f59e0b;}
 .product-btn.ebay:hover{background:rgba(245,158,11,0.25);}
 
+/* STICKY PRICE BAR */
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:200;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,0.4);}
+.sticky-bar-info{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.sticky-bar-label{font-size:12px;color:var(--text-dim);}
+.sticky-bar-price{font-size:20px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+.sticky-bar-btns{display:flex;gap:8px;flex-shrink:0;}
+.sticky-bar-btn{padding:8px 16px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;border:none;cursor:pointer;}
+.sticky-bar-btn.primary{background:#f97316;color:#fff;}
+.sticky-bar-btn.primary:hover{background:#ea6c0a;}
+.sticky-bar-btn.secondary{background:var(--bg-card-hover);color:var(--text-muted);border:1px solid var(--border);}
+.sticky-bar-btn.secondary:hover{color:var(--text);}
+@media(max-width:500px){.sticky-bar-label{display:none;}.sticky-bar-btn.secondary{display:none;}}
+
+/* PULL RATE CALCULATOR */
+.calc-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0;}
+.calc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.calc-label{font-size:13px;color:var(--text-muted);min-width:160px;}
+.calc-select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;flex:1;min-width:200px;}
+.calc-select:focus{outline:none;border-color:var(--accent);}
+.calc-result{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:4px;}
+.calc-result-main{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.calc-result-main span{color:var(--red);}
+.calc-result-sub{font-size:13px;color:var(--text-muted);line-height:1.6;}
+.calc-result-cost{font-size:13px;color:var(--yellow);margin-top:6px;font-weight:600;}
+
+/* READ NEXT GRID */
+.read-next{padding:36px 0 0;border-top:1px solid var(--border);margin-top:8px;}
+.read-next-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;}
+.read-next-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.read-next-card{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/9;display:block;text-decoration:none;}
+.read-next-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;}
+.read-next-card:hover img{transform:scale(1.05);}
+.read-next-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 60%,transparent 100%);}
+.read-next-card-text{position:absolute;bottom:0;left:0;right:0;padding:12px;z-index:1;}
+.read-next-card-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:4px;}
+.read-next-card-title{font-size:13px;font-weight:700;color:#fff;line-height:1.3;}
+
 /* DISCLAIMER */
 .disclaimer{font-size:11px;color:var(--text-dim);line-height:1.6;padding:16px 0;border-top:1px solid var(--border);margin-top:8px;}
 
@@ -339,6 +377,18 @@ footer a{color:var(--accent);}
   <a href="/pokemon/sets/mega-evolution/chaos-rising/cards" class="nav-back">← Chaos Rising Card List</a>
 </nav>
 <div class="affiliate-bar">This site contains affiliate links for which we may be compensated.</div>
+
+<!-- STICKY PRICE BAR -->
+<div class="sticky-bar" id="sticky-bar">
+  <div class="sticky-bar-info">
+    <span class="sticky-bar-label">Chaos Rising Booster Box</span>
+    <span class="sticky-bar-price" id="sticky-price">Loading...</span>
+  </div>
+  <div class="sticky-bar-btns">
+    <a class="sticky-bar-btn secondary" href="/pokemon/sets/mega-evolution/chaos-rising/sealed-product">All products</a>
+    <a class="sticky-bar-btn primary" href="https://partner.tcgplayer.com/c/7068180/1830156/21018?u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fpokemon%2Fproduct%3Fq%3DPokemon%20Chaos%20Rising%20Booster%20Box%20ME4%26view%3Dgrid" target="_blank" rel="noopener">Buy on TCGplayer</a>
+  </div>
+</div>
 <div class="breadcrumb">
   <a href="/">Home</a><span class="sep">›</span>
   <a href="/pokemon">Pokémon TCG</a><span class="sep">›</span>
@@ -465,6 +515,23 @@ footer a{color:var(--accent);}
     </table>
 
     <p>The MHR rate is worth sitting with. At 1 in 956 packs, you would need to open roughly 26 booster boxes on average to pull a single Mega Greninja ex Mega Hyper Rare. The MHR currently sells for around <span id="prose-mhr-price">$375</span>. The math does not support opening for it.</p>
+
+    <div class="calc-box">
+      <div class="calc-title">How many boxes would it cost to hit your target card?</div>
+      <div class="calc-row">
+        <span class="calc-label">I want to pull:</span>
+        <select class="calc-select" id="calc-card">
+          <option value="mhr">Mega Greninja ex Mega Hyper Rare (1 in 956 packs)</option>
+          <option value="sir-specific">Mega Greninja ex SIR specifically (1 in 496 packs)</option>
+          <option value="sir-any">Any SIR from the set (1 in 83 packs)</option>
+          <option value="ir-specific">A specific Illustration Rare (1 in ~100 packs)</option>
+          <option value="ir-any">Any Illustration Rare (1 in 9 packs)</option>
+        </select>
+      </div>
+      <div class="calc-result" id="calc-result">
+        <div class="calc-result-main">Select a card above</div>
+      </div>
+    </div>
   </div>
 
   <!-- BOX VALUE BREAKDOWN -->
@@ -682,6 +749,46 @@ footer a{color:var(--accent);}
     <p style="font-size:13px;color:var(--text-dim);">For the full breakdown of every Chaos Rising sealed product with price history, see the <a href="/pokemon/sets/mega-evolution/chaos-rising/sealed-product" style="color:var(--accent);">Chaos Rising sealed product page</a>.</p>
   </div>
 
+  <!-- READ NEXT -->
+  <div class="read-next">
+    <div class="read-next-label">More from TCG Watchtower</div>
+    <div class="read-next-grid">
+
+      <a href="/content/articles/pitch-black-most-valuable-cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/116.webp" alt="Pitch Black most valuable cards" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Pitch Black · Article</div>
+          <div class="read-next-card-title">The 10 Most Valuable Cards in Pitch Black</div>
+        </div>
+      </a>
+
+      <a href="/pokemon/sets/mega-evolution/chaos-rising/top-chase-cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me04/116.webp" alt="Chaos Rising chase cards" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Chaos Rising · Price Guide</div>
+          <div class="read-next-card-title">All Chaos Rising Chase Cards Ranked by Price</div>
+        </div>
+      </a>
+
+      <a href="/pokemon/sets/mega-evolution/pitch-black/cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me05/120.webp" alt="Pitch Black card list" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Pitch Black · Card List</div>
+          <div class="read-next-card-title">Full Pitch Black Card List with Live Prices</div>
+        </div>
+      </a>
+
+      <a href="/pokemon/sets/mega-evolution/ascended-heroes/cards" class="read-next-card">
+        <img src="https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev/cards/me02pt5/284.webp" alt="Ascended Heroes card list" loading="lazy">
+        <div class="read-next-card-text">
+          <div class="read-next-card-eyebrow">Ascended Heroes · Card List</div>
+          <div class="read-next-card-title">Ascended Heroes: Full Card List and Prices</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
   <!-- AUTHOR BIO -->
   <div class="author-bio-section">
     <div class="author-bio-avatar">
@@ -840,6 +947,15 @@ async function loadAllPrices() {
     return ` <span style="color:#64748b;font-size:12px">→</span>`;
   }
 
+  // Feed prices into calculator
+  if (window._calcPrices) window._calcPrices(boxPrice, singles);
+
+  // Update sticky bar
+  const stickyPrice = document.getElementById('sticky-price');
+  if (stickyPrice && boxPrice) {
+    stickyPrice.textContent = `$${parseFloat(boxPrice).toFixed(2)}`;
+  }
+
   // Store today's singles snapshot for tomorrow
   if (hasSingles) {
     fetch(`/api/article-price-snapshot?groupId=${GROUP_ID}`, {
@@ -851,6 +967,61 @@ async function loadAllPrices() {
 }
 
 loadAllPrices();
+
+// Pull rate calculator
+(function() {
+  const CARDS = {
+    'mhr':          { rate: 956,  name: 'Mega Greninja ex MHR',    priceId: '122' },
+    'sir-specific': { rate: 496,  name: 'Mega Greninja ex SIR',    priceId: '116' },
+    'sir-any':      { rate: 83,   name: 'Any SIR',                 priceId: null  },
+    'ir-specific':  { rate: 100,  name: 'A specific IR',           priceId: null  },
+    'ir-any':       { rate: 9,    name: 'Any Illustration Rare',   priceId: null  },
+  };
+  const PACKS_PER_BOX = 36;
+  let liveBoxPrice = null;
+  let liveSingles  = {};
+
+  // Will be populated once prices load
+  window._calcPrices = function(boxP, singlesP) {
+    liveBoxPrice = boxP;
+    liveSingles  = singlesP;
+    updateCalc();
+  };
+
+  function updateCalc() {
+    const sel = document.getElementById('calc-card');
+    const res = document.getElementById('calc-result');
+    if (!sel || !res) return;
+
+    const key  = sel.value;
+    const card = CARDS[key];
+    if (!card) return;
+
+    const packsNeeded = card.rate;
+    const boxesNeeded = (packsNeeded / PACKS_PER_BOX).toFixed(1);
+    const boxCost     = liveBoxPrice ? (parseFloat(liveBoxPrice) * parseFloat(boxesNeeded)).toFixed(0) : null;
+    const singlePrice = card.priceId ? (liveSingles[card.priceId.padStart(3,'0')] ?? liveSingles[card.priceId]) : null;
+
+    let html = `<div class="calc-result-main">~${boxesNeeded} boxes <span>(${packsNeeded.toLocaleString()} packs on average)</span></div>`;
+    html += `<div class="calc-result-sub">Opening boxes for ${card.name} requires ${packsNeeded.toLocaleString()} packs on average — that is ${boxesNeeded} full booster boxes.</div>`;
+    if (boxCost) {
+      html += `<div class="calc-result-cost">Estimated box cost to hit on average: ~$${parseInt(boxCost).toLocaleString()}</div>`;
+    }
+    if (singlePrice) {
+      const single = parseFloat(singlePrice);
+      html += `<div class="calc-result-cost" style="color:var(--green)">Buy the single directly: ~$${single.toFixed(0)} &nbsp;|&nbsp; ${boxCost ? Math.round((parseInt(boxCost)/single))+'x cheaper than opening' : ''}</div>`;
+    }
+    res.innerHTML = html;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const sel = document.getElementById('calc-card');
+    if (sel) {
+      sel.addEventListener('change', updateCalc);
+      updateCalc();
+    }
+  });
+})();
 </script>
 </body>
 </html>
