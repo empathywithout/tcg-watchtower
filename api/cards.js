@@ -301,6 +301,10 @@ export default async function handler(req, res) {
   const isOnePiece = game === 'onepiece'
     || /^(op|eb|st)\d+/.test(setId);
 
+  // Detect Riftbound sets by known set IDs or explicit game param
+  const RIFTBOUND_SET_IDS = new Set(['ogn', 'spf', 'unl', 'vnd', 'rad']); // expand as sets are added
+  const isRiftbound = game === 'riftbound' || RIFTBOUND_SET_IDS.has(setId.toLowerCase());
+
   // Version prefix -- bump this whenever the underlying data-shape/logic
   // changes meaningfully (e.g. the TCGCSV bridge added here), so a stale
   // in-memory cache entry from before the change can never mask whether
@@ -308,7 +312,8 @@ export default async function handler(req, res) {
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
   const CACHE_VERSION = 'v6-scrydex-images'; // bumped — use medium images for JP sets
-  const cacheKey = `${CACHE_VERSION}:${isOnePiece ? 'op:' : ''}${setId}`;
+  const gamePrefix = isRiftbound ? 'rb:' : isOnePiece ? 'op:' : '';
+  const cacheKey = `${CACHE_VERSION}:${gamePrefix}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
@@ -418,6 +423,99 @@ export default async function handler(req, res) {
     }
 
     return res.status(404).json({ error: `No data found for One Piece set: ${setId}` });
+  }
+
+  // ── Riftbound ────────────────────────────────────────────────────────────
+  if (isRiftbound) {
+    // Strategy 1: R2 pre-built JSON (free, fast, populated by sync-riftbound-images.mjs)
+    try {
+      const r2Url = `${R2_BASE}/data/riftbound/${setId}.json`;
+      const r2Res = await fetch(r2Url, { signal: AbortSignal.timeout(5000) });
+      if (r2Res.ok) {
+        const json = await r2Res.json();
+        const cards = (json.cards || []).map(c => ({
+          ...c,
+          image: c.image || `${R2_BASE}/cards/riftbound/${setId}/${c.localId}.webp`,
+          source: 'r2',
+        }));
+        const data = { cards, cardCount: json.cardCount || { total: cards.length }, phase: 'en', game: 'riftbound' };
+        cache.set(cacheKey, { ts: Date.now(), data });
+        res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+        return res.status(200).json(data);
+      }
+    } catch (e) {
+      console.warn(`[api/cards] Riftbound R2 failed for ${setId}:`, e.message);
+    }
+
+    // Strategy 2: Scrydex Riftbound API (costs credits — only hits when R2 misses)
+    if (SCRYDEX_API_KEY && SCRYDEX_TEAM_ID) {
+      try {
+        const scrydexId = setId.toUpperCase(); // ogn → OGN
+        let allCards = [];
+        let page = 1;
+        let totalCount = null;
+
+        while (true) {
+          const url = `https://api.scrydex.com/riftbound/v1/expansions/${scrydexId}/cards?select=id,name,number,printed_number,rarity,domain,type,images,variants&pageSize=250&page=${page}&include=prices`;
+          const scrydexRes = await fetch(url, {
+            headers: { 'X-Api-Key': SCRYDEX_API_KEY, 'X-Team-ID': SCRYDEX_TEAM_ID },
+            signal: AbortSignal.timeout(15000),
+          });
+          if (!scrydexRes.ok) {
+            console.warn(`[api/cards] Riftbound Scrydex ${scrydexRes.status} for ${setId}`);
+            break;
+          }
+          const data = await scrydexRes.json();
+          const pageCards = data.data || [];
+          if (totalCount === null) totalCount = data.totalCount || data.total || null;
+          allCards = allCards.concat(pageCards);
+          if (pageCards.length === 0) break;
+          if (pageCards.length < 250) break;
+          if (totalCount !== null && allCards.length >= totalCount) break;
+          page++;
+        }
+
+        if (allCards.length > 0) {
+          const cards = allCards.map(c => {
+            // ID format is OGN-296 — extract number after first hyphen
+            const localId = c.number || (c.id ? c.id.split('-').slice(1).join('-') : '');
+            const printedNumber = c.printed_number || localId;
+
+            // Extract normal and foil prices from variants
+            const normalVariant = (c.variants || []).find(v => v.name === 'normal');
+            const foilVariant   = (c.variants || []).find(v => v.name === 'foil');
+            const normalPrice   = normalVariant?.prices?.find(p => p.condition === 'NM' && p.type === 'raw')?.market || null;
+            const foilPrice     = foilVariant?.prices?.find(p => p.condition === 'NM' && p.type === 'raw')?.market || null;
+
+            return {
+              localId,
+              printedNumber,
+              name: (c.name || '').trim(),
+              rarity: c.rarity || '',
+              domain: c.domain || '',
+              cardType: c.type || '',
+              image: `${R2_BASE}/cards/riftbound/${setId}/${localId}.webp`,
+              fallbackImage: c.images?.[0]?.medium || c.images?.[0]?.small || null,
+              normalPrice,
+              foilPrice,
+              source: 'scrydex',
+              phase: 'en',
+              game: 'riftbound',
+            };
+          });
+
+          const data = { cards, cardCount: { total: cards.length }, phase: 'en', game: 'riftbound' };
+          cache.set(cacheKey, { ts: Date.now(), data });
+          res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+          console.log(`[api/cards] Riftbound Scrydex hit for ${setId}: ${cards.length} cards`);
+          return res.status(200).json(data);
+        }
+      } catch (e) {
+        console.warn(`[api/cards] Riftbound Scrydex failed for ${setId}:`, e.message);
+      }
+    }
+
+    return res.status(404).json({ error: `No data found for Riftbound set: ${setId}` });
   }
 
   const phase        = await getSetPhase(setId);
