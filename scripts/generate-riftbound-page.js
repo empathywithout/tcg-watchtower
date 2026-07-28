@@ -954,8 +954,9 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
 
   // Fetch sealed prices via TCGplayer (TCGCSV)
   const SEALED_GROUP_ID = '${TCGP_GROUP_ID}';
-  if (Object.keys(PRODUCT_META).length && SEALED_GROUP_ID) {
-    fetch(\`/api/tcgplayer-prices?groupId=\${SEALED_GROUP_ID}&game=riftbound\`)
+  const SEALED_IDS = Object.values(PRODUCT_META).map(m => m.tcgpId).filter(id => id && id !== 'TODO').join(',');
+  if (Object.keys(PRODUCT_META).length && SEALED_GROUP_ID && SEALED_IDS) {
+    fetch(\`/api/tcgplayer-prices?groupId=\${SEALED_GROUP_ID}&game=riftbound&sealedIds=\${SEALED_IDS}\`)
       .then(r => r.json())
       .then(data => {
         const sealedPrices = data.sealedPrices || {};
