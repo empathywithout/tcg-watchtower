@@ -313,6 +313,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .chase-arrow-right{right:-22px}
 /* Rarity badges - Riftbound palette */
 .rarity-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.btn-primary{background:linear-gradient(135deg,#2dd4bf,#0d9488) !important;color:#020f0d !important;box-shadow:0 4px 15px rgba(45,212,191,0.35) !important}
+.btn-primary:hover{box-shadow:0 8px 30px rgba(45,212,191,0.5) !important}
 .rarity-common{background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3);color:#94a3b8}
 .rarity-uncommon{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}
 .rarity-rare{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
