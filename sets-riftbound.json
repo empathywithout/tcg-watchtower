@@ -15,6 +15,9 @@
     "trending": false,
     "tcgpCategoryId": 89,
     "tcgpGroupId": 24344
+  },
+  {
+    "setId": "spf",
     "name": "Spiritforged",
     "slug": "spiritforged",
     "short": "SPF",
