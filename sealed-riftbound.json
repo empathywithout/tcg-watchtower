@@ -1,15 +1,15 @@
 {
   "ogn": {
     "booster-box": {
-      "tcgpId": "TODO",
+      "tcgpId": "635368",
       "type": "Booster Box",
       "filterKey": "box",
       "badgeClass": "badge-box",
-      "name": "Origins Booster Box (24 Packs)",
+      "name": "Origins Booster Display (24 Packs)",
       "q": "Riftbound Origins Booster Box TCG"
     },
     "booster-pack": {
-      "tcgpId": "TODO",
+      "tcgpId": "635366",
       "type": "Booster Pack",
       "filterKey": "pack",
       "badgeClass": "badge-pack",
@@ -17,7 +17,7 @@
       "q": "Riftbound Origins Booster Pack TCG"
     },
     "champion-deck-jinx": {
-      "tcgpId": "TODO",
+      "tcgpId": "635371",
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
@@ -25,27 +25,27 @@
       "q": "Riftbound Origins Champion Deck Jinx TCG"
     },
     "champion-deck-viktor": {
-      "tcgpId": "TODO",
+      "tcgpId": "635374",
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
       "name": "Origins Champion Deck: Viktor",
       "q": "Riftbound Origins Champion Deck Viktor TCG"
     },
-    "champion-deck-lux": {
-      "tcgpId": "TODO",
+    "champion-deck-lee-sin": {
+      "tcgpId": "635375",
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
-      "name": "Origins Champion Deck: Lux",
-      "q": "Riftbound Origins Champion Deck Lux TCG"
+      "name": "Origins Champion Deck: Lee Sin",
+      "q": "Riftbound Origins Champion Deck Lee Sin TCG"
     },
     "proving-grounds": {
-      "tcgpId": "TODO",
+      "tcgpId": "635460",
       "type": "Starter Box",
       "filterKey": "starter",
       "badgeClass": "badge-starter",
-      "name": "Origins Proving Grounds Starter Box",
+      "name": "Origins Proving Grounds Box Set",
       "q": "Riftbound Origins Proving Grounds Starter Box TCG"
     }
   },

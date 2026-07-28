@@ -919,10 +919,11 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
         ? \`\${TCGP_BASE}?u=\${encodeURIComponent('https://www.tcgplayer.com/product/'+p.tcgpId)}\`
         : tcgpLink(p.name, '');
       return \`<div class="product-card" data-type="\${p.filterKey}">
+        \${img ? \`<div class="product-img-wrap"><img src="\${img}" alt="\${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'"></div>\` : ''}
         <div class="product-info">
           <span class="rarity-badge \${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">\${p.type}</span>
           <div class="product-name">\${p.name}</div>
-          \${p.tcgpId && p.tcgpId !== 'TODO' ? \`<div class="product-price" id="pp-\${p.filterKey}">—</div>\` : ''}
+          <div class="product-price" id="pp-\${p.filterKey}">—</div>
           <div class="product-links">
             <a class="product-link-row pl-amazon" href="\${amazonLink(p.q)}" target="_blank" rel="noopener"><span>Amazon</span><span>→</span></a>
             <a class="product-link-row pl-ebay" href="\${ebayLink(p.q)}" target="_blank" rel="noopener"><span>eBay</span><span>→</span></a>
