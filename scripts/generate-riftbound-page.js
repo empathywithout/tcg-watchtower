@@ -976,6 +976,90 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
 })();
 
 loadCards();
+
+function initNav(){
+(async function(){
+  const hamburger=document.getElementById('hamburger');
+  const hamburgerOverlay=document.getElementById('hamburger-overlay');
+  const hamburgerMenu=document.getElementById('hamburger-menu');
+  const pokemonMenuItem=document.getElementById('pokemon-menu-item');
+  const onepieceMenuItem=document.getElementById('onepiece-menu-item');
+  const pokemonSetsView=document.getElementById('pokemon-sets-view');
+  const backToMenu=document.getElementById('back-to-menu');
+  const backToMenuOp=document.getElementById('back-to-menu-op');
+  const setsGridContainer=document.getElementById('sets-grid-container');
+  const setsGridContainerOp=document.getElementById('sets-grid-container-op');
+  const filterTabsOp=document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+  const filterTabsRb=document.querySelectorAll('#sets-filter-tabs-rb .filter-tab');
+  if(!hamburger)return;
+  let allSets=[],currentFilterOp='all',currentFilterRb='all';
+  function closeAllMenus(){hamburgerMenu.classList.remove('open');if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV)rbV.classList.remove('open');hamburgerOverlay.classList.remove('open');hamburger.classList.remove('open');}
+  function backToMainMenu(){if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV)rbV.classList.remove('open');hamburgerMenu.classList.add('open');}
+  hamburger.addEventListener('click',()=>{const isOpen=hamburgerMenu.classList.contains('open');if(isOpen)closeAllMenus();else{hamburgerMenu.classList.add('open');hamburgerOverlay.classList.add('open');hamburger.classList.add('open');}});
+  if(hamburgerOverlay)hamburgerOverlay.addEventListener('click',closeAllMenus);
+  if(pokemonMenuItem)pokemonMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');if(pokemonSetsView){pokemonSetsView.classList.add('open');renderSets();}});
+  if(onepieceMenuItem)onepieceMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV){opV.classList.add('open');renderOnePieceSets();}});
+  const riftboundMenuItem=document.getElementById('riftbound-menu-item');
+  if(riftboundMenuItem)riftboundMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV){rbV.classList.add('open');renderRiftboundSets();}});
+  if(backToMenu)backToMenu.addEventListener('click',backToMainMenu);
+  if(backToMenuOp)backToMenuOp.addEventListener('click',backToMainMenu);
+  const backToMenuRb=document.getElementById('back-to-menu-rb');
+  if(backToMenuRb)backToMenuRb.addEventListener('click',backToMainMenu);
+  filterTabsOp.forEach(tab=>{tab.addEventListener('click',()=>{filterTabsOp.forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentFilterOp=tab.dataset.filter;renderOnePieceSets();});});
+  filterTabsRb.forEach(tab=>{tab.addEventListener('click',()=>{filterTabsRb.forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentFilterRb=tab.dataset.filter;renderRiftboundSets();});});
+  async function fetchSets(){try{const res=await fetch('/sets.json');if(!res.ok)return;allSets=await res.json();renderSets();}catch(e){}}
+  function renderSets(){
+    if(!setsGridContainer)return;
+    const pokeSets=allSets.filter(s=>{const id=(s.setId||'').toLowerCase();return!id.startsWith('op')&&!id.startsWith('eb')&&!id.startsWith('st');});
+    const grouped={};pokeSets.forEach(s=>{if(!grouped[s.series])grouped[s.series]=[];grouped[s.series].push(s);});
+    let html='';const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    Object.keys(grouped).forEach(series=>{
+      html+=\`<div class="series-label">\${series}</div><div class="sets-grid">\`;
+      grouped[series].forEach(set=>{
+        const disabled=!set.live;const logoUrl=set.setId?\`\${r2}/logos/\${set.setId}.png\`:null;
+        html+=\`<a href="\${disabled?'javascript:void(0)':'/'+set.slug}" class="set-card\${disabled?' disabled':''}">
+          <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\`:'<div style="width:85%;max-width:130px;height:40px"></div>'}</div>
+          <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short}•\${set.series}</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
+      });html+='</div>';
+    });
+    setsGridContainer.innerHTML=html||'<div style="padding:40px;text-align:center">No sets found</div>';
+  }
+  function renderOnePieceSets(){
+    if(!setsGridContainerOp)return;
+    const opSets=allSets.filter(s=>{const id=(s.setId||'').toLowerCase();return id.startsWith('op')||id.startsWith('eb')||id.startsWith('st');});
+    const filtered=currentFilterOp==='live'?opSets.filter(s=>s.live):opSets;
+    if(!filtered.length){setsGridContainerOp.innerHTML='<div style="text-align:center;padding:40px;">No sets available</div>';return;}
+    const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html='<div class="sets-grid">';
+    filtered.forEach(set=>{
+      const disabled=!set.live;const logoUrl=set.setId?\`\${r2}/logos/op/\${set.setId}.png\`:null;
+      html+=\`<a href="\${disabled?'javascript:void(0)':'/'+set.slug}" class="set-card\${disabled?' disabled':''}">
+        <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\`:'<div style="font-size:3rem">🃏</div>'}</div>
+        <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short||''}•\${set.series||'One Piece TCG'}</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
+    });
+    html+='</div>';setsGridContainerOp.innerHTML=html;
+  }
+  async function renderRiftboundSets(){
+    const container=document.getElementById('sets-grid-container-rb');
+    if(!container)return;
+    let rbSets=[];
+    try{const res=await fetch('/sets-riftbound.json');if(res.ok)rbSets=await res.json();}catch(e){}
+    const filtered=currentFilterRb==='live'?rbSets.filter(s=>s.live):rbSets;
+    if(!filtered.length){container.innerHTML='<div style="text-align:center;padding:40px;">No sets available</div>';return;}
+    const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html='<div class="sets-grid">';
+    filtered.forEach(set=>{
+      const disabled=!set.live;const logoUrl=set.setId?\`\${r2}/logos/riftbound/\${set.setId}.webp\`:null;
+      const href=disabled?'javascript:void(0)':\`/riftbound/sets/\${set.slug}/cards\`;
+      html+=\`<a href="\${href}" class="set-card\${disabled?' disabled':''}">
+        <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\`:'<div style="font-size:3rem">⚡</div>'}</div>
+        <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short}•Riftbound</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
+    });
+    html+='</div>';container.innerHTML=html;
+  }
+  await fetchSets();
+})();
+}
 </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
