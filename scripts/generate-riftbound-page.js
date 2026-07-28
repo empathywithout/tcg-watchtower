@@ -357,13 +357,14 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .modal-price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
-.buy-links{display:flex;gap:3px;margin-top:auto;padding-top:8px}
-.buy-link{flex:1;text-align:center;padding:4px 2px;border-radius:6px;font-size:.6rem;font-weight:700;text-decoration:none;transition:all .2s}
+.buy-links{display:flex;gap:3px;margin-top:auto;padding-top:10px;flex-wrap:wrap;justify-content:center}
+.buy-links .buy-link{flex:1;text-align:center;justify-content:center;min-width:0}
+.buy-link{padding:3px 3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
 .buy-amazon:hover{background:rgba(251,191,36,.25)}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-ebay:hover{background:rgba(59,130,246,.25)}
-.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal)}
+.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal);font-size:.5rem}
 .buy-tcgp:hover{background:rgba(45,212,191,.25)}
 .pl-amazon{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
 .pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
