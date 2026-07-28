@@ -1,6 +1,26 @@
 {
   "rewrites": [
     {
+      "source": "/sets/riftbound",
+      "destination": "/sets-riftbound.html"
+    },
+    {
+      "source": "/riftbound/sets/:slug/cards",
+      "destination": "/riftbound-:slug-card-list.html"
+    },
+    {
+      "source": "/riftbound/sets/:slug/top-chase-cards",
+      "destination": "/riftbound/sets/:slug/top-chase-cards.html"
+    },
+    {
+      "source": "/riftbound/sets/:slug/sealed-product",
+      "destination": "/riftbound/sets/:slug/sealed-product.html"
+    },
+    {
+      "source": "/riftbound/sets/:slug/cards/:card",
+      "destination": "/riftbound/sets/:slug/cards/:card.html"
+    },
+    {
       "source": "/content/articles/chaos-rising-worth-buying",
       "destination": "/content/articles/chaos-rising-worth-buying.html"
     },
@@ -674,6 +694,11 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/riftbound",
+      "destination": "/sets/riftbound",
+      "permanent": true
+    },
     {
       "source": "/pokemon",
       "destination": "/sets/pokemon",

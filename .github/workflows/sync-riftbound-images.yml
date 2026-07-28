@@ -1,0 +1,72 @@
+name: Sync Riftbound Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      set_id:
+        description: 'Set ID (ogn, spf, unl)'
+        required: true
+        type: choice
+        options:
+          - ogn
+          - spf
+          - unl
+          - vnd
+          - rad
+      set_full_name:
+        description: 'Set full name (e.g. Origins)'
+        required: true
+        type: string
+      force_resync:
+        description: 'Force re-upload all images'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      skip_images:
+        description: 'Upload metadata JSON only (no images)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      dry_run:
+        description: 'Dry run — no Scrydex calls, no R2 writes'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync Riftbound images
+        env:
+          SET_ID: ${{ inputs.set_id }}
+          SET_FULL_NAME: ${{ inputs.set_full_name }}
+          FORCE_RESYNC: ${{ inputs.force_resync }}
+          SKIP_IMAGES: ${{ inputs.skip_images }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          SCRYDEX_API_KEY: ${{ secrets.SCRYDEX_API_KEY }}
+          SCRYDEX_TEAM_ID: ${{ secrets.SCRYDEX_TEAM_ID }}
+          CF_R2_ENDPOINT: ${{ secrets.CF_R2_ENDPOINT }}
+          CF_R2_ACCESS_KEY: ${{ secrets.CF_R2_ACCESS_KEY }}
+          CF_R2_SECRET_KEY: ${{ secrets.CF_R2_SECRET_KEY }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          CF_R2_PUBLIC_URL: ${{ secrets.CF_R2_PUBLIC_URL }}
+        run: node scripts/sync-riftbound-images.mjs
