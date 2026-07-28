@@ -464,6 +464,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
         ${rarity === 'Super Rare' ? 'Super Rares are high-rarity cards featuring detailed artwork.' : ''}
       </p>
       ${related.length > 0 ? `
+      <div data-nosnippet>
       <div class="section-title">Related Cards from ${SET_FULL_NAME}</div>
       <div class="related-grid">
         ${related.map(r => {
@@ -480,6 +481,7 @@ ${breadcrumb(`${fullDisplayName} #${dispNum}`)}
           </div>
         </a>`;
         }).join('')}
+      </div>
       </div>` : ''}
       <div class="set-block">
         <div class="set-block-title">${SET_FULL_NAME} (${SET_SHORT_NAME})</div>

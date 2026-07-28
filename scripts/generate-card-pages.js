@@ -506,6 +506,7 @@ ${jpBanner}
         ${card.rarity && (card.rarity.toLowerCase().includes('ultra') || card.rarity.toLowerCase().includes('hyper') || card.rarity.toLowerCase().includes('special illustration')) ? 'As a high-rarity card, it is a sought-after collectible.' : ''}
       </p>
       ${related.length > 0 ? `
+      <div data-nosnippet>
       <div class="section-title">Related Cards from ${SET_FULL_NAME}</div>
       <div class="related-grid">
         ${related.map(r => `
@@ -517,6 +518,7 @@ ${jpBanner}
             <div class="related-card-price" data-related-id="${r.localId}">—</div>
           </div>
         </a>`).join('')}
+      </div>
       </div>` : ''}
       <div class="set-block">
         <div class="set-block-title">${SET_FULL_NAME}</div>
