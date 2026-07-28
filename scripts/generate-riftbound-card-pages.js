@@ -282,13 +282,12 @@ ${sharedCss}
 /* Domain badge */
 .domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;border:1px solid;color:white}
 /* Foil/normal price boxes */
-.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
-.price-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
-.price-box.foil{border-color:rgba(163,230,53,.2);background:rgba(45,212,191,.04)}
-.price-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.price-value{font-size:1.5rem;font-weight:700;font-family:monospace;color:var(--green)}
+.price-grid{margin-bottom:1.5rem}
+.price-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center}
+.price-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.price-value{font-size:2rem;font-weight:700;font-family:monospace;color:var(--green)}
 .price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.price-source{font-size:.65rem;color:var(--muted);margin-top:2px}
+.price-source{font-size:.65rem;color:var(--muted);margin-top:4px}
 .info-table{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
 .info-row{display:flex;gap:1rem;padding:.7rem 1rem;border-bottom:1px solid var(--border)}
 .info-row:last-child{border-bottom:none}
@@ -336,16 +335,11 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
       </div>
       ${domain ? `<div class="domain-badge" style="background:${dColor}22;border-color:${dColor}55;color:white">${domain}${cardType ? ' · ' + cardType : ''}</div>` : ''}
       <div class="price-grid">
-        <div class="price-box">
-          <div class="price-label">Normal NM</div>
-          <div class="price-value">${fmtPrice(card.normalPrice)}</div>
-          <div class="price-source">via TCGplayer</div>
+        <div class="price-box${bestPrice > 0 && (card.foilPrice ?? -1) >= (card.normalPrice ?? -1) ? ' foil' : ''}">
+          <div class="price-label">Market Price</div>
+          <div class="price-value${bestPrice > 0 && (card.foilPrice ?? -1) >= (card.normalPrice ?? -1) ? ' foil' : ''}">${bestPrice > 0 ? '$' + bestPrice.toFixed(2) : 'N/A'}</div>
+          <div class="price-source">Updated daily</div>
         </div>
-        ${card.hasFoil !== false ? `<div class="price-box foil">
-          <div class="price-label">Foil NM</div>
-          <div class="price-value foil">${fmtPrice(card.foilPrice)}</div>
-          <div class="price-source">via TCGplayer</div>
-        </div>` : ''}
       </div>
       <div class="info-table">
         <div class="info-row"><div class="info-key">Card Name</div><div class="info-val">${card.name}</div></div>
@@ -391,7 +385,7 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
           <div class="related-card-info">
             <div class="related-card-name">${r.name}</div>
             <div class="related-card-num">${SET_SHORT_NAME}-${r.localId}</div>
-            <div class="related-card-price">${fmtPrice(r.normalPrice)}</div>
+            <div class="related-card-price">${fmtPrice(Math.max(r.normalPrice??-1,r.foilPrice??-1)===-1?null:Math.max(r.normalPrice??-1,r.foilPrice??-1))}</div>
           </div>
         </a>`;
         }).join('')}
@@ -452,7 +446,7 @@ const chaseCards = cards
 const setDir    = path.join(ROOT, 'riftbound', 'sets', SET_URL_SLUG);
 const mvPageUrl = `${SITE_URL}/riftbound/sets/${SET_URL_SLUG}/top-chase-cards`;
 const mvTitle   = `${SET_FULL_NAME} Chase Cards: Most Valuable Cards Ranked by Price | Riftbound TCG`;
-const mvDesc    = `Every ${SET_FULL_NAME} chase card ranked by current market price including Signature, Overnumbered, Showcase, Legendary, and Epic cards. Updated daily with normal and foil prices.`;
+const mvDesc    = `Every ${SET_FULL_NAME} chase card ranked by current market price including Signature, Overnumbered, Showcase, Legendary, and Epic cards. Updated daily.`;
 
 const topCard     = chaseCards[0];
 const rarityTypes = [...new Set(chaseCards.map(c => c.rarity))].filter(Boolean);
@@ -463,7 +457,7 @@ const faqItems = [
   },
   ...(topCard ? [{
     q: `What is the most valuable ${SET_FULL_NAME} card?`,
-    a: `${topCard.name} is currently the most valuable card in ${SET_FULL_NAME} as a ${topCard.rarity} card, with a normal price of ${fmtPrice(topCard.normalPrice)}. See all chase cards ranked by price below.`,
+    a: `${topCard.name} is currently the most valuable card in ${SET_FULL_NAME} as a ${topCard.rarity} card, priced at ${fmtPrice(Math.max(topCard.normalPrice??-1,topCard.foilPrice??-1)===-1?null:Math.max(topCard.normalPrice??-1,topCard.foilPrice??-1))}. See all chase cards ranked by price below.`,
     id: 'faq-top-answer',
   }] : []),
   {
@@ -526,11 +520,7 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;mar
 .card-info{padding:.75rem}
 .card-name{font-weight:700;font-size:.85rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-num{font-size:.75rem;color:var(--muted);margin-bottom:6px;font-family:monospace}
-.card-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
-.price-col{text-align:center;padding:4px;background:rgba(15,31,28,.6);border-radius:6px;border:1px solid var(--border)}
-.price-col-label{font-size:.6rem;color:var(--muted);text-transform:uppercase}
-.price-col-value{font-size:.8rem;font-weight:700;color:var(--green);font-family:monospace}
-.price-col-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card-price-single{font-size:1rem;font-weight:700;color:var(--green);font-family:monospace;margin-bottom:8px;text-align:center}
 .buy-links{display:flex;gap:3px;justify-content:center}
 .buy-link{flex:1;padding:3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
@@ -570,10 +560,7 @@ ${breadcrumb('Chase Cards')}
         <div class="card-name">${c.name}</div>
         <div class="card-num">${SET_SHORT_NAME}-${c.localId}</div>
         <span class="rarity-badge ${rc}" style="margin-bottom:8px;display:inline-flex">${c.rarity}</span>
-        <div class="card-price-pair">
-          <div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">${fmtPrice(c.normalPrice)}</div></div>
-          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">${fmtPrice(c.foilPrice)}</div></div>
-        </div>
+        <div class="card-price-single">${fmtPrice(Math.max(c.normalPrice??-1,c.foilPrice??-1)===-1?null:Math.max(c.normalPrice??-1,c.foilPrice??-1))}</div>
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${aUrl}" target="_blank" rel="noopener">Amazon</a>
           <a class="buy-link buy-tcgp" href="${tUrl}" target="_blank" rel="noopener">TCGplayer</a>
