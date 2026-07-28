@@ -1134,7 +1134,7 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
   });
 
   // Fetch sealed prices via TCGplayer (TCGCSV)
-  const SEALED_GROUP_ID = '';
+  const SEALED_GROUP_ID = '24344';
   if (Object.keys(PRODUCT_META).length && SEALED_GROUP_ID) {
     fetch(`/api/tcgplayer-prices?groupId=${SEALED_GROUP_ID}&game=riftbound`)
       .then(r => r.json())
