@@ -330,6 +330,7 @@
             <a href="/portfolio" style="display:flex;align-items:center;gap:6px;color:var(--text-light);text-decoration:none;font-weight:500;transition:color 0.3s;">
                 Portfolio <span style="font-size:.6rem;font-weight:700;background:rgba(167,139,250,.2);color:#c084fc;border:1px solid rgba(167,139,250,.3);border-radius:4px;padding:1px 5px;vertical-align:middle;letter-spacing:.05em">BETA</span>
             </a>
+            <a href="/sets/riftbound" style="color:var(--text-light);text-decoration:none;font-weight:600;transition:color 0.3s;">Riftbound</a>
             <button class="hamburger" id="hamburger" aria-label="Browse Sets">
                 <span></span><span></span><span></span>
             </button>
@@ -345,6 +346,7 @@
     <div class="hamburger-menu" id="hamburger-menu">
         <div class="hamburger-menu-item" id="pokemon-menu-item">Pokémon<span>›</span></div>
         <div class="hamburger-menu-item" id="onepiece-menu-item">One Piece<span>›</span></div>
+        <div class="hamburger-menu-item" id="riftbound-menu-item" style="color:#2dd4bf">Riftbound<span>›</span></div>
     </div>
     <div class="pokemon-sets-view" id="onepiece-sets-view">
         <div class="pokemon-sets-header">
@@ -356,6 +358,17 @@
             <div class="filter-tab" data-filter="live">Live Only</div>
         </div>
         <div id="sets-grid-container-op"></div>
+    </div>
+    <div class="pokemon-sets-view" id="riftbound-sets-view">
+        <div class="pokemon-sets-header">
+            <button class="back-button" id="back-to-menu-rb">← Back</button>
+            <div class="pokemon-sets-title" style="background:linear-gradient(90deg,#2dd4bf,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Riftbound TCG Sets</div>
+        </div>
+        <div class="sets-filter-tabs" id="sets-filter-tabs-rb">
+            <div class="filter-tab active" data-filter="all">All Sets</div>
+            <div class="filter-tab" data-filter="live">Live Only</div>
+        </div>
+        <div id="sets-grid-container-rb"></div>
     </div>
     <div class="pokemon-sets-view" id="pokemon-sets-view">
         <div class="pokemon-sets-header">
@@ -618,6 +631,43 @@
             setsGridContainerOp.innerHTML = html;
         }
         filterTabsOp.forEach(tab => { tab.addEventListener('click', () => { filterTabsOp.forEach(t => t.classList.remove('active')); tab.classList.add('active'); currentFilterOp = tab.dataset.filter; renderOnePieceSets(); }); });
+        // Riftbound
+        const riftboundMenuItem = document.getElementById('riftbound-menu-item');
+        const riftboundSetsView = document.getElementById('riftbound-sets-view');
+        const backToMenuRb = document.getElementById('back-to-menu-rb');
+        const setsGridContainerRb = document.getElementById('sets-grid-container-rb');
+        const filterTabsRb = document.querySelectorAll('#sets-filter-tabs-rb .filter-tab');
+        let currentFilterRb = 'all';
+        let rbSetsLoaded = false;
+        if (riftboundMenuItem) riftboundMenuItem.addEventListener('click', () => { hamburgerMenu.classList.remove('open'); if (riftboundSetsView) { riftboundSetsView.classList.add('open'); renderRiftboundSets(); } });
+        if (backToMenuRb) backToMenuRb.addEventListener('click', () => { if (riftboundSetsView) riftboundSetsView.classList.remove('open'); hamburgerMenu.classList.add('open'); });
+        filterTabsRb.forEach(tab => { tab.addEventListener('click', () => { filterTabsRb.forEach(t => t.classList.remove('active')); tab.classList.add('active'); currentFilterRb = tab.dataset.filter; renderRiftboundSets(); }); });
+        async function renderRiftboundSets() {
+            if (!setsGridContainerRb) return;
+            if (!rbSetsLoaded) {
+                try {
+                    const res = await fetch('/sets-riftbound.json');
+                    const sets = await res.json();
+                    window._rbSets = sets;
+                    rbSetsLoaded = true;
+                } catch(e) { setsGridContainerRb.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">Could not load sets</div>'; return; }
+            }
+            const sets = window._rbSets || [];
+            const filtered = currentFilterRb === 'live' ? sets.filter(s => s.live) : sets;
+            const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+            let html = '<div class="sets-grid">';
+            filtered.forEach(set => {
+                const isDisabled = !set.live;
+                const link = isDisabled ? 'javascript:void(0)' : '/riftbound/sets/' + set.slug + '/cards';
+                const logoUrl = r2 + '/logos/riftbound/' + set.setId + '.webp';
+                html += '<a href="' + link + '" class="' + (isDisabled ? 'set-card disabled' : 'set-card') + '"><div class="set-card-image"><img loading="lazy" src="' + logoUrl + '" alt="' + set.name + '" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display=\'none\'"></div><div class="set-card-content"><div class="set-card-name">' + set.name + '</div><div class="set-card-info">' + set.short + ' • Riftbound TCG</div>' + (isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : '') + '</div></a>';
+            });
+            html += '</div>';
+            setsGridContainerRb.innerHTML = html;
+        }
+        // Also update closeAllMenus to include riftbound
+        const origClose = closeAllMenus;
+        closeAllMenus = function() { origClose(); if (riftboundSetsView) riftboundSetsView.classList.remove('open'); };
         hamburger.addEventListener('click', function(){ fetchSets(); }, { once: true });
     })();
     </script>

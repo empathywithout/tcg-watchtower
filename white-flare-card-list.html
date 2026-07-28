@@ -924,7 +924,16 @@ footer {
 .section-nav-inner::-webkit-scrollbar { display: none; }
 .nav-short { display: none; }
 @media (max-width: 640px) {
-  .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
+  .section-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  justify-content: center;
+}
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
   .nav-short { display: inline; }
@@ -1016,6 +1025,8 @@ button,a,[onclick]{touch-action:manipulation}
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Home</a>
+      <span>›</span>
+      <a href="/sets">Pokémon TCG</a>
       <span>›</span>
       <a href="/sets">All Sets</a>
       <span>›</span>
@@ -1957,6 +1968,7 @@ function initNav() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.remove('open');
     if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+    const rbV = document.getElementById('riftbound-sets-view'); if (rbV) rbV.classList.remove('open');
     hamburgerOverlay.classList.remove('open');
     hamburger.classList.remove('open');
   }
@@ -1968,15 +1980,13 @@ function initNav() {
 
   function showOnePieceSets() {
     hamburgerMenu.classList.remove('open');
-    if (onepieceSetsView) {
-      onepieceSetsView.classList.add('open');
-      renderOnePieceSets();
-    }
+    if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); }
   }
 
   function backToMainMenu() {
     pokemonSetsView.classList.remove('open');
     if (onepieceSetsView) onepieceSetsView.classList.remove('open');
+    const rbV = document.getElementById('riftbound-sets-view'); if (rbV) rbV.classList.remove('open');
     hamburgerMenu.classList.add('open');
   }
 
@@ -1986,6 +1996,56 @@ function initNav() {
   if (onepieceMenuItem) onepieceMenuItem.addEventListener('click', showOnePieceSets);
   backToMenu.addEventListener('click', backToMainMenu);
   if (backToMenuOp) backToMenuOp.addEventListener('click', backToMainMenu);
+
+  // Riftbound menu wiring
+  const riftboundMenuItem = document.getElementById('riftbound-menu-item');
+  const backToMenuRb = document.getElementById('back-to-menu-rb');
+  const setsGridContainerRb = document.getElementById('sets-grid-container-rb');
+  const filterTabsRb = document.querySelectorAll('#sets-filter-tabs-rb .filter-tab');
+  let currentFilterRb = 'all';
+  let rbSetsLoaded = false;
+  if (riftboundMenuItem) riftboundMenuItem.addEventListener('click', () => {
+    hamburgerMenu.classList.remove('open');
+    const rbV = document.getElementById('riftbound-sets-view');
+    if (rbV) { rbV.classList.add('open'); renderRiftboundSets(); }
+  });
+  if (backToMenuRb) backToMenuRb.addEventListener('click', backToMainMenu);
+  filterTabsRb.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabsRb.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilterRb = tab.dataset.filter;
+      renderRiftboundSets();
+    });
+  });
+  async function renderRiftboundSets() {
+    if (!setsGridContainerRb) return;
+    if (!rbSetsLoaded) {
+      try {
+        const res = await fetch('/sets-riftbound.json');
+        const sets = await res.json();
+        window._rbSets = sets;
+        rbSetsLoaded = true;
+      } catch(e) { setsGridContainerRb.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px">Could not load sets</div>'; return; }
+    }
+    const sets = window._rbSets || [];
+    const filtered = currentFilterRb === 'live' ? sets.filter(s => s.live) : sets;
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html = '<div class="sets-grid">';
+    filtered.forEach(set => {
+      const disabled = !set.live;
+      const logoUrl = `${r2}/logos/riftbound/${set.setId}.webp`;
+      html += `<a href="${disabled ? 'javascript:void(0)' : '/riftbound/sets/' + set.slug + '/cards'}" class="set-card${disabled ? ' disabled' : ''}">
+        <div class="set-card-image"><img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'"></div>
+        <div class="set-card-content">
+          <div class="set-card-name">${set.name}</div>
+          <div class="set-card-info">${set.short} • Riftbound TCG</div>
+          ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+        </div></a>`;
+    });
+    html += '</div>';
+    setsGridContainerRb.innerHTML = html;
+  }
 
   hamburgerMenu.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(link => {
     link.addEventListener('click', closeAllMenus);
@@ -2008,123 +2068,82 @@ function initNav() {
       renderOnePieceSets();
     });
   });
-  
+
   async function fetchSets() {
     try {
       const res = await fetch('/sets.json');
-      if (!res.ok) {
-        console.error('Failed to fetch sets');
-        return;
-      }
+      if (!res.ok) return;
       allSets = await res.json();
       renderSets();
-    } catch(e) {
-      console.error('Error fetching sets:', e);
-    }
+    } catch(e) { console.error('Error fetching sets:', e); }
   }
-  
-  function renderSets() {
-    if (!allSets || allSets.length === 0) {
-      setsGridContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Loading sets...</div>';
-      return;
-    }
-    
-    // This view is Pokemon-only (One Piece has its own separate hamburger view)
-    const pokemonSets = allSets.filter(set => {
-      const id = (set.setId || '').toLowerCase();
-      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st') && set.series !== 'One Piece TCG';
-    });
 
-    let filteredSets = pokemonSets;
-    if (currentFilter === 'live') {
-      filteredSets = pokemonSets.filter(set => set.live);
-    } else if (currentFilter !== 'all') {
-      const normalizedFilter = currentFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
-      filteredSets = pokemonSets.filter(set => {
-        const normalizedSeries = set.series.toLowerCase().replace(/[^a-z0-9]/g, '');
-        return normalizedSeries === normalizedFilter;
-      });
-    }
-    
-    const groupedSets = {};
-    filteredSets.forEach(set => {
-      if (!groupedSets[set.series]) {
-        groupedSets[set.series] = [];
-      }
-      groupedSets[set.series].push(set);
+  function renderSets() {
+    if (!setsGridContainer) return;
+    const pokemonSets = allSets.filter(s => {
+      const id = (s.setId || '').toLowerCase();
+      return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
     });
-    
+    let filtered = pokemonSets;
+    if (currentFilter === 'live') filtered = pokemonSets.filter(s => s.live);
+    else if (currentFilter !== 'all') {
+      const nf = currentFilter.toLowerCase().replace(/[^a-z0-9]/g,'');
+      filtered = pokemonSets.filter(s => s.series.toLowerCase().replace(/[^a-z0-9]/g,'') === nf);
+    }
+    const grouped = {};
+    filtered.forEach(s => { if (!grouped[s.series]) grouped[s.series] = []; grouped[s.series].push(s); });
     let html = '';
-    Object.keys(groupedSets).forEach(series => {
-      html += `<div class="series-label">${series}</div>`;
-      html += '<div class="sets-grid">';
-      groupedSets[series].forEach(set => {
-        const isDisabled = !set.live;
-        const cardClass = isDisabled ? 'set-card disabled' : 'set-card';
-        const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
+    Object.keys(grouped).forEach(series => {
+      html += `<div class="series-label">${series}</div><div class="sets-grid">`;
+      grouped[series].forEach(set => {
+        const disabled = !set.live;
         const logoUrl = set.setId ? setLogoUrl(set.setId) : null;
-        
-        html += `
-          <a href="${link}" class="${cardClass}">
-            <div class="set-card-image">
-              ${logoUrl ? `
-                <img src="${logoUrl}" 
-                     alt="${set.name}" 
-                     style="width: 85%; max-width: 130px; height: auto; object-fit: contain;"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="font-size: 3rem; display: none;">🎴</div>
-              ` : `
-                <div style="font-size: 3rem;">🎴</div>
-              `}
-            </div>
-            <div class="set-card-content">
-              <div class="set-card-name">${set.name}</div>
-              <div class="set-card-info">${set.short} • ${set.series}</div>
-              ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-            </div>
-          </a>
-        `;
+        html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
+          <div class="set-card-image">
+            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="font-size:3rem;display:none">🎴</div>` : `<div style="font-size:3rem">🎴</div>`}
+          </div>
+          <div class="set-card-content">
+            <div class="set-card-name">${set.name}</div>
+            <div class="set-card-info">${set.short} • ${set.series}</div>
+            ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+          </div></a>`;
       });
       html += '</div>';
     });
-    
-    setsGridContainer.innerHTML = html;
+    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
   }
 
   function renderOnePieceSets() {
     if (!setsGridContainerOp) return;
     const opSets = allSets.filter(s => {
-      const id = (s.setId || s.slug || '').toLowerCase();
+      const id = (s.setId || '').toLowerCase();
       return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
     });
-    let filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
+    const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
     if (!filtered.length) {
       setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
       return;
     }
+    const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
     let html = '<div class="sets-grid">';
     filtered.forEach(set => {
-      const isDisabled = !set.live;
-      const link = isDisabled ? 'javascript:void(0)' : '/' + set.slug;
-      const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+      const disabled = !set.live;
       const logoUrl = set.setId ? `${r2}/logos/op/${set.setId}.png` : null;
-      html += `
-        <a href="${link}" class="${isDisabled ? 'set-card disabled' : 'set-card'}">
-          <div class="set-card-image">
-            ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem;">🃏</div>`}
-          </div>
-          <div class="set-card-content">
-            <div class="set-card-name">${set.name}</div>
-            <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
-            ${isDisabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
-          </div>
-        </a>`;
+      html += `<a href="${disabled ? 'javascript:void(0)' : '/' + set.slug}" class="set-card${disabled ? ' disabled' : ''}">
+        <div class="set-card-image">
+          ${logoUrl ? `<img src="${logoUrl}" alt="${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">` : `<div style="font-size:3rem">🃏</div>`}
+        </div>
+        <div class="set-card-content">
+          <div class="set-card-name">${set.name}</div>
+          <div class="set-card-info">${set.short || ''} • ${set.series || 'One Piece TCG'}</div>
+          ${disabled ? '<span class="set-card-soon">Coming Soon</span>' : ''}
+        </div></a>`;
     });
     html += '</div>';
     setsGridContainerOp.innerHTML = html;
   }
 
-  hamburger.addEventListener('click', function(){ fetchSets(); }, { once: true });
+  await fetchSets();
 })();
 } // end initNav
 
