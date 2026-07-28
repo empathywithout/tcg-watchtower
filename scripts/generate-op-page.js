@@ -1148,17 +1148,23 @@ function initNav(){
   const setsGridContainer=document.getElementById('sets-grid-container');
   const setsGridContainerOp=document.getElementById('sets-grid-container-op');
   const filterTabsOp=document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
+  const filterTabsRb=document.querySelectorAll('#sets-filter-tabs-rb .filter-tab');
   if(!hamburger)return;
-  let allSets=[],currentFilterOp='all';
-  function closeAllMenus(){hamburgerMenu.classList.remove('open');if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');hamburgerOverlay.classList.remove('open');hamburger.classList.remove('open');}
-  function backToMainMenu(){if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');hamburgerMenu.classList.add('open');}
+  let allSets=[],currentFilterOp='all',currentFilterRb='all';
+  function closeAllMenus(){hamburgerMenu.classList.remove('open');if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV)rbV.classList.remove('open');hamburgerOverlay.classList.remove('open');hamburger.classList.remove('open');}
+  function backToMainMenu(){if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV)rbV.classList.remove('open');hamburgerMenu.classList.add('open');}
   hamburger.addEventListener('click',()=>{const isOpen=hamburgerMenu.classList.contains('open');if(isOpen)closeAllMenus();else{hamburgerMenu.classList.add('open');hamburgerOverlay.classList.add('open');hamburger.classList.add('open');}});
   if(hamburgerOverlay)hamburgerOverlay.addEventListener('click',closeAllMenus);
   if(pokemonMenuItem)pokemonMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');if(pokemonSetsView){pokemonSetsView.classList.add('open');renderSets();}});
   if(onepieceMenuItem)onepieceMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV){opV.classList.add('open');renderOnePieceSets();}});
+  const riftboundMenuItem=document.getElementById('riftbound-menu-item');
+  if(riftboundMenuItem)riftboundMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV){rbV.classList.add('open');renderRiftboundSets();}});
   if(backToMenu)backToMenu.addEventListener('click',backToMainMenu);
   if(backToMenuOp)backToMenuOp.addEventListener('click',backToMainMenu);
+  const backToMenuRb=document.getElementById('back-to-menu-rb');
+  if(backToMenuRb)backToMenuRb.addEventListener('click',backToMainMenu);
   filterTabsOp.forEach(tab=>{tab.addEventListener('click',()=>{filterTabsOp.forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentFilterOp=tab.dataset.filter;renderOnePieceSets();});});
+  filterTabsRb.forEach(tab=>{tab.addEventListener('click',()=>{filterTabsRb.forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentFilterRb=tab.dataset.filter;renderRiftboundSets();});});
   async function fetchSets(){try{const res=await fetch('/sets.json');if(!res.ok)return;allSets=await res.json();renderSets();}catch(e){}}
   function renderSets(){
     if(!setsGridContainer)return;
@@ -1190,6 +1196,24 @@ function initNav(){
         <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short||''}•\${set.series||'One Piece TCG'}</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
     });
     html+='</div>';setsGridContainerOp.innerHTML=html;
+  }
+  async function renderRiftboundSets(){
+    const container=document.getElementById('sets-grid-container-rb');
+    if(!container)return;
+    let rbSets=[];
+    try{const res=await fetch('/sets-riftbound.json');if(res.ok)rbSets=await res.json();}catch(e){}
+    const filtered=currentFilterRb==='live'?rbSets.filter(s=>s.live):rbSets;
+    if(!filtered.length){container.innerHTML='<div style="text-align:center;padding:40px;">No sets available</div>';return;}
+    const r2='https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    let html='<div class="sets-grid">';
+    filtered.forEach(set=>{
+      const disabled=!set.live;const logoUrl=set.setId?\`\${r2}/logos/riftbound/\${set.setId}.webp\`:null;
+      const href=disabled?'javascript:void(0)':\`/riftbound/sets/\${set.slug}/cards\`;
+      html+=\`<a href="\${href}" class="set-card\${disabled?' disabled':''}">
+        <div class="set-card-image">\${logoUrl?\`<img src="\${logoUrl}" alt="\${set.name}" style="width:85%;max-width:130px;height:auto;object-fit:contain;" onerror="this.style.display='none'">\`:'<div style="font-size:3rem">⚡</div>'}</div>
+        <div class="set-card-content"><div class="set-card-name">\${set.name}</div><div class="set-card-info">\${set.short}•Riftbound</div>\${disabled?'<span class="set-card-soon">Coming Soon</span>':''}</div></a>\`;
+    });
+    html+='</div>';container.innerHTML=html;
   }
   await fetchSets();
 })();
