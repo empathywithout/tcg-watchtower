@@ -243,17 +243,6 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
 
 <!-- Nav -->
 <div id="site-nav"></div>
-<script>
-fetch('/nav.html').then(r=>r.text()).then(html=>{
-  const p=document.getElementById('site-nav');
-  if(!p)return;
-  const t=document.createElement('div');
-  t.innerHTML=html;
-  while(t.firstChild)p.parentNode.insertBefore(t.firstChild,p);
-  p.remove();
-  requestAnimationFrame(()=>{if(typeof initNav==='function')initNav();});
-});
-</script>
 
 <!-- Section nav -->
 <div class="section-nav" id="section-nav">
@@ -1244,6 +1233,15 @@ function initNav(){
   await fetchSets();
 })();
 }
+
+fetch('/nav.html').then(r=>r.text()).then(html=>{
+  const placeholder=document.getElementById('site-nav');
+  const temp=document.createElement('div');
+  temp.innerHTML=html;
+  while(temp.firstChild)placeholder.parentNode.insertBefore(temp.firstChild,placeholder);
+  placeholder.remove();
+  initNav();
+});
 </script>
 <script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
 </body>
