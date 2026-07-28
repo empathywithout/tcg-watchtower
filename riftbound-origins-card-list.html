@@ -831,8 +831,12 @@ function cardImg(localId) {
 function toSlug(s) {
   return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 }
-function cardPageUrl(localId, name) {
-  return `/riftbound/sets/${SET_URL_SLUG}/cards/${toSlug(name)}-${toSlug(localId)}`;
+function cardPageUrl(localId, name, rarity) {
+  const isSignature    = (rarity||'').toLowerCase() === 'signature';
+  const isOvernumbered = (rarity||'').toLowerCase() === 'overnumbered' || (rarity||'').toLowerCase() === 'showcase';
+  const baseId = (localId||'').replace('*','');
+  const suffix = isSignature ? '-signature' : isOvernumbered ? '-overnumbered' : '';
+  return `/riftbound/sets/${SET_URL_SLUG}/cards/${toSlug(name)}-${toSlug(baseId)}${suffix}`;
 }
 function ebayLink(q) { return `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}&mkcid=1&mkrid=${EBAY_MKRID}&siteid=0&campid=${EBAY_CAMP}&toolid=10001&mkevt=1`; }
 function amazonLink(q) { return `https://www.amazon.com/s?k=${encodeURIComponent(q)}&linkCode=ll2&tag=${AMAZON_TAG}&language=en_US`; }
@@ -1026,7 +1030,7 @@ function openModal(localId, name) {
         <a class="modal-buy-link pl-tcgp" href="${tcgpLink(card.name, localId)}" target="_blank" rel="noopener">TCGplayer <span>→</span></a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(q)}" target="_blank" rel="noopener">eBay <span>→</span></a>
         <a class="modal-buy-link pl-amazon" href="${amazonLink(q)}" target="_blank" rel="noopener">Amazon <span>→</span></a>
-        <a class="modal-buy-link" href="${cardPageUrl(localId, card.name)}" style="background:rgba(45,212,191,0.08);border:1px solid var(--teal-border);color:var(--teal)">View Full Card Page <span>→</span></a>
+        <a class="modal-buy-link" href="${cardPageUrl(localId, card.name, card.rarity)}" style="background:rgba(45,212,191,0.08);border:1px solid var(--teal-border);color:var(--teal)">View Full Card Page <span>→</span></a>
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
