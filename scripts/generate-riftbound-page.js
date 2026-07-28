@@ -741,7 +741,7 @@ function renderChaseCards() {
           \${c.normalPrice != null
             ? \`<div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">\${fmtPrice(c.normalPrice)}</div></div>
           <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
-            : \`<div class="price-col" style="grid-column:1/-1"><div class="price-col-label">Foil Only</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
+            : \`<div class="price-col" style="grid-column:1/-1"><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
           }
         </div>
       </div>
