@@ -302,11 +302,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .chase-card-number{font-size:.8rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:2px}
 .chase-card-rarity-wrap{min-height:2rem;display:flex;align-items:center;margin-bottom:4px}
 /* Foil/normal price side by side */
-.chase-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px}
-.price-col{text-align:center}
-.price-col-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.price-col-value{font-size:.95rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
-.price-col-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.chase-price{font-size:1rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green);border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px;text-align:center}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(2,15,13,.85);backdrop-filter:blur(8px);border:1px solid var(--teal-border);color:var(--teal);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
 .chase-arrow:hover{background:var(--teal-dim);opacity:1}
 .chase-arrow.hidden{opacity:0;pointer-events:none}
@@ -355,9 +351,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 /* Domain + type badge in modal */
 .modal-domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
 /* Foil/normal side-by-side in modal */
-.modal-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
 .modal-price-col{background:rgba(15,31,28,.7);border:1px solid rgba(45,212,191,.1);border-radius:10px;padding:12px;text-align:center}
-.modal-price-col.foil{border-color:rgba(163,230,53,.2);background:rgba(45,212,191,.05)}
 .modal-price-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
 .modal-price-value{font-size:1.2rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
 .modal-price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -737,13 +731,7 @@ function renderChaseCards() {
         <div class="chase-card-name">\${c.name}</div>
         <div class="chase-card-number">\${SET_SHORT_NAME}-\${c.localId}</div>
         <div class="chase-card-rarity-wrap"><span class="rarity-badge \${rc}">\${displayRarity}</span></div>
-        <div class="chase-price-pair">
-          \${c.normalPrice != null
-            ? \`<div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">\${fmtPrice(c.normalPrice)}</div></div>
-          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
-            : \`<div class="price-col" style="grid-column:1/-1"><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
-          }
-        </div>
+        <div class="chase-price">\${fmtPrice(Math.max(c.normalPrice ?? -1, c.foilPrice ?? -1) === -1 ? null : Math.max(c.normalPrice ?? -1, c.foilPrice ?? -1))}</div>
       </div>
     </div>\`;
   }).join('');
@@ -767,8 +755,7 @@ function applyFilters() {
   });
 
   filteredCards.sort((a,b) => {
-    if (sort === 'price')      return (b.normalPrice ?? -1) - (a.normalPrice ?? -1);
-    if (sort === 'price-foil') return (b.foilPrice ?? -1) - (a.foilPrice ?? -1);
+    if (sort === 'price')      return (Math.max(b.normalPrice??-1,b.foilPrice??-1)) - (Math.max(a.normalPrice??-1,a.foilPrice??-1));
     return (parseInt(a.localId)||0) - (parseInt(b.localId)||0);
   });
 
@@ -793,7 +780,7 @@ function renderCards() {
         <div class="card-item-name">\${c.name}</div>
         <div class="card-item-num">\${SET_SHORT_NAME}-\${c.localId}</div>
         \${c.domain ? \`<div class="card-item-domain">\${c.domain}\${c.cardType ? ' · '+c.cardType : ''}</div>\` : ''}
-        <div class="card-item-price">\${c.normalPrice != null ? fmtPrice(c.normalPrice) : ''}\${c.normalPrice != null && c.foilPrice != null ? ' / ' : ''}\${c.foilPrice != null ? \`<span style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent">\${fmtPrice(c.foilPrice)} foil</span>\` : ''}\${c.normalPrice == null && c.foilPrice == null ? 'N/A' : ''}</div>
+        <div class="card-item-price">\${fmtPrice(Math.max(c.normalPrice??-1,c.foilPrice??-1)===-1?null:Math.max(c.normalPrice??-1,c.foilPrice??-1))}</div>
       </div>\`;
     div.addEventListener('click', () => openModal(c.localId, c.name));
     grid.appendChild(div);
@@ -818,15 +805,11 @@ function openModal(localId, name) {
       <div class="modal-meta">\${SET_SHORT_NAME}-\${localId}</div>
       \${card.domain ? \`<div class="modal-domain-badge">\${card.domain}\${card.cardType ? ' · '+card.cardType : ''}</div>\` : ''}
       <span class="rarity-badge \${rc}" style="margin-bottom:12px;display:inline-flex">\${card.rarity}</span>
-      <div class="modal-price-pair">
+      <div class="modal-price-pair" style="display:block">
         <div class="modal-price-col">
-          <div class="modal-price-label">Normal NM</div>
-          <div class="modal-price-value">\${fmtPrice(card.normalPrice)}</div>
+          <div class="modal-price-label">Market Price</div>
+          <div class="modal-price-value">\${fmtPrice(Math.max(card.normalPrice??-1,card.foilPrice??-1)===-1?null:Math.max(card.normalPrice??-1,card.foilPrice??-1))}</div>
         </div>
-        \${card.hasFoil !== false ? \`<div class="modal-price-col foil">
-          <div class="modal-price-label">Foil NM</div>
-          <div class="modal-price-value foil">\${fmtPrice(card.foilPrice)}</div>
-        </div>\` : ''}
       </div>
       <div class="modal-links">
         <a class="modal-buy-link pl-tcgp" href="\${tcgpLink(card.name, localId)}" target="_blank" rel="noopener">TCGplayer <span>→</span></a>
