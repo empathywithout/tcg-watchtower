@@ -29,6 +29,11 @@ const ROOT       = path.resolve(__dirname, '..');
 const SET_ID         = (process.env.SET_ID || '').trim().toLowerCase();
 const SET_FULL_NAME  = (process.env.SET_FULL_NAME || '').trim();
 const SET_SHORT_NAME = (process.env.SET_SHORT_NAME || SET_ID.toUpperCase()).trim();
+
+// Load printedTotal from sets-riftbound.json
+const setsRbRaw = fs.existsSync('sets-riftbound.json') ? JSON.parse(fs.readFileSync('sets-riftbound.json', 'utf8')) : [];
+const setConfig  = setsRbRaw.find(s => s.setId === SET_ID) || {};
+const SET_PRINTED_TOTAL = String(setConfig.printedTotal || '');
 const R2_PUBLIC_URL  = (process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev').trim();
 const SITE_URL       = 'https://tcgwatchtower.com';
 
@@ -65,7 +70,14 @@ function toSlug(name) {
 }
 
 function cardSlug(card) {
-  return `${toSlug(card.name)}-${toSlug(card.localId)}`;
+  // Preserve Signature distinction: 303* → name-303-signature, 303 → name-303-overnumbered
+  const localId = card.localId || '';
+  const isSignature = localId.endsWith('*');
+  const baseId = localId.replace('*', '');
+  const rarity = (card.rarity || '').toLowerCase();
+  if (isSignature) return `${toSlug(card.name)}-${baseId}-signature`;
+  if (rarity === 'overnumbered' || rarity === 'showcase') return `${toSlug(card.name)}-${baseId}-overnumbered`;
+  return `${toSlug(card.name)}-${baseId}`;
 }
 
 function cardUrl(card) {
@@ -203,8 +215,14 @@ function generateCardPage(card, allCards) {
   const dColor    = domainColor(domain);
 
   const setShortId  = `${SET_SHORT_NAME}-${card.localId}`;
-  const title       = `${card.name} ${setShortId} | ${rarity} | ${SET_FULL_NAME} Riftbound TCG`;
-  const description = `${card.name} (${setShortId}) from ${SET_FULL_NAME}: ${rarity} Riftbound TCG card${domain ? ', ' + domain + ' domain' : ''}. Normal price ${fmtPrice(card.normalPrice)}, Foil price ${fmtPrice(card.foilPrice)}.`;
+  const cardNum     = `${card.localId.replace('*','')}/${SET_PRINTED_TOTAL || '298'}`;
+  const isSignature = (card.rarity || '').toLowerCase() === 'signature';
+  const isOvernumbered = (card.rarity || '').toLowerCase() === 'overnumbered' || (card.rarity || '').toLowerCase() === 'showcase';
+  const rarityLabel = isSignature ? 'Signature' : isOvernumbered ? 'Overnumbered' : rarity;
+  const bestPrice   = Math.max(card.normalPrice ?? -1, card.foilPrice ?? -1);
+  const priceStr    = bestPrice > 0 ? ` — $${bestPrice.toFixed(2)}` : '';
+  const title       = `${card.name} ${cardNum} | ${rarityLabel} | Riftbound ${SET_FULL_NAME} Price & Card Details`;
+  const description = `${card.name} (${setShortId}) — ${rarityLabel} card from Riftbound ${SET_FULL_NAME}${domain ? ', ' + domain + ' domain' : ''}${priceStr}. Live market price, card text, and where to buy.`;
 
   const schemaJson = JSON.stringify({
     '@context': 'https://schema.org',
@@ -213,13 +231,12 @@ function generateCardPage(card, allCards) {
     'description': description,
     'url': url,
     'image': img,
-    'brand': { '@type': 'Brand', 'name': 'Riftbound TCG' },
-    'offers': card.normalPrice != null ? {
+    'brand': { '@type': 'Brand', 'name': 'Riftbound: League of Legends TCG' },
+    'offers': bestPrice > 0 ? {
       '@type': 'Offer',
       'priceCurrency': 'USD',
-      'price': card.normalPrice.toFixed(2),
+      'price': bestPrice.toFixed(2),
       'availability': 'https://schema.org/InStock',
-      'seller': { '@type': 'Organization', 'name': 'TCGplayer' },
     } : undefined,
   });
 
