@@ -311,9 +311,9 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       </div>
       <div class="hero-visual">
         <div class="card-stack" id="hero-stack">
-          <img data-id="7a" alt="Top chase card" width="245" height="337" fetchpriority="high">
-          <img data-id="27a" alt="Chase card 2" width="245" height="337" loading="lazy">
-          <img data-id="30a" alt="Chase card 3" width="245" height="337" loading="lazy">
+          <img data-id="303*" alt="Top chase card" width="245" height="337" fetchpriority="high">
+          <img data-id="299*" alt="Chase card 2" width="245" height="337" loading="lazy">
+          <img data-id="309*" alt="Chase card 3" width="245" height="337" loading="lazy">
         </div>
       </div>
     </div>
@@ -868,10 +868,11 @@ function domainColor(domain) { return DOMAIN_COLORS[domain] || '#2dd4bf'; }
 // Rarity → CSS class
 const RARITY_CLASS = {
   'Common':'rarity-common','Uncommon':'rarity-uncommon','Rare':'rarity-rare',
-  'Epic':'rarity-epic','Legendary':'rarity-legendary','Showcase':'rarity-showcase',
+  'Epic':'rarity-epic','Legendary':'rarity-legendary','Legend':'rarity-legendary',
+  'Showcase':'rarity-showcase',
   'Overnumbered':'rarity-overnumbered','Signature':'rarity-signature',
 };
-const CHASE_RARITIES = new Set(['Signature','Overnumbered','Showcase','Legendary','Epic']);
+const CHASE_RARITIES = new Set(['Signature','Overnumbered','Showcase','Legendary','Legend','Epic']);
 
 // Hero stack images
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
@@ -928,7 +929,8 @@ function renderChaseCards() {
   const chase = [...allCards]
     .filter(c => CHASE_RARITIES.has(c.rarity))
     .sort((a,b) => {
-      const pa = a.normalPrice ?? -1, pb = b.normalPrice ?? -1;
+      const pa = Math.max(a.normalPrice ?? -1, a.foilPrice ?? -1);
+      const pb = Math.max(b.normalPrice ?? -1, b.foilPrice ?? -1);
       if (pa !== pb) return pb - pa;
       const order = ['Signature','Overnumbered','Showcase','Legendary','Epic'];
       return (order.indexOf(a.rarity)+1||99) - (order.indexOf(b.rarity)+1||99);
