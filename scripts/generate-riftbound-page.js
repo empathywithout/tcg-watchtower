@@ -222,6 +222,8 @@ ${FAQ_SCHEMA_JSON ? `<script type="application/ld+json">${FAQ_SCHEMA_JSON}</scri
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/static/set-page.css?v=2">
+<link rel="stylesheet" href="/mobile-fixes.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Saira+Condensed:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
