@@ -1,0 +1,88 @@
+{
+  "ogn": {
+    "booster-box": {
+      "tcgpId": "TODO",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Origins Booster Box (24 Packs)",
+      "q": "Riftbound Origins Booster Box TCG"
+    },
+    "booster-pack": {
+      "tcgpId": "TODO",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Origins Booster Pack",
+      "q": "Riftbound Origins Booster Pack TCG"
+    },
+    "champion-deck-jinx": {
+      "tcgpId": "TODO",
+      "type": "Champion Deck",
+      "filterKey": "deck",
+      "badgeClass": "badge-deck",
+      "name": "Origins Champion Deck — Jinx",
+      "q": "Riftbound Origins Champion Deck Jinx TCG"
+    },
+    "champion-deck-viktor": {
+      "tcgpId": "TODO",
+      "type": "Champion Deck",
+      "filterKey": "deck",
+      "badgeClass": "badge-deck",
+      "name": "Origins Champion Deck — Viktor",
+      "q": "Riftbound Origins Champion Deck Viktor TCG"
+    },
+    "champion-deck-lux": {
+      "tcgpId": "TODO",
+      "type": "Champion Deck",
+      "filterKey": "deck",
+      "badgeClass": "badge-deck",
+      "name": "Origins Champion Deck — Lux",
+      "q": "Riftbound Origins Champion Deck Lux TCG"
+    },
+    "proving-grounds": {
+      "tcgpId": "TODO",
+      "type": "Starter Box",
+      "filterKey": "starter",
+      "badgeClass": "badge-starter",
+      "name": "Origins Proving Grounds Starter Box",
+      "q": "Riftbound Origins Proving Grounds Starter Box TCG"
+    }
+  },
+  "spf": {
+    "booster-box": {
+      "tcgpId": "TODO",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Spiritforged Booster Box (24 Packs)",
+      "q": "Riftbound Spiritforged Booster Box TCG"
+    },
+    "booster-pack": {
+      "tcgpId": "TODO",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Spiritforged Booster Pack",
+      "q": "Riftbound Spiritforged Booster Pack TCG"
+    }
+  },
+  "unl": {
+    "booster-box": {
+      "tcgpId": "TODO",
+      "type": "Booster Box",
+      "filterKey": "box",
+      "badgeClass": "badge-box",
+      "name": "Unleashed Booster Box (24 Packs)",
+      "q": "Riftbound Unleashed Booster Box TCG"
+    },
+    "booster-pack": {
+      "tcgpId": "TODO",
+      "type": "Booster Pack",
+      "filterKey": "pack",
+      "badgeClass": "badge-pack",
+      "name": "Unleashed Booster Pack",
+      "q": "Riftbound Unleashed Booster Pack TCG"
+    }
+  }
+}

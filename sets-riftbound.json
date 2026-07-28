@@ -1,0 +1,50 @@
+[
+  {
+    "setId": "ogn",
+    "name": "Origins",
+    "slug": "origins",
+    "short": "OGN",
+    "scrydexId": "OGN",
+    "type": "Main",
+    "releaseDate": "2025-10-31",
+    "total": 352,
+    "printedTotal": 298,
+    "packsPerBox": 24,
+    "cardsPerPack": 14,
+    "live": true,
+    "trending": false,
+    "tcgpCategoryId": 89
+  },
+  {
+    "setId": "spf",
+    "name": "Spiritforged",
+    "slug": "spiritforged",
+    "short": "SPF",
+    "scrydexId": "SPF",
+    "type": "Main",
+    "releaseDate": "2026-02-13",
+    "total": 308,
+    "printedTotal": null,
+    "packsPerBox": 24,
+    "cardsPerPack": 14,
+    "live": true,
+    "trending": false,
+    "tcgpCategoryId": 89
+  },
+  {
+    "setId": "unl",
+    "name": "Unleashed",
+    "slug": "unleashed",
+    "short": "UNL",
+    "scrydexId": "UNL",
+    "type": "Main",
+    "releaseDate": "2026-05-08",
+    "total": 219,
+    "printedTotal": null,
+    "packsPerBox": 24,
+    "cardsPerPack": 14,
+    "live": true,
+    "trending": true,
+    "tcgpCategoryId": 89
+  }
+]
