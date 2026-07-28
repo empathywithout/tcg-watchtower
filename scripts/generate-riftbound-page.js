@@ -192,11 +192,11 @@ const html = `<!DOCTYPE html>
 <meta property="og:title" content="${SEO_META_TITLE}">
 <meta property="og:description" content="${SEO_META_DESC}">
 <meta property="og:url" content="${SITE_URL}/${SET_SEO_PATH}">
-<meta property="og:image" content="${SITE_URL}/og-image.png">
+<meta property="og:image" content="${R2_PUBLIC_URL}/cards/riftbound/${SET_ID}/${autoHero1}.webp">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${SEO_META_TITLE}">
 <meta name="twitter:description" content="${SEO_META_DESC}">
-<meta name="twitter:image" content="${SITE_URL}/og-image.png">
+<meta name="twitter:image" content="${R2_PUBLIC_URL}/cards/riftbound/${SET_ID}/${autoHero1}.webp">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
