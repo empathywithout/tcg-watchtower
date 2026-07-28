@@ -160,9 +160,12 @@ try {
 
 // Update sets-riftbound.json to mark set as live
 const setsRbPath = 'sets-riftbound.json';
+let TCGP_GROUP_ID = '';
 if (existsSync(setsRbPath)) {
   try {
     const existing = JSON.parse(readFileSync(setsRbPath, 'utf8'));
+    const thisSet  = existing.find(s => s.setId === SET_ID);
+    if (thisSet?.tcgpGroupId) TCGP_GROUP_ID = String(thisSet.tcgpGroupId);
     const updated  = existing.map(s =>
       s.setId === SET_ID ? { ...s, live: true, slug: SET_URL_SLUG } : s
     );
@@ -949,33 +952,23 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
     });
   });
 
-  // Fetch sealed prices
-  if (Object.keys(PRODUCT_META).length) {
-    fetch(\`/api/sealed-prices?setId=\${SET_ID}\`)
+  // Fetch sealed prices via TCGplayer (TCGCSV)
+  const TCGP_GROUP_ID = '${TCGP_GROUP_ID}';
+  if (Object.keys(PRODUCT_META).length && TCGP_GROUP_ID) {
+    fetch(\`/api/tcgplayer-prices?groupId=\${TCGP_GROUP_ID}&game=riftbound\`)
       .then(r => r.json())
       .then(data => {
-        (data.products || []).forEach(p => {
-          if (p.market == null) return;
-          // Match by name substring against our product meta
-          const meta = Object.values(PRODUCT_META).find(m => {
-            const pName = (p.name || '').toLowerCase();
-            const mName = (m.name || '').toLowerCase();
-            // Try tcgpId match first, then name overlap
-            if (m.tcgpId && m.tcgpId === String(p.id)) return true;
-            if (pName.includes('booster display') && mName.includes('booster display')) return true;
-            if (pName.includes('booster pack') && mName.includes('booster pack') && !pName.includes('display')) return true;
-            if (pName.includes('jinx') && mName.includes('jinx')) return true;
-            if (pName.includes('viktor') && mName.includes('viktor')) return true;
-            if (pName.includes('lee sin') && mName.includes('lee sin')) return true;
-            if (pName.includes('proving grounds') && mName.includes('proving grounds')) return true;
-            return false;
-          });
-          if (meta) {
-            const el = document.getElementById(\`pp-\${meta.filterKey}\`);
-            if (el) el.textContent = '\$' + Number(p.market).toFixed(2);
+        const sealedPrices = data.sealedPrices || {};
+        Object.values(PRODUCT_META).forEach(m => {
+          if (!m.tcgpId || m.tcgpId === 'TODO') return;
+          const price = sealedPrices[String(m.tcgpId)];
+          if (price != null) {
+            const el = document.getElementById(\`pp-\${m.filterKey}\`);
+            if (el) el.textContent = '\$' + Number(price).toFixed(2);
           }
         });
       }).catch(() => {});
+  }
   }
 })();
 

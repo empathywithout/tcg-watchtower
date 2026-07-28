@@ -14,6 +14,7 @@ const TCGCSV_BASE = 'https://tcgcsv.com/tcgplayer';
 const POKEMON_CATEGORY    = 3;
 const POKEMON_JP_CATEGORY = 85;
 const ONE_PIECE_CATEGORY  = 68;
+const RIFTBOUND_CATEGORY  = 89;
 
 const TCGCSV_HEADERS = {
   'User-Agent': 'TCGWatchtower/1.0',
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
 
   const groupId = req.query.groupId;
   const game    = (req.query.game || 'pokemon').toLowerCase();
-  const category = game === 'onepiece' ? ONE_PIECE_CATEGORY : (game === 'pokemon-japan' ? POKEMON_JP_CATEGORY : POKEMON_CATEGORY);
+  const category = game === 'onepiece' ? ONE_PIECE_CATEGORY : (game === 'pokemon-japan' ? POKEMON_JP_CATEGORY : game === 'riftbound' ? RIFTBOUND_CATEGORY : POKEMON_CATEGORY);
 
   if (!groupId || !/^\d+$/.test(groupId)) {
     return res.status(400).json({ error: 'Missing or invalid ?groupId= parameter' });

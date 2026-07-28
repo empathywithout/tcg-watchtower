@@ -13,10 +13,8 @@
     "cardsPerPack": 14,
     "live": true,
     "trending": false,
-    "tcgpCategoryId": 89
-  },
-  {
-    "setId": "spf",
+    "tcgpCategoryId": 89,
+    "tcgpGroupId": 24344
     "name": "Spiritforged",
     "slug": "spiritforged",
     "short": "SPF",
