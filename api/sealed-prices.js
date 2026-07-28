@@ -2,7 +2,8 @@
 // Proxies Scrydex sealed product endpoint with server-side credentials
 // Redis cache: 6h TTL to limit Scrydex credit usage
 
-const SCRYDEX_BASE    = 'https://api.scrydex.com/pokemon/v1';
+const SCRYDEX_POKEMON_BASE  = 'https://api.scrydex.com/pokemon/v1';
+const SCRYDEX_RIFTBOUND_BASE = 'https://api.scrydex.com/riftbound/v1';
 const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const KV_URL          = process.env.KV_REST_API_URL;
@@ -10,7 +11,10 @@ const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
 
 const CACHE_TTL_SEC = 6 * 60 * 60; // 6 hours
 
-// Our internal setId → Scrydex expansion ID
+// Riftbound set IDs — determines which Scrydex base URL to use
+const RIFTBOUND_SET_IDS = new Set(['ogn', 'spf', 'unl', 'vnd', 'rad']);
+
+// Our internal setId → Scrydex expansion ID (Pokémon + One Piece)
 const SCRYDEX_ID_MAP = {
   'sv01':'sv01','sv02':'sv02','sv03':'sv03','sv3pt5':'sv03.5',
   'sv04':'sv04','sv4pt5':'sv04.5','sv05':'sv05','sv06':'sv06',
@@ -21,9 +25,11 @@ const SCRYDEX_ID_MAP = {
   'me1':'me1','me2':'me2','me3':'me3','me4':'me4','me5':'me5',
   'sv1':'sv01','sv2':'sv02','sv3':'sv03','sv4':'sv04','sv5':'sv05',
   'sv6':'sv06','sv7':'sv07','sv8':'sv08','sv9':'sv09',
+  // Riftbound — Scrydex IDs assumed, verify at credit reset
+  'ogn':'OGN','spf':'SPF','unl':'UNL','vnd':'VND','rad':'RAD',
 };
 
-// Set name keywords — used for Scrydex name search (expansion.id filter unsupported)
+// Set name keywords — used for Scrydex name search fallback
 const SET_NAME_MAP = {
   // Mega Evolution
   'me1':'Mega Evolution','me2':'Phantasmal Flames','me3':'Perfect Order',
@@ -48,6 +54,8 @@ const SET_NAME_MAP = {
   'zsv10pt5':'Black Bolt','rsv10pt5':'White Flare',
   // One Piece
   'op14':'Azure','op15':'Kami','eb03':'Heroines',
+  // Riftbound
+  'ogn':'Origins','spf':'Spiritforged','unl':'Unleashed','vnd':'Vendetta','rad':'Radiance',
   // Miscellaneous sets — use product name search
   'miscp':'Miscellaneous','mcd24':'McDonald','mcd23':'McDonald','mcd22':'McDonald',
   'clv':'Classic Venusaur','clc':'Classic Charizard','clb':'Classic Blastoise',
@@ -87,6 +95,12 @@ async function fetchFromScrydex(url) {
   });
   if (!res.ok) throw new Error(`Scrydex ${res.status}`);
   return res.json();
+}
+
+function scrydexBase(setId) {
+  return RIFTBOUND_SET_IDS.has((setId || '').toLowerCase())
+    ? SCRYDEX_RIFTBOUND_BASE
+    : SCRYDEX_POKEMON_BASE;
 }
 
 function normaliseProducts(raw) {
@@ -139,10 +153,11 @@ export default async function handler(req, res) {
         }
       }
       // Single search by productId — most reliable, 1 credit
+      // productId searches default to Pokemon base (Riftbound products use setId flow)
       products = [];
       try {
         const data = await fetchFromScrydex(
-          `${SCRYDEX_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
+          `${SCRYDEX_POKEMON_BASE}/sealed?q=${encodeURIComponent(productId)}&include=prices&page_size=5`
         );
         const match = (data.data || []).find(p => p.id === productId);
         if (match) products = normaliseProducts([match]);
@@ -174,9 +189,10 @@ export default async function handler(req, res) {
       res.setHeader('X-Cache', 'MISS');
 
       // Prefer expansion endpoint (1 credit, precise) — fall back to name search
+      const base = scrydexBase(setId);
       try {
         const data = await fetchFromScrydex(
-          `${SCRYDEX_BASE}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
+          `${base}/expansions/${scrydexId}/sealed?include=prices&page_size=100`
         );
         products = normaliseProducts(data.data || []);
       } catch {
@@ -184,7 +200,7 @@ export default async function handler(req, res) {
         if (setName) {
           try {
             const data = await fetchFromScrydex(
-              `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
+              `${base}/sealed?q=name:${encodeURIComponent(setName)}*&include=prices&page_size=100`
             );
             products = normaliseProducts(
               (data.data || []).filter(p => p.expansion?.id === scrydexId)
@@ -209,7 +225,7 @@ export default async function handler(req, res) {
       }
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
       const data = await fetchFromScrydex(
-        `${SCRYDEX_BASE}/sealed?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20`
+        `${SCRYDEX_POKEMON_BASE}/sealed?q=name:${encodeURIComponent(q)}*&include=prices&page_size=20`
       );
       products = normaliseProducts(data.data || []);
       if (products.length > 0) await redisSetEx(qKey, JSON.stringify(products), 3600);
