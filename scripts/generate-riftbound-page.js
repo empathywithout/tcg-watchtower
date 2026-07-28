@@ -728,16 +728,21 @@ function renderChaseCards() {
     .slice(0, 20);
 
   grid.innerHTML = chase.map(c => {
-    const rc = RARITY_CLASS[c.rarity] || 'rarity-common';
+    const isSigned = c.localId.endsWith('*');
+    const displayRarity = isSigned ? 'Signature' : c.rarity;
+    const rc = RARITY_CLASS[displayRarity] || RARITY_CLASS[c.rarity] || 'rarity-common';
     return \`<div class="chase-card" data-localid="\${c.localId}" data-name="\${(c.name||'').replace(/"/g,'&quot;')}">
       <img class="chase-card-img" src="\${cardImg(c.localId)}" alt="\${c.name}" loading="lazy" onerror="this.style.background='#0f1f1c'">
       <div class="chase-card-info">
         <div class="chase-card-name">\${c.name}</div>
         <div class="chase-card-number">\${SET_SHORT_NAME}-\${c.localId}</div>
-        <div class="chase-card-rarity-wrap"><span class="rarity-badge \${rc}">\${c.rarity}</span></div>
+        <div class="chase-card-rarity-wrap"><span class="rarity-badge \${rc}">\${displayRarity}</span></div>
         <div class="chase-price-pair">
-          <div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">\${fmtPrice(c.normalPrice)}</div></div>
-          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>
+          \${c.normalPrice != null
+            ? \`<div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">\${fmtPrice(c.normalPrice)}</div></div>
+          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
+            : \`<div class="price-col" style="grid-column:1/-1"><div class="price-col-label">Foil Only</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>\`
+          }
         </div>
       </div>
     </div>\`;
@@ -788,7 +793,7 @@ function renderCards() {
         <div class="card-item-name">\${c.name}</div>
         <div class="card-item-num">\${SET_SHORT_NAME}-\${c.localId}</div>
         \${c.domain ? \`<div class="card-item-domain">\${c.domain}\${c.cardType ? ' · '+c.cardType : ''}</div>\` : ''}
-        <div class="card-item-price">\${fmtPrice(c.normalPrice)}\${c.foilPrice != null ? \` / <span style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent">\${fmtPrice(c.foilPrice)} foil</span>\` : ''}</div>
+        <div class="card-item-price">\${c.normalPrice != null ? fmtPrice(c.normalPrice) : ''}\${c.normalPrice != null && c.foilPrice != null ? ' / ' : ''}\${c.foilPrice != null ? \`<span style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent">\${fmtPrice(c.foilPrice)} foil</span>\` : ''}\${c.normalPrice == null && c.foilPrice == null ? 'N/A' : ''}</div>
       </div>\`;
     div.addEventListener('click', () => openModal(c.localId, c.name));
     grid.appendChild(div);

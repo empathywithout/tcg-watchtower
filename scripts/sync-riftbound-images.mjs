@@ -157,7 +157,13 @@ function expandCards(rawCards) {
     const localId = c.number || (c.id ? c.id.split('-').slice(1).join('-') : '');
     if (!localId) { console.warn(`  ⚠️  Card with no localId: ${JSON.stringify(c.id)}`); continue; }
 
-    const baseRarity  = normalizeRarity(c.rarity);
+    // Riftbound rarity correction:
+    // Scrydex labels Overnumbered AND Signature cards as "Showcase"
+    // The asterisk suffix in the localId (e.g. "303*") identifies Signature cards
+    const scrydexRarity = normalizeRarity(c.rarity);
+    const isSigned = localId.endsWith('*');
+    const baseRarity = isSigned ? 'Signature'
+      : (scrydexRarity === 'Showcase' ? 'Overnumbered' : scrydexRarity);
     const baseImage   = pickImage(c.images);
     const domain      = c.domain || '';
     const cardType    = c.type || '';
