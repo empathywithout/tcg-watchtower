@@ -470,7 +470,6 @@ export default async function handler(req, res) {
           if (totalCount === null) totalCount = data.totalCount || data.total || null;
           allCards = allCards.concat(pageCards);
           if (pageCards.length === 0) break;
-          if (pageCards.length < 250) break;
           if (totalCount !== null && allCards.length >= totalCount) break;
           page++;
         }

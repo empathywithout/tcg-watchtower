@@ -139,7 +139,7 @@ async function fetchFullExpansion(scrydexId) {
     if (total === null) total = data.totalCount || data.total || null;
     allRaw = allRaw.concat(batch);
     console.log(`  Page ${page}: ${batch.length} cards (${allRaw.length}${total ? `/${total}` : ''})`);
-    if (batch.length === 0 || batch.length < 250) break;
+    if (batch.length === 0) break;
     if (total !== null && allRaw.length >= total) break;
     page++;
   }
