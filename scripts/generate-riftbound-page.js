@@ -945,7 +945,7 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
     btn.classList.add('active');
     const filter = btn.dataset.filter;
     document.querySelectorAll('#products-grid .product-card').forEach(card => {
-      card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+      card.style.display = (filter === 'all' || card.dataset.type.startsWith(filter)) ? '' : 'none';
     });
   });
 
@@ -955,10 +955,24 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
       .then(r => r.json())
       .then(data => {
         (data.products || []).forEach(p => {
-          const key = Object.values(PRODUCT_META).find(m => m.tcgpId === p.id)?.filterKey;
-          if (key) {
-            const el = document.getElementById(\`pp-\${key}\`);
-            if (el && p.market != null) el.textContent = '\$' + Number(p.market).toFixed(2);
+          if (p.market == null) return;
+          // Match by name substring against our product meta
+          const meta = Object.values(PRODUCT_META).find(m => {
+            const pName = (p.name || '').toLowerCase();
+            const mName = (m.name || '').toLowerCase();
+            // Try tcgpId match first, then name overlap
+            if (m.tcgpId && m.tcgpId === String(p.id)) return true;
+            if (pName.includes('booster display') && mName.includes('booster display')) return true;
+            if (pName.includes('booster pack') && mName.includes('booster pack') && !pName.includes('display')) return true;
+            if (pName.includes('jinx') && mName.includes('jinx')) return true;
+            if (pName.includes('viktor') && mName.includes('viktor')) return true;
+            if (pName.includes('lee sin') && mName.includes('lee sin')) return true;
+            if (pName.includes('proving grounds') && mName.includes('proving grounds')) return true;
+            return false;
+          });
+          if (meta) {
+            const el = document.getElementById(\`pp-\${meta.filterKey}\`);
+            if (el) el.textContent = '\$' + Number(p.market).toFixed(2);
           }
         });
       }).catch(() => {});

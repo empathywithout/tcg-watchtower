@@ -3,7 +3,7 @@
     "booster-box": {
       "tcgpId": "635368",
       "type": "Booster Box",
-      "filterKey": "box",
+      "filterKey": "box-ogn",
       "badgeClass": "badge-box",
       "name": "Origins Booster Display (24 Packs)",
       "q": "Riftbound Origins Booster Box TCG"
@@ -11,7 +11,7 @@
     "booster-pack": {
       "tcgpId": "635366",
       "type": "Booster Pack",
-      "filterKey": "pack",
+      "filterKey": "pack-ogn",
       "badgeClass": "badge-pack",
       "name": "Origins Booster Pack",
       "q": "Riftbound Origins Booster Pack TCG"
@@ -19,7 +19,7 @@
     "champion-deck-jinx": {
       "tcgpId": "635371",
       "type": "Champion Deck",
-      "filterKey": "deck",
+      "filterKey": "deck-jinx",
       "badgeClass": "badge-deck",
       "name": "Origins Champion Deck: Jinx",
       "q": "Riftbound Origins Champion Deck Jinx TCG"
@@ -27,7 +27,7 @@
     "champion-deck-viktor": {
       "tcgpId": "635374",
       "type": "Champion Deck",
-      "filterKey": "deck",
+      "filterKey": "deck-viktor",
       "badgeClass": "badge-deck",
       "name": "Origins Champion Deck: Viktor",
       "q": "Riftbound Origins Champion Deck Viktor TCG"
@@ -35,7 +35,7 @@
     "champion-deck-lee-sin": {
       "tcgpId": "635375",
       "type": "Champion Deck",
-      "filterKey": "deck",
+      "filterKey": "deck-lee-sin",
       "badgeClass": "badge-deck",
       "name": "Origins Champion Deck: Lee Sin",
       "q": "Riftbound Origins Champion Deck Lee Sin TCG"
@@ -43,7 +43,7 @@
     "proving-grounds": {
       "tcgpId": "635460",
       "type": "Starter Box",
-      "filterKey": "starter",
+      "filterKey": "starter-ogn",
       "badgeClass": "badge-starter",
       "name": "Origins Proving Grounds Box Set",
       "q": "Riftbound Origins Proving Grounds Starter Box TCG"
@@ -53,7 +53,7 @@
     "booster-box": {
       "tcgpId": "TODO",
       "type": "Booster Box",
-      "filterKey": "box",
+      "filterKey": "box-spf",
       "badgeClass": "badge-box",
       "name": "Spiritforged Booster Box (24 Packs)",
       "q": "Riftbound Spiritforged Booster Box TCG"
@@ -61,7 +61,7 @@
     "booster-pack": {
       "tcgpId": "TODO",
       "type": "Booster Pack",
-      "filterKey": "pack",
+      "filterKey": "pack-spf",
       "badgeClass": "badge-pack",
       "name": "Spiritforged Booster Pack",
       "q": "Riftbound Spiritforged Booster Pack TCG"
@@ -71,7 +71,7 @@
     "booster-box": {
       "tcgpId": "TODO",
       "type": "Booster Box",
-      "filterKey": "box",
+      "filterKey": "box-unl",
       "badgeClass": "badge-box",
       "name": "Unleashed Booster Box (24 Packs)",
       "q": "Riftbound Unleashed Booster Box TCG"
@@ -79,7 +79,7 @@
     "booster-pack": {
       "tcgpId": "TODO",
       "type": "Booster Pack",
-      "filterKey": "pack",
+      "filterKey": "pack-unl",
       "badgeClass": "badge-pack",
       "name": "Unleashed Booster Pack",
       "q": "Riftbound Unleashed Booster Pack TCG"
