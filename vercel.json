@@ -121,22 +121,6 @@
       "destination": "/sets.html"
     },
     {
-      "source": "/pokemon",
-      "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets",
-      "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/scarlet-violet",
-      "destination": "/sets.html"
-    },
-    {
-      "source": "/pokemon/sets/mega-evolution",
-      "destination": "/sets.html"
-    },
-    {
       "source": "/pokemon/sets/scarlet-violet/scarlet-violet-base-set/cards",
       "destination": "/scarlet-violet-base-set-card-list.html"
     },
@@ -457,14 +441,6 @@
       "destination": "/pokemon/sets/mega-evolution/perfect-order/top-chase-cards.html"
     },
     {
-      "source": "/one-piece",
-      "destination": "/sets.html"
-    },
-    {
-      "source": "/one-piece/sets",
-      "destination": "/sets.html"
-    },
-    {
       "source": "/one-piece/sets/chaos-rising/cards",
       "destination": "/pokemon/sets/mega-evolution/chaos-rising/cards"
     },
@@ -698,6 +674,36 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/pokemon",
+      "destination": "/sets/pokemon",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets",
+      "destination": "/sets/pokemon",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/scarlet-violet",
+      "destination": "/sets/pokemon",
+      "permanent": true
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution",
+      "destination": "/sets/pokemon",
+      "permanent": true
+    },
+    {
+      "source": "/one-piece",
+      "destination": "/sets/one-piece",
+      "permanent": true
+    },
+    {
+      "source": "/one-piece/sets",
+      "destination": "/sets/one-piece",
+      "permanent": true
+    },
     {
       "source": "/pokemon/sets/scarlet-violet-jp/:set/cards/:card",
       "destination": "/pokemon/sets/scarlet-violet-jp/:set/cards",
