@@ -135,6 +135,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .chase-arrow-right{right:-22px}
 /* Rarity badges - Riftbound palette */
 .rarity-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.btn-primary{background:linear-gradient(135deg,#2dd4bf,#0d9488) !important;color:#020f0d !important;box-shadow:0 4px 15px rgba(45,212,191,0.35) !important}
+.btn-primary:hover{box-shadow:0 8px 30px rgba(45,212,191,0.5) !important}
 .rarity-common{background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3);color:#94a3b8}
 .rarity-uncommon{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}
 .rarity-rare{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
@@ -1092,7 +1094,7 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
 
 // Sealed products
 (function(){
-  const PRODUCT_META = {"booster-box":{"tcgpId":"635368","type":"Booster Box","filterKey":"box-ogn","badgeClass":"badge-box","name":"Origins Booster Display (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"635366","type":"Booster Pack","filterKey":"pack-ogn","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"635371","type":"Champion Deck","filterKey":"deck-jinx","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"635374","type":"Champion Deck","filterKey":"deck-viktor","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lee-sin":{"tcgpId":"635375","type":"Champion Deck","filterKey":"deck-lee-sin","badgeClass":"badge-deck","name":"Origins Champion Deck: Lee Sin","q":"Riftbound Origins Champion Deck Lee Sin TCG"},"proving-grounds":{"tcgpId":"635460","type":"Starter Box","filterKey":"starter-ogn","badgeClass":"badge-starter","name":"Origins Proving Grounds Box Set","q":"Riftbound Origins Proving Grounds Starter Box TCG"}};
+  const PRODUCT_META = {"booster-box":{"tcgpId":"635368","type":"Booster Box","filterKey":"box-ogn","badgeClass":"badge-box","name":"Origins Booster Display (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"635366","type":"Booster Pack","filterKey":"pack-ogn","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"635371","type":"Champion Deck","filterKey":"deck-jinx","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"635374","type":"Champion Deck","filterKey":"deck-viktor","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lee-sin":{"tcgpId":"635375","type":"Champion Deck","filterKey":"deck-lee-sin","badgeClass":"badge-deck","name":"Origins Champion Deck: Lee Sin","q":"Riftbound Origins Champion Deck Lee Sin TCG"}};
 
   const grid = document.getElementById('products-grid');
   if (grid && Object.keys(PRODUCT_META).length) {
