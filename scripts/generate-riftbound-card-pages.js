@@ -98,6 +98,7 @@ const RARITY_CLASS = {
   'Rare':         'badge-rare',
   'Epic':         'badge-epic',
   'Legendary':    'badge-legendary',
+  'Legend':       'badge-legendary',
   'Showcase':     'badge-showcase',
   'Overnumbered': 'badge-overnumbered',
   'Signature':    'badge-signature',
@@ -419,13 +420,14 @@ console.log(`Output: riftbound/sets/${SET_URL_SLUG}/cards/`);
 
 // ── Top chase cards page ──────────────────────────────────────────────────────
 
-const CHASE_RARITIES = ['Signature', 'Overnumbered', 'Showcase', 'Legendary', 'Epic'];
-const RARITY_TIER    = { 'Signature': 0, 'Overnumbered': 1, 'Showcase': 2, 'Legendary': 3, 'Epic': 4 };
+const CHASE_RARITIES = ['Signature', 'Overnumbered', 'Showcase', 'Legendary', 'Legend', 'Epic'];
+const RARITY_TIER    = { 'Signature': 0, 'Overnumbered': 1, 'Showcase': 2, 'Legendary': 3, 'Legend': 3, 'Epic': 4 };
 
 const chaseCards = cards
   .filter(c => CHASE_RARITIES.includes(c.rarity || ''))
   .sort((a, b) => {
-    const pa = a.normalPrice ?? -1, pb = b.normalPrice ?? -1;
+    const pa = Math.max(a.normalPrice ?? -1, a.foilPrice ?? -1);
+    const pb = Math.max(b.normalPrice ?? -1, b.foilPrice ?? -1);
     if (pa !== pb) return pb - pa;
     return (RARITY_TIER[a.rarity] ?? 99) - (RARITY_TIER[b.rarity] ?? 99);
   });

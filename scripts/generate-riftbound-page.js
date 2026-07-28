@@ -143,8 +143,8 @@ try {
       const chase = r2Cards
         .filter(c => HERO_RARITY_TIER[c.rarity] !== undefined)
         .sort((a, b) => {
-          const pa = a.normalPrice ?? -1;
-          const pb = b.normalPrice ?? -1;
+          const pa = Math.max(a.normalPrice ?? -1, a.foilPrice ?? -1);
+          const pb = Math.max(b.normalPrice ?? -1, b.foilPrice ?? -1);
           if (pa !== pb) return pb - pa;
           return (HERO_RARITY_TIER[a.rarity] ?? 99) - (HERO_RARITY_TIER[b.rarity] ?? 99);
         });
@@ -677,10 +677,11 @@ function domainColor(domain) { return DOMAIN_COLORS[domain] || '#2dd4bf'; }
 // Rarity → CSS class
 const RARITY_CLASS = {
   'Common':'rarity-common','Uncommon':'rarity-uncommon','Rare':'rarity-rare',
-  'Epic':'rarity-epic','Legendary':'rarity-legendary','Showcase':'rarity-showcase',
+  'Epic':'rarity-epic','Legendary':'rarity-legendary','Legend':'rarity-legendary',
+  'Showcase':'rarity-showcase',
   'Overnumbered':'rarity-overnumbered','Signature':'rarity-signature',
 };
-const CHASE_RARITIES = new Set(['Signature','Overnumbered','Showcase','Legendary','Epic']);
+const CHASE_RARITIES = new Set(['Signature','Overnumbered','Showcase','Legendary','Legend','Epic']);
 
 // Hero stack images
 document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
@@ -737,7 +738,8 @@ function renderChaseCards() {
   const chase = [...allCards]
     .filter(c => CHASE_RARITIES.has(c.rarity))
     .sort((a,b) => {
-      const pa = a.normalPrice ?? -1, pb = b.normalPrice ?? -1;
+      const pa = Math.max(a.normalPrice ?? -1, a.foilPrice ?? -1);
+      const pb = Math.max(b.normalPrice ?? -1, b.foilPrice ?? -1);
       if (pa !== pb) return pb - pa;
       const order = ['Signature','Overnumbered','Showcase','Legendary','Epic'];
       return (order.indexOf(a.rarity)+1||99) - (order.indexOf(b.rarity)+1||99);
