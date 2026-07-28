@@ -182,13 +182,14 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .modal-price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
-.buy-links{display:flex;gap:3px;margin-top:auto;padding-top:8px}
-.buy-link{flex:1;text-align:center;padding:4px 2px;border-radius:6px;font-size:.6rem;font-weight:700;text-decoration:none;transition:all .2s}
+.buy-links{display:flex;gap:3px;margin-top:auto;padding-top:10px;flex-wrap:wrap;justify-content:center}
+.buy-links .buy-link{flex:1;text-align:center;justify-content:center;min-width:0}
+.buy-link{padding:3px 3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
 .buy-amazon:hover{background:rgba(251,191,36,.25)}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-ebay:hover{background:rgba(59,130,246,.25)}
-.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal)}
+.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal);font-size:.5rem}
 .buy-tcgp:hover{background:rgba(45,212,191,.25)}
 .pl-amazon{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
 .pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
@@ -1091,7 +1092,7 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
 
 // Sealed products
 (function(){
-  const PRODUCT_META = {"booster-box":{"tcgpId":"TODO","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Origins Booster Box (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"TODO","type":"Booster Pack","filterKey":"pack","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"TODO","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"TODO","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lux":{"tcgpId":"TODO","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Lux","q":"Riftbound Origins Champion Deck Lux TCG"},"proving-grounds":{"tcgpId":"TODO","type":"Starter Box","filterKey":"starter","badgeClass":"badge-starter","name":"Origins Proving Grounds Starter Box","q":"Riftbound Origins Proving Grounds Starter Box TCG"}};
+  const PRODUCT_META = {"booster-box":{"tcgpId":"635368","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Origins Booster Display (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"635366","type":"Booster Pack","filterKey":"pack","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"635371","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"635374","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lee-sin":{"tcgpId":"635375","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Lee Sin","q":"Riftbound Origins Champion Deck Lee Sin TCG"},"proving-grounds":{"tcgpId":"635460","type":"Starter Box","filterKey":"starter","badgeClass":"badge-starter","name":"Origins Proving Grounds Box Set","q":"Riftbound Origins Proving Grounds Starter Box TCG"}};
 
   const grid = document.getElementById('products-grid');
   if (grid && Object.keys(PRODUCT_META).length) {
@@ -1103,10 +1104,11 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
         ? `${TCGP_BASE}?u=${encodeURIComponent('https://www.tcgplayer.com/product/'+p.tcgpId)}`
         : tcgpLink(p.name, '');
       return `<div class="product-card" data-type="${p.filterKey}">
+        ${img ? `<div class="product-img-wrap"><img src="${img}" alt="${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'"></div>` : ''}
         <div class="product-info">
           <span class="rarity-badge ${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">${p.type}</span>
           <div class="product-name">${p.name}</div>
-          ${p.tcgpId && p.tcgpId !== 'TODO' ? `<div class="product-price" id="pp-${p.filterKey}">—</div>` : ''}
+          <div class="product-price" id="pp-${p.filterKey}">—</div>
           <div class="product-links">
             <a class="product-link-row pl-amazon" href="${amazonLink(p.q)}" target="_blank" rel="noopener"><span>Amazon</span><span>→</span></a>
             <a class="product-link-row pl-ebay" href="${ebayLink(p.q)}" target="_blank" rel="noopener"><span>eBay</span><span>→</span></a>
