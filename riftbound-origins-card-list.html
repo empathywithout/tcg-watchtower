@@ -1092,7 +1092,7 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
 
 // Sealed products
 (function(){
-  const PRODUCT_META = {"booster-box":{"tcgpId":"635368","type":"Booster Box","filterKey":"box","badgeClass":"badge-box","name":"Origins Booster Display (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"635366","type":"Booster Pack","filterKey":"pack","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"635371","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"635374","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lee-sin":{"tcgpId":"635375","type":"Champion Deck","filterKey":"deck","badgeClass":"badge-deck","name":"Origins Champion Deck: Lee Sin","q":"Riftbound Origins Champion Deck Lee Sin TCG"},"proving-grounds":{"tcgpId":"635460","type":"Starter Box","filterKey":"starter","badgeClass":"badge-starter","name":"Origins Proving Grounds Box Set","q":"Riftbound Origins Proving Grounds Starter Box TCG"}};
+  const PRODUCT_META = {"booster-box":{"tcgpId":"635368","type":"Booster Box","filterKey":"box-ogn","badgeClass":"badge-box","name":"Origins Booster Display (24 Packs)","q":"Riftbound Origins Booster Box TCG"},"booster-pack":{"tcgpId":"635366","type":"Booster Pack","filterKey":"pack-ogn","badgeClass":"badge-pack","name":"Origins Booster Pack","q":"Riftbound Origins Booster Pack TCG"},"champion-deck-jinx":{"tcgpId":"635371","type":"Champion Deck","filterKey":"deck-jinx","badgeClass":"badge-deck","name":"Origins Champion Deck: Jinx","q":"Riftbound Origins Champion Deck Jinx TCG"},"champion-deck-viktor":{"tcgpId":"635374","type":"Champion Deck","filterKey":"deck-viktor","badgeClass":"badge-deck","name":"Origins Champion Deck: Viktor","q":"Riftbound Origins Champion Deck Viktor TCG"},"champion-deck-lee-sin":{"tcgpId":"635375","type":"Champion Deck","filterKey":"deck-lee-sin","badgeClass":"badge-deck","name":"Origins Champion Deck: Lee Sin","q":"Riftbound Origins Champion Deck Lee Sin TCG"},"proving-grounds":{"tcgpId":"635460","type":"Starter Box","filterKey":"starter-ogn","badgeClass":"badge-starter","name":"Origins Proving Grounds Box Set","q":"Riftbound Origins Proving Grounds Starter Box TCG"}};
 
   const grid = document.getElementById('products-grid');
   if (grid && Object.keys(PRODUCT_META).length) {
@@ -1129,23 +1129,27 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
     btn.classList.add('active');
     const filter = btn.dataset.filter;
     document.querySelectorAll('#products-grid .product-card').forEach(card => {
-      card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+      card.style.display = (filter === 'all' || card.dataset.type.startsWith(filter)) ? '' : 'none';
     });
   });
 
-  // Fetch sealed prices
-  if (Object.keys(PRODUCT_META).length) {
-    fetch(`/api/sealed-prices?setId=${SET_ID}`)
+  // Fetch sealed prices via TCGplayer (TCGCSV)
+  const TCGP_GROUP_ID = '';
+  if (Object.keys(PRODUCT_META).length && TCGP_GROUP_ID) {
+    fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}&game=riftbound`)
       .then(r => r.json())
       .then(data => {
-        (data.products || []).forEach(p => {
-          const key = Object.values(PRODUCT_META).find(m => m.tcgpId === p.id)?.filterKey;
-          if (key) {
-            const el = document.getElementById(`pp-${key}`);
-            if (el && p.market != null) el.textContent = '$' + Number(p.market).toFixed(2);
+        const sealedPrices = data.sealedPrices || {};
+        Object.values(PRODUCT_META).forEach(m => {
+          if (!m.tcgpId || m.tcgpId === 'TODO') return;
+          const price = sealedPrices[String(m.tcgpId)];
+          if (price != null) {
+            const el = document.getElementById(`pp-${m.filterKey}`);
+            if (el) el.textContent = '$' + Number(price).toFixed(2);
           }
         });
       }).catch(() => {});
+  }
   }
 })();
 
