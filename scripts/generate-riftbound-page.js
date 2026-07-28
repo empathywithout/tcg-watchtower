@@ -969,7 +969,6 @@ document.getElementById('load-more-btn').addEventListener('click', renderCards);
         });
       }).catch(() => {});
   }
-  }
 })();
 
 loadCards();
