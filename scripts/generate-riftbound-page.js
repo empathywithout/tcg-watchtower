@@ -72,31 +72,32 @@ const HERO_CARD_3 = (process.env.HERO_CARD_3 || '').trim() || '003';
 // SEO data per set
 const SEO_DATA = {
   'ogn': {
-    metaTitle: 'Origins Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
-    metaDesc: 'Complete Riftbound Origins card list with live prices. Every card, Signature, and booster box value for Riftbound League of Legends TCG.',
-    intro: 'Origins is the first set in the Riftbound: League of Legends TCG, released October 31, 2025. The debut set introduces 40 champions across iconic League of Legends regions, with the Ahri Nine-Tailed Fox Signature card as the most valuable pull in the game at launch.',
+    metaTitle: 'Riftbound Origins Card List & Prices | All 352 OGN Cards | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Origins card list with live market prices. All 352 OGN cards including Signature, Overnumbered, and chase cards ranked by value.',
+    intro: 'Origins is the debut set of Riftbound: League of Legends TCG, released October 31, 2025. The set introduces 12 champion Legends across iconic League of Legends regions, with Ahri\'s Nine-Tailed Fox Signature as the most valuable pull at launch.',
     faq: [
-      { q: 'What is the most expensive Origins card?', a: 'The Ahri Nine-Tailed Fox (Signature) from Origins is consistently the most valuable card in the set, valued at over $2,700 on TCGplayer. Signature cards are the rarest treatment in Riftbound, appearing as foil-only premium alternate art versions.' },
-      { q: 'How many cards are in Riftbound Origins?', a: 'Origins contains 352 total cards across Common, Uncommon, Rare, Epic, Legendary, Showcase, Overnumbered, and Signature rarities. The printed total of numbered cards in the set is 298.' },
-      { q: 'When did Riftbound Origins release?', a: 'Riftbound Origins released on October 31, 2025 as the debut set of the Riftbound: League of Legends Trading Card Game.' },
-      { q: 'What is Riftbound TCG?', a: 'Riftbound: League of Legends Trading Card Game is a physical trading card game developed by Riot Games, set in the League of Legends universe. It was released globally in October 2025, published by UVS Games in English-speaking regions.' },
+      { q: 'What is the most expensive Riftbound Origins card?', a: 'The Ahri Nine-Tailed Fox (Signature) from Origins is consistently the most valuable card in the set, currently priced above $2,700. Signature cards are the rarest treatment in Riftbound — foil-only premium alternate art versions of Overnumbered cards, appearing roughly one in every ten Overnumbered pulls.' },
+      { q: 'How many cards are in Riftbound Origins?', a: 'Origins contains 352 total cards — 298 in the main numbered set plus 54 Overnumbered and Signature cards above the set number. Rarities include Common, Uncommon, Rare, Epic, Legend, Overnumbered, and Signature.' },
+      { q: 'What are Overnumbered cards in Riftbound Origins?', a: 'Overnumbered cards are premium alternate art versions of the 12 champion Legend cards, numbered above 298. Each features unique artwork from Riot\'s own artists with special foil and UV treatment. Overnumbered cards appear roughly one per three booster boxes, and about one in ten Overnumbered pulls is a Signature variant with a foil artist signature.' },
+      { q: 'When did Riftbound Origins release?', a: 'Riftbound Origins released on October 31, 2025 as the debut set of the Riftbound: League of Legends Trading Card Game, published by UVS Games in English-speaking regions.' },
+      { q: 'What is Riftbound TCG?', a: 'Riftbound: League of Legends Trading Card Game is a physical TCG developed by Riot Games, set in the League of Legends universe. Players build decks around Champion cards from the game, using units, spells, and battlefields across multiple domains.' },
     ],
   },
   'spf': {
-    metaTitle: 'Spiritforged Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
-    metaDesc: 'Complete Riftbound Spiritforged card list with live prices. Every card, Signature, and booster box value for Riftbound League of Legends TCG.',
-    intro: 'Spiritforged is the second set in the Riftbound: League of Legends TCG, released February 13, 2026. The set introduces 12 new champions including Azir, Irelia, Draven, Lucian, and Ezreal, alongside 30 Overnumbered cards and 12 Signature variants.',
+    metaTitle: 'Riftbound Spiritforged Card List & Prices | All SFD Cards | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Spiritforged card list with live market prices. All SFD cards including Signature, Overnumbered, and every chase card ranked by value.',
+    intro: 'Spiritforged is the second Riftbound set, released February 13, 2026. It introduces 12 new champion Legends including Azir, Irelia, Draven, Lucian, and Ezreal, with 30 Overnumbered cards and 12 Signature variants.',
     faq: [
-      { q: 'How many cards are in Riftbound Spiritforged?', a: 'Spiritforged contains 308 total cards, introducing 12 new champions not featured in Origins. The set includes 30 Overnumbered cards, with 12 of them having Signature variants.' },
+      { q: 'How many cards are in Riftbound Spiritforged?', a: 'Spiritforged contains 308 total cards, introducing 12 new champions not featured in Origins. The set includes 30 Overnumbered cards, with 12 having Signature variants.' },
       { q: 'When did Riftbound Spiritforged release?', a: 'Spiritforged released on February 13, 2026 in English, following the Chinese release on December 12, 2025.' },
     ],
   },
   'unl': {
-    metaTitle: 'Unleashed Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
-    metaDesc: 'Complete Riftbound Unleashed card list with live prices. Every card, Ultimate, Signature, and booster box value for Riftbound League of Legends TCG.',
-    intro: 'Unleashed is the third set in the Riftbound: League of Legends TCG, released May 8, 2026. The set introduces the Ambush, Level, and Hunt keywords alongside a new Ultimate rarity, the rarest card type in Riftbound to date, featuring Nashor as the first Ultimate card.',
+    metaTitle: 'Riftbound Unleashed Card List & Prices | All UNL Cards | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Unleashed card list with live market prices. All UNL cards including the Ultimate rarity Baron Nashor and every chase card ranked by value.',
+    intro: 'Unleashed is the third Riftbound set, released May 8, 2026. It introduces the Ambush, Level, and Hunt keywords alongside the Ultimate rarity — the rarest card type in Riftbound, featuring Baron Nashor as the first Ultimate card, appearing in fewer than 1 in 1,000 packs.',
     faq: [
-      { q: 'What is new in Riftbound Unleashed?', a: 'Unleashed introduces three new keywords: Ambush (play directly to battlefields), Level (use XP to upgrade cards), and Hunt (gather XP resources). It also introduces the Ultimate rarity, which is rarer than Signature cards.' },
+      { q: 'What is new in Riftbound Unleashed?', a: 'Unleashed introduces three new keywords: Ambush (deploy directly to battlefields), Level (spend XP to upgrade cards), and Hunt (gather XP resources). It also introduces the Ultimate rarity, rarer than Signature, with Baron Nashor as the first Ultimate card appearing in fewer than 1 in 1,000 packs.' },
       { q: 'How many cards are in Riftbound Unleashed?', a: 'Unleashed contains 219 total cards, making it the smallest of the first three Riftbound sets.' },
       { q: 'When did Riftbound Unleashed release?', a: 'Unleashed released on May 8, 2026 in English.' },
     ],
@@ -116,7 +117,7 @@ const FAQ_SCHEMA_JSON = (seoData.faq && seoData.faq.length) ? JSON.stringify({
 const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | Riftbound TCG | TCG Watchtower`;
 const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} card list with live prices. Every card and sealed product value for Riftbound: League of Legends TCG.`;
 const SEO_INTRO      = seoData.intro     || '';
-const SET_DESCRIPTION = `Complete guide to ${SET_FULL_NAME}: full card list, chase cards ranked by market price, and where to buy sealed product.`;
+const SET_DESCRIPTION = seoData.metaDesc || `Complete ${SET_FULL_NAME} card list with live market prices. Every ${SET_SHORT_NAME} card, chase cards ranked by value, and sealed product prices.`;
 
 // Fetch card data from R2 to bake into static HTML for SEO
 let CARD_LIST_HTML = '';
