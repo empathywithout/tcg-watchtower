@@ -127,11 +127,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .chase-card-number{font-size:.8rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:2px}
 .chase-card-rarity-wrap{min-height:2rem;display:flex;align-items:center;margin-bottom:4px}
 /* Foil/normal price side by side */
-.chase-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px}
-.price-col{text-align:center}
-.price-col-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.price-col-value{font-size:.95rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
-.price-col-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.chase-price{font-size:1rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green);border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px;text-align:center}
 .chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(2,15,13,.85);backdrop-filter:blur(8px);border:1px solid var(--teal-border);color:var(--teal);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
 .chase-arrow:hover{background:var(--teal-dim);opacity:1}
 .chase-arrow.hidden{opacity:0;pointer-events:none}
@@ -180,14 +176,20 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 /* Domain + type badge in modal */
 .modal-domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
 /* Foil/normal side-by-side in modal */
-.modal-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
 .modal-price-col{background:rgba(15,31,28,.7);border:1px solid rgba(45,212,191,.1);border-radius:10px;padding:12px;text-align:center}
-.modal-price-col.foil{border-color:rgba(163,230,53,.2);background:rgba(45,212,191,.05)}
 .modal-price-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
 .modal-price-value{font-size:1.2rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
 .modal-price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
+.buy-links{display:flex;gap:3px;margin-top:auto;padding-top:8px}
+.buy-link{flex:1;text-align:center;padding:4px 2px;border-radius:6px;font-size:.6rem;font-weight:700;text-decoration:none;transition:all .2s}
+.buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
+.buy-amazon:hover{background:rgba(251,191,36,.25)}
+.buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.buy-ebay:hover{background:rgba(59,130,246,.25)}
+.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal)}
+.buy-tcgp:hover{background:rgba(45,212,191,.25)}
 .pl-amazon{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
 .pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
 .pl-tcgp{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.25);color:var(--teal)}
@@ -270,7 +272,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
             <div class="stat-label">Total Cards</div>
           </div>
           <div class="stat-card" style="background:rgba(163,230,53,0.06);border-color:rgba(163,230,53,0.2);">
-            <div class="stat-value" style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0</div>
+            <div class="stat-value" style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">12</div>
             <div class="stat-label">Signatures</div>
           </div>
           <div class="stat-card">
@@ -350,7 +352,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Disintegrate OGN-5 Common</li>
       <li>Flame Chompers OGN-6 Common</li>
       <li>Fury Rune OGN-7 Common</li>
-      <li>Fury Rune OGN-7a Showcase</li>
+      <li>Fury Rune OGN-7a Overnumbered</li>
       <li>Get Excited! OGN-8 Common</li>
       <li>Hextech Ray OGN-9 Common</li>
       <li>Legion Rearguard OGN-10 Common</li>
@@ -371,11 +373,11 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Blind Fury OGN-25 Rare</li>
       <li>Brynhir Thundersong OGN-26 Rare</li>
       <li>Darius, Trifarian OGN-27 Rare</li>
-      <li>Darius, Trifarian OGN-27a Showcase</li>
+      <li>Darius, Trifarian OGN-27a Overnumbered</li>
       <li>Draven, Showboat OGN-28 Rare</li>
       <li>Falling Star OGN-29 Rare</li>
       <li>Jinx, Demolitionist OGN-30 Rare</li>
-      <li>Jinx, Demolitionist OGN-30a Showcase</li>
+      <li>Jinx, Demolitionist OGN-30a Overnumbered</li>
       <li>Raging Firebrand OGN-31 Rare</li>
       <li>Ravenborn Tome OGN-32 Rare</li>
       <li>Shakedown OGN-33 Rare</li>
@@ -384,13 +386,13 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Vi, Destructive OGN-36 Rare</li>
       <li>Immortal Phoenix OGN-37 Epic</li>
       <li>Kadregrin The Infernal OGN-38 Epic</li>
-      <li>Kai'sa, Survivor OGN-39a Showcase</li>
+      <li>Kai'sa, Survivor OGN-39a Overnumbered</li>
       <li>Kai'sa, Survivor OGN-39 Epic</li>
       <li>Seal Of Rage OGN-40 Epic</li>
       <li>Volibear, Furious OGN-41 Epic</li>
-      <li>Volibear, Furious OGN-41a Showcase</li>
+      <li>Volibear, Furious OGN-41a Overnumbered</li>
       <li>Calm Rune OGN-42 Common</li>
-      <li>Calm Rune OGN-42a Showcase</li>
+      <li>Calm Rune OGN-42a Overnumbered</li>
       <li>Charm OGN-43 Common</li>
       <li>Clockwork Keeper OGN-44 Common</li>
       <li>Defy OGN-45 Common</li>
@@ -415,7 +417,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Wind Wall OGN-64 Uncommon</li>
       <li>Wizened Elder OGN-65 Uncommon</li>
       <li>Ahri, Alluring OGN-66 Rare</li>
-      <li>Ahri, Alluring OGN-66a Showcase</li>
+      <li>Ahri, Alluring OGN-66a Overnumbered</li>
       <li>Blitzcrank, Impassive OGN-67 Rare</li>
       <li>Caitlyn, Patrolling OGN-68 Rare</li>
       <li>Last Stand OGN-69 Rare</li>
@@ -426,12 +428,12 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Taric, Protector OGN-74 Rare</li>
       <li>Tasty Faefolk OGN-75 Rare</li>
       <li>Yasuo, Remorseful OGN-76 Rare</li>
-      <li>Yasuo, Remorseful OGN-76a Showcase</li>
+      <li>Yasuo, Remorseful OGN-76a Overnumbered</li>
       <li>Zhonya's Hourglass OGN-77 Rare</li>
       <li>Lee Sin, Ascetic OGN-78 Epic</li>
-      <li>Lee Sin, Ascetic OGN-78a Showcase</li>
+      <li>Lee Sin, Ascetic OGN-78a Overnumbered</li>
       <li>Leona, Zealot OGN-79 Epic</li>
-      <li>Leona, Zealot OGN-79a Showcase</li>
+      <li>Leona, Zealot OGN-79a Overnumbered</li>
       <li>Mystic Reversal OGN-80 Epic</li>
       <li>Seal Of Focus OGN-81 Epic</li>
       <li>Whiteflame Protector OGN-82 Epic</li>
@@ -442,7 +444,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Lecturing Yordle OGN-87 Common</li>
       <li>Mega-mech OGN-88 Common</li>
       <li>Mind Rune OGN-89 Common</li>
-      <li>Mind Rune OGN-89a Showcase</li>
+      <li>Mind Rune OGN-89a Overnumbered</li>
       <li>Orb Of Regret OGN-90 Common</li>
       <li>Pit Crew OGN-91 Common</li>
       <li>Riptide Rex OGN-92 Common</li>
@@ -466,24 +468,24 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Ekko, Recurrent OGN-110 Rare</li>
       <li>Heimerdinger, Inventor OGN-111 Rare</li>
       <li>Kai'sa, Evolutionary OGN-112 Rare</li>
-      <li>Kai'sa, Evolutionary OGN-112a Showcase</li>
+      <li>Kai'sa, Evolutionary OGN-112a Overnumbered</li>
       <li>Malzahar, Fanatic OGN-113 Rare</li>
       <li>Progress Day OGN-114 Rare</li>
       <li>Promising Future OGN-115 Rare</li>
       <li>Thousand-tailed Watcher OGN-116 Rare</li>
-      <li>Viktor, Innovator OGN-117a Showcase</li>
+      <li>Viktor, Innovator OGN-117a Overnumbered</li>
       <li>Viktor, Innovator OGN-117 Rare</li>
       <li>Wraith Of Echoes OGN-118 Rare</li>
-      <li>Ahri, Inquisitive OGN-119a Showcase</li>
+      <li>Ahri, Inquisitive OGN-119a Overnumbered</li>
       <li>Ahri, Inquisitive OGN-119 Epic</li>
       <li>Seal Of Insight OGN-120 Epic</li>
       <li>Teemo, Strategist OGN-121 Epic</li>
-      <li>Teemo, Strategist OGN-121a Showcase</li>
+      <li>Teemo, Strategist OGN-121a Overnumbered</li>
       <li>Time Warp OGN-122 Epic</li>
       <li>Unchecked Power OGN-123 Epic</li>
       <li>Arena Bar OGN-124 Common</li>
       <li>Bilgewater Bully OGN-125 Common</li>
-      <li>Body Rune OGN-126a Showcase</li>
+      <li>Body Rune OGN-126a Overnumbered</li>
       <li>Body Rune OGN-126 Common</li>
       <li>Cannon Barrage OGN-127 Common</li>
       <li>Challenge OGN-128 Common</li>
@@ -509,7 +511,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Anivia, Primal OGN-148 Rare</li>
       <li>Carnivorous Snapvine OGN-149 Rare</li>
       <li>Kraken Hunter OGN-150 Rare</li>
-      <li>Lee Sin, Centered OGN-151a Showcase</li>
+      <li>Lee Sin, Centered OGN-151a Overnumbered</li>
       <li>Lee Sin, Centered OGN-151 Rare</li>
       <li>Mistfall OGN-152 Rare</li>
       <li>Overt Operation OGN-153 Rare</li>
@@ -517,18 +519,18 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Qiyana, Victorious OGN-155 Rare</li>
       <li>Sabotage OGN-156 Rare</li>
       <li>Udyr, Wildman OGN-157 Rare</li>
-      <li>Volibear, Imposing OGN-158a Showcase</li>
+      <li>Volibear, Imposing OGN-158a Overnumbered</li>
       <li>Volibear, Imposing OGN-158 Rare</li>
       <li>Warwick, Hunter OGN-159 Rare</li>
       <li>Dazzling Aurora OGN-160 Epic</li>
       <li>Deadbloom Predator OGN-161 Epic</li>
-      <li>Miss Fortune, Captain OGN-162a Showcase</li>
+      <li>Miss Fortune, Captain OGN-162a Overnumbered</li>
       <li>Miss Fortune, Captain OGN-162 Epic</li>
       <li>Seal Of Strength OGN-163 Epic</li>
-      <li>Sett, Brawler OGN-164a Showcase</li>
+      <li>Sett, Brawler OGN-164a Overnumbered</li>
       <li>Sett, Brawler OGN-164 Epic</li>
       <li>Cemetery Attendant OGN-165 Common</li>
-      <li>Chaos Rune OGN-166a Showcase</li>
+      <li>Chaos Rune OGN-166a Overnumbered</li>
       <li>Chaos Rune OGN-166 Common</li>
       <li>Ember Monk OGN-167 Common</li>
       <li>Fight Or Flight OGN-168 Common</li>
@@ -557,21 +559,21 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Maddened Marauder OGN-191 Rare</li>
       <li>Mindsplitter OGN-192 Rare</li>
       <li>Miss Fortune, Buccaneer OGN-193 Rare</li>
-      <li>Miss Fortune, Buccaneer OGN-193a Showcase</li>
+      <li>Miss Fortune, Buccaneer OGN-193a Overnumbered</li>
       <li>Nocturne, Horrifying OGN-194 Rare</li>
       <li>Rhasa The Sunderer OGN-195 Rare</li>
       <li>Soulgorger OGN-196 Rare</li>
-      <li>Teemo, Scout OGN-197a Showcase</li>
+      <li>Teemo, Scout OGN-197a Overnumbered</li>
       <li>Teemo, Scout OGN-197 Rare</li>
       <li>The Harrowing OGN-198 Rare</li>
       <li>Tideturner OGN-199 Rare</li>
       <li>Twisted Fate, Gambler OGN-200 Rare</li>
       <li>Invert Timelines OGN-201 Epic</li>
-      <li>Jinx, Rebel OGN-202a Showcase</li>
+      <li>Jinx, Rebel OGN-202a Overnumbered</li>
       <li>Jinx, Rebel OGN-202 Epic</li>
       <li>Possession OGN-203 Epic</li>
       <li>Seal Of Discord OGN-204 Epic</li>
-      <li>Yasuo, Windrider OGN-205a Showcase</li>
+      <li>Yasuo, Windrider OGN-205a Overnumbered</li>
       <li>Yasuo, Windrider OGN-205 Epic</li>
       <li>Back To Back OGN-206 Common</li>
       <li>Call To Glory OGN-207 Common</li>
@@ -581,7 +583,7 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Faithful Manufactor OGN-211 Common</li>
       <li>Forge Of The Future OGN-212 Common</li>
       <li>Hidden Blade OGN-213 Common</li>
-      <li>Order Rune OGN-214a Showcase</li>
+      <li>Order Rune OGN-214a Overnumbered</li>
       <li>Order Rune OGN-214 Common</li>
       <li>Petty Officer OGN-215 Common</li>
       <li>Soaring Scout OGN-216 Common</li>
@@ -606,18 +608,18 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Karma, Channeler OGN-235 Rare</li>
       <li>Karthus, Eternal OGN-236 Rare</li>
       <li>King's Edict OGN-237 Rare</li>
-      <li>Leona, Determined OGN-238a Showcase</li>
+      <li>Leona, Determined OGN-238a Overnumbered</li>
       <li>Leona, Determined OGN-238 Rare</li>
       <li>Machine Evangel OGN-239 Rare</li>
       <li>Sett, Kingpin OGN-240 Rare</li>
-      <li>Sett, Kingpin OGN-240a Showcase</li>
+      <li>Sett, Kingpin OGN-240a Overnumbered</li>
       <li>Shen, Kinkou OGN-241 Rare</li>
       <li>Baited Hook OGN-242 Epic</li>
       <li>Darius, Executioner OGN-243 Epic</li>
-      <li>Darius, Executioner OGN-243a Showcase</li>
+      <li>Darius, Executioner OGN-243a Overnumbered</li>
       <li>Divine Judgment OGN-244 Epic</li>
       <li>Seal Of Unity OGN-245 Epic</li>
-      <li>Viktor, Leader OGN-246a Showcase</li>
+      <li>Viktor, Leader OGN-246a Overnumbered</li>
       <li>Viktor, Leader OGN-246 Epic</li>
       <li>Daughter Of The Void OGN-247 Rare</li>
       <li>Icathian Rain OGN-248 Epic</li>
@@ -671,30 +673,30 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
       <li>Void Gate OGN-296 Uncommon</li>
       <li>Windswept Hillock OGN-297 Uncommon</li>
       <li>Zaun Warrens OGN-298 Uncommon</li>
-      <li>Daughter Of The Void OGN-299 Showcase</li>
-      <li>Daughter Of The Void OGN-299* Showcase</li>
-      <li>Relentless Storm OGN-300* Showcase</li>
-      <li>Relentless Storm OGN-300 Showcase</li>
-      <li>Loose Cannon OGN-301* Showcase</li>
-      <li>Loose Cannon OGN-301 Showcase</li>
-      <li>Hand Of Noxus OGN-302* Showcase</li>
-      <li>Hand Of Noxus OGN-302 Showcase</li>
-      <li>Nine-tailed Fox OGN-303* Showcase</li>
-      <li>Nine-tailed Fox OGN-303 Showcase</li>
-      <li>Blind Monk OGN-304* Showcase</li>
-      <li>Blind Monk OGN-304 Showcase</li>
-      <li>Unforgiven OGN-305 Showcase</li>
-      <li>Unforgiven OGN-305* Showcase</li>
-      <li>Radiant Dawn OGN-306 Showcase</li>
-      <li>Radiant Dawn OGN-306* Showcase</li>
-      <li>Swift Scout OGN-307 Showcase</li>
-      <li>Swift Scout OGN-307* Showcase</li>
-      <li>Herald Of The Arcane OGN-308* Showcase</li>
-      <li>Herald Of The Arcane OGN-308 Showcase</li>
-      <li>Bounty Hunter OGN-309 Showcase</li>
-      <li>Bounty Hunter OGN-309* Showcase</li>
-      <li>The Boss OGN-310* Showcase</li>
-      <li>The Boss OGN-310 Showcase</li>
+      <li>Daughter Of The Void OGN-299 Overnumbered</li>
+      <li>Daughter Of The Void OGN-299* Signature</li>
+      <li>Relentless Storm OGN-300* Signature</li>
+      <li>Relentless Storm OGN-300 Overnumbered</li>
+      <li>Loose Cannon OGN-301* Signature</li>
+      <li>Loose Cannon OGN-301 Overnumbered</li>
+      <li>Hand Of Noxus OGN-302* Signature</li>
+      <li>Hand Of Noxus OGN-302 Overnumbered</li>
+      <li>Nine-tailed Fox OGN-303* Signature</li>
+      <li>Nine-tailed Fox OGN-303 Overnumbered</li>
+      <li>Blind Monk OGN-304* Signature</li>
+      <li>Blind Monk OGN-304 Overnumbered</li>
+      <li>Unforgiven OGN-305 Overnumbered</li>
+      <li>Unforgiven OGN-305* Signature</li>
+      <li>Radiant Dawn OGN-306 Overnumbered</li>
+      <li>Radiant Dawn OGN-306* Signature</li>
+      <li>Swift Scout OGN-307 Overnumbered</li>
+      <li>Swift Scout OGN-307* Signature</li>
+      <li>Herald Of The Arcane OGN-308* Signature</li>
+      <li>Herald Of The Arcane OGN-308 Overnumbered</li>
+      <li>Bounty Hunter OGN-309 Overnumbered</li>
+      <li>Bounty Hunter OGN-309* Signature</li>
+      <li>The Boss OGN-310* Signature</li>
+      <li>The Boss OGN-310 Overnumbered</li>
     </ul>
   </div>
 </section>
@@ -919,16 +921,20 @@ function renderChaseCards() {
     .slice(0, 20);
 
   grid.innerHTML = chase.map(c => {
-    const rc = RARITY_CLASS[c.rarity] || 'rarity-common';
+    const isSigned = c.localId.endsWith('*');
+    const displayRarity = isSigned ? 'Signature' : c.rarity;
+    const rc = RARITY_CLASS[displayRarity] || RARITY_CLASS[c.rarity] || 'rarity-common';
     return `<div class="chase-card" data-localid="${c.localId}" data-name="${(c.name||'').replace(/"/g,'&quot;')}">
       <img class="chase-card-img" src="${cardImg(c.localId)}" alt="${c.name}" loading="lazy" onerror="this.style.background='#0f1f1c'">
       <div class="chase-card-info">
         <div class="chase-card-name">${c.name}</div>
         <div class="chase-card-number">${SET_SHORT_NAME}-${c.localId}</div>
-        <div class="chase-card-rarity-wrap"><span class="rarity-badge ${rc}">${c.rarity}</span></div>
-        <div class="chase-price-pair">
-          <div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">${fmtPrice(c.normalPrice)}</div></div>
-          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">${fmtPrice(c.foilPrice)}</div></div>
+        <div class="chase-card-rarity-wrap"><span class="rarity-badge ${rc}">${displayRarity}</span></div>
+        <div class="chase-price">${fmtPrice(Math.max(c.normalPrice ?? -1, c.foilPrice ?? -1) === -1 ? null : Math.max(c.normalPrice ?? -1, c.foilPrice ?? -1))}</div>
+        <div class="buy-links">
+          <a class="buy-link buy-amazon" href="${amazonLink(c.name+' '+c.localId+' '+SET_FULL_NAME+' Riftbound')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
+          <a class="buy-link buy-ebay" href="${ebayLink(c.name+' '+c.localId+' '+SET_FULL_NAME+' Riftbound')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
+          <a class="buy-link buy-tcgp" href="${tcgpLink(c.name,c.localId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -953,8 +959,7 @@ function applyFilters() {
   });
 
   filteredCards.sort((a,b) => {
-    if (sort === 'price')      return (b.normalPrice ?? -1) - (a.normalPrice ?? -1);
-    if (sort === 'price-foil') return (b.foilPrice ?? -1) - (a.foilPrice ?? -1);
+    if (sort === 'price')      return (Math.max(b.normalPrice??-1,b.foilPrice??-1)) - (Math.max(a.normalPrice??-1,a.foilPrice??-1));
     return (parseInt(a.localId)||0) - (parseInt(b.localId)||0);
   });
 
@@ -979,7 +984,7 @@ function renderCards() {
         <div class="card-item-name">${c.name}</div>
         <div class="card-item-num">${SET_SHORT_NAME}-${c.localId}</div>
         ${c.domain ? `<div class="card-item-domain">${c.domain}${c.cardType ? ' · '+c.cardType : ''}</div>` : ''}
-        <div class="card-item-price">${fmtPrice(c.normalPrice)}${c.foilPrice != null ? ` / <span style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${fmtPrice(c.foilPrice)} foil</span>` : ''}</div>
+        <div class="card-item-price">${fmtPrice(Math.max(c.normalPrice??-1,c.foilPrice??-1)===-1?null:Math.max(c.normalPrice??-1,c.foilPrice??-1))}</div>
       </div>`;
     div.addEventListener('click', () => openModal(c.localId, c.name));
     grid.appendChild(div);
@@ -1004,15 +1009,11 @@ function openModal(localId, name) {
       <div class="modal-meta">${SET_SHORT_NAME}-${localId}</div>
       ${card.domain ? `<div class="modal-domain-badge">${card.domain}${card.cardType ? ' · '+card.cardType : ''}</div>` : ''}
       <span class="rarity-badge ${rc}" style="margin-bottom:12px;display:inline-flex">${card.rarity}</span>
-      <div class="modal-price-pair">
+      <div class="modal-price-pair" style="display:block">
         <div class="modal-price-col">
-          <div class="modal-price-label">Normal NM</div>
-          <div class="modal-price-value">${fmtPrice(card.normalPrice)}</div>
+          <div class="modal-price-label">Market Price</div>
+          <div class="modal-price-value">${fmtPrice(Math.max(card.normalPrice??-1,card.foilPrice??-1)===-1?null:Math.max(card.normalPrice??-1,card.foilPrice??-1))}</div>
         </div>
-        ${card.hasFoil !== false ? `<div class="modal-price-col foil">
-          <div class="modal-price-label">Foil NM</div>
-          <div class="modal-price-value foil">${fmtPrice(card.foilPrice)}</div>
-        </div>` : ''}
       </div>
       <div class="modal-links">
         <a class="modal-buy-link pl-tcgp" href="${tcgpLink(card.name, localId)}" target="_blank" rel="noopener">TCGplayer <span>→</span></a>
