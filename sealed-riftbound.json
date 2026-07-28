@@ -39,14 +39,6 @@
       "badgeClass": "badge-deck",
       "name": "Origins Champion Deck: Lee Sin",
       "q": "Riftbound Origins Champion Deck Lee Sin TCG"
-    },
-    "proving-grounds": {
-      "tcgpId": "635460",
-      "type": "Starter Box",
-      "filterKey": "starter-ogn",
-      "badgeClass": "badge-starter",
-      "name": "Origins Proving Grounds Box Set",
-      "q": "Riftbound Origins Proving Grounds Starter Box TCG"
     }
   },
   "spf": {
