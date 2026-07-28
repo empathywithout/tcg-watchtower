@@ -244,15 +244,6 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right
 .orb-1{top:5%;right:5%;width:500px;height:500px;background:#2dd4bf}
 .orb-2{bottom:10%;left:-100px;width:400px;height:400px;background:#0d9488}
 .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-nav.container{padding:20px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
-.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
-.nav-links{display:flex;gap:24px;align-items:center}
-.nav-links a{color:var(--muted);text-decoration:none;font-weight:500;font-size:.9rem;transition:color .2s}
-.nav-links a:hover{color:white}
-.btn-primary{background:linear-gradient(135deg,var(--teal),#0d9488);color:#020f0d;padding:9px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:.85rem;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(45,212,191,0.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(45,212,191,0.45)}
 .section-nav{position:sticky;top:0;z-index:1000;background:rgba(2,15,13,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,212,191,0.12);overflow:visible}
 .section-nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
 .section-nav-inner::-webkit-scrollbar{display:none}
@@ -426,17 +417,18 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
 <div class="orb orb-2"></div>
 
 <!-- Nav -->
-<nav class="container">
-  <a href="/" class="nav-logo">
-    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
-    <span>TCG Watchtower</span>
-  </a>
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/sets/riftbound">Riftbound TCG</a>
-    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
-  </div>
-</nav>
+<div id="site-nav"></div>
+<script>
+fetch('/nav.html').then(r=>r.text()).then(html=>{
+  const p=document.getElementById('site-nav');
+  if(!p)return;
+  const t=document.createElement('div');
+  t.innerHTML=html;
+  while(t.firstChild)p.parentNode.insertBefore(t.firstChild,p);
+  p.remove();
+  requestAnimationFrame(()=>{if(typeof initNav==='function')initNav();});
+});
+</script>
 
 <!-- Section nav -->
 <div class="section-nav" id="section-nav">
@@ -574,7 +566,7 @@ ${CARD_LIST_HTML}
     <p style="color:var(--muted);max-width:560px;margin:0 auto 36px">
       Join 4,300+ collectors on Discord and get instant notifications when ${SET_SHORT_NAME} Booster Boxes and sealed product goes live at major retailers.
     </p>
-    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-size:1rem;padding:12px 28px;">
+    <a href="https://discord.gg/cZxJV9YRyb" class="btn-discord-cta" style="display:inline-flex;align-items:center;gap:8px;font-size:1rem;padding:12px 28px;background:linear-gradient(135deg,rgba(88,101,242,0.8),rgba(88,101,242,0.6));border:1px solid rgba(88,101,242,0.5);color:#c7d2fe;border-radius:8px;text-decoration:none;font-weight:700;transition:all 0.2s;box-shadow:0 4px 15px rgba(88,101,242,0.3)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.024.016.047.04.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
       Join Discord
     </a>
