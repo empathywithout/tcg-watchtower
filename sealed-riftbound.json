@@ -21,7 +21,7 @@
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
-      "name": "Origins Champion Deck — Jinx",
+      "name": "Origins Champion Deck: Jinx",
       "q": "Riftbound Origins Champion Deck Jinx TCG"
     },
     "champion-deck-viktor": {
@@ -29,7 +29,7 @@
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
-      "name": "Origins Champion Deck — Viktor",
+      "name": "Origins Champion Deck: Viktor",
       "q": "Riftbound Origins Champion Deck Viktor TCG"
     },
     "champion-deck-lux": {
@@ -37,7 +37,7 @@
       "type": "Champion Deck",
       "filterKey": "deck",
       "badgeClass": "badge-deck",
-      "name": "Origins Champion Deck — Lux",
+      "name": "Origins Champion Deck: Lux",
       "q": "Riftbound Origins Champion Deck Lux TCG"
     },
     "proving-grounds": {

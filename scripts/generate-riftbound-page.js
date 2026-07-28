@@ -1,0 +1,992 @@
+/**
+ * generate-riftbound-page.js
+ * Generates a Riftbound: League of Legends TCG set guide HTML page
+ *
+ * Usage:
+ *   SET_ID=ogn SET_FULL_NAME="Origins" SET_URL_SLUG="origins" node scripts/generate-riftbound-page.js
+ *
+ * Key differences from generate-op-page.js:
+ * - Teal accent (#2dd4bf) + gold secondary (#f59e0b) for Signature/premium
+ * - Radial teal glow on hero section
+ * - No series nav — Riftbound sets are flat
+ * - Domain color left-borders on card grid items
+ * - Foil + normal prices side-by-side on card cards
+ * - rules text not displayed on set page (shown on card pages)
+ * - R2 paths: cards/riftbound/{setId}/, logos/riftbound/
+ * - API: /api/cards?set={setId}&game=riftbound
+ * - Output: riftbound-{slug}-card-list.html
+ * - sets-riftbound.json updated (not sets.json)
+ */
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+
+const SET_ID         = (process.env.SET_ID || '').trim().toLowerCase();
+const SET_FULL_NAME  = (process.env.SET_FULL_NAME || '').trim();
+const SET_SHORT_NAME = (process.env.SET_SHORT_NAME || SET_ID.toUpperCase()).trim();
+const R2_PUBLIC_URL  = (process.env.CF_R2_PUBLIC_URL || 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev').trim();
+
+const rawUrlSlug  = (process.env.SET_URL_SLUG || '').trim();
+const SET_URL_SLUG = rawUrlSlug || SET_FULL_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const SET_SLUG     = `riftbound-${SET_URL_SLUG}-card-list`;
+const SET_SEO_PATH = `riftbound/sets/${SET_URL_SLUG}/cards`;
+const SITE_URL     = 'https://tcgwatchtower.com';
+
+if (!SET_ID || !SET_FULL_NAME) { console.error('❌ SET_ID and SET_FULL_NAME required'); process.exit(1); }
+
+// Riftbound series chain — update as sets release
+const RB_SERIES_ORDER = [
+  { setId: 'ogn', url: '/riftbound/sets/origins/cards', name: 'Origins', short: 'OGN' },
+  { setId: 'spf', url: '/riftbound/sets/spiritforged/cards', name: 'Spiritforged', short: 'SPF' },
+  { setId: 'unl', url: '/riftbound/sets/unleashed/cards', name: 'Unleashed', short: 'UNL' },
+  { setId: 'vnd', url: '/riftbound/sets/vendetta/cards', name: 'Vendetta', short: 'VND' },
+  { setId: 'rad', url: '/riftbound/sets/radiance/cards', name: 'Radiance', short: 'RAD' },
+];
+
+function buildSeriesNavHtml(order, currentSetId) {
+  const idx  = order.findIndex(s => s.setId === currentSetId);
+  const prev = idx > 0 ? order[idx - 1] : null;
+  const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
+  const prevHtml = prev
+    ? `<a href="${prev.url}" style="color:var(--muted);text-decoration:none;">&larr; Previous: ${prev.name} (${prev.short})</a>`
+    : '<span></span>';
+  const nextHtml = next
+    ? `<a href="${next.url}" style="color:var(--muted);text-decoration:none;">Next: ${next.name} (${next.short}) &rarr;</a>`
+    : '<span></span>';
+  return `<div class="series-nav" style="display:flex;justify-content:space-between;gap:16px;margin:0 0 16px;font-size:0.85rem;">${prevHtml}${nextHtml}</div>`;
+}
+
+const SERIES_NAV_HTML = buildSeriesNavHtml(RB_SERIES_ORDER, SET_ID);
+
+// Release dates
+const RELEASE_DATE_MAP = {
+  'ogn': 'Oct 2025', 'spf': 'Feb 2026', 'unl': 'May 2026',
+  'vnd': 'Jul 2026', 'rad': 'Oct 2026',
+};
+const releaseDate  = (process.env.SET_RELEASE_DATE || '').trim() || RELEASE_DATE_MAP[SET_ID] || '';
+const [releaseMonth, releaseYear] = (releaseDate || '').split(' ');
+
+// Hero card IDs (localId format e.g. "296")
+const HERO_CARD_1 = (process.env.HERO_CARD_1 || '').trim() || '001';
+const HERO_CARD_2 = (process.env.HERO_CARD_2 || '').trim() || '002';
+const HERO_CARD_3 = (process.env.HERO_CARD_3 || '').trim() || '003';
+
+// SEO data per set
+const SEO_DATA = {
+  'ogn': {
+    metaTitle: 'Origins Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Origins card list with live prices. Every card, Signature, and booster box value for Riftbound League of Legends TCG.',
+    intro: 'Origins is the first set in the Riftbound: League of Legends TCG, released October 31, 2025. The debut set introduces 40 champions across iconic League of Legends regions, with the Ahri Nine-Tailed Fox Signature card as the most valuable pull in the game at launch.',
+    faq: [
+      { q: 'What is the most expensive Origins card?', a: 'The Ahri Nine-Tailed Fox (Signature) from Origins is consistently the most valuable card in the set, valued at over $2,700 on TCGplayer. Signature cards are the rarest treatment in Riftbound, appearing as foil-only premium alternate art versions.' },
+      { q: 'How many cards are in Riftbound Origins?', a: 'Origins contains 352 total cards across Common, Uncommon, Rare, Epic, Legendary, Showcase, Overnumbered, and Signature rarities. The printed total of numbered cards in the set is 298.' },
+      { q: 'When did Riftbound Origins release?', a: 'Riftbound Origins released on October 31, 2025 as the debut set of the Riftbound: League of Legends Trading Card Game.' },
+      { q: 'What is Riftbound TCG?', a: 'Riftbound: League of Legends Trading Card Game is a physical trading card game developed by Riot Games, set in the League of Legends universe. It was released globally in October 2025, published by UVS Games in English-speaking regions.' },
+    ],
+  },
+  'spf': {
+    metaTitle: 'Spiritforged Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Spiritforged card list with live prices. Every card, Signature, and booster box value for Riftbound League of Legends TCG.',
+    intro: 'Spiritforged is the second set in the Riftbound: League of Legends TCG, released February 13, 2026. The set introduces 12 new champions including Azir, Irelia, Draven, Lucian, and Ezreal, alongside 30 Overnumbered cards and 12 Signature variants.',
+    faq: [
+      { q: 'How many cards are in Riftbound Spiritforged?', a: 'Spiritforged contains 308 total cards, introducing 12 new champions not featured in Origins. The set includes 30 Overnumbered cards, with 12 of them having Signature variants.' },
+      { q: 'When did Riftbound Spiritforged release?', a: 'Spiritforged released on February 13, 2026 in English, following the Chinese release on December 12, 2025.' },
+    ],
+  },
+  'unl': {
+    metaTitle: 'Unleashed Card List: Prices & Chase Cards | Riftbound TCG | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Unleashed card list with live prices. Every card, Ultimate, Signature, and booster box value for Riftbound League of Legends TCG.',
+    intro: 'Unleashed is the third set in the Riftbound: League of Legends TCG, released May 8, 2026. The set introduces the Ambush, Level, and Hunt keywords alongside a new Ultimate rarity, the rarest card type in Riftbound to date, featuring Nashor as the first Ultimate card.',
+    faq: [
+      { q: 'What is new in Riftbound Unleashed?', a: 'Unleashed introduces three new keywords: Ambush (play directly to battlefields), Level (use XP to upgrade cards), and Hunt (gather XP resources). It also introduces the Ultimate rarity, which is rarer than Signature cards.' },
+      { q: 'How many cards are in Riftbound Unleashed?', a: 'Unleashed contains 219 total cards, making it the smallest of the first three Riftbound sets.' },
+      { q: 'When did Riftbound Unleashed release?', a: 'Unleashed released on May 8, 2026 in English.' },
+    ],
+  },
+};
+
+const seoData        = SEO_DATA[SET_ID] || {};
+const FAQ_SCHEMA_JSON = (seoData.faq && seoData.faq.length) ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': seoData.faq.map(f => ({
+    '@type': 'Question',
+    'name': f.q,
+    'acceptedAnswer': { '@type': 'Answer', 'text': f.a },
+  })),
+}) : '';
+const SEO_META_TITLE = seoData.metaTitle || `${SET_FULL_NAME} Card List and Prices | Riftbound TCG | TCG Watchtower`;
+const SEO_META_DESC  = seoData.metaDesc  || `Complete ${SET_FULL_NAME} card list with live prices. Every card and sealed product value for Riftbound: League of Legends TCG.`;
+const SEO_INTRO      = seoData.intro     || '';
+const SET_DESCRIPTION = `Complete guide to ${SET_FULL_NAME}: full card list, chase cards ranked by market price, and where to buy sealed product.`;
+
+// Fetch card data from R2 to bake into static HTML for SEO
+let CARD_LIST_HTML = '';
+let signatureCount = 0;
+let autoHero1 = HERO_CARD_1, autoHero2 = HERO_CARD_2, autoHero3 = HERO_CARD_3;
+
+try {
+  const r2Url = `${R2_PUBLIC_URL}/data/riftbound/${SET_ID}.json`;
+  const r2Res = await fetch(r2Url);
+  if (r2Res.ok) {
+    const r2Data  = await r2Res.json();
+    const r2Cards = (r2Data.cards || []).filter(c => !c.isVariant);
+    signatureCount = r2Cards.filter(c => c.rarity === 'Signature').length;
+
+    CARD_LIST_HTML = r2Cards.map(c => {
+      return `      <li>${c.name} ${SET_SHORT_NAME}-${c.localId} ${c.rarity || ''}</li>`;
+    }).join('\n');
+    console.log(`✅ Baked ${r2Cards.length} card names into static HTML for SEO`);
+
+    // Auto-select hero cards by normalPrice descending
+    const HERO_RARITY_TIER = { 'Signature': 0, 'Overnumbered': 1, 'Showcase': 2, 'Legendary': 3, 'Epic': 4 };
+    const manuallySet = process.env.HERO_CARD_1 || process.env.HERO_CARD_2 || process.env.HERO_CARD_3;
+    if (!manuallySet) {
+      const chase = r2Cards
+        .filter(c => HERO_RARITY_TIER[c.rarity] !== undefined)
+        .sort((a, b) => {
+          const pa = a.normalPrice ?? -1;
+          const pb = b.normalPrice ?? -1;
+          if (pa !== pb) return pb - pa;
+          return (HERO_RARITY_TIER[a.rarity] ?? 99) - (HERO_RARITY_TIER[b.rarity] ?? 99);
+        });
+      if (chase[0]) autoHero1 = chase[0].localId;
+      if (chase[1]) autoHero2 = chase[1].localId;
+      if (chase[2]) autoHero3 = chase[2].localId;
+      console.log(`✅ Auto hero cards: ${autoHero1}, ${autoHero2}, ${autoHero3}`);
+    }
+  }
+} catch(e) {
+  console.warn('⚠️  Could not fetch R2 card data for SEO bake-in:', e.message);
+}
+
+// Update sets-riftbound.json to mark set as live
+const setsRbPath = 'sets-riftbound.json';
+if (existsSync(setsRbPath)) {
+  try {
+    const existing = JSON.parse(readFileSync(setsRbPath, 'utf8'));
+    const updated  = existing.map(s =>
+      s.setId === SET_ID ? { ...s, live: true, slug: SET_URL_SLUG } : s
+    );
+    writeFileSync(setsRbPath, JSON.stringify(updated, null, 2));
+    console.log(`✅ sets-riftbound.json updated — ${SET_ID} is now live`);
+  } catch(e) {
+    console.warn('⚠️  Could not update sets-riftbound.json:', e.message);
+  }
+}
+
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${SEO_META_TITLE}</title>
+<meta name="description" content="${SEO_META_DESC}">
+<meta name="keywords" content="${SET_FULL_NAME}, Riftbound ${SET_SHORT_NAME} card list, ${SET_SHORT_NAME} prices, Riftbound League of Legends TCG, ${SET_FULL_NAME} Signature card">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${SITE_URL}/${SET_SEO_PATH}">
+<meta property='impact-site-verification' value='4069a06f-34a9-45bf-9cbf-563c3b047710'>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="TCG Watchtower">
+<meta property="og:title" content="${SEO_META_TITLE}">
+<meta property="og:description" content="${SEO_META_DESC}">
+<meta property="og:url" content="${SITE_URL}/${SET_SEO_PATH}">
+<meta property="og:image" content="${SITE_URL}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${SEO_META_TITLE}">
+<meta name="twitter:description" content="${SEO_META_DESC}">
+<meta name="twitter:image" content="${SITE_URL}/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "${SET_FULL_NAME} Card List and Prices",
+  "description": "${SEO_META_DESC}",
+  "url": "${SITE_URL}/${SET_SEO_PATH}",
+  "datePublished": "${releaseDate}",
+  "publisher": { "@type": "Organization", "name": "TCG Watchtower", "url": "${SITE_URL}" },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "${SITE_URL}" },
+      { "@type": "ListItem", "position": 2, "name": "Riftbound TCG", "item": "${SITE_URL}/sets/riftbound" },
+      { "@type": "ListItem", "position": 3, "name": "${SET_FULL_NAME}", "item": "${SITE_URL}/${SET_SEO_PATH}" }
+    ]
+  }
+}
+</script>
+${FAQ_SCHEMA_JSON ? `<script type="application/ld+json">${FAQ_SCHEMA_JSON}</script>` : ''}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0S4363S5Y"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E0S4363S5Y',{set_id:'${SET_ID}',series:'Riftbound',page_type:'set_list'});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a||!a.href)return;var h=a.href;if(h.indexOf('discord.gg')>-1){gtag('event','discord_join_click',{page_path:location.pathname});}else if(h.indexOf('tcgplayer.com')>-1){gtag('event','affiliate_click',{retailer:'tcgplayer',page_path:location.pathname});}else if(h.indexOf('amazon.com')>-1){gtag('event','affiliate_click',{retailer:'amazon',page_path:location.pathname});}else if(h.indexOf('ebay.com')>-1){gtag('event','affiliate_click',{retailer:'ebay',page_path:location.pathname});}},true);</script>
+<script type="module">import{onCLS,onFCP,onINP,onLCP,onTTFB}from"https://unpkg.com/web-vitals@5?module";function sendToGA(m){if(typeof gtag==="function"){gtag("event","web_vitals",{metric_name:m.name,metric_value:m.value,metric_rating:m.rating,metric_id:m.id,page_path:location.pathname});}}onCLS(sendToGA);onFCP(sendToGA);onINP(sendToGA);onLCP(sendToGA);onTTFB(sendToGA);</script>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Saira+Condensed:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Saira+Condensed:wght@600;700&display=swap"></noscript>
+<style>
+@font-face{font-family:'Bebas Neue';font-display:swap}
+@font-face{font-family:'DM Sans';font-display:swap}
+@font-face{font-family:'Space Mono';font-display:swap}
+:root{
+  --teal:#2dd4bf;--teal-dim:rgba(45,212,191,0.15);--teal-border:rgba(45,212,191,0.35);
+  --gold:#f59e0b;--gold-dim:rgba(245,158,11,0.15);--gold-border:rgba(245,158,11,0.35);
+  --green:#22c55e;--blue:#3b82f6;--purple:#a855f7;--red:#ef4444;
+  --muted:#94a3b8;--text:#f1f5f9;--bg:#020f0d;--card-bg:#0f1f1c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(to bottom right,#020f0d,#061a14,#0a1520);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,rgba(45,212,191,0.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(45,212,191,0.05) 1px,transparent 1px);background-size:60px 60px;opacity:0.4;pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.15;pointer-events:none;z-index:0}
+.orb-1{top:5%;right:5%;width:500px;height:500px;background:#2dd4bf}
+.orb-2{bottom:10%;left:-100px;width:400px;height:400px;background:#0d9488}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+nav.container{padding:20px 0;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.nav-logo span{font-family:'Saira Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.2rem;color:#f1f5f9;letter-spacing:.05em}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-weight:500;font-size:.9rem;transition:color .2s}
+.nav-links a:hover{color:white}
+.btn-primary{background:linear-gradient(135deg,var(--teal),#0d9488);color:#020f0d;padding:9px 18px;border-radius:8px;text-decoration:none;font-weight:700;font-size:.85rem;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(45,212,191,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(45,212,191,0.45)}
+.section-nav{position:sticky;top:0;z-index:1000;background:rgba(2,15,13,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,212,191,0.12);overflow:visible}
+.section-nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;justify-content:center}
+.section-nav-inner::-webkit-scrollbar{display:none}
+.section-nav-btn{flex-shrink:0;padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;font-family:inherit}
+.section-nav-btn:hover{color:var(--text)}
+.section-nav-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
+.section-nav-sets{position:relative;flex-shrink:0}
+.section-nav-sets-btn{padding:14px 20px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s;white-space:nowrap;font-family:inherit}
+.section-nav-sets-btn:hover{color:var(--text)}
+.section-nav-dropdown{display:none;position:fixed;right:24px;top:0;width:260px;background:rgba(2,15,13,0.98);backdrop-filter:blur(16px);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:8px;z-index:9999;max-height:calc(100vh - 200px);overflow-y:auto;overscroll-behavior:contain;box-shadow:0 16px 48px rgba(0,0,0,.5);margin-top:4px}
+.section-nav-dropdown.open{display:block}
+.nav-dropdown-set{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-size:.85rem;transition:background .2s}
+.nav-dropdown-set:hover{background:rgba(45,212,191,0.08)}
+.nav-dropdown-set.current{background:rgba(45,212,191,0.12);color:var(--teal)}
+.nav-dropdown-set img{width:32px;height:20px;object-fit:contain;border-radius:3px}
+.set-hero{padding:60px 0 80px;position:relative;z-index:1}
+/* Radial teal glow on hero */
+.set-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(45,212,191,0.10) 0%,transparent 65%);pointer-events:none}
+.breadcrumb{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;margin-bottom:24px}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--text)}
+.breadcrumb span{color:var(--muted)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:999px;padding:6px 16px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:20px}
+.set-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1.05;letter-spacing:.02em;margin-bottom:16px}
+.gradient-text{background:linear-gradient(135deg,#2dd4bf,#0d9488,#a3e635);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.set-desc{color:var(--muted);font-size:1rem;line-height:1.7;margin-bottom:28px;max-width:600px}
+.set-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:500px}
+.set-stats-4{grid-template-columns:repeat(4,1fr);max-width:600px}
+.stat-card{background:rgba(15,31,28,.7);backdrop-filter:blur(10px);border:1px solid rgba(45,212,191,0.12);border-radius:12px;padding:16px;text-align:center}
+.stat-card-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:bold;color:white}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.hero-visual{display:flex;justify-content:center;align-items:center}
+.card-stack{position:relative;width:280px;height:380px}
+.card-stack img{position:absolute;width:180px;height:auto;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.7);transition:transform .3s;object-fit:contain}
+.card-stack img:nth-child(1){left:0;top:0;transform:rotate(-8deg);z-index:3}
+.card-stack img:nth-child(2){left:50px;top:20px;transform:rotate(2deg);z-index:2}
+.card-stack img:nth-child(3){left:90px;top:40px;transform:rotate(10deg);z-index:1}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(45,212,191,0.12),transparent);margin:0}
+.section{padding:64px 0}
+.section-header{text-align:center;margin-bottom:40px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:8px}
+.section-sub{color:var(--muted);font-size:1rem}
+/* Chase cards */
+.chase-slider-wrap{position:relative;padding:0 32px}
+.chase-slider{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 4px 16px}
+.chase-slider::-webkit-scrollbar{display:none}
+.chase-card{flex:0 0 200px;scroll-snap-align:start;background:rgba(15,31,28,.7);backdrop-filter:blur(10px);border:1px solid rgba(45,212,191,0.12);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer;display:flex;flex-direction:column;height:520px}
+.chase-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(45,212,191,0.15);border-color:rgba(45,212,191,0.35)}
+.chase-card-img{width:100%;aspect-ratio:245/337;object-fit:contain;background:rgba(2,15,13,.5);display:block;flex-shrink:0}
+.chase-card-info{padding:16px;display:flex;flex-direction:column;flex:1}
+.chase-card-name{font-weight:700;font-size:1rem;margin-bottom:4px;height:2.6rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.chase-card-number{font-size:.8rem;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:2px}
+.chase-card-rarity-wrap{min-height:2rem;display:flex;align-items:center;margin-bottom:4px}
+/* Foil/normal price side by side */
+.chase-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:8px}
+.price-col{text-align:center}
+.price-col-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.price-col-value{font-size:.95rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
+.price-col-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.chase-arrow{position:absolute;top:50%;transform:translateY(-60%);width:44px;height:44px;border-radius:50%;background:rgba(2,15,13,.85);backdrop-filter:blur(8px);border:1px solid var(--teal-border);color:var(--teal);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .2s;opacity:.85}
+.chase-arrow:hover{background:var(--teal-dim);opacity:1}
+.chase-arrow.hidden{opacity:0;pointer-events:none}
+.chase-arrow-left{left:-22px}
+.chase-arrow-right{right:-22px}
+/* Rarity badges - Riftbound palette */
+.rarity-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.rarity-common{background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3);color:#94a3b8}
+.rarity-uncommon{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}
+.rarity-rare{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.rarity-epic{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:#d8b4fe}
+.rarity-legendary{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#fbbf24}
+.rarity-showcase{background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
+.rarity-overnumbered{background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);color:#fb923c}
+.rarity-signature{background:linear-gradient(135deg,rgba(163,230,53,.2),rgba(45,212,191,.2),rgba(168,85,247,.2));border:1px solid rgba(163,230,53,.4);color:#a3e635}
+/* Card grid */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:28px}
+.filter-input{flex:1;min-width:200px;background:rgba(15,31,28,.8);border:1px solid rgba(45,212,191,.15);border-radius:10px;padding:10px 16px;color:white;font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.filter-input:focus{border-color:var(--teal-border)}
+.filter-input::placeholder{color:var(--muted)}
+.filter-select{background:rgba(15,31,28,.8);border:1px solid rgba(45,212,191,.15);border-radius:10px;padding:10px 16px;color:white;font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .2s}
+.filter-select option{background:#0f1f1c}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.card-item{background:rgba(2,15,13,.85);border:1px solid rgba(45,212,191,.08);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;border-left-width:3px}
+.card-item:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(45,212,191,.12);border-color:rgba(45,212,191,.3)}
+.card-item img{width:100%;aspect-ratio:245/337;display:block;object-fit:contain;background:rgba(2,15,13,.85)}
+.card-item-info{padding:8px;display:flex;flex-direction:column;flex:1}
+.card-item-name{font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-item-num{font-size:.65rem;color:var(--muted);font-family:'Space Mono',monospace}
+/* Domain badge on card items */
+.card-item-domain{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+.card-item-price{font-size:.7rem;font-weight:700;color:var(--green);font-family:'Space Mono',monospace;margin-top:2px}
+.card-item-price.loading{color:var(--muted);font-weight:400;font-style:italic}
+.card-count{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+#load-more-btn{display:block;margin:32px auto 0;background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal);padding:12px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:linear-gradient(135deg,#0f1f1c,#071510);border:1px solid rgba(45,212,191,0.15);border-radius:20px;max-width:820px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fadeInUp .3s ease-out}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.08);border:none;border-radius:8px;color:white;width:32px;height:32px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:10}
+.modal-close:hover{background:rgba(255,255,255,.15)}
+.modal-inner{display:grid;grid-template-columns:380px 1fr;gap:32px;padding:36px;align-items:start}
+.modal-img{width:100%;aspect-ratio:2.5/3.5;object-fit:contain;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.modal-name{font-size:1.3rem;font-weight:700;margin-bottom:6px}
+.modal-meta{font-size:.85rem;color:var(--muted);margin-bottom:4px;font-family:'Space Mono',monospace}
+/* Domain + type badge in modal */
+.modal-domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
+/* Foil/normal side-by-side in modal */
+.modal-price-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.modal-price-col{background:rgba(15,31,28,.7);border:1px solid rgba(45,212,191,.1);border-radius:10px;padding:12px;text-align:center}
+.modal-price-col.foil{border-color:rgba(163,230,53,.2);background:rgba(45,212,191,.05)}
+.modal-price-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.modal-price-value{font-size:1.2rem;font-weight:700;font-family:'Space Mono',monospace;color:var(--green)}
+.modal-price-value.foil{background:linear-gradient(135deg,#a3e635,#2dd4bf,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-links{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.modal-buy-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;transition:all .2s}
+.pl-amazon{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
+.pl-ebay{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
+.pl-tcgp{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.25);color:var(--teal)}
+/* Products */
+.product-filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.filter-btn{padding:7px 16px;background:rgba(15,31,28,.8);border:1px solid rgba(45,212,191,.15);border-radius:999px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+.product-card{background:rgba(15,31,28,.7);backdrop-filter:blur(10px);border:1px solid rgba(45,212,191,.1);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.product-img-wrap{width:100%;aspect-ratio:1;background:rgba(2,15,13,.6);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-info{padding:20px}
+.product-name{font-size:1rem;font-weight:700;margin-bottom:12px;line-height:1.3}
+.product-price{font-size:1.1rem;font-weight:700;color:var(--green);margin:6px 0;min-height:1.5rem}
+.product-links{display:flex;flex-direction:column;gap:8px}
+.product-link-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;text-decoration:none;font-size:.88rem;font-weight:600;transition:all .2s}
+.badge-box{background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
+.badge-pack{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold)}
+.badge-deck{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:#d8b4fe}
+.badge-starter{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+/* Footer */
+footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px solid rgba(45,212,191,.08);padding:48px 0 32px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px}
+.footer-section h3{font-size:1rem;margin-bottom:12px;color:var(--teal)}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.875rem;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+.footer-disclaimer p{color:rgba(148,163,184,.6);font-size:.75rem;line-height:1.6;margin-bottom:8px}
+.footer-bottom{text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);color:var(--muted);font-size:.8rem}
+@media(max-width:768px){
+  nav.container .nav-links a:not(.btn-primary){display:none}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .set-title{font-size:2.5rem}
+  .set-stats{grid-template-columns:repeat(2,1fr)}
+  .modal-inner{grid-template-columns:1fr}
+  .modal-img{max-width:380px;margin:0 auto;display:block}
+  .card-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .chase-card{flex:0 0 160px}
+}
+@media(max-width:640px){
+  .section-nav-inner{padding:0 4px;gap:0;flex-wrap:nowrap;justify-content:space-between;width:100%}
+  .section-nav-btn,.section-nav-sets-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;flex:1;text-align:center}
+  .container{padding:0 16px}
+  .set-hero{padding:32px 0 48px}
+}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- Nav -->
+<nav class="container">
+  <a href="/" class="nav-logo">
+    <img src="/logo-mark.svg" alt="TCG Watchtower" width="32" height="32">
+    <span>TCG Watchtower</span>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/sets/riftbound">Riftbound TCG</a>
+    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary">Join Discord</a>
+  </div>
+</nav>
+
+<!-- Section nav -->
+<div class="section-nav" id="section-nav">
+  <div class="section-nav-inner">
+    <button class="section-nav-btn active" data-target="section-chase">Chase Cards</button>
+    <button class="section-nav-btn" data-target="section-cards">Card List</button>
+    <button class="section-nav-btn" data-target="section-products">Sealed Products</button>
+    <div class="section-nav-sets">
+      <button class="section-nav-sets-btn" id="nav-sets-btn">All Sets ▾</button>
+      <div class="section-nav-dropdown" id="nav-sets-dropdown"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="set-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>›</span>
+      <a href="/sets/riftbound">Riftbound TCG</a><span>›</span>
+      <span style="color:var(--text)">${SET_FULL_NAME}</span>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">Complete Set Guide</div>
+        <h1 class="set-title"><span class="gradient-text">Riftbound TCG</span><br>${SET_FULL_NAME}</h1>
+        <p class="set-desc">${SET_DESCRIPTION}${SEO_INTRO ? '<br><br><span style="font-size:0.95rem;opacity:0.85">'+SEO_INTRO+'</span>' : ''}</p>
+        ${SERIES_NAV_HTML}
+        <div class="set-stats set-stats-4">
+          <div class="stat-card stat-card-logo">
+            <img id="set-logo-hero" alt="${SET_FULL_NAME}" width="120" height="40" style="max-width:110px;max-height:40px;width:auto;height:auto;object-fit:contain" onerror="this.parentElement.style.display='none'">
+            <div class="stat-label">${SET_SHORT_NAME}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-count">…</div>
+            <div class="stat-label">Total Cards</div>
+          </div>
+          <div class="stat-card" style="background:rgba(163,230,53,0.06);border-color:rgba(163,230,53,0.2);">
+            <div class="stat-value" style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${signatureCount}</div>
+            <div class="stat-label">Signatures</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${releaseMonth || ''}</div>
+            <div class="stat-label">${releaseYear || ''}</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="card-stack" id="hero-stack">
+          <img data-id="${autoHero1}" alt="Top chase card" width="245" height="337" fetchpriority="high">
+          <img data-id="${autoHero2}" alt="Chase card 2" width="245" height="337" loading="lazy">
+          <img data-id="${autoHero3}" alt="Chase card 3" width="245" height="337" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Chase Cards -->
+<section class="section" id="section-chase">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Chase Cards</span></h2>
+      <p class="section-sub">Top chase cards ranked by market price, updated daily</p>
+      <a href="${SITE_URL}/riftbound/sets/${SET_URL_SLUG}/top-chase-cards" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:var(--teal);text-decoration:none;">See full ${SET_FULL_NAME} chase card rankings →</a>
+    </div>
+    <div class="chase-slider-wrap">
+      <button class="chase-arrow chase-arrow-left hidden" id="chase-arrow-left">‹</button>
+      <div class="chase-slider" id="chase-grid"></div>
+      <button class="chase-arrow chase-arrow-right" id="chase-arrow-right">›</button>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Card List -->
+<section class="section" id="section-cards">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Card List</span></h2>
+      <p class="section-sub" id="card-list-sub">Complete ${SET_SHORT_NAME} card list: search and filter by rarity</p>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-input" type="text" id="search-input" placeholder="Search card name or number…">
+      <select class="filter-select" id="rarity-filter"><option value="">All Rarities</option></select>
+      <select class="filter-select" id="domain-filter"><option value="">All Domains</option></select>
+      <select class="filter-select" id="sort-select">
+        <option value="number">Sort: Number</option>
+        <option value="price">Sort: Price (Normal)</option>
+        <option value="price-foil">Sort: Price (Foil)</option>
+      </select>
+    </div>
+    <div class="card-count" id="card-count">Loading cards…</div>
+    <div class="card-grid" id="card-grid"></div>
+    <button id="load-more-btn" style="display:none">Load More</button>
+    <!-- Static card index for search engines -->
+    <ul id="card-seo-index" style="display:none" aria-hidden="true">
+${CARD_LIST_HTML}
+    </ul>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Sealed Products -->
+<section class="section" id="section-products">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Buy ${SET_FULL_NAME} <span class="gradient-text">Sealed Products</span></h2>
+      <p class="section-sub">Compare ${SET_FULL_NAME} sealed product prices across Amazon, eBay, and TCGplayer</p>
+      <a href="${SITE_URL}/riftbound/sets/${SET_URL_SLUG}/sealed-product" style="display:inline-block;margin-top:6px;font-size:0.82rem;font-weight:700;color:var(--teal);text-decoration:none;">See the full ${SET_FULL_NAME} Sealed Product Buying Guide →</a>
+    </div>
+    <div class="product-filter-bar" id="product-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="box">Booster Box</button>
+      <button class="filter-btn" data-filter="pack">Booster Pack</button>
+      <button class="filter-btn" data-filter="deck">Champion Deck</button>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Discord CTA -->
+<section class="section">
+  <div class="container" style="text-align:center">
+    <div class="hero-badge" style="justify-content:center;margin:0 auto 24px">
+      Never miss a restock
+    </div>
+    <h2 class="section-title">${SET_FULL_NAME} <span class="gradient-text">Restock Alerts</span></h2>
+    <p style="color:var(--muted);max-width:560px;margin:0 auto 36px">
+      Join 4,300+ collectors on Discord and get instant notifications when ${SET_SHORT_NAME} Booster Boxes and sealed product goes live at major retailers.
+    </p>
+    <a href="https://discord.gg/cZxJV9YRyb" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-size:1rem;padding:12px 28px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.024.016.047.04.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Join Discord
+    </a>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+${seoData.faq && seoData.faq.length ? `
+<section style="padding:64px 0">
+  <div class="container" style="max-width:800px">
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px">${SET_FULL_NAME} <span style="color:var(--teal)">FAQ</span></h2>
+    <div style="display:flex;flex-direction:column;gap:24px">
+      ${seoData.faq.map((f, i) => `
+      <div style="background:rgba(15,31,28,.6);border:1px solid rgba(45,212,191,0.1);border-radius:12px;padding:24px">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text)">${f.q}</h3>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.7">${f.a}</p>
+        ${i === 0 ? `<a href="${SITE_URL}/riftbound/sets/${SET_URL_SLUG}/top-chase-cards" style="display:inline-block;margin-top:10px;font-size:0.82rem;font-weight:700;color:var(--teal);text-decoration:none">See all ${SET_FULL_NAME} chase cards ranked by price →</a>` : ''}
+      </div>`).join('')}
+    </div>
+  </div>
+</section>` : ''}
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h3>Riftbound TCG</h3>
+        <ul class="footer-links">
+          <li><a href="/riftbound/sets/origins/cards">Origins (OGN)</a></li>
+          <li><a href="/riftbound/sets/spiritforged/cards">Spiritforged (SPF)</a></li>
+          <li><a href="/riftbound/sets/unleashed/cards">Unleashed (UNL)</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>TCG Watchtower</h3>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/sets/riftbound">All Riftbound Sets</a></li>
+          <li><a href="/sets/pokemon">Pokemon TCG</a></li>
+          <li><a href="/sets/one-piece">One Piece TCG</a></li>
+          <li><a href="https://discord.gg/cZxJV9YRyb">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-disclaimer"><p>TCG Watchtower is not affiliated with or endorsed by Riot Games, League of Legends, or Riftbound. All trademarks remain property of their respective owners.</p><p>TCG Watchtower participates in affiliate programs including Amazon Associates, eBay Partner Network, and TCGplayer. We may earn a commission on qualifying purchases.</p></div>
+    <div class="footer-bottom"><p>© 2026 TCG Watchtower. All rights reserved.</p></div>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-inner" id="modal-inner"></div>
+  </div>
+</div>
+
+<script>
+const SET_ID = '${SET_ID}';
+const SET_URL_SLUG = '${SET_URL_SLUG}';
+const SET_FULL_NAME = '${SET_FULL_NAME.replace(/'/g, "\\'")}';
+const SET_SHORT_NAME = '${SET_SHORT_NAME}';
+const R2 = '${R2_PUBLIC_URL}';
+const EBAY_MKRID = '711-53200-19255-0';
+const EBAY_CAMP = 5339145069;
+const TCGP_BASE = 'https://partner.tcgplayer.com/c/7068180/1830156/21018';
+const AMAZON_TAG = 'cehutto01-20';
+
+function cardImg(localId) {
+  return \`\${R2}/cards/riftbound/\${SET_ID}/\${localId}.webp\`;
+}
+function toSlug(s) {
+  return (s||'').toLowerCase().replace(/['']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-\$/g,'');
+}
+function cardPageUrl(localId, name) {
+  return \`/riftbound/sets/\${SET_URL_SLUG}/cards/\${toSlug(name)}-\${toSlug(localId)}\`;
+}
+function ebayLink(q) { return \`https://www.ebay.com/sch/i.html?_nkw=\${encodeURIComponent(q)}&mkcid=1&mkrid=\${EBAY_MKRID}&siteid=0&campid=\${EBAY_CAMP}&toolid=10001&mkevt=1\`; }
+function amazonLink(q) { return \`https://www.amazon.com/s?k=\${encodeURIComponent(q)}&linkCode=ll2&tag=\${AMAZON_TAG}&language=en_US\`; }
+function tcgpLink(name, num) {
+  const q = encodeURIComponent(\`\${name} \${num} Riftbound\`);
+  const url = \`https://www.tcgplayer.com/search/riftbound-league-of-legends-trading-card-game/product?q=\${q}&view=grid\`;
+  return \`\${TCGP_BASE}?u=\${encodeURIComponent(url)}\`;
+}
+function fmtPrice(p) { return p != null ? '\$'+Number(p).toFixed(2) : 'N/A'; }
+
+// Domain → left border color
+const DOMAIN_COLORS = {
+  'Shadow':     '#7c3aed',
+  'Fire':       '#ef4444',
+  'Water':      '#3b82f6',
+  'Earth':      '#92400e',
+  'Wind':       '#22c55e',
+  'Celestial':  '#f59e0b',
+  'Colorless':  '#64748b',
+};
+function domainColor(domain) { return DOMAIN_COLORS[domain] || '#2dd4bf'; }
+
+// Rarity → CSS class
+const RARITY_CLASS = {
+  'Common':'rarity-common','Uncommon':'rarity-uncommon','Rare':'rarity-rare',
+  'Epic':'rarity-epic','Legendary':'rarity-legendary','Showcase':'rarity-showcase',
+  'Overnumbered':'rarity-overnumbered','Signature':'rarity-signature',
+};
+const CHASE_RARITIES = new Set(['Signature','Overnumbered','Showcase','Legendary','Epic']);
+
+// Hero stack images
+document.querySelectorAll('#hero-stack img[data-id]').forEach(img => { img.src = cardImg(img.dataset.id); });
+const logoEl = document.getElementById('set-logo-hero');
+if (logoEl) logoEl.src = \`\${R2}/logos/riftbound/\${SET_ID}.webp\`;
+
+let allCards = [], filteredCards = [], displayedCount = 0;
+const PAGE_SIZE = 60;
+
+async function loadCards() {
+  const countEl = document.getElementById('card-count');
+  try {
+    countEl.textContent = 'Loading...';
+    const res = await fetch(\`/api/cards?set=\${SET_ID}&game=riftbound\`);
+    if (!res.ok) throw new Error(\`API \${res.status}\`);
+    const json = await res.json();
+    allCards = (json.cards || []).filter(c => !c.isVariant);
+    if (!allCards.length) throw new Error('empty');
+  } catch(e) {
+    try {
+      const res2 = await fetch(\`\${R2}/data/riftbound/\${SET_ID}.json\`);
+      if (!res2.ok) throw new Error(\`R2 \${res2.status}\`);
+      const json2 = await res2.json();
+      allCards = (json2.cards || []).filter(c => !c.isVariant);
+      if (!allCards.length) throw new Error('empty');
+    } catch(e2) { countEl.textContent = 'Could not load cards. Try refreshing.'; return; }
+  }
+
+  // Deduplicate
+  const seen = new Set();
+  allCards = allCards.filter(c => { if (seen.has(c.localId)) return false; seen.add(c.localId); return true; });
+
+  document.getElementById('stat-total-count').textContent = allCards.length;
+  document.getElementById('card-list-sub').textContent = \`All \${allCards.length} \${SET_FULL_NAME} cards: search and filter by rarity or domain\`;
+
+  // Populate rarity filter
+  const raritySelect = document.getElementById('rarity-filter');
+  const rarities = [...new Set(allCards.map(c => c.rarity).filter(Boolean))].sort();
+  const rarityOrder = ['Common','Uncommon','Rare','Epic','Legendary','Showcase','Overnumbered','Signature'];
+  rarities.sort((a,b) => (rarityOrder.indexOf(a)+1||99) - (rarityOrder.indexOf(b)+1||99));
+  rarities.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; raritySelect.appendChild(o); });
+
+  // Populate domain filter
+  const domainSelect = document.getElementById('domain-filter');
+  const domains = [...new Set(allCards.map(c => c.domain).filter(Boolean))].sort();
+  domains.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; domainSelect.appendChild(o); });
+
+  renderChaseCards();
+  applyFilters();
+}
+
+function renderChaseCards() {
+  const grid = document.getElementById('chase-grid');
+  const chase = [...allCards]
+    .filter(c => CHASE_RARITIES.has(c.rarity))
+    .sort((a,b) => {
+      const pa = a.normalPrice ?? -1, pb = b.normalPrice ?? -1;
+      if (pa !== pb) return pb - pa;
+      const order = ['Signature','Overnumbered','Showcase','Legendary','Epic'];
+      return (order.indexOf(a.rarity)+1||99) - (order.indexOf(b.rarity)+1||99);
+    })
+    .slice(0, 20);
+
+  grid.innerHTML = chase.map(c => {
+    const rc = RARITY_CLASS[c.rarity] || 'rarity-common';
+    return \`<div class="chase-card" data-localid="\${c.localId}" data-name="\${(c.name||'').replace(/"/g,'&quot;')}">
+      <img class="chase-card-img" src="\${cardImg(c.localId)}" alt="\${c.name}" loading="lazy" onerror="this.style.background='#0f1f1c'">
+      <div class="chase-card-info">
+        <div class="chase-card-name">\${c.name}</div>
+        <div class="chase-card-number">\${SET_SHORT_NAME}-\${c.localId}</div>
+        <div class="chase-card-rarity-wrap"><span class="rarity-badge \${rc}">\${c.rarity}</span></div>
+        <div class="chase-price-pair">
+          <div class="price-col"><div class="price-col-label">Normal</div><div class="price-col-value">\${fmtPrice(c.normalPrice)}</div></div>
+          <div class="price-col"><div class="price-col-label">Foil</div><div class="price-col-value foil">\${fmtPrice(c.foilPrice)}</div></div>
+        </div>
+      </div>
+    </div>\`;
+  }).join('');
+
+  grid.querySelectorAll('.chase-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.localid, card.dataset.name));
+  });
+}
+
+function applyFilters() {
+  const search = document.getElementById('search-input').value.toLowerCase().trim();
+  const rarity = document.getElementById('rarity-filter').value;
+  const domain = document.getElementById('domain-filter').value;
+  const sort   = document.getElementById('sort-select').value;
+
+  filteredCards = allCards.filter(c => {
+    if (rarity && c.rarity !== rarity) return false;
+    if (domain && c.domain !== domain) return false;
+    if (search && !c.name?.toLowerCase().includes(search) && !c.localId?.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  filteredCards.sort((a,b) => {
+    if (sort === 'price')      return (b.normalPrice ?? -1) - (a.normalPrice ?? -1);
+    if (sort === 'price-foil') return (b.foilPrice ?? -1) - (a.foilPrice ?? -1);
+    return (parseInt(a.localId)||0) - (parseInt(b.localId)||0);
+  });
+
+  displayedCount = 0;
+  document.getElementById('card-grid').innerHTML = '';
+  document.getElementById('card-count').textContent = \`Showing \${Math.min(PAGE_SIZE, filteredCards.length)} of \${filteredCards.length} cards\`;
+  renderCards();
+}
+
+function renderCards() {
+  const grid  = document.getElementById('card-grid');
+  const slice = filteredCards.slice(displayedCount, displayedCount + PAGE_SIZE);
+  const dcolor = c => domainColor(c.domain);
+
+  slice.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'card-item';
+    div.style.borderLeftColor = dcolor(c);
+    div.innerHTML = \`
+      <img src="\${cardImg(c.localId)}" alt="\${c.name}" loading="lazy" width="200" height="275" onerror="this.style.display='none'">
+      <div class="card-item-info">
+        <div class="card-item-name">\${c.name}</div>
+        <div class="card-item-num">\${SET_SHORT_NAME}-\${c.localId}</div>
+        \${c.domain ? \`<div class="card-item-domain">\${c.domain}\${c.cardType ? ' · '+c.cardType : ''}</div>\` : ''}
+        <div class="card-item-price">\${fmtPrice(c.normalPrice)}\${c.foilPrice != null ? \` / <span style="background:linear-gradient(135deg,#a3e635,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent">\${fmtPrice(c.foilPrice)} foil</span>\` : ''}</div>
+      </div>\`;
+    div.addEventListener('click', () => openModal(c.localId, c.name));
+    grid.appendChild(div);
+  });
+
+  displayedCount += slice.length;
+  document.getElementById('card-count').textContent = \`Showing \${displayedCount} of \${filteredCards.length} cards\`;
+  document.getElementById('load-more-btn').style.display = displayedCount < filteredCards.length ? 'block' : 'none';
+}
+
+function openModal(localId, name) {
+  const card = allCards.find(c => c.localId === localId);
+  if (!card) return;
+  const rc = RARITY_CLASS[card.rarity] || 'rarity-common';
+  const q  = \`\${card.name} \${SET_SHORT_NAME}-\${localId} Riftbound\`;
+  document.getElementById('modal-inner').innerHTML = \`
+    <div>
+      <img class="modal-img" src="\${cardImg(localId)}" alt="\${card.name}" loading="lazy">
+    </div>
+    <div>
+      <div class="modal-name">\${card.name}</div>
+      <div class="modal-meta">\${SET_SHORT_NAME}-\${localId}</div>
+      \${card.domain ? \`<div class="modal-domain-badge">\${card.domain}\${card.cardType ? ' · '+card.cardType : ''}</div>\` : ''}
+      <span class="rarity-badge \${rc}" style="margin-bottom:12px;display:inline-flex">\${card.rarity}</span>
+      <div class="modal-price-pair">
+        <div class="modal-price-col">
+          <div class="modal-price-label">Normal NM</div>
+          <div class="modal-price-value">\${fmtPrice(card.normalPrice)}</div>
+        </div>
+        \${card.hasFoil !== false ? \`<div class="modal-price-col foil">
+          <div class="modal-price-label">Foil NM</div>
+          <div class="modal-price-value foil">\${fmtPrice(card.foilPrice)}</div>
+        </div>\` : ''}
+      </div>
+      <div class="modal-links">
+        <a class="modal-buy-link pl-tcgp" href="\${tcgpLink(card.name, localId)}" target="_blank" rel="noopener">TCGplayer <span>→</span></a>
+        <a class="modal-buy-link pl-ebay" href="\${ebayLink(q)}" target="_blank" rel="noopener">eBay <span>→</span></a>
+        <a class="modal-buy-link pl-amazon" href="\${amazonLink(q)}" target="_blank" rel="noopener">Amazon <span>→</span></a>
+        <a class="modal-buy-link" href="\${cardPageUrl(localId, card.name)}" style="background:rgba(45,212,191,0.08);border:1px solid var(--teal-border);color:var(--teal)">View Full Card Page <span>→</span></a>
+      </div>
+    </div>\`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal-overlay').classList.remove('open'));
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.getElementById('modal-overlay').classList.remove('open'); });
+
+document.getElementById('search-input').addEventListener('input', applyFilters);
+document.getElementById('rarity-filter').addEventListener('change', applyFilters);
+document.getElementById('domain-filter').addEventListener('change', applyFilters);
+document.getElementById('sort-select').addEventListener('change', applyFilters);
+document.getElementById('load-more-btn').addEventListener('click', renderCards);
+
+// Section nav scroll spy
+(function(){
+  const btns = document.querySelectorAll('.section-nav-btn[data-target]');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = document.getElementById(btn.dataset.target);
+      if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+      btns.forEach(b => b.classList.remove('active')); btn.classList.add('active');
+    });
+  });
+  const navH = document.getElementById('section-nav')?.offsetHeight || 60;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) btns.forEach(b => b.classList.toggle('active', b.dataset.target === e.target.id)); });
+  }, {rootMargin:\`-\${navH}px 0px -60% 0px\`, threshold:0});
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+
+  // Sets dropdown
+  const setsBtn = document.getElementById('nav-sets-btn');
+  const dropdown = document.getElementById('nav-sets-dropdown');
+  if(!setsBtn||!dropdown) return;
+  let populated = false;
+  setsBtn.addEventListener('click', async () => {
+    const isOpen = dropdown.classList.contains('open');
+    dropdown.classList.toggle('open', !isOpen);
+    if(!isOpen && !populated) {
+      try {
+        const res = await fetch('/sets-riftbound.json');
+        const sets = await res.json();
+        dropdown.innerHTML = sets.map(s => \`
+          <a href="\${s.live ? '/riftbound/sets/'+s.slug+'/cards' : 'javascript:void(0)'}" class="nav-dropdown-set\${s.setId === SET_ID ? ' current' : ''}\${!s.live ? '" style="opacity:.4;pointer-events:none' : ''}">
+            <img src="\${R2}/logos/riftbound/\${s.setId}.webp" alt="\${s.name}" onerror="this.style.display='none'">
+            <span>\${s.name} (\${s.short})</span>
+          </a>\`).join('');
+        populated = true;
+      } catch(e) { dropdown.innerHTML = '<div style="color:var(--muted);padding:12px;text-align:center;font-size:.8rem">Could not load sets</div>'; }
+    }
+  });
+  document.addEventListener('click', e => {
+    if(!setsBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('open');
+  });
+})();
+
+// Chase slider arrows
+(function(){
+  const slider = document.getElementById('chase-grid');
+  const btnL = document.getElementById('chase-arrow-left');
+  const btnR = document.getElementById('chase-arrow-right');
+  function upd(){ btnL.classList.toggle('hidden', slider.scrollLeft <= 0); btnR.classList.toggle('hidden', slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 4); }
+  btnL.addEventListener('click', () => slider.scrollBy({left:-440,behavior:'smooth'}));
+  btnR.addEventListener('click', () => slider.scrollBy({left:440,behavior:'smooth'}));
+  slider.addEventListener('scroll', upd, {passive:true});
+  new MutationObserver(upd).observe(slider, {childList:true});
+  upd();
+})();
+
+// Sealed products
+(function(){
+  const PRODUCT_META = ${JSON.stringify(
+    (() => {
+      try {
+        const sealed = JSON.parse(readFileSync('sealed-riftbound.json', 'utf8'));
+        return sealed[SET_ID] || {};
+      } catch { return {}; }
+    })()
+  )};
+
+  const grid = document.getElementById('products-grid');
+  if (grid && Object.keys(PRODUCT_META).length) {
+    grid.innerHTML = Object.values(PRODUCT_META).map(p => {
+      const img = p.tcgpId && p.tcgpId !== 'TODO'
+        ? \`https://product-images.tcgplayer.com/fit-in/437x437/\${p.tcgpId}.jpg\`
+        : '';
+      const tcgpUrl = p.tcgpId && p.tcgpId !== 'TODO'
+        ? \`\${TCGP_BASE}?u=\${encodeURIComponent('https://www.tcgplayer.com/product/'+p.tcgpId)}\`
+        : tcgpLink(p.name, '');
+      return \`<div class="product-card" data-type="\${p.filterKey}">
+        \${img ? \`<div class="product-img-wrap"><img src="\${img}" alt="\${p.name}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.display='none'"></div>\` : ''}
+        <div class="product-info">
+          <span class="rarity-badge \${p.badgeClass}" style="margin-bottom:10px;display:inline-flex">\${p.type}</span>
+          <div class="product-name">\${p.name}</div>
+          <div class="product-price" id="pp-\${p.filterKey}">N/A</div>
+          <div class="product-links">
+            <a class="product-link-row pl-amazon" href="\${amazonLink(p.q)}" target="_blank" rel="noopener"><span>Amazon</span><span>→</span></a>
+            <a class="product-link-row pl-ebay" href="\${ebayLink(p.q)}" target="_blank" rel="noopener"><span>eBay</span><span>→</span></a>
+            <a class="product-link-row pl-tcgp" href="\${tcgpUrl}" target="_blank" rel="noopener"><span>TCGplayer</span><span>→</span></a>
+          </div>
+        </div>
+      </div>\`;
+    }).join('');
+  } else if (grid) {
+    grid.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Sealed product data coming soon.</p>';
+  }
+
+  // Product filter
+  document.getElementById('product-filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if(!btn) return;
+    document.querySelectorAll('#product-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('#products-grid .product-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+    });
+  });
+
+  // Fetch sealed prices
+  if (Object.keys(PRODUCT_META).length) {
+    fetch(\`/api/sealed-prices?setId=\${SET_ID}\`)
+      .then(r => r.json())
+      .then(data => {
+        (data.products || []).forEach(p => {
+          const key = Object.values(PRODUCT_META).find(m => m.tcgpId === p.id)?.filterKey;
+          if (key) {
+            const el = document.getElementById(\`pp-\${key}\`);
+            if (el && p.market != null) el.textContent = '\$' + Number(p.market).toFixed(2);
+          }
+        });
+      }).catch(() => {});
+  }
+})();
+
+loadCards();
+</script>
+<script type="text/javascript">window.addEventListener('load',function(){(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7068180-c39f-4b4a-817c-cfa976acce5d1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');});</script>
+</body>
+</html>`;
+
+writeFileSync(`${SET_SLUG}.html`, html);
+console.log(`✅ Generated ${SET_SLUG}.html`);
+console.log(`   URL: ${SITE_URL}/${SET_SEO_PATH}`);
