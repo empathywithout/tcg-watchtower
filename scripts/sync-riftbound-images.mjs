@@ -38,7 +38,7 @@ const CARD_HEIGHT = 558;
 // Scrydex expansion ID map — verify these at credit reset
 const SCRYDEX_ID_MAP = {
   'ogn': 'OGN',
-  'spf': 'SPF',
+  'spf': 'SFD',
   'unl': 'UNL',
   'vnd': 'VND',
   'rad': 'RAD',
