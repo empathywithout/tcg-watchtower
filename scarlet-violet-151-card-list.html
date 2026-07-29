@@ -1992,7 +1992,7 @@ function initNav() {
   const onepieceSetsView = document.getElementById('onepiece-sets-view');
   const backToMenu = document.getElementById('back-to-menu');
   const backToMenuOp = document.getElementById('back-to-menu-op');
-  const setsGridContainer = document.getElementById('sets-grid-container');
+  const setsGridContainer = () => document.getElementById('sets-grid-container');
   const setsGridContainerOp = document.getElementById('sets-grid-container-op');
   const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
   const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
@@ -2023,6 +2023,7 @@ function initNav() {
   function showPokemonSets() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.add('open');
+    fetchSets();
   }
 
   function showOnePieceSets() {
@@ -2126,7 +2127,7 @@ function initNav() {
   }
 
   function renderSets() {
-    if (!setsGridContainer) return;
+    const _sgc = setsGridContainer(); if (!_sgc) return;
     const pokemonSets = allSets.filter(s => {
       const id = (s.setId || '').toLowerCase();
       return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
@@ -2157,7 +2158,7 @@ function initNav() {
       });
       html += '</div>';
     });
-    setsGridContainer.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
+    _sgc.innerHTML = html || '<div style="color:var(--text-muted);padding:40px;text-align:center">No sets found</div>';
   }
 
   function renderOnePieceSets() {
