@@ -651,6 +651,7 @@ function initNav() {
   function showPokemonSets() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.add('open');
+    renderSets();
   }
 
   function showOnePieceSets() {
