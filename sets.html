@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
 <title>TCG Card Lists & Prices | TCG Watchtower</title>
-<meta name="description" content="Browse complete Pokémon and One Piece TCG card lists with live prices, chase card rankings, and sealed product values.">
+<meta name="description" content="Browse complete Pokémon, One Piece, and Riftbound TCG card lists with live prices, chase card rankings, and sealed product values.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tcgwatchtower.com/sets">
 <meta property="og:type" content="website">
@@ -111,19 +111,23 @@ nav {
 }
 .franchise-card.pokemon::before { background:linear-gradient(90deg,#3b82f6,#a855f7); }
 .franchise-card.onepiece::before { background:linear-gradient(90deg,#f97316,#ef4444); }
+.franchise-card.riftbound::before { background:linear-gradient(90deg,#2dd4bf,#0d9488); }
 .franchise-card:hover { transform:translateY(-6px); }
 .franchise-card.pokemon:hover { box-shadow:0 20px 48px rgba(59,130,246,0.25); border-color:rgba(59,130,246,0.3); }
 .franchise-card.onepiece:hover { box-shadow:0 20px 48px rgba(249,115,22,0.25); border-color:rgba(249,115,22,0.3); }
+.franchise-card.riftbound:hover { box-shadow:0 20px 48px rgba(45,212,191,0.25); border-color:rgba(45,212,191,0.3); }
 .franchise-emoji { font-size:2.5rem; margin-bottom:4px; }
 .franchise-name { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:0.04em; }
 .franchise-card.pokemon .franchise-name { color:#60a5fa; }
 .franchise-card.onepiece .franchise-name { color:#fb923c; }
+.franchise-card.riftbound .franchise-name { color:#2dd4bf; }
 .franchise-desc { font-size:0.9rem; color:var(--text-muted); line-height:1.6; }
 .franchise-stats { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
 .franchise-stat { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-light); }
 .franchise-stat-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 .pokemon .franchise-stat-dot { background:#3b82f6; }
 .onepiece .franchise-stat-dot { background:#f97316; }
+.riftbound .franchise-stat-dot { background:#2dd4bf; }
 .franchise-cta {
   margin-top:auto; padding-top:16px;
   font-size:0.85rem; font-weight:700;
@@ -132,6 +136,7 @@ nav {
 }
 .franchise-card.pokemon .franchise-cta { color:#3b82f6; }
 .franchise-card.onepiece .franchise-cta { color:#f97316; }
+.franchise-card.riftbound .franchise-cta { color:#2dd4bf; }
 .franchise-card:hover .franchise-cta { gap:10px; }
 
 footer {
@@ -195,6 +200,18 @@ footer a:hover { color:var(--text-primary); }
       <div class="franchise-stat"><div class="franchise-stat-dot"></div>Live prices & chase rankings</div>
     </div>
     <div class="franchise-cta">Browse One Piece Sets <span>→</span></div>
+  </a>
+
+  <a href="/sets/riftbound" class="franchise-card riftbound">
+    <div class="franchise-emoji">⚔️</div>
+    <div class="franchise-name">Riftbound TCG</div>
+    <p class="franchise-desc">League of Legends TCG — complete card lists with live prices for every Riftbound set.</p>
+    <div class="franchise-stats">
+      <div class="franchise-stat"><div class="franchise-stat-dot"></div>Origins, Spiritforged, Unleashed</div>
+      <div class="franchise-stat"><div class="franchise-stat-dot"></div>Signature & Overnumbered cards</div>
+      <div class="franchise-stat"><div class="franchise-stat-dot"></div>Live prices & chase rankings</div>
+    </div>
+    <div class="franchise-cta">Browse Riftbound Sets <span>→</span></div>
   </a>
 </div>
 
