@@ -574,7 +574,7 @@
         let allSets = [];
         let currentFilter = 'all';
         function setLogoUrl(setId) { return `${R2_PUBLIC_URL}/logos/${setId}.png`; }
-        function toggleHamburgerMenu() { const isOpen = hamburgerMenu.classList.contains('open'); if (isOpen) { closeAllMenus(); } else { hamburgerMenu.classList.add('open'); hamburgerOverlay.classList.add('open'); hamburger.classList.add('open'); } }
+        function toggleHamburgerMenu() { const isOpen = hamburgerMenu.classList.contains('open'); if (isOpen) { closeAllMenus(); } else { const rect = hamburger.getBoundingClientRect(); hamburgerMenu.style.top = (rect.bottom + 8) + 'px'; hamburgerMenu.style.right = (window.innerWidth - rect.right) + 'px'; hamburgerMenu.classList.add('open'); hamburgerOverlay.classList.add('open'); hamburger.classList.add('open'); } }
         function closeAllMenus() { hamburgerMenu.classList.remove('open'); pokemonSetsView.classList.remove('open'); if (onepieceSetsView) onepieceSetsView.classList.remove('open'); hamburgerOverlay.classList.remove('open'); hamburger.classList.remove('open'); }
         function showOnePieceSets() { hamburgerMenu.classList.remove('open'); if (onepieceSetsView) { onepieceSetsView.classList.add('open'); renderOnePieceSets(); } }
         function showPokemonSets() { hamburgerMenu.classList.remove('open'); pokemonSetsView.classList.add('open'); }
