@@ -651,7 +651,7 @@ function initNav() {
   function showPokemonSets() {
     hamburgerMenu.classList.remove('open');
     pokemonSetsView.classList.add('open');
-    if (allSets.length > 0) { renderSets(); } else { fetchSets(); }
+    renderSets();
   }
 
   function showOnePieceSets() {
