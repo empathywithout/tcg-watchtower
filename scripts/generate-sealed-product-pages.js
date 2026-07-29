@@ -55,13 +55,19 @@ function extractPageData(filePath) {
     seriesSlug = parts[2];
     setSlug    = parts[3];
   } else if (parts[0] === 'one-piece' && parts[1] === 'sets' && parts.length >= 3) {
-    seriesSlug = null; // no series segment in the URL for One Piece
+    seriesSlug = null;
+    setSlug    = parts[2];
+  } else if (parts[0] === 'riftbound' && parts[1] === 'sets' && parts.length >= 3) {
+    seriesSlug = null;
     setSlug    = parts[2];
   } else {
     return null;
   }
+  const isRiftbound = parts[0] === 'riftbound';
+  const isOnePiece  = parts[0] === 'one-piece';
   const basePath = seriesSlug
     ? `pokemon/sets/${seriesSlug}/${setSlug}`
+    : isRiftbound ? `riftbound/sets/${setSlug}`
     : `one-piece/sets/${setSlug}`;
   // The final path segment varies by set — some use /cards, others /card-list.
   // Use whatever this file's own canonical actually says, not an assumption.
@@ -69,10 +75,12 @@ function extractPageData(filePath) {
 
   const titleMatch = src.match(/<title>([^<]+)/);
   const rawTitle   = titleMatch ? titleMatch[1] : setSlug;
-  const setFullName = rawTitle.split(' Card List')[0].trim();
+  const setFullName = rawTitle.split(' Card List')[0].split('|')[0].trim();
 
-  const groupIdMatch = src.match(/const TCGP_GROUP_ID\s*=\s*'([^']*)'/);
+  // Riftbound uses SEALED_GROUP_ID, others use TCGP_GROUP_ID
+  const groupIdMatch = src.match(/const (?:SEALED_GROUP_ID|TCGP_GROUP_ID)\s*=\s*'([^']*)'/);
   const tcgpGroupId  = groupIdMatch ? groupIdMatch[1] : '';
+  const gameParam    = isRiftbound ? 'riftbound' : isOnePiece ? 'onepiece' : 'pokemon';
 
   const pmIdx = src.indexOf('const PRODUCT_META');
   if (pmIdx === -1) return null;
@@ -81,10 +89,6 @@ function extractPageData(filePath) {
   const objText = extractBalancedObject(src, braceIdx);
   let productMeta;
   try {
-    // Not all PRODUCT_META blocks are strict JSON — some are JS object
-    // literals with comments and single-quoted keys. Evaluate as JS instead
-    // of JSON.parse; safe here since this only ever runs against our own
-    // already-committed source files, never external input.
     productMeta = new Function(`return (${objText});`)();
   } catch (e) {
     console.warn(`⚠️  Could not parse PRODUCT_META in ${filePath}: ${e.message}`);
@@ -95,9 +99,9 @@ function extractPageData(filePath) {
 
   const hasTopChase = fs.existsSync(path.join(ROOT, basePath, 'top-chase-cards.html'));
   const hasMostValuable = fs.existsSync(path.join(ROOT, basePath, 'most-valuable.html'));
-  const gameName = seriesSlug ? 'Pokémon TCG' : 'One Piece TCG';
+  const gameName = isRiftbound ? 'Riftbound TCG' : isOnePiece ? 'One Piece TCG' : 'Pokémon TCG';
 
-  return { seriesSlug, setSlug, basePath, cardsSegment, setFullName, tcgpGroupId, products, hasTopChase, hasMostValuable, gameName };
+  return { seriesSlug, setSlug, basePath, cardsSegment, setFullName, tcgpGroupId, gameParam, products, hasTopChase, hasMostValuable, gameName };
 }
 
 function amazonSearchUrl(q) {
@@ -111,14 +115,15 @@ function tcgplayerSearchUrl(q) {
 }
 
 function buildSealedProductPage(data) {
-  const { seriesSlug, setSlug, basePath, cardsSegment, setFullName, tcgpGroupId, products, hasTopChase, hasMostValuable, gameName } = data;
+  const { seriesSlug, setSlug, basePath, cardsSegment, setFullName, tcgpGroupId, gameParam, products, hasTopChase, hasMostValuable, gameName } = data;
+  const sealedIds = products.map(p => p.tcgpId).filter(Boolean).join(",");
   const pageUrl   = `${SITE_URL}/${basePath}/sealed-product`;
   const cardListUrl = `${SITE_URL}/${basePath}/${cardsSegment}`;
   const pageTitle = `${setFullName} Sealed Product Buying Guide: Prices & Where to Buy | ${gameName}`;
-  const pageDesc  = `Current market prices for every ${setFullName} sealed product — Booster Boxes, Elite Trainer Boxes, and more. Compare prices and buy on TCGplayer, Amazon, or eBay.`;
+  const pageDesc  = `Current market prices for every ${setFullName} sealed product — Booster Boxes, Champion Decks, and more. Compare prices on Amazon, eBay, and more.`;
   const firstProductImage = products[0] ? (products[0].image || `https://product-images.tcgplayer.com/fit-in/437x437/${products[0].tcgpId}.jpg`) : '';
   const productTypeList = [...new Set(products.map(p => p.type))].join(', ');
-  const introText = `Compare current market prices for every ${setFullName} sealed product, including ${productTypeList || 'Booster Boxes and Elite Trainer Boxes'}. Prices are pulled from TCGplayer and update throughout the day — check back before buying to make sure you're getting the best deal.`;
+  const introText = `Compare current market prices for every ${setFullName} sealed product, including ${productTypeList || 'Booster Boxes and Elite Trainer Boxes'}. Prices update throughout the day.`;
 
   const productCards = products.map(p => {
     const amazonUrl = p.noAmazon ? null : amazonSearchUrl(p.q);
@@ -146,7 +151,7 @@ function buildSealedProductPage(data) {
     ${hasMostValuable ? `<a class="set-link" href="${SITE_URL}/${basePath}/most-valuable">⭐ Most Valuable Cards →</a>` : ''}
     <a class="set-link" href="${cardListUrl}">📋 View Full Card List →</a>`;
 
-  const hubSlug = seriesSlug ? 'pokemon' : 'one-piece';
+  const hubSlug = seriesSlug ? 'pokemon' : gameParam === 'riftbound' ? 'sets/riftbound' : 'one-piece';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -247,14 +252,16 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
   <div class="set-links">${relatedLinks}</div>
 </div>
 <footer>
-  <p>TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.</p>
+  <p>${gameParam === 'riftbound' ? 'TCG Watchtower is not affiliated with Riot Games, League of Legends, or Riftbound. All trademarks remain property of their respective owners.' : gameParam === 'onepiece' ? 'TCG Watchtower is not affiliated with Bandai or One Piece. All card images and names are property of their respective owners.' : 'TCG Watchtower is not affiliated with Nintendo, Game Freak, or The Pokémon Company. All card images and names are property of their respective owners.'}</p>
 </footer>
 <script>
 const GROUP_ID = '${tcgpGroupId}';
+const GAME_PARAM = '${gameParam}';
+const SEALED_IDS = '${sealedIds}';
 async function loadPrices() {
   if (!GROUP_ID) return;
   try {
-    const res = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID);
+    const res = await fetch('/api/tcgplayer-prices?groupId=' + GROUP_ID + '&game=' + GAME_PARAM + (SEALED_IDS ? '&sealedIds=' + SEALED_IDS : ''));
     if (!res.ok) return;
     const data = await res.json();
     const sealedPrices = data.sealedPrices || {};
