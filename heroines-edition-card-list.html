@@ -1096,7 +1096,7 @@ function initNav() {
   const backToMenu = document.getElementById('back-to-menu');
   const backToMenuOp = document.getElementById('back-to-menu-op');
   const setsGridContainer = () => document.getElementById('sets-grid-container');
-  const setsGridContainerOp = document.getElementById('sets-grid-container-op');
+  const setsGridContainerOp = () => document.getElementById('sets-grid-container-op');
   const filterTabs = document.querySelectorAll('#sets-filter-tabs .filter-tab');
   const filterTabsOp = document.querySelectorAll('#sets-filter-tabs-op .filter-tab');
 
@@ -1265,14 +1265,14 @@ function initNav() {
   }
 
   function renderOnePieceSets() {
-    if (!setsGridContainerOp) return;
+    const _sgcop = setsGridContainerOp(); if (!_sgcop) return;
     const opSets = allSets.filter(s => {
       const id = (s.setId || '').toLowerCase();
       return id.startsWith('op') || id.startsWith('eb') || id.startsWith('st');
     });
     const filtered = currentFilterOp === 'live' ? opSets.filter(s => s.live) : opSets;
     if (!filtered.length) {
-      setsGridContainerOp.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
+      _sgcop.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:40px;">No sets available</div>';
       return;
     }
     const r2 = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
@@ -1291,7 +1291,7 @@ function initNav() {
         </div></a>`;
     });
     html += '</div>';
-    setsGridContainerOp.innerHTML = html;
+    _sgcop.innerHTML = html;
   }
 
   await fetchSets();
