@@ -1231,6 +1231,8 @@ function initNav() {
 
   function renderSets() {
     const _sgc = setsGridContainer(); if (!_sgc) return;
+    const R2_URL = 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev';
+    const setLogoUrl = id => `${R2_URL}/logos/${id}.png`;
     const pokemonSets = allSets.filter(s => {
       const id = (s.setId || '').toLowerCase();
       return !id.startsWith('op') && !id.startsWith('eb') && !id.startsWith('st');
