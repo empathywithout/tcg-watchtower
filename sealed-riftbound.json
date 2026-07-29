@@ -43,38 +43,70 @@
   },
   "spf": {
     "booster-box": {
-      "tcgpId": "TODO",
+      "tcgpId": "661934",
       "type": "Booster Box",
       "filterKey": "box-spf",
       "badgeClass": "badge-box",
-      "name": "Spiritforged Booster Box (24 Packs)",
+      "name": "Spiritforged Booster Display (24 Packs)",
       "q": "Riftbound Spiritforged Booster Box TCG"
     },
     "booster-pack": {
-      "tcgpId": "TODO",
+      "tcgpId": "661954",
       "type": "Booster Pack",
       "filterKey": "pack-spf",
       "badgeClass": "badge-pack",
       "name": "Spiritforged Booster Pack",
       "q": "Riftbound Spiritforged Booster Pack TCG"
+    },
+    "champion-deck-rumble": {
+      "tcgpId": "661939",
+      "type": "Champion Deck",
+      "filterKey": "deck-rumble",
+      "badgeClass": "badge-deck",
+      "name": "Spiritforged Champion Deck: Rumble",
+      "q": "Riftbound Spiritforged Champion Deck Rumble TCG"
+    },
+    "champion-deck-fiora": {
+      "tcgpId": "661942",
+      "type": "Champion Deck",
+      "filterKey": "deck-fiora",
+      "badgeClass": "badge-deck",
+      "name": "Spiritforged Champion Deck: Fiora",
+      "q": "Riftbound Spiritforged Champion Deck Fiora TCG"
     }
   },
   "unl": {
     "booster-box": {
-      "tcgpId": "TODO",
+      "tcgpId": "678150",
       "type": "Booster Box",
       "filterKey": "box-unl",
       "badgeClass": "badge-box",
-      "name": "Unleashed Booster Box (24 Packs)",
+      "name": "Unleashed Booster Display (24 Packs)",
       "q": "Riftbound Unleashed Booster Box TCG"
     },
     "booster-pack": {
-      "tcgpId": "TODO",
+      "tcgpId": "678149",
       "type": "Booster Pack",
       "filterKey": "pack-unl",
       "badgeClass": "badge-pack",
       "name": "Unleashed Booster Pack",
       "q": "Riftbound Unleashed Booster Pack TCG"
+    },
+    "champion-deck-vi": {
+      "tcgpId": "678157",
+      "type": "Champion Deck",
+      "filterKey": "deck-vi",
+      "badgeClass": "badge-deck",
+      "name": "Unleashed Champion Deck: Vi",
+      "q": "Riftbound Unleashed Champion Deck Vi TCG"
+    },
+    "champion-deck-vex": {
+      "tcgpId": "678155",
+      "type": "Champion Deck",
+      "filterKey": "deck-vex",
+      "badgeClass": "badge-deck",
+      "name": "Unleashed Champion Deck: Vex",
+      "q": "Riftbound Unleashed Champion Deck Vex TCG"
     }
   }
 }
