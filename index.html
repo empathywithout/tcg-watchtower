@@ -387,7 +387,7 @@
             <div class="hero-content">
                 <div>
                     <div class="badge"><span class="star-icon">⭐</span><span>Trusted by 4,300+ collectors</span></div>
-                    <h1><span class="gradient-text">Pokémon &amp; One Piece TCG</span><br>Card Lists, Prices,<br>and Restock Alerts</h1>
+                    <h1><span class="gradient-text">Pokémon, One Piece &amp; Riftbound TCG</span><br>Card Lists, Prices,<br>and Restock Alerts</h1>
                     <p class="hero-description">Browse Pokémon and One Piece card lists with live prices and chase card rankings. Get instant Discord alerts when products restock.</p>
                     <div class="cta-buttons">
                         <a href="#browse-sets" class="btn-primary">
@@ -439,7 +439,7 @@
 
             <!-- SEO copy -->
             <div style="max-width:780px;margin:48px auto 0;padding:32px;background:linear-gradient(135deg,rgba(30,41,59,0.4),rgba(15,23,42,0.4));border:1px solid rgba(255,255,255,0.06);border-radius:14px;">
-                <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;margin-bottom:12px;">Browse Pokémon and One Piece TCG Card Lists</h2>
+                <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;margin-bottom:12px;">Browse Pokémon, One Piece &amp; Riftbound TCG Card Lists</h2>
                 <p style="color:rgba(226,232,240,0.8);line-height:1.7;font-size:0.95rem;">TCG Watchtower provides complete Pokémon and One Piece TCG card lists with live market prices, chase card rankings, and sealed product values. Track new releases including <a href="/pokemon/sets/mega-evolution/chaos-rising/cards" style="color:#93c5fd;text-decoration:none;">Chaos Rising</a>, <a href="/pokemon/sets/scarlet-violet/destined-rivals/cards" style="color:#93c5fd;text-decoration:none;">Destined Rivals</a>, <a href="/pokemon/sets/mega-evolution/pitch-black/cards" style="color:#93c5fd;text-decoration:none;">Pitch Black</a>, and more — plus instant Discord restock alerts for Target, Walmart, Amazon, and Pokémon Center.</p>
             </div>
         </div>
@@ -679,7 +679,8 @@
   function logoUrl(set) {
     const id = (set.setId || '').toLowerCase();
     const isOP = id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || set.series === 'One Piece TCG';
-    return isOP ? `${R2}/logos/op/${set.setId}.png` : `${R2}/logos/${set.setId}.png`;
+    const isRB = set.game === 'riftbound' || set.series === 'Riftbound TCG';
+    return isOP ? `${R2}/logos/op/${set.setId}.png` : isRB ? `${R2}/logos/riftbound/${set.setId}.webp` : `${R2}/logos/${set.setId}.png`;
   }
   function setUrl(set) { return '/' + set.slug; }
   function daysSince(dateStr) {
@@ -696,7 +697,8 @@
   function shortSeries(set) {
     const id = (set.setId || '').toLowerCase();
     const isOP = id.startsWith('op') || id.startsWith('eb') || id.startsWith('st') || set.series === 'One Piece TCG';
-    return isOP ? 'One Piece' : 'Pokémon';
+    const isRB = set.game === 'riftbound' || set.series === 'Riftbound TCG';
+    return isRB ? 'Riftbound' : isOP ? 'One Piece' : 'Pokémon';
   }
   function displayName(set) {
     return (set.name || '').replace(/\s*\([^)]*\)\s*$/, '');
@@ -708,13 +710,19 @@
   }
 
   try {
-    const res = await fetch('/sets.json');
-    if (!res.ok) return;
-    const allSetsData = await res.json();
+    const [setsRes, rbRes] = await Promise.all([fetch('/sets.json'), fetch('/sets-riftbound.json')]);
+    const allSetsData = setsRes.ok ? await setsRes.json() : [];
+    const rbSetsRaw = rbRes.ok ? await rbRes.json() : [];
+    const rbSets = rbSetsRaw.filter(s => s.live).map(s => ({
+      ...s, game: 'riftbound', series: 'Riftbound TCG',
+      slug: `riftbound/sets/${s.slug || s.setId}/cards`,
+      short: s.short || s.setId.toUpperCase(),
+    }));
     const live = allSetsData.filter(s => s.live);
-    const byDateDesc = [...live].sort((a, b) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
+    const allLive = [...live, ...rbSets];
+    const byDateDesc = [...allLive].sort((a, b) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
 
-    // ── Latest Sets panel (mixed, top 4 across both games) ──
+    // ── Latest Sets panel (mixed, top 4 across all games) ──
     if (latestGrid) {
       const top4 = byDateDesc.slice(0, 4);
       latestGrid.innerHTML = top4.map(set => `
@@ -725,10 +733,11 @@
       `).join('');
     }
 
-    // ── Browse by series (Pokemon top 4, One Piece top 4) ──
+    // ── Browse by series ──
     if (browseContainer) {
       const pokemonSets = byDateDesc.filter(s => shortSeries(s) === 'Pokémon').slice(0, 4);
       const opSets = byDateDesc.filter(s => shortSeries(s) === 'One Piece').slice(0, 4);
+      const riftboundSets = byDateDesc.filter(s => shortSeries(s) === 'Riftbound').slice(0, 4);
 
       function tile(set) {
         return `
@@ -748,6 +757,11 @@
         <div class="browse-sets-grid">${opSets.map(tile).join('')}</div>
         <div style="text-align:right;margin-top:10px;">
           <a href="/sets" style="color:#f97316;font-size:0.85rem;text-decoration:none;font-weight:500;">View all One Piece sets →</a>
+        </div>
+        <div class="browse-series-label" style="margin-top:28px;background:linear-gradient(90deg,#2dd4bf,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">⚔️ Riftbound TCG</div>
+        <div class="browse-sets-grid">${riftboundSets.map(tile).join('')}</div>
+        <div style="text-align:right;margin-top:10px;">
+          <a href="/sets/riftbound" style="color:#2dd4bf;font-size:0.85rem;text-decoration:none;font-weight:500;">View all Riftbound sets →</a>
         </div>`;
     }
   } catch (e) {
