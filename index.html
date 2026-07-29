@@ -258,14 +258,14 @@
         .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
         .hamburger-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2147483646; animation:fadeIn 0.2s; }
         .hamburger-overlay.open { display:block; }
-        .hamburger-menu { display:none; flex-direction:column; background:#1a1040; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:8px; position:fixed; top:80px; left:auto; right:24px; width:200px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; }
+        .hamburger-menu { display:none; flex-direction:column; background:#0d1117; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:8px; position:fixed; top:80px; left:auto; right:24px; width:200px; max-width:400px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; }
         .hamburger-menu.open { display:flex; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
         .hamburger-menu-item { padding:14px 16px; border-radius:8px; color:var(--text-light); text-decoration:none; font-size:1rem; font-weight:500; transition:background 0.15s; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
         .hamburger-menu-item:hover { background:rgba(59,130,246,0.15); color:white; }
         .hamburger-menu-divider { height:1px; background:rgba(255,255,255,0.08); margin:8px 0; }
-        .pokemon-sets-view { display:none; flex-direction:column; background:#1a1040; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:20px; position:fixed; top:80px; left:16px; right:16px; bottom:80px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; overflow-y:auto; }
+        .pokemon-sets-view { display:none; flex-direction:column; background:#0d1117; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:20px; position:fixed; top:80px; left:16px; right:16px; bottom:80px; z-index:2147483647; box-shadow:0 16px 48px rgba(0,0,0,0.9); animation:slideDown 0.3s ease-out; overflow-y:auto; }
         .pokemon-sets-view.open { display:flex; }
         .pokemon-sets-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08); }
         .back-button { background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:8px; padding:8px 12px; color:var(--text-light); cursor:pointer; transition:all 0.2s; font-size:0.9rem; font-weight:500; }

@@ -513,7 +513,7 @@ footer {
 .hamburger-menu {
   display: none;
   flex-direction: column;
-  background: #1a1040;
+  background: #0d1117;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
   padding: 8px;
@@ -572,7 +572,7 @@ footer {
 .pokemon-sets-view {
   display: none;
   flex-direction: column;
-  background: #1a1040;
+  background: #0d1117;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
   padding: 20px;
