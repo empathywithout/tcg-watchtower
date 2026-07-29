@@ -1155,7 +1155,7 @@ function initNav(){
   function backToMainMenu(){if(pokemonSetsView)pokemonSetsView.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV)opV.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV)rbV.classList.remove('open');hamburgerMenu.classList.add('open');}
   hamburger.addEventListener('click',()=>{const isOpen=hamburgerMenu.classList.contains('open');if(isOpen)closeAllMenus();else{const rect=hamburger.getBoundingClientRect();hamburgerMenu.style.top=(rect.bottom+8)+'px';hamburgerMenu.style.right=(window.innerWidth-rect.right)+'px';hamburgerMenu.classList.add('open');hamburgerOverlay.classList.add('open');hamburger.classList.add('open');}});
   if(hamburgerOverlay)hamburgerOverlay.addEventListener('click',closeAllMenus);
-  if(pokemonMenuItem)pokemonMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');if(pokemonSetsView){pokemonSetsView.classList.add('open');renderSets();}});
+  if(pokemonMenuItem)pokemonMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');if(pokemonSetsView){pokemonSetsView.classList.add('open');if(allSets.length>0){renderSets();}else{fetchSets();}}});
   if(onepieceMenuItem)onepieceMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const opV=document.getElementById('onepiece-sets-view');if(opV){opV.classList.add('open');renderOnePieceSets();}});
   const riftboundMenuItem=document.getElementById('riftbound-menu-item');
   if(riftboundMenuItem)riftboundMenuItem.addEventListener('click',()=>{hamburgerMenu.classList.remove('open');const rbV=document.getElementById('riftbound-sets-view');if(rbV){rbV.classList.add('open');renderRiftboundSets();}});
