@@ -2001,6 +2001,9 @@ function initNav() {
     const isOpen = hamburgerMenu.classList.contains('open');
     if (isOpen) { closeAllMenus(); }
     else {
+      const rect = hamburger.getBoundingClientRect();
+      hamburgerMenu.style.top = (rect.bottom + 8) + 'px';
+      hamburgerMenu.style.right = (window.innerWidth - rect.right) + 'px';
       hamburgerMenu.classList.add('open');
       hamburgerOverlay.classList.add('open');
       hamburger.classList.add('open');
