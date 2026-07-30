@@ -236,6 +236,8 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
 @media(max-width:640px){
   .section-nav-inner{padding:0 4px;gap:0;flex-wrap:nowrap;justify-content:space-between;width:100%}
   .section-nav-btn,.section-nav-sets-btn{padding:10px 4px;font-size:.65rem;letter-spacing:0;flex:1;text-align:center}
+  .nav-full{display:none}
+  .nav-short{display:inline}
   .container{padding:0 16px}
   .set-hero{padding:32px 0 48px}
 }
@@ -298,11 +300,11 @@ footer{background:rgba(2,15,13,.8);backdrop-filter:blur(10px);border-top:1px sol
 <!-- Section nav -->
 <div class="section-nav" id="section-nav">
   <div class="section-nav-inner">
-    <button class="section-nav-btn active" data-target="section-chase">Chase Cards</button>
-    <button class="section-nav-btn" data-target="section-cards">Card List</button>
-    <button class="section-nav-btn" data-target="section-products">Sealed Products</button>
+    <button class="section-nav-btn active" data-target="section-chase"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn" data-target="section-cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn">All Sets ▾</button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">All Sets ▾</span><span class="nav-short">All Sets ▾</span></button>
       <div class="section-nav-dropdown" id="nav-sets-dropdown"></div>
     </div>
   </div>
