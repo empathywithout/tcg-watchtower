@@ -449,7 +449,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 .buy-buttons{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem}
 .btn{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1.25rem;border-radius:10px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none;transition:opacity 0.2s}
 .btn:hover{opacity:0.85}
-.btn-tcgp{background:#1a6ef5;color:#fff}
+.btn-tcgp{background:#1a9e4e;color:#fff}
 .btn-ebay{background:#e43137;color:#fff}
 .btn-amazon{background:#f90;color:#111}
 .btn-amazon{background:#f90;color:#111}
