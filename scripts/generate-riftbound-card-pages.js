@@ -273,7 +273,7 @@ ${gaScript({ set_id: SET_ID, series: 'Riftbound', page_type: 'card_detail' })}
 <style>
 ${sharedCss}
 .card-layout{display:grid;grid-template-columns:340px 1fr;gap:2.5rem;align-items:start;margin-top:1.5rem}
-@media(max-width:700px){.card-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.card-layout{grid-template-columns:1fr}.card-image-wrap{position:static;top:auto}}
 .card-image-wrap{position:sticky;top:80px}
 .card-image-wrap img{width:100%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
 .card-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;margin-bottom:.4rem;line-height:1.1}
