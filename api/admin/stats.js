@@ -90,16 +90,17 @@ export default async function handler(req, res) {
     const today = now2.toISOString().slice(0,10);
     const week  = `${now2.getFullYear()}-W${String(Math.ceil((now2.getDate() + new Date(now2.getFullYear(), now2.getMonth(), 1).getDay()) / 7)).padStart(2,'0')}`;
     const month = now2.toISOString().slice(0,7);
-    const [dau, wau, mau] = await Promise.all([
+    const [dau, wau, mau, totalLogins] = await Promise.all([
       kvGet(`stats:dau:${today}`).then(v => parseInt(v||0)),
       kvGet(`stats:wau:${week}`).then(v => parseInt(v||0)),
       kvGet(`stats:mau:${month}`).then(v => parseInt(v||0)),
+      kvGet('stats:total_logins').then(v => parseInt(v||0)),
     ]);
 
     return res.status(200).json({
       generatedAt: new Date().toISOString(),
       users: { total: totalUsers, active7d, active30d, withCards, empty: totalUsers - withCards, discord: discordUsers, google: googleUsers },
-      engagement: { totalCards, avgCardsPerUser: parseFloat(avgCards), dau, wau, mau },
+      engagement: { totalCards, avgCardsPerUser: parseFloat(avgCards), dau, wau, mau, totalLogins },
       topSets,
     });
 
