@@ -276,7 +276,7 @@ ${sharedCss}
 @media(max-width:700px){.card-layout{grid-template-columns:1fr}}
 .card-image-wrap{position:relative}
 @media(min-width:701px){.card-image-wrap{position:sticky;top:80px}}
-.card-image-wrap img{width:100%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
+.card-image-wrap img{width:100%;height:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
 .card-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;margin-bottom:.4rem;line-height:1.1}
 .card-meta{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
 .card-meta a{color:#4ade80}
