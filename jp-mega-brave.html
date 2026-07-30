@@ -993,13 +993,10 @@ footer {
   justify-content: center;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
-.nav-short { display: none; }
 @media (max-width: 640px) {
   .section-nav-inner { padding: 0 4px; gap: 0; flex-wrap: nowrap; justify-content: space-between; width: 100%; }
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
-  .nav-short { display: inline; }
-  .nav-home-btn { display: none; }
 }
 .section-nav-btn {
   flex-shrink: 0;
@@ -1152,11 +1149,11 @@ button,a,[onclick]{touch-action:manipulation}</style>
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/top-chase-cards">Chase Cards</button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/cards">Card List</button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/mega-evolution-jp/mega-brave/sealed-product">Sealed Products</button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">All Sets ▾</span><span class="nav-short">All Sets ▾</span></button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn">All Sets ▾</button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
