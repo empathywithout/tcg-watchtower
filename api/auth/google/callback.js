@@ -58,6 +58,15 @@ export default async function handler(req, res) {
       `tcgw_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`
     );
 
+    // Track total logins (fire-and-forget)
+    const kvUrl   = process.env.KV_REST_API_URL;
+    const kvToken = process.env.KV_REST_API_TOKEN;
+    if (kvUrl && kvToken) {
+      fetch(`${kvUrl}/incr/${encodeURIComponent('stats:total_logins')}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${kvToken}` },
+      }).catch(() => {});
+    }
+
     res.redirect('/portfolio?auth=success');
   } catch (e) {
     console.error('Google auth callback error:', e);
