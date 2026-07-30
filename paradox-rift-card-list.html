@@ -898,6 +898,7 @@ footer {
   justify-content: center;
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
+.nav-short { display: none; }
 @media (max-width: 640px) {
   .section-nav-inner {
   max-width: 1400px;
@@ -911,6 +912,8 @@ footer {
 }
   .section-nav-btn { padding: 10px 4px; font-size: 0.65rem; letter-spacing: 0; flex: 1; text-align: center; white-space: nowrap; }
   .nav-full { display: none; }
+  .nav-short { display: inline; }
+  .nav-home-btn { display: none; }
 }
 .section-nav-btn {
   flex-shrink: 0;
@@ -1103,11 +1106,11 @@ fetch('/nav.html').then(r => r.text()).then(html => {
 <nav class="section-nav" id="section-nav">
   <div class="section-nav-inner">
     
-    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards">Chase Cards</button>
-    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/paradox-rift/cards">Card List</button>
-    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/paradox-rift/sealed-product">Sealed Products</button>
+    <button class="section-nav-btn" data-target="section-chase" data-url="/pokemon/sets/scarlet-violet/paradox-rift/top-chase-cards"><span class="nav-full">Chase Cards</span><span class="nav-short">Chase</span></button>
+    <button class="section-nav-btn active" data-target="section-cards" data-url="/pokemon/sets/scarlet-violet/paradox-rift/cards"><span class="nav-full">Card List</span><span class="nav-short">Cards</span></button>
+    <button class="section-nav-btn" data-target="section-products" data-url="/pokemon/sets/scarlet-violet/paradox-rift/sealed-product"><span class="nav-full">Sealed Products</span><span class="nav-short">Sealed</span></button>
     <div class="section-nav-sets">
-      <button class="section-nav-sets-btn" id="nav-sets-btn">All Sets ▾</button>
+      <button class="section-nav-sets-btn" id="nav-sets-btn"><span class="nav-full">All Sets ▾</span><span class="nav-short">All Sets ▾</span></button>
     </div>
   </div>
   <!-- Dropdown moved outside overflow-x:auto container so position:fixed works correctly -->
