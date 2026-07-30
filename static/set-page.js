@@ -571,7 +571,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
           <span>Find on eBay</span><span>→</span>
         </a>
         <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener">
-          <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
+          <span>${directUrl ? 'TCGplayer' : 'Find on TCGplayer'}</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>View Card Page</span><span>→</span>
