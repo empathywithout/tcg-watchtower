@@ -237,6 +237,23 @@ if (PHASE === 'jp') {
   }));
   officialCount = r2Metadata.cardCount?.official || cards.length;
   console.log(`✅ ${cards.length} cards found for ${SET_FULL_NAME}`);
+
+  // Run TCGCSV bridge even for R2 sets to get correct denominators
+  if (TCGP_GROUP_ID) {
+    try {
+      console.log(`📋 Fetching TCGCSV bridge data for denominators (group ${TCGP_GROUP_ID})...`);
+      const tcgcsvProducts = await fetchTcgcsvProducts(TCGP_GROUP_ID);
+      const tcgcsvCardProducts = filterCardProducts(tcgcsvProducts);
+      const jpShaped = cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity, image: c.image }));
+      const { cards: mergedCards } = mergeCards(tcgcsvCardProducts, jpShaped);
+      // Only take denominator from bridge, keep all other R2 data intact
+      const denomMap = new Map(mergedCards.map(c => [c.localId, c.denominator]));
+      cards = cards.map(c => ({ ...c, denominator: denomMap.get(c.localId) || null }));
+      console.log(`✅ TCGCSV bridge: denominators merged for ${cards.length} cards`);
+    } catch (e) {
+      console.warn(`⚠️  TCGCSV bridge failed for denominators: ${e.message}`);
+    }
+  }
 }
 // metadata.cardCount.official is referenced throughout the templates below —
 // keep that shape intact regardless of which branch populated `cards`.
