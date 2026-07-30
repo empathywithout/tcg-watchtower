@@ -558,7 +558,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
   if (!imgUrl) imgUrl = cardImg(SET_ID, localId);
   const inner = document.getElementById('modal-inner');
   inner.innerHTML = `
-    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy" width="245" height="342">
+    <img class="modal-img" src="${imgUrl}" alt="${name} Pokemon Card" loading="lazy">
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / ${SET_FULL_NAME}</div>
