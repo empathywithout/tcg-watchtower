@@ -196,7 +196,7 @@ nav{background:rgba(2,15,13,.95);backdrop-filter:blur(12px);border-bottom:1px so
 .badge-rare{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .badge-epic{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:#d8b4fe}
 .badge-legendary{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#fbbf24}
-.badge-showcase{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:#2dd4bf}
+.badge-showcase{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#2dd4bf}
 .badge-overnumbered{background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);color:#fb923c}
 .badge-signature{background:linear-gradient(135deg,rgba(163,230,53,.2),rgba(45,212,191,.2),rgba(168,85,247,.2));border:1px solid rgba(163,230,53,.4);color:#a3e635}
 footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.6;margin-top:2rem}
@@ -278,7 +278,7 @@ ${sharedCss}
 .card-image-wrap img{width:100%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
 .card-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.04em;margin-bottom:.4rem;line-height:1.1}
 .card-meta{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
-.card-meta a{color:var(--teal)}
+.card-meta a{color:#4ade80}
 /* Domain badge */
 .domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;border:1px solid;color:white}
 /* Foil/normal price boxes */
@@ -296,7 +296,7 @@ ${sharedCss}
 .buy-buttons{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
 .btn{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:none;transition:opacity .2s;text-decoration:none}
 .btn:hover{opacity:.85}
-.btn-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal)}
+.btn-tcgp{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}
 .btn-amazon{background:#f90;color:#111}
 .btn-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .btn span:last-child{opacity:.7}
@@ -314,7 +314,7 @@ ${sharedCss}
 .set-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:2rem}
 .set-block-title{font-size:.85rem;color:var(--muted);margin-bottom:.75rem}
 .set-links{display:flex;flex-direction:column;gap:.5rem}
-.set-link{color:var(--teal);font-size:.9rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+.set-link{color:#4ade80;font-size:.9rem;display:flex;align-items:center;gap:6px;transition:color .2s}
 .set-link:hover{color:white}
 </style>
 </head>
@@ -344,7 +344,7 @@ ${breadcrumb(`${card.name} #${card.localId}`)}
       <div class="info-table">
         <div class="info-row"><div class="info-key">Card Name</div><div class="info-val">${card.name}</div></div>
         <div class="info-row"><div class="info-key">Card Number</div><div class="info-val">${setShortId}</div></div>
-        <div class="info-row"><div class="info-key">Set</div><div class="info-val"><a href="${cardListUrl}" style="color:var(--teal)">${SET_FULL_NAME}</a></div></div>
+        <div class="info-row"><div class="info-key">Set</div><div class="info-val"><a href="${cardListUrl}" style="color:#4ade80">${SET_FULL_NAME}</a></div></div>
         <div class="info-row"><div class="info-key">Rarity</div><div class="info-val"><span class="rarity-badge ${rc}">${rarity}</span></div></div>
         ${domain ? `<div class="info-row"><div class="info-key">Domain</div><div class="info-val">${domain}</div></div>` : ''}
         ${cardType ? `<div class="info-row"><div class="info-key">Type</div><div class="info-val">${cardType}</div></div>` : ''}
@@ -511,7 +511,7 @@ ${sharedCss}
 h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;margin-bottom:.5rem}
 .subtitle{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
 .intro-text{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:2rem;max-width:800px}
-.set-link-top{display:inline-block;margin-bottom:1.5rem;color:var(--teal);font-size:.9rem;font-weight:600}
+.set-link-top{display:inline-block;margin-bottom:1.5rem;color:#4ade80;font-size:.9rem;font-weight:600}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
 @media(max-width:640px){.cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}}
 .card-item{background:rgba(15,31,28,.9);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s;border-left-width:3px}
@@ -525,13 +525,13 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;mar
 .buy-link{flex:1;padding:3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
-.buy-tcgp{background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.3);color:var(--teal)}
+.buy-tcgp{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}
 .faq-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
 .faq-heading{font-size:1.4rem;font-weight:700;margin-bottom:1.25rem}
 .faq-item{margin-bottom:1.25rem}
 .faq-q{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:var(--text)}
 .faq-a{color:var(--muted);font-size:.9rem;line-height:1.6}
-.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--teal);margin-top:2.5rem;font-size:.9rem;transition:color .2s}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:#4ade80;margin-top:2.5rem;font-size:.9rem;transition:color .2s}
 .back-link:hover{color:white}
 </style>
 </head>
