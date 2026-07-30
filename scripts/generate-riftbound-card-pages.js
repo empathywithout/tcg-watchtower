@@ -273,7 +273,7 @@ ${gaScript({ set_id: SET_ID, series: 'Riftbound', page_type: 'card_detail' })}
 <style>
 ${sharedCss}
 .card-layout{display:grid;grid-template-columns:340px 1fr;gap:2.5rem;align-items:start;margin-top:1.5rem}
-@media(max-width:700px){.card-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.card-layout{grid-template-columns:1fr}.card-image-wrap img{max-height:50vh;width:auto;margin:0 auto;display:block}}
 .card-image-wrap{position:relative}
 @media(min-width:701px){.card-image-wrap{position:sticky;top:80px}}
 .card-image-wrap img{width:100%;height:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
