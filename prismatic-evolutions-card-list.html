@@ -1927,17 +1927,20 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
     <div>
       <div class="modal-name">${name}</div>
       <div class="modal-meta">#${localId} / Prismatic Evolutions</div>
-      ${rarity ? `<div class="modal-meta" style="color:var(--accent-amber)">${rarity}</div>` : ''}
+      ${rarity ? `<div class="modal-rarity-badge">${rarity}</div>` : ''}
+      <div class="modal-price-box">
+        <div class="modal-price-label">Market Price</div>
+        <div class="modal-price-value">${priceCache[localId]?.price ? '$' + priceCache[localId].price.toFixed(2) : priceCache[localId.padStart(3,'0')]?.price ? '$' + priceCache[localId.padStart(3,'0')].price.toFixed(2) : '—'}</div>
+      </div>
       <div class="modal-links">
-
         <a class="modal-buy-link pl-amazon" href="${amazonLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>Find on Amazon</span><span>→</span>
+          <span>Amazon</span><span>→</span>
         </a>
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
-          <span>Find on eBay</span><span>→</span>
+          <span>eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/131', 'sv-prismatic-evolutions')}" target="_blank" rel="noopener">
-          <span>${directUrl ? 'TCGplayer' : '🔍 Find on TCGplayer'}</span><span>→</span>
+        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener">
+          <span>TCGplayer</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/scarlet-violet/prismatic-evolutions/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
           <span>View Card Page</span><span>→</span>
