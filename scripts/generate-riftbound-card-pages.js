@@ -273,7 +273,7 @@ ${gaScript({ set_id: SET_ID, series: 'Riftbound', page_type: 'card_detail' })}
 <style>
 ${sharedCss}
 .card-layout{display:grid;grid-template-columns:340px 1fr;gap:2.5rem;align-items:start;margin-top:1.5rem}
-@media(max-width:700px){.card-layout{grid-template-columns:1fr}.card-image-wrap{position:static!important}.card-image-wrap img{width:100%}}
+@media(max-width:700px){.card-layout{grid-template-columns:1fr}.card-image-wrap{position:static!important}.card-image-wrap img{width:100%}.buy-link{min-height:44px}}
 .card-image-wrap{position:relative}
 @media(min-width:701px){.card-image-wrap{position:sticky;top:80px}}
 .card-image-wrap img{width:100%;height:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block}
@@ -523,7 +523,7 @@ h1{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.04em;mar
 .card-num{font-size:.75rem;color:var(--muted);margin-bottom:6px;font-family:monospace}
 .card-price-single{font-size:1rem;font-weight:700;color:var(--green);font-family:monospace;margin-bottom:8px;text-align:center}
 .buy-links{display:flex;gap:3px;justify-content:center}
-.buy-link{flex:1;padding:3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;min-height:44px}
+.buy-link{flex:1;padding:3px;border-radius:6px;font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
 .buy-amazon{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24}
 .buy-ebay{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
 .buy-tcgp{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#4ade80}

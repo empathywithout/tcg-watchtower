@@ -426,7 +426,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.
 .breadcrumb span{opacity:0.5}
 .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
 .card-layout{display:grid;grid-template-columns:340px 1fr;gap:2.5rem;align-items:start}
-@media(max-width:768px){.card-layout{grid-template-columns:1fr}.card-image-wrap{position:static!important}.card-image-wrap img{width:100%}}
+@media(max-width:768px){.card-layout{grid-template-columns:1fr}.card-image-wrap{position:static!important}.card-image-wrap img{width:100%}.buy-link{min-height:44px}}
 .card-image-wrap{position:relative}
 @media(min-width:769px){.card-image-wrap{position:sticky;top:72px}}
 .card-image-wrap img{width:100%;height:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);transition:transform 0.3s}
@@ -631,7 +631,7 @@ h1{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
 .card-price{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:8px;min-height:1.5rem}
 .card-price.loading{color:var(--text-muted);font-size:0.8rem}
 .buy-links{display:flex;gap:3px;justify-content:center}
-.buy-link{flex:1;padding:3px 3px;border-radius:6px;font-size:0.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:44px}
+.buy-link{flex:1;padding:3px 3px;border-radius:6px;font-size:0.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;text-align:center}
 .buy-amazon{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
 .buy-amazon:hover{background:rgba(251,191,36,0.25)}
 .buy-ebay{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
