@@ -769,6 +769,7 @@ const vars = {
   '{{SET_TCGP_SLUG}}':      SET_TCGP_SLUG,
   '{{TCGP_GROUP_ID}}':      TCGP_GROUP_ID,
   '{{SET_PHASE}}':          PHASE,
+  '{{JP_SOURCE_SET_ID}}':   PHASE === 'jp' ? (JP_SCRYDEX_ID || SET_ID) : SET_ID,
   '{{SET_SLUG}}':           SET_SLUG,
   '{{HERO_CARD_1}}':        HERO_CARD_1,
   '{{HERO_CARD_2}}':        HERO_CARD_2,
