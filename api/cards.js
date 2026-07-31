@@ -643,9 +643,14 @@ export default async function handler(req, res) {
                 const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
                 const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
-                const image = phase === 'en'
+                const r2Image = phase === 'en'
                   ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                   : `${R2_BASE}/cards/jp/${setId}/${String(localId).padStart(3,'0')}.webp`;
+
+                // For JP sets without a TCGCSV bridge, R2 images won't exist yet.
+                // Use Scrydex URL as primary image so cards render immediately.
+                const image = (phase === 'jp' && scrydexImage) ? scrydexImage : r2Image;
+                const fallbackImage = (phase === 'jp' && scrydexImage) ? r2Image : null;
 
                 const name = phase === 'jp'
                   ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
@@ -655,7 +660,7 @@ export default async function handler(req, res) {
                   phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
                 );
 
-                return { localId, name, rarity, image, source: 'scrydex', phase };
+                return { localId, name, rarity, image, fallbackImage, source: 'scrydex', phase };
               });
             }
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);
