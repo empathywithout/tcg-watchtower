@@ -385,7 +385,11 @@ async function main() {
 
   for (let i = 0; i < cards.length; i++) {
     const card   = cards[i];
-    const r2Key  = `cards/${SET_ID}/${card.localId}.webp`;
+    // JP sets write to cards/jp/{SET_ID}/ to match the API's expected path.
+    // EN sets write to cards/{SET_ID}/ (existing behaviour, unchanged).
+    const r2Key  = PHASE === 'jp'
+      ? `cards/jp/${SET_ID}/${card.localId}.webp`
+      : `cards/${SET_ID}/${card.localId}.webp`;
     process.stdout.write(`[${i+1}/${cards.length}] ${card.name} (${card.localId})… `);
 
     if (!FORCE_RESYNC && await existsInR2(r2Key)) {
@@ -413,7 +417,7 @@ async function main() {
   }
 
   console.log(`\n✅ Done — ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
-  console.log(`   R2 path: cards/${SET_ID}/*.webp`);
+  console.log(`   R2 path: ${PHASE === 'jp' ? `cards/jp/${SET_ID}` : `cards/${SET_ID}`}/*.webp`);
   if (PHASE === 'jp') {
     console.log(`\n💡 When EN releases:`);
     console.log(`   1. Update sets.json: "phase": "en", add tcgpGroupId`);
