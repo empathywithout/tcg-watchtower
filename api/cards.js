@@ -316,7 +316,8 @@ export default async function handler(req, res) {
   // while, and this in-memory cache did the same thing here.
   const CACHE_VERSION = 'v7-scrydex-images'; // bumped — JP no-bridge sets use Scrydex URL as primary image
   const gamePrefix = isRiftbound ? 'rb:' : isOnePiece ? 'op:' : '';
-  const cacheKey = `${CACHE_VERSION}:${gamePrefix}${setId}`;
+  const phaseForCache = req.query.phase === 'jp' ? 'jp:' : '';
+  const cacheKey = `${CACHE_VERSION}:${gamePrefix}${phaseForCache}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
