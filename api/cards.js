@@ -314,7 +314,7 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v6-scrydex-images'; // bumped — use medium images for JP sets
+  const CACHE_VERSION = 'v7-scrydex-images'; // bumped — JP no-bridge sets use Scrydex URL as primary image
   const gamePrefix = isRiftbound ? 'rb:' : isOnePiece ? 'op:' : '';
   const cacheKey = `${CACHE_VERSION}:${gamePrefix}${setId}`;
   const cached = cache.get(cacheKey);

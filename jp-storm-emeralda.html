@@ -1608,6 +1608,7 @@ function loadTCGPlayerPrices() {
       const sealedIds = SET_PHASE === 'jp'
         ? (Object.keys(PRODUCT_META).length ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',') : '')
         : '';
+      if (!TCGP_GROUP_ID || TCGP_GROUP_ID === '0') throw new Error('No group ID configured');
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}${sealedIds}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();
