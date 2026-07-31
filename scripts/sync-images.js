@@ -369,15 +369,21 @@ async function main() {
     if (!logoUploaded) console.warn(`⚠️  All logo sources failed — page will show no logo`);
   }
 
-  // Step 3 — Upload metadata JSON
-  console.log(`\n📦 Uploading metadata JSON…`);
-  const metadata = {
-    id: SET_ID, phase: PHASE,
-    cardCount: { official: cards.length, total: cards.length },
-    cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
-  };
-  await uploadToR2(`data/${SET_ID}.json`, JSON.stringify(metadata), 'application/json');
-  console.log(`✅ Metadata saved to R2 data/${SET_ID}.json`);
+  // Step 3 — Upload metadata JSON (EN only)
+  // JP sets skip this — writing data/{SET_ID}.json causes api/cards.js strategy 0
+  // to intercept JP requests and serve broken R2 image URLs that don't exist yet.
+  if (PHASE !== 'jp') {
+    console.log(`\n📦 Uploading metadata JSON…`);
+    const metadata = {
+      id: SET_ID, phase: PHASE,
+      cardCount: { official: cards.length, total: cards.length },
+      cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+    };
+    await uploadToR2(`data/${SET_ID}.json`, JSON.stringify(metadata), 'application/json');
+    console.log(`✅ Metadata saved to R2 data/${SET_ID}.json`);
+  } else {
+    console.log(`\n📦 Skipping metadata JSON for JP set — prevents R2 strategy 0 interception`);
+  }
 
   // Step 4 — Download, resize, upload card images
   console.log(`\n🖼️  Syncing ${cards.length} card images…`);
