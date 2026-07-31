@@ -1606,7 +1606,7 @@ function loadTCGPlayerPrices() {
     try {
       const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
       const sealedIds = SET_PHASE === 'jp'
-        ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',')
+        ? (Object.keys(PRODUCT_META).length ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',') : '')
         : '';
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}${sealedIds}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
