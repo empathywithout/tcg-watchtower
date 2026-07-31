@@ -369,15 +369,21 @@ async function main() {
     if (!logoUploaded) console.warn(`⚠️  All logo sources failed — page will show no logo`);
   }
 
-  // Step 3 — Upload metadata JSON
-  console.log(`\n📦 Uploading metadata JSON…`);
-  const metadata = {
-    id: SET_ID, phase: PHASE,
-    cardCount: { official: cards.length, total: cards.length },
-    cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
-  };
-  await uploadToR2(`data/${SET_ID}.json`, JSON.stringify(metadata), 'application/json');
-  console.log(`✅ Metadata saved to R2 data/${SET_ID}.json`);
+  // Step 3 — Upload metadata JSON (EN only)
+  // JP sets skip this — writing data/{SET_ID}.json causes api/cards.js strategy 0
+  // to intercept JP requests and serve broken R2 image URLs that don't exist yet.
+  if (PHASE !== 'jp') {
+    console.log(`\n📦 Uploading metadata JSON…`);
+    const metadata = {
+      id: SET_ID, phase: PHASE,
+      cardCount: { official: cards.length, total: cards.length },
+      cards: cards.map(c => ({ localId: c.localId, name: c.name, rarity: c.rarity })),
+    };
+    await uploadToR2(`data/${SET_ID}.json`, JSON.stringify(metadata), 'application/json');
+    console.log(`✅ Metadata saved to R2 data/${SET_ID}.json`);
+  } else {
+    console.log(`\n📦 Skipping metadata JSON for JP set — prevents R2 strategy 0 interception`);
+  }
 
   // Step 4 — Download, resize, upload card images
   console.log(`\n🖼️  Syncing ${cards.length} card images…`);
@@ -385,7 +391,11 @@ async function main() {
 
   for (let i = 0; i < cards.length; i++) {
     const card   = cards[i];
-    const r2Key  = `cards/${SET_ID}/${card.localId}.webp`;
+    // JP sets write to cards/jp/{SET_ID}/ to match the API's expected path.
+    // EN sets write to cards/{SET_ID}/ (existing behaviour, unchanged).
+    const r2Key  = PHASE === 'jp'
+      ? `cards/jp/${SET_ID}/${card.localId}.webp`
+      : `cards/${SET_ID}/${card.localId}.webp`;
     process.stdout.write(`[${i+1}/${cards.length}] ${card.name} (${card.localId})… `);
 
     if (!FORCE_RESYNC && await existsInR2(r2Key)) {
@@ -413,7 +423,7 @@ async function main() {
   }
 
   console.log(`\n✅ Done — ${uploaded} uploaded, ${skipped} skipped, ${failed} failed`);
-  console.log(`   R2 path: cards/${SET_ID}/*.webp`);
+  console.log(`   R2 path: ${PHASE === 'jp' ? `cards/jp/${SET_ID}` : `cards/${SET_ID}`}/*.webp`);
   if (PHASE === 'jp') {
     console.log(`\n💡 When EN releases:`);
     console.log(`   1. Update sets.json: "phase": "en", add tcgpGroupId`);

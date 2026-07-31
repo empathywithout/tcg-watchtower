@@ -10,6 +10,7 @@ const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 // confirmed value (verified via diagnostic script against live data).
 const SET_TO_GROUP = {
   'me05': '24688',
+  'me06': '',      // Delta Reign — TCGCSV not indexed yet
   // JP sets — categoryId 85
   'm1l_ja': '24399',
   'm1s_ja': '24400',
@@ -18,6 +19,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
+  'm6_ja':  '',      // TCGCSV not indexed yet — update when available
   // SV JP sets — categoryId 85
   'sv1s_ja': '23605',
   'sv1v_ja': '23606',
@@ -35,15 +37,15 @@ const SCRYDEX_EN_ID_MAP = {
   'sv04':'sv4','sv4pt5':'sv4pt5','sv05':'sv5','sv06':'sv6',
   'sv6pt5':'sv6pt5','sv07':'sv7','sv08':'sv8','sv8pt5':'sv8pt5',
   'sv09':'sv9','sv10':'sv10','zsv10pt5':'zsv10pt5','rsv10pt5':'rsv10pt5',
-  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'me3','me04':'me4','me05':'me5',
+  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'me3','me04':'me4','me05':'me5','me06':'m6_ja',
 };
 
 const SCRYDEX_JP_ID_MAP = {
   // EN set IDs → Scrydex JP expansion IDs (used by EN pages with phase=jp)
-  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
+  'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja','me06':'m6_ja',
   // ME JP set IDs
   'm1l_ja':'m1l_ja','m1s_ja':'m1s_ja','m2_ja':'m2_ja','m2a_ja':'m2a_ja',
-  'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja',
+  'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja','m6_ja':'m6_ja',
   // SV JP set IDs
   'sv1s_ja':'sv1s_ja','sv1v_ja':'sv1v_ja','sv1a_ja':'sv1a_ja',
 };
@@ -257,7 +259,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v20-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v21-r2-primary:${scrydexId}`;
   const cached   = await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', isJP

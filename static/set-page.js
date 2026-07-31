@@ -3,7 +3,8 @@ const CONFIG = {
   amazon: { tag: 'cehutto01-20' },
   ebay: { campaign: 5339145069, mkrid: '711-53200-19255-0' },
   tcgplayer: { baseUrl: 'https://partner.tcgplayer.com/c/7068180/1830156/21018' },
-  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev'  // ← paste your https://pub-xxxx.r2.dev URL here
+  r2: 'https://pub-20ee170c554940ac8bfcce8af2da57a8.r2.dev',  // ← paste your https://pub-xxxx.r2.dev URL here
+  jpSourceSetId: '{{JP_SOURCE_SET_ID}}'  // for JP-phase EN sets — R2 image path uses JP source set ID
 };
 
 // ─── FIX: derive TCGdex series prefix from any set ID ───────────────────────
@@ -16,9 +17,10 @@ function tcgdexSeriesId(setId) {
 // Build card image URL — uses R2 if configured, falls back to TCGdex direct
 function cardImg(setId, localId) {
   if (CONFIG.r2) {
-    const isJP = setId.endsWith('_ja');
+    const isJP = setId.endsWith('_ja') || (typeof SET_PHASE !== 'undefined' && SET_PHASE === 'jp');
+    const jpSetId = setId.endsWith('_ja') ? setId : (CONFIG.jpSourceSetId || setId);
     return isJP
-      ? `${CONFIG.r2}/cards/jp/${setId}/${localId}.webp`
+      ? `${CONFIG.r2}/cards/jp/${jpSetId}/${localId}.webp`
       : `${CONFIG.r2}/cards/${setId}/${localId}.webp`;
   }
   // FIX 1: was hardcoded "/sv/" — now derives series from setId
@@ -247,8 +249,9 @@ function loadTCGPlayerPrices() {
     try {
       const gameParam = SET_PHASE === 'jp' ? '&game=pokemon-japan' : '';
       const sealedIds = SET_PHASE === 'jp'
-        ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',')
+        ? (Object.keys(PRODUCT_META).length ? '&sealedIds=' + Object.keys(PRODUCT_META).join(',') : '')
         : '';
+      if (!TCGP_GROUP_ID || TCGP_GROUP_ID === '0') throw new Error('No group ID configured');
       const res = await fetch(`/api/tcgplayer-prices?groupId=${TCGP_GROUP_ID}${gameParam}${sealedIds}`);
       if (!res.ok) throw new Error(`price fetch failed: ${res.status}`);
       const data = await res.json();

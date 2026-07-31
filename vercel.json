@@ -577,10 +577,6 @@
       "destination": "/pokemon/sets/mega-evolution/pitch-black/top-chase-cards.html"
     },
     {
-      "source": "/pokemon/sets/:series/:set/cards/:slug",
-      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
-    },
-    {
       "source": "/privacy-policy",
       "destination": "/privacy-policy.html"
     },
@@ -691,9 +687,42 @@
     {
       "source": "/pokemon/sets/scarlet-violet-jp/triplet-beat/sealed-product",
       "destination": "/jp-triplet-beat.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/storm-emeralda/cards",
+      "destination": "/jp-storm-emeralda.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/storm-emeralda/sealed-product",
+      "destination": "/jp-storm-emeralda.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/cards",
+      "destination": "/delta-reign-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/sealed-product",
+      "destination": "/delta-reign-card-list.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/most-valuable",
+      "destination": "/pokemon/sets/mega-evolution/delta-reign/most-valuable.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/top-chase-cards",
+      "destination": "/pokemon/sets/mega-evolution/delta-reign/top-chase-cards.html"
+    },
+    {
+      "source": "/pokemon/sets/:series/:set/cards/:slug",
+      "destination": "/pokemon/sets/:series/:set/cards/:slug.html"
     }
   ],
   "redirects": [
+    {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/cards/:card",
+      "destination": "/pokemon/sets/mega-evolution/delta-reign/cards",
+      "permanent": false
+    },
     {
       "source": "/riftbound",
       "destination": "/sets/riftbound",
@@ -2132,6 +2161,11 @@
     {
       "source": "/set-guides",
       "destination": "/sets",
+      "permanent": true
+    },
+    {
+      "source": "/delta-reign-card-list",
+      "destination": "/pokemon/sets/mega-evolution/delta-reign/cards",
       "permanent": true
     }
   ],

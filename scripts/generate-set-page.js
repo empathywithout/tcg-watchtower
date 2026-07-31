@@ -725,6 +725,7 @@ const PM_SERIES_ORDER = [
   { setId: 'me03',     url: '/pokemon/sets/mega-evolution/perfect-order/cards',        name: 'Perfect Order', short: 'ME3' },
   { setId: 'me04',     url: '/pokemon/sets/mega-evolution/chaos-rising/cards',         name: 'Chaos Rising', short: 'ME4' },
   { setId: 'me05',     url: '/pokemon/sets/mega-evolution/pitch-black/cards',          name: 'Pitch Black', short: 'ME5' },
+  { setId: 'me06',     url: '/pokemon/sets/mega-evolution/delta-reign/cards',           name: 'Delta Reign', short: 'ME6' },
 ];
 
 function buildSeriesNavHtml(order, currentSetId) {
@@ -744,7 +745,8 @@ const SERIES_NAV_HTML = buildSeriesNavHtml(PM_SERIES_ORDER, SET_ID);
 
 let html = readFileSync('set-template.html', 'utf8');
 const SET_PAGE_CSS = readFileSync('static/set-page.css', 'utf8').trim();
-const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim();
+const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim()
+  .replaceAll('{{JP_SOURCE_SET_ID}}', (PHASE === 'jp' ? (JP_SCRYDEX_ID || SET_ID) : SET_ID).replaceAll('$', '$$$$'));
 
 const vars = {
   '{{GA_CUSTOM_DIMS}}':     JSON.stringify({ set_id: SET_ID, series: SET_SERIES, page_type: 'set_list' }),
@@ -768,6 +770,7 @@ const vars = {
   '{{SET_TCGP_SLUG}}':      SET_TCGP_SLUG,
   '{{TCGP_GROUP_ID}}':      TCGP_GROUP_ID,
   '{{SET_PHASE}}':          PHASE,
+  '{{JP_SOURCE_SET_ID}}':   PHASE === 'jp' ? (JP_SCRYDEX_ID || SET_ID) : SET_ID,
   '{{SET_SLUG}}':           SET_SLUG,
   '{{HERO_CARD_1}}':        HERO_CARD_1,
   '{{HERO_CARD_2}}':        HERO_CARD_2,
@@ -788,7 +791,12 @@ const vars = {
 };
 
 for (const [placeholder, value] of Object.entries(vars)) {
-  html = html.replaceAll(placeholder, value);
+  // Escape $ in replacement values — JS replaceAll treats $' $` $& etc. as
+  // special patterns in the replacement string, which corrupts output when
+  // any value (e.g. FAQ content, JS code in SET_PAGE_JS) contains $ followed
+  // by a quote or backtick. $$ is the escape sequence for a literal $.
+  const safeValue = String(value).replaceAll('$', '$$$$');
+  html = html.replaceAll(placeholder, safeValue);
 }
 
 // ── Handle JP phase conditional blocks ────────────────────────────────────────

@@ -25,7 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 // Redis helpers for JP sets (shared with scrydex-cards.js)
 const KV_URL   = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
-const JP_CARDS_CACHE_VERSION = 'jp-cards:v20';
+const JP_CARDS_CACHE_VERSION = 'jp-cards:v24';
 const JP_CARDS_TTL_SEC = 6 * 60 * 60; // 6 hours
 
 async function redisGetJP(key) {
@@ -58,6 +58,7 @@ const SET_TO_GROUP = {
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
+  'me06':'',      // Delta Reign — EN releases 2026-11-06, TCGCSV not indexed yet
   // JP sets — categoryId 85 on TCGCSV (Pokemon Japan)
   // Group IDs confirmed from tcgcsv.com/tcgplayer/85/groups
   'm1l_ja': '24399', // Mega Brave
@@ -67,6 +68,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600', // Nihil Zero
   'm4_ja':  '24653', // Ninja Spinner
   'm5_ja':  '24711', // Abyss Eye
+  'm6_ja':  '',      // Storm Emeralda — TCGCSV not indexed yet
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -89,6 +91,7 @@ const SCRYDEX_JP_ID_MAP = {
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
+  'me06': 'm6_ja',  // Delta Reign JP phase — uses Storm Emeralda source
   // me05 removed — Scrydex EN data live as of July 17 2026
 
   // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
@@ -99,6 +102,7 @@ const SCRYDEX_JP_ID_MAP = {
   'm3_ja':  'm3_ja',
   'm4_ja':  'm4_ja',
   'm5_ja':  'm5_ja',
+  'm6_ja':  'm6_ja',
   // SV JP sets
   'sv1s_ja': 'sv1s_ja',
   'sv1v_ja': 'sv1v_ja',
@@ -191,6 +195,7 @@ function normalizeRarity(r) {
 // currently JP-phase; every other set defaults to 'en' as before.
 const SET_PHASE_MAP = {
   'me05': 'en', // flipped to EN — Scrydex EN data confirmed available
+  'me06': 'jp', // Delta Reign — EN releases 2026-11-06, using JP source until then
   // Dedicated JP set pages — always use Scrydex JP endpoint
   'm1l_ja': 'jp',
   'm1s_ja': 'jp',
@@ -199,6 +204,7 @@ const SET_PHASE_MAP = {
   'm3_ja':  'jp',
   'm4_ja':  'jp',
   'm5_ja':  'jp',
+  'm6_ja':  'jp',
   'sv1s_ja': 'jp',
   'sv1v_ja': 'jp',
   'sv1a_ja': 'jp',
@@ -210,8 +216,9 @@ async function getSetPhase(setId) {
 // Background-write card metadata + images to R2 after a Scrydex hit.
 // Runs async — does NOT block the response. Next request hits R2 for free.
 async function cacheToR2InBackground(setId, cards, phase) {
-  // Skip R2 image caching for JP sets — use Scrydex CDN directly
-  // R2 has no JP card images and we don't want small images cached there
+  // Skip R2 caching entirely for JP sets — images live on Scrydex CDN,
+  // and writing data/{setId}.json causes strategy 0 to pick it up on next
+  // request and serve broken R2 image URLs that don't exist.
   if (phase === 'jp' || setId.endsWith('_ja')) {
     console.log(`[r2-cache] Skipping JP set ${setId} — using Scrydex CDN directly`);
     return;
@@ -311,9 +318,10 @@ export default async function handler(req, res) {
   // new code is actually working. Hit this exact problem today: the
   // Redis cache in api/scrydex-cards.js masked the bridge fix for a
   // while, and this in-memory cache did the same thing here.
-  const CACHE_VERSION = 'v6-scrydex-images'; // bumped — use medium images for JP sets
+  const CACHE_VERSION = 'v7-scrydex-images'; // bumped — JP no-bridge sets use Scrydex URL as primary image
   const gamePrefix = isRiftbound ? 'rb:' : isOnePiece ? 'op:' : '';
-  const cacheKey = `${CACHE_VERSION}:${gamePrefix}${setId}`;
+  const phaseForCache = req.query.phase === 'jp' ? 'jp:' : '';
+  const cacheKey = `${CACHE_VERSION}:${gamePrefix}${phaseForCache}${setId}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     res.setHeader('X-Cache', 'HIT');
@@ -526,8 +534,9 @@ export default async function handler(req, res) {
 
     // ── Strategy 0: R2 pre-built JSON (EN sets — fastest, free, no API credits) ─
     // Always try R2 first for EN sets. Scrydex only used when R2 misses (new sets)
-    // or for JP phase (images not in R2 yet).
-    if (phase === 'en') {
+    // or for JP phase (images not in R2 yet). Explicitly skip JP set IDs even if
+    // a stale data/{setId}.json exists in R2 from a previous bad write.
+    if (phase === 'en' && !setId.endsWith('_ja')) {
       try {
         const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
         if (r2Res.ok) {
@@ -640,9 +649,14 @@ export default async function handler(req, res) {
                 const localId = rawId.includes('/') ? rawId.split('/')[0].trim() : rawId;
 
                 const scrydexImage = c.images?.[0]?.medium || c.images?.[0]?.small || null;
-                const image = phase === 'en'
+                const r2Image = phase === 'en'
                   ? `${R2_BASE}/cards/${setId}/${localId}.webp`
                   : `${R2_BASE}/cards/jp/${setId}/${String(localId).padStart(3,'0')}.webp`;
+
+                // For JP sets without a TCGCSV bridge, R2 images won't exist yet.
+                // Use Scrydex URL as primary image so cards render immediately.
+                const image = (phase === 'jp' && scrydexImage) ? scrydexImage : r2Image;
+                const fallbackImage = (phase === 'jp' && scrydexImage) ? r2Image : null;
 
                 const name = phase === 'jp'
                   ? (c.translation?.en?.name || (c.name || '').replace(/\s*[-\u2013\u2014]\s*\d+\/\d+\s*$/, '').trim())
@@ -652,7 +666,7 @@ export default async function handler(req, res) {
                   phase === 'jp' ? (c.translation?.en?.rarity || c.rarity || '') : (c.rarity || '')
                 );
 
-                return { localId, name, rarity, image, source: 'scrydex', phase };
+                return { localId, name, rarity, image, fallbackImage, source: 'scrydex', phase };
               });
             }
             console.log(`[api/cards] Scrydex hit for ${setId} (phase=${phase}): ${cards.length} cards`);

@@ -251,5 +251,30 @@
       "101",
       "102"
     ]
+  },
+  {
+    "slug": "storm-emeralda",
+    "name": "Storm Emeralda (M6)",
+    "nameJP": "ストームエメラルダ",
+    "series": "Mega Evolution",
+    "short": "M6",
+    "setId": "m6_ja",
+    "scrydexId": "m6_ja",
+    "tcgpSlug": "m6-storm-emeralda",
+    "enEquivalent": "me06",
+    "enSetName": "Delta Reign (ME6)",
+    "phase": "jp",
+    "live": true,
+    "releaseDate": "2026-07-31",
+    "packsPerBox": 30,
+    "cardsPerPack": 5,
+    "language": "Japanese",
+    "enSlug": "delta-reign",
+    "printedTotal": 76,
+    "heroCards": [
+      "095",
+      "110",
+      "113"
+    ]
   }
 ]
