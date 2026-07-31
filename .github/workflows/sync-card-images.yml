@@ -87,6 +87,10 @@ on:
         description: 'Force re-download all images even if they exist in R2 (true/false)'
         required: false
         default: 'false'
+      generate_page:
+        description: 'Generate HTML page even when phase=jp — use for EN bridge sets (true/false)'
+        required: false
+        default: 'false'
       skip_sync:
         description: 'Skip image sync — only regenerate the HTML page (true/false)'
         required: false
@@ -127,7 +131,7 @@ jobs:
         run: node scripts/sync-images.js
 
       - name: Generate set guide page
-        if: ${{ github.event.inputs.phase != 'jp' }}
+        if: ${{ github.event.inputs.phase != 'jp' || github.event.inputs.generate_page == 'true' }}
         env:
           SET_ID: ${{ github.event.inputs.set_id }}
           SET_FULL_NAME: ${{ github.event.inputs.set_full_name }}
@@ -161,7 +165,7 @@ jobs:
         run: node scripts/generate-set-page.js
 
       - name: Commit generated page to repo
-        if: ${{ github.event.inputs.phase != 'jp' }}
+        if: ${{ github.event.inputs.phase != 'jp' || github.event.inputs.generate_page == 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
