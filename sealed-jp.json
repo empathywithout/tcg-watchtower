@@ -189,22 +189,5 @@
       "q": "Pokemon Japanese Triplet Beat SV1a Booster Pack"
     }
   ],
-  "m6_ja": [
-    {
-      "tcgpId": "TBD",
-      "type": "Booster Box",
-      "filterKey": "box",
-      "badgeClass": "badge-box",
-      "name": "Storm Emeralda Booster Box (30 Packs)",
-      "q": "Pokemon Japanese Storm Emeralda Booster Box M6"
-    },
-    {
-      "tcgpId": "TBD",
-      "type": "Booster Pack",
-      "filterKey": "pack",
-      "badgeClass": "badge-pack",
-      "name": "Storm Emeralda Booster Pack",
-      "q": "Pokemon Japanese Storm Emeralda Booster Pack M6"
-    }
-  ]
+  "m6_ja": []
 }
