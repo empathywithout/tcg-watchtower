@@ -213,8 +213,9 @@ async function getSetPhase(setId) {
 // Background-write card metadata + images to R2 after a Scrydex hit.
 // Runs async — does NOT block the response. Next request hits R2 for free.
 async function cacheToR2InBackground(setId, cards, phase) {
-  // Skip R2 image caching for JP sets — use Scrydex CDN directly
-  // R2 has no JP card images and we don't want small images cached there
+  // Skip R2 caching entirely for JP sets — images live on Scrydex CDN,
+  // and writing data/{setId}.json causes strategy 0 to pick it up on next
+  // request and serve broken R2 image URLs that don't exist.
   if (phase === 'jp' || setId.endsWith('_ja')) {
     console.log(`[r2-cache] Skipping JP set ${setId} — using Scrydex CDN directly`);
     return;
@@ -530,8 +531,9 @@ export default async function handler(req, res) {
 
     // ── Strategy 0: R2 pre-built JSON (EN sets — fastest, free, no API credits) ─
     // Always try R2 first for EN sets. Scrydex only used when R2 misses (new sets)
-    // or for JP phase (images not in R2 yet).
-    if (phase === 'en') {
+    // or for JP phase (images not in R2 yet). Explicitly skip JP set IDs even if
+    // a stale data/{setId}.json exists in R2 from a previous bad write.
+    if (phase === 'en' && !setId.endsWith('_ja')) {
       try {
         const r2Res = await fetch(`${R2_BASE}/data/${setId}.json`);
         if (r2Res.ok) {
