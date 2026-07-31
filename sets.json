@@ -204,7 +204,7 @@
     "short": "ME6",
     "setId": "me06",
     "phase": "jp",
-    "live": false,
+    "live": true,
     "releaseDate": "2026-11-06"
   },
   {
