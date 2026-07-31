@@ -719,6 +719,11 @@
   ],
   "redirects": [
     {
+      "source": "/pokemon/sets/mega-evolution/delta-reign/cards/:card",
+      "destination": "/pokemon/sets/mega-evolution/delta-reign/cards",
+      "permanent": false
+    },
+    {
       "source": "/riftbound",
       "destination": "/sets/riftbound",
       "permanent": true
