@@ -725,6 +725,7 @@ const PM_SERIES_ORDER = [
   { setId: 'me03',     url: '/pokemon/sets/mega-evolution/perfect-order/cards',        name: 'Perfect Order', short: 'ME3' },
   { setId: 'me04',     url: '/pokemon/sets/mega-evolution/chaos-rising/cards',         name: 'Chaos Rising', short: 'ME4' },
   { setId: 'me05',     url: '/pokemon/sets/mega-evolution/pitch-black/cards',          name: 'Pitch Black', short: 'ME5' },
+  { setId: 'me06',     url: '/pokemon/sets/mega-evolution/delta-reign/cards',           name: 'Delta Reign', short: 'ME6' },
 ];
 
 function buildSeriesNavHtml(order, currentSetId) {

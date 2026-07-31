@@ -221,6 +221,16 @@
     "releaseDate": "2026-07-17"
   },
   {
+    "slug": "pokemon/sets/mega-evolution/delta-reign/cards",
+    "name": "Delta Reign (ME6)",
+    "series": "Mega Evolution",
+    "short": "ME6",
+    "setId": "me06",
+    "phase": "jp",
+    "live": false,
+    "releaseDate": "2026-11-06"
+  },
+  {
     "slug": "one-piece/sets/heroines-edition/cards",
     "name": "Heroines Edition (EB03)",
     "series": "One Piece TCG",

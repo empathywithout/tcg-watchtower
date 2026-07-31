@@ -69,6 +69,7 @@ const JP_ME_SERIES_ORDER = [
   { setId: 'm3_ja',  url: '/pokemon/sets/mega-evolution-jp/nihil-zero/cards',      name: 'Nihil Zero',      short: 'M3'  },
   { setId: 'm4_ja',  url: '/pokemon/sets/mega-evolution-jp/ninja-spinner/cards',   name: 'Ninja Spinner',   short: 'M4'  },
   { setId: 'm5_ja',  url: '/pokemon/sets/mega-evolution-jp/abyss-eye/cards',       name: 'Abyss Eye',       short: 'M5'  },
+  { setId: 'm6_ja',  url: '/pokemon/sets/mega-evolution-jp/storm-emeralda/cards',  name: 'Storm Emeralda',  short: 'M6'  },
 ];
 
 const JP_SV_SERIES_ORDER = [
