@@ -58,6 +58,7 @@ const SET_TO_GROUP = {
   'sv09':'24073','sv10':'24269',
   'me01':'24380','me02':'24448','me02pt5':'24541','me03':'24587','me04':'24655',
   'me05':'24688', // confirmed real via diagnostic script against live TCGCSV data (120/120 cards, 100% images)
+  'me06':'',      // Delta Reign — EN releases 2026-11-06, TCGCSV not indexed yet
   // JP sets — categoryId 85 on TCGCSV (Pokemon Japan)
   // Group IDs confirmed from tcgcsv.com/tcgplayer/85/groups
   'm1l_ja': '24399', // Mega Brave
@@ -90,6 +91,7 @@ const SCRYDEX_JP_ID_MAP = {
   'me02pt5': 'me02.5',
   'me03': 'm3_ja',
   'me04': 'm4_ja',
+  'me06': 'm6_ja',  // Delta Reign JP phase — uses Storm Emeralda source
   // me05 removed — Scrydex EN data live as of July 17 2026
 
   // JP set IDs → Scrydex JP expansion IDs (used by dedicated JP pages)
@@ -193,6 +195,7 @@ function normalizeRarity(r) {
 // currently JP-phase; every other set defaults to 'en' as before.
 const SET_PHASE_MAP = {
   'me05': 'en', // flipped to EN — Scrydex EN data confirmed available
+  'me06': 'jp', // Delta Reign — EN releases 2026-11-06, using JP source until then
   // Dedicated JP set pages — always use Scrydex JP endpoint
   'm1l_ja': 'jp',
   'm1s_ja': 'jp',
