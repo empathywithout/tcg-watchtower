@@ -745,7 +745,8 @@ const SERIES_NAV_HTML = buildSeriesNavHtml(PM_SERIES_ORDER, SET_ID);
 
 let html = readFileSync('set-template.html', 'utf8');
 const SET_PAGE_CSS = readFileSync('static/set-page.css', 'utf8').trim();
-const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim();
+const SET_PAGE_JS  = readFileSync('static/set-page.js',  'utf8').trim()
+  .replaceAll('{{JP_SOURCE_SET_ID}}', PHASE === 'jp' ? (JP_SCRYDEX_ID || SET_ID) : SET_ID);
 
 const vars = {
   '{{GA_CUSTOM_DIMS}}':     JSON.stringify({ set_id: SET_ID, series: SET_SERIES, page_type: 'set_list' }),
