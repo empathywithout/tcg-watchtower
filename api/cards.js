@@ -67,6 +67,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600', // Nihil Zero
   'm4_ja':  '24653', // Ninja Spinner
   'm5_ja':  '24711', // Abyss Eye
+  'm6_ja':  '',      // Storm Emeralda — TCGCSV not indexed yet
 };
 
 // Our internal setId → Scrydex EN expansion ID
@@ -99,6 +100,7 @@ const SCRYDEX_JP_ID_MAP = {
   'm3_ja':  'm3_ja',
   'm4_ja':  'm4_ja',
   'm5_ja':  'm5_ja',
+  'm6_ja':  'm6_ja',
   // SV JP sets
   'sv1s_ja': 'sv1s_ja',
   'sv1v_ja': 'sv1v_ja',
@@ -199,6 +201,7 @@ const SET_PHASE_MAP = {
   'm3_ja':  'jp',
   'm4_ja':  'jp',
   'm5_ja':  'jp',
+  'm6_ja':  'jp',
   'sv1s_ja': 'jp',
   'sv1v_ja': 'jp',
   'sv1a_ja': 'jp',

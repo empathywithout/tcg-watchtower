@@ -18,6 +18,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
+  'm6_ja':  '',      // TCGCSV not indexed yet — update when available
   // SV JP sets — categoryId 85
   'sv1s_ja': '23605',
   'sv1v_ja': '23606',
@@ -43,7 +44,7 @@ const SCRYDEX_JP_ID_MAP = {
   'me01':'me1','me02':'me2','me02pt5':'me2pt5','me03':'m3_ja','me04':'m4_ja','me05':'m5_ja',
   // ME JP set IDs
   'm1l_ja':'m1l_ja','m1s_ja':'m1s_ja','m2_ja':'m2_ja','m2a_ja':'m2a_ja',
-  'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja',
+  'm3_ja':'m3_ja','m4_ja':'m4_ja','m5_ja':'m5_ja','m6_ja':'m6_ja',
   // SV JP set IDs
   'sv1s_ja':'sv1s_ja','sv1v_ja':'sv1v_ja','sv1a_ja':'sv1a_ja',
 };
