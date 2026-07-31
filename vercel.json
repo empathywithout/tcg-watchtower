@@ -691,6 +691,14 @@
     {
       "source": "/pokemon/sets/scarlet-violet-jp/triplet-beat/sealed-product",
       "destination": "/jp-triplet-beat.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/storm-emeralda/cards",
+      "destination": "/jp-storm-emeralda.html"
+    },
+    {
+      "source": "/pokemon/sets/mega-evolution-jp/storm-emeralda/sealed-product",
+      "destination": "/jp-storm-emeralda.html"
     }
   ],
   "redirects": [
