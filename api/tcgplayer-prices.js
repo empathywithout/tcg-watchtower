@@ -279,9 +279,15 @@ export default async function handler(req, res) {
         // Pokemon: keep lowest productId per card number
         if (bestProductId[cardNumber] !== undefined && product.productId >= bestProductId[cardNumber]) continue;
         prices[cardNumber] = bestPrice(priceObj);
-        const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
-        const q = encodeURIComponent(`${cardName} ${cardNumber}`);
-        tcgpUrls[cardNumber] = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
+        // JP Pokemon sets have direct product URLs from TCGCSV — use them.
+        // EN Pokemon sets use a search URL since direct links are less stable.
+        if (game === 'pokemon-japan' && product.url) {
+          tcgpUrls[cardNumber] = product.url;
+        } else {
+          const cardName = (product.name || '').replace(/\s*\(.*?\)\s*$/, '').trim();
+          const q = encodeURIComponent(`${cardName} ${cardNumber}`);
+          tcgpUrls[cardNumber] = `https://www.tcgplayer.com/search/pokemon/${setSlug}?productLineName=pokemon&q=${q}&view=grid&Language=English&productTypeName=Cards&setName=${setSlug}&sharedid=&irpid=7068180&afsrc=1`;
+        }
         bestProductId[cardNumber] = product.productId;
       }
     }
