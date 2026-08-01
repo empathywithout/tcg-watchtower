@@ -176,15 +176,20 @@ function normaliseCard(c, internalSetId, phase, fxRate = null) {
 
   const variants = (c.variants || []).map(v => {
     const prices    = v.prices || [];
-    const rawPrice  = prices.find(p => p.type === 'raw' && p.condition === 'U') || prices[0];
-    const marketJPY = rawPrice?.market ?? null;
-    const market    = shouldConvert && marketJPY != null
-      ? Math.round(marketJPY * fxRate * 100) / 100
-      : marketJPY;
+    // Prefer the USD price entry Scrydex now returns directly — no FX conversion needed.
+    // Fall back to JPY entry + FX conversion for sets where USD isn't available yet.
+    const usdPrice  = prices.find(p => p.type === 'raw' && p.condition === 'NM' && p.currency === 'USD');
+    const jpyPrice  = prices.find(p => p.type === 'raw' && p.condition === 'U') || prices.find(p => p.currency === 'JPY') || prices[0];
+    const hasUsd    = usdPrice != null;
+    const marketJPY = jpyPrice?.market ?? null;
+    const market    = hasUsd
+      ? (usdPrice.market ?? null)
+      : (shouldConvert && marketJPY != null ? Math.round(marketJPY * fxRate * 100) / 100 : marketJPY);
     return {
       name: v.name || 'normal',
       market,
-      ...(shouldConvert ? { marketJPY } : {}),
+      // Only set isEstimate/marketJPY if we're using FX conversion, not direct USD
+      ...(hasUsd ? { priceSource: 'scrydex-usd' } : (shouldConvert ? { marketJPY } : {})),
     };
   }).filter(v => v.name);
 
@@ -205,7 +210,9 @@ function normaliseCard(c, internalSetId, phase, fxRate = null) {
     rarity:    translateRarity(c.rarity, phase),
     image,
     market,
-    ...(shouldConvert ? { marketJPY: normalVariant?.marketJPY ?? null, isEstimate: true, fxRate } : {}),
+    ...(normalVariant?.priceSource === 'scrydex-usd'
+      ? { isEstimate: false, priceSource: 'scrydex-usd' }
+      : shouldConvert ? { marketJPY: normalVariant?.marketJPY ?? null, isEstimate: true, fxRate } : {}),
     variants:  variants.length > 1 ? variants : [],
     supertype: c.supertype || '',
     subtypes:  c.subtypes || [],
@@ -266,7 +273,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v31-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v32-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
