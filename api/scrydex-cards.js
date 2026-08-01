@@ -266,7 +266,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v29-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v30-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
@@ -288,7 +288,7 @@ export default async function handler(req, res) {
   try {
     const basePrefix    = isJP ? `${SCRYDEX_BASE}/ja` : SCRYDEX_BASE;
     const selectFields  = isJP
-      ? 'id,name,translation,rarity,images,variants,supertype,subtypes,artist'
+      ? 'id,name,translation,rarity,images,variants,supertype,subtypes,artist,expansion'
       : 'id,name,rarity,images,variants,supertype,subtypes,artist';
 
     const fxRate = isJP ? await getJpyToUsdRate() : null;
@@ -298,6 +298,18 @@ export default async function handler(req, res) {
     );
 
     let cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
+
+    // printed_total: used to identify secret rares (localId > printedTotal)
+    // Read from the expansion field we now include in the select.
+    // Fallback map covers any set where Scrydex doesn't return it.
+    const PRINTED_TOTAL_FALLBACK = {
+      'm1l_ja': 78, 'm1s_ja': 78, 'm2_ja': 73, 'm2a_ja': 63,
+      'm3_ja': 63,  'm4_ja': 84,  'm5_ja': 84, 'm6_ja': 76,
+      'sv1s_ja': 193, 'sv1v_ja': 84, 'sv1a_ja': 83,
+    };
+    const expansionPrintedTotal = rawCards[0]?.expansion?.printed_total
+      ?? PRINTED_TOTAL_FALLBACK[set]
+      ?? 999; // safe fallback — no price history calls if unknown
 
     // TCGCSV bridge: only activates for JP-phase sets with a registered
     // group ID. Relinks existing pricing/data across the position shift
@@ -331,7 +343,12 @@ export default async function handler(req, res) {
             for (const p of (pricesData.results || [])) {
               if (p.subTypeName === 'Normal' || p.subTypeName === 'Holofoil') {
                 const existing = priceMap[p.productId];
-                const price = p.marketPrice ?? p.midPrice ?? p.directLowPrice ?? p.lowPrice ?? null;
+                // JP sets (category 85): marketPrice only — midPrice on new JP cards
+                // reflects 1-2 thin listings and is wildly inaccurate. Cards without
+                // a real marketPrice fall back to Scrydex JP estimates on the page.
+                const price = (tcgcsvCategory === TCGCSV_CATEGORY_JP)
+                  ? p.marketPrice ?? null
+                  : p.marketPrice ?? p.midPrice ?? p.directLowPrice ?? p.lowPrice ?? null;
                 if (!existing || (price != null && (existing.market == null || price > existing.market))) {
                   priceMap[p.productId] = { market: price };
                 }
@@ -370,7 +387,7 @@ export default async function handler(req, res) {
         // For M6, printed total is 76, so cards 077-113 are secret rares
         const secretRares = cards.filter(c => {
           const id = parseInt(c.localId, 10);
-          return !isNaN(id) && id > 76; // covers all known JP ME sets
+          return !isNaN(id) && id > expansionPrintedTotal;
         });
 
         if (secretRares.length > 0) {
