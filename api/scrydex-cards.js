@@ -30,6 +30,7 @@ const SCRYDEX_TEAM_ID = process.env.SCRYDEX_TEAM_ID || '';
 const KV_URL          = process.env.KV_REST_API_URL;
 const KV_TOKEN        = process.env.KV_REST_API_TOKEN;
 const CACHE_TTL_SEC   = 6 * 60 * 60;
+const CACHE_TTL_SHORT = 30 * 60; // 30 min for recently-released JP sets where prices move fast
 
 // Internal setId → Scrydex expansion ID (exact IDs from API)
 const SCRYDEX_EN_ID_MAP = {
@@ -260,7 +261,8 @@ export default async function handler(req, res) {
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
   const cacheKey = `scrydex:cards:v21-r2-primary:${scrydexId}`;
-  const cached   = await redisGet(cacheKey);
+  const skipCache = req.query.nocache === '1';
+  const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
     res.setHeader('Cache-Control', isJP
       ? 's-maxage=60, stale-while-revalidate=300'
@@ -354,7 +356,17 @@ export default async function handler(req, res) {
     // Only cache if prices are actually present — prevents stale null-price cache
     const hasAnyPrice = cards.some(c => c.market != null);
     if (hasAnyPrice) {
-      await redisSetEx(cacheKey, JSON.stringify(cards), CACHE_TTL_SEC);
+      // Use shorter TTL for recently-released JP sets — prices move fast in first week
+      const setReleaseDates = {
+        'm6_ja': '2026-07-31', 'm5_ja': '2026-05-22', 'm4_ja': '2026-03-13',
+      };
+      const releaseDate = setReleaseDates[scrydexId];
+      const daysSinceRelease = releaseDate
+        ? (Date.now() - new Date(releaseDate).getTime()) / (1000 * 60 * 60 * 24)
+        : 99;
+      const ttl = isJP && daysSinceRelease < 7 ? CACHE_TTL_SHORT : CACHE_TTL_SEC;
+      await redisSetEx(cacheKey, JSON.stringify(cards), ttl);
+      console.log(`[scrydex-cards] cached ${set} (${scrydexId}) for ${ttl}s (${Math.round(daysSinceRelease)}d since release)`);
     }
 
     return res.status(200).json({ cards, total: cards.length });
