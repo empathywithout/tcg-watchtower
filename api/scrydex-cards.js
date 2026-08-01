@@ -10,7 +10,7 @@ const SCRYDEX_API_KEY = process.env.SCRYDEX_API_KEY || '';
 // confirmed value (verified via diagnostic script against live data).
 const SET_TO_GROUP = {
   'me05': '24688',
-  'me06': '24791',    // Delta Reign (EN bridge) — same group as m6_ja Storm Emeralda
+  'me06': '',      // Delta Reign — TCGplayer has thin listing data, revert to Scrydex JP prices
   // JP sets — categoryId 85
   'm1l_ja': '24399',
   'm1s_ja': '24400',
@@ -19,7 +19,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
-  'm6_ja':  '24791',    // Storm Emeralda
+  'm6_ja':  '',      // Storm Emeralda — TCGplayer has thin listing data, revert to Scrydex JP prices
   // SV JP sets — categoryId 85
   'sv1s_ja': '23605',
   'sv1v_ja': '23606',
@@ -266,7 +266,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v27-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v28-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
