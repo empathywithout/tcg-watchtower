@@ -266,7 +266,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v28-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v29-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
@@ -357,6 +357,62 @@ export default async function handler(req, res) {
         console.log(`[scrydex-cards] TCGCSV bridge hit for ${set}: ${cards.length} cards (${jpFallbackCount} from JP fallback)`);
       } catch (e) {
         console.warn(`[scrydex-cards] TCGCSV bridge failed for ${set}, using JP-only cards:`, e.message);
+      }
+    }
+
+    // ── Scrydex Price History overlay for JP sets ────────────────────────────
+    // The expansion cards endpoint returns JPY placeholder prices for new JP sets.
+    // Price history endpoint returns real USD market prices (NM holofoil).
+    // Only fetch for secret rares (localId > printedTotal) to limit API calls.
+    if (isJP && scrydexId) {
+      try {
+        // Identify secret rares — localId numerically greater than printed total
+        // For M6, printed total is 76, so cards 077-113 are secret rares
+        const secretRares = cards.filter(c => {
+          const id = parseInt(c.localId, 10);
+          return !isNaN(id) && id > 76; // covers all known JP ME sets
+        });
+
+        if (secretRares.length > 0) {
+          console.log(`[scrydex-cards] fetching price history for ${secretRares.length} secret rares in ${scrydexId}`);
+          // Fetch all in parallel — 30-40 calls, each lightweight (days=1)
+          const priceResults = await Promise.allSettled(
+            secretRares.map(async c => {
+              const cardId = `${scrydexId}-${String(c.localId).padStart(3, '0')}`;
+              const url = `${SCRYDEX_BASE}/cards/${cardId}/price_history?days=1&condition=NM&type=raw`;
+              const data = await fetchPage(url);
+              // Find the best holofoil or normal NM price from today
+              const today = data?.data?.[0];
+              if (!today) return { localId: c.localId, market: null };
+              const holofoil = today.prices?.find(p => p.variant === 'holofoil' && p.condition === 'NM' && p.type === 'raw');
+              const normal   = today.prices?.find(p => p.variant === 'normal'   && p.condition === 'NM' && p.type === 'raw');
+              const best = holofoil || normal;
+              return { localId: c.localId, market: best?.market ?? null };
+            })
+          );
+
+          // Overlay real USD prices onto cards
+          const priceMap = {};
+          priceResults.forEach(r => {
+            if (r.status === 'fulfilled' && r.value.market != null) {
+              priceMap[r.value.localId] = r.value.market;
+            }
+          });
+
+          const overlaid = Object.keys(priceMap).length;
+          if (overlaid > 0) {
+            cards = cards.map(c => {
+              const usd = priceMap[c.localId];
+              if (usd != null) {
+                return { ...c, market: usd, marketJPY: undefined, isEstimate: false, priceSource: 'scrydex-history' };
+              }
+              return c;
+            });
+            console.log(`[scrydex-cards] price history overlay: ${overlaid} secret rares updated with real USD prices`);
+          }
+        }
+      } catch (e) {
+        console.warn(`[scrydex-cards] price history overlay failed:`, e.message);
       }
     }
 
