@@ -19,7 +19,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
-  'm6_ja':  '',      // TCGCSV not indexed yet — update when available
+  'm6_ja':  '24791',    // Storm Emeralda
   // SV JP sets — categoryId 85
   'sv1s_ja': '23605',
   'sv1v_ja': '23606',
@@ -263,7 +263,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v23-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v24-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {

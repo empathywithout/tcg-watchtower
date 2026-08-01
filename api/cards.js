@@ -68,7 +68,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600', // Nihil Zero
   'm4_ja':  '24653', // Ninja Spinner
   'm5_ja':  '24711', // Abyss Eye
-  'm6_ja':  '',      // Storm Emeralda — TCGCSV not indexed yet
+  'm6_ja':  '24791',    // Storm Emeralda
 };
 
 // Our internal setId → Scrydex EN expansion ID
