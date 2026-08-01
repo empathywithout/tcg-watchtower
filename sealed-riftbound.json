@@ -111,7 +111,7 @@
   },
   "vnd": {
     "booster-box": {
-      "tcgpId": "0",
+      "tcgpId": "693380",
       "type": "Booster Box",
       "filterKey": "box-vnd",
       "badgeClass": "badge-box",
@@ -119,7 +119,7 @@
       "q": "Riftbound Vendetta Booster Box TCG"
     },
     "booster-pack": {
-      "tcgpId": "0",
+      "tcgpId": "693377",
       "type": "Booster Pack",
       "filterKey": "pack-vnd",
       "badgeClass": "badge-pack",
@@ -127,7 +127,7 @@
       "q": "Riftbound Vendetta Booster Pack TCG"
     },
     "showdown-deck": {
-      "tcgpId": "0",
+      "tcgpId": "697971",
       "type": "Showdown Deck",
       "filterKey": "deck-shen-zed",
       "badgeClass": "badge-deck",
