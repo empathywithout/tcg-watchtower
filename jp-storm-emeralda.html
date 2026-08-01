@@ -1526,7 +1526,7 @@ function renderChaseCardsHTML(grid) {
         <div class="buy-links">
           <a class="buy-link buy-amazon" href="${amazonLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Amazon</a>
           <a class="buy-link buy-ebay" href="${ebayLink(c.searchName)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">eBay</a>
-          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${tcgplayerCardLink(c.name, c.id + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
+          <a class="buy-link buy-tcgp ${c.priceUrl ? 'buy-tcgp-featured' : ''}" href="${c.priceUrl || tcgplayerCardLink(c.name, c.id + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">TCGplayer</a>
         </div>
       </div>
     </div>`;
@@ -1936,7 +1936,7 @@ function openModal(localId, name, rarity, searchQuery, imgUrl, directUrl) {
         <a class="modal-buy-link pl-ebay" href="${ebayLink(searchQuery)}" target="_blank" rel="noopener">
           <span>eBay</span><span>→</span>
         </a>
-        <a class="modal-buy-link pl-tcgp" href="${tcgplayerCardLink(name, localId + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener">
+        <a class="modal-buy-link pl-tcgp" href="${priceCache[localId]?.url || tcgplayerCardLink(name, localId + '/' + SET_OFFICIAL_COUNT, SET_TCGP_SLUG)}" target="_blank" rel="noopener">
           <span>TCGplayer</span><span>→</span>
         </a>
         <a class="modal-buy-link" href="/pokemon/sets/${SET_SERIES_SLUG}/${SET_URL_SLUG}/cards/${toCardSlug(name, localId)}" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
