@@ -19,7 +19,7 @@ const SET_TO_GROUP = {
   'm3_ja':  '24600',
   'm4_ja':  '24653',
   'm5_ja':  '24711',
-  'm6_ja':  '',      // Storm Emeralda — TCGplayer has thin listing data, revert to Scrydex JP prices
+  'm6_ja':  '24791', // Storm Emeralda — marketPrice only (no midPrice fallback for JP)
   // SV JP sets — categoryId 85
   'sv1s_ja': '23605',
   'sv1v_ja': '23606',
@@ -273,7 +273,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v33-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v34-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
@@ -384,67 +384,6 @@ export default async function handler(req, res) {
       }
     }
 
-    // ── Scrydex Price History overlay for JP sets ────────────────────────────
-    // The expansion cards endpoint returns JPY placeholder prices for new JP sets.
-    // Price history endpoint returns real USD market prices (NM holofoil).
-    // Only fetch for secret rares (localId > printedTotal) to limit API calls.
-    if (isJP && scrydexId) {
-      try {
-        // Identify secret rares — localId numerically greater than printed total
-        // For M6, printed total is 76, so cards 077-113 are secret rares
-        const secretRares = cards.filter(c => {
-          const id = parseInt(c.localId, 10);
-          return !isNaN(id) && id > expansionPrintedTotal;
-        });
-
-        if (secretRares.length > 0) {
-          console.log(`[scrydex-cards] fetching price history for ${secretRares.length} secret rares in ${scrydexId}`);
-          // Fetch all in parallel — 30-40 calls, each lightweight (days=1)
-          const priceResults = await Promise.allSettled(
-            secretRares.map(async c => {
-              const cardId = `${scrydexId}-${String(c.localId).padStart(3, '0')}`;
-              const url = `${SCRYDEX_BASE}/cards/${cardId}/price_history?days=1&condition=NM&type=raw`;
-              const data = await fetchPage(url);
-              // Find the best holofoil or normal NM price from today
-              const today = data?.data?.[0];
-              if (!today) return { localId: c.localId, market: null };
-              // Must filter by currency: 'USD' — price history returns both JPY and USD entries
-              const holofoil = today.prices?.find(p => p.variant === 'holofoil' && p.condition === 'NM' && p.type === 'raw' && p.currency === 'USD');
-              const normal   = today.prices?.find(p => p.variant === 'normal'   && p.condition === 'NM' && p.type === 'raw' && p.currency === 'USD');
-              const best = holofoil || normal;
-              return { localId: c.localId, market: best?.market ?? null };
-            })
-          );
-
-          // Overlay real USD prices onto cards
-          const priceMap = {};
-          priceResults.forEach(r => {
-            if (r.status === 'fulfilled' && r.value.market != null) {
-              priceMap[r.value.localId] = r.value.market;
-            }
-          });
-
-          const overlaid = Object.keys(priceMap).length;
-          const secretRareIds = new Set(secretRares.map(c => c.localId));
-          // Apply overlay to all secret rares — even those with no price history result.
-          // For secret rares with no USD price history, null out the market price:
-          // a JPY-converted Scrydex placeholder (e.g. ¥40,000,000 → $290,000) is
-          // far worse than showing nothing and letting the UI fall back to "—".
-          cards = cards.map(c => {
-            if (!secretRareIds.has(c.localId)) return c;
-            const usd = priceMap[c.localId];
-            if (usd != null) {
-              return { ...c, market: usd, marketJPY: undefined, isEstimate: false, priceSource: 'scrydex-history' };
-            }
-            // No confirmed USD price — suppress the JPY placeholder
-            return { ...c, market: null, marketJPY: null, isEstimate: false };
-          });
-          console.log(`[scrydex-cards] price history overlay: ${overlaid}/${secretRares.length} secret rares with real USD prices`);
-        }
-      } catch (e) {
-        console.warn(`[scrydex-cards] price history overlay failed:`, e.message);
-      }
-    }
 
     // Only cache if prices are actually present — prevents stale null-price cache
     const hasAnyPrice = cards.some(c => c.market != null);
