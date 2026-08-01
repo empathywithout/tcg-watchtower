@@ -294,12 +294,6 @@ export default async function handler(req, res) {
       `${basePrefix}/expansions/${scrydexId}/cards?select=${selectFields}&include=prices&pageSize=100`
     );
 
-    // Debug: return raw card data if ?raw=1 to inspect Scrydex response structure
-    if (req.query.raw === '1') {
-      const card77 = rawCards.find(c => c.id && c.id.includes('-77'));
-      return res.status(200).json({ raw_card: card77 || rawCards[0] });
-    }
-
     let cards = rawCards.map(c => normaliseCard(c, set, isJP ? 'jp' : 'en', fxRate));
 
     // TCGCSV bridge: only activates for JP-phase sets with a registered
