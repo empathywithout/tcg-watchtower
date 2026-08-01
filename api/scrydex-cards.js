@@ -188,7 +188,10 @@ function normaliseCard(c, internalSetId, phase, fxRate = null) {
     };
   }).filter(v => v.name);
 
-  const normalVariant = variants.find(v => v.name === 'normal') || variants[0];
+  const normalVariant = phase === 'jp'
+    // JP Art Rares / Secret Rares are always holofoil — prefer that variant
+    ? (variants.find(v => v.name === 'holofoil') || variants.find(v => v.name === 'normal') || variants[0])
+    : (variants.find(v => v.name === 'normal') || variants[0]);
   const market = normalVariant?.market ?? null;
 
   const name = phase === 'jp'
@@ -260,7 +263,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v22-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v23-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
