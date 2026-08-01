@@ -266,7 +266,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v30-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v31-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
@@ -417,16 +417,21 @@ export default async function handler(req, res) {
           });
 
           const overlaid = Object.keys(priceMap).length;
-          if (overlaid > 0) {
-            cards = cards.map(c => {
-              const usd = priceMap[c.localId];
-              if (usd != null) {
-                return { ...c, market: usd, marketJPY: undefined, isEstimate: false, priceSource: 'scrydex-history' };
-              }
-              return c;
-            });
-            console.log(`[scrydex-cards] price history overlay: ${overlaid} secret rares updated with real USD prices`);
-          }
+          const secretRareIds = new Set(secretRares.map(c => c.localId));
+          // Apply overlay to all secret rares — even those with no price history result.
+          // For secret rares with no USD price history, null out the market price:
+          // a JPY-converted Scrydex placeholder (e.g. ¥40,000,000 → $290,000) is
+          // far worse than showing nothing and letting the UI fall back to "—".
+          cards = cards.map(c => {
+            if (!secretRareIds.has(c.localId)) return c;
+            const usd = priceMap[c.localId];
+            if (usd != null) {
+              return { ...c, market: usd, marketJPY: undefined, isEstimate: false, priceSource: 'scrydex-history' };
+            }
+            // No confirmed USD price — suppress the JPY placeholder
+            return { ...c, market: null, marketJPY: null, isEstimate: false };
+          });
+          console.log(`[scrydex-cards] price history overlay: ${overlaid}/${secretRares.length} secret rares with real USD prices`);
         }
       } catch (e) {
         console.warn(`[scrydex-cards] price history overlay failed:`, e.message);
