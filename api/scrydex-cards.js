@@ -256,9 +256,6 @@ export default async function handler(req, res) {
   if (!set) return res.status(400).json({ error: 'Provide ?set= or ?q= param' });
 
   const isJP     = phase === 'jp';
-  res.setHeader('X-Debug-Phase', phase || 'undefined');
-  res.setHeader('X-Debug-IsJP', String(isJP));
-  res.setHeader('X-Debug-Set', set || 'undefined');
   const scrydexId = isJP ? SCRYDEX_JP_ID_MAP[set] : SCRYDEX_EN_ID_MAP[set];
   if (!scrydexId) return res.status(400).json({ error: `Unknown set: ${set}` });
 
