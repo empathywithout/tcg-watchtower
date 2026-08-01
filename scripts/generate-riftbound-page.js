@@ -38,7 +38,7 @@ const RB_SERIES_ORDER = [
   { setId: 'spf', url: '/riftbound/sets/spiritforged/cards', name: 'Spiritforged', short: 'SPF' },
   { setId: 'unl', url: '/riftbound/sets/unleashed/cards', name: 'Unleashed', short: 'UNL' },
   { setId: 'vnd', url: '/riftbound/sets/vendetta/cards', name: 'Vendetta', short: 'VEN' },
-  { setId: 'rad', url: '/riftbound/sets/radiance/cards', name: 'Radiance', short: 'RAD' },
+  // rad (Radiance) not added yet — page doesn't exist, would 404
 ];
 
 function buildSeriesNavHtml(order, currentSetId) {
