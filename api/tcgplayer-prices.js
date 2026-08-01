@@ -117,8 +117,12 @@ export default async function handler(req, res) {
     }
 
     // Helper: best available price — marketPrice preferred, midPrice fallback
-    // Newly-listed presale cards often have listings but no marketPrice yet
-    const bestPrice = (p) => p.marketPrice ?? p.midPrice ?? p.lowPrice ?? null;
+    // For JP sets (pokemon-japan), use marketPrice ONLY — midPrice on JP cards
+    // is based on 1-2 thin listings and is wildly inaccurate on release day.
+    // Cards without a real marketPrice fall back to Scrydex JP estimates on the page.
+    const bestPrice = game === 'pokemon-japan'
+      ? (p) => p.marketPrice ?? null
+      : (p) => p.marketPrice ?? p.midPrice ?? p.lowPrice ?? null;
 
     // Build card number -> price + URL map
     // For One Piece: each variant is a separate product with the same card number
