@@ -273,7 +273,7 @@ export default async function handler(req, res) {
   // cached entry from before that change can never mask whether the new
   // code is actually working (this is exactly what happened today: this
   // cache masked the bridge fix for a while after it deployed).
-  const cacheKey = `scrydex:cards:v32-r2-primary:${scrydexId}`;
+  const cacheKey = `scrydex:cards:v33-r2-primary:${scrydexId}`;
   const skipCache = req.query.nocache === '1';
   const cached   = skipCache ? null : await redisGet(cacheKey);
   if (cached) {
@@ -408,8 +408,9 @@ export default async function handler(req, res) {
               // Find the best holofoil or normal NM price from today
               const today = data?.data?.[0];
               if (!today) return { localId: c.localId, market: null };
-              const holofoil = today.prices?.find(p => p.variant === 'holofoil' && p.condition === 'NM' && p.type === 'raw');
-              const normal   = today.prices?.find(p => p.variant === 'normal'   && p.condition === 'NM' && p.type === 'raw');
+              // Must filter by currency: 'USD' — price history returns both JPY and USD entries
+              const holofoil = today.prices?.find(p => p.variant === 'holofoil' && p.condition === 'NM' && p.type === 'raw' && p.currency === 'USD');
+              const normal   = today.prices?.find(p => p.variant === 'normal'   && p.condition === 'NM' && p.type === 'raw' && p.currency === 'USD');
               const best = holofoil || normal;
               return { localId: c.localId, market: best?.market ?? null };
             })
