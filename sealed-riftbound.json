@@ -108,5 +108,31 @@
       "name": "Unleashed Champion Deck: Vex",
       "q": "Riftbound Unleashed Champion Deck Vex TCG"
     }
+  },
+  "vnd": {
+    "booster-box": {
+      "tcgpId": "0",
+      "type": "Booster Box",
+      "filterKey": "box-vnd",
+      "badgeClass": "badge-box",
+      "name": "Vendetta Booster Display (24 Packs)",
+      "q": "Riftbound Vendetta Booster Box TCG"
+    },
+    "booster-pack": {
+      "tcgpId": "0",
+      "type": "Booster Pack",
+      "filterKey": "pack-vnd",
+      "badgeClass": "badge-pack",
+      "name": "Vendetta Booster Pack",
+      "q": "Riftbound Vendetta Booster Pack TCG"
+    },
+    "showdown-deck": {
+      "tcgpId": "0",
+      "type": "Showdown Deck",
+      "filterKey": "deck-shen-zed",
+      "badgeClass": "badge-deck",
+      "name": "Vendetta Showdown Deck: Shen vs. Zed",
+      "q": "Riftbound Vendetta Showdown Deck Shen Zed TCG"
+    }
   }
 }

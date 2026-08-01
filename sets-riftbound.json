@@ -50,4 +50,21 @@
     "tcgpCategoryId": 89,
     "tcgpGroupId": 24560
   }
+  ,{
+    "setId": "vnd",
+    "name": "Vendetta",
+    "slug": "vendetta",
+    "short": "VEN",
+    "scrydexId": "VEN",
+    "type": "Main",
+    "releaseDate": "2026-07-31",
+    "total": 233,
+    "printedTotal": 166,
+    "packsPerBox": 24,
+    "cardsPerPack": 14,
+    "live": true,
+    "trending": true,
+    "tcgpCategoryId": 89,
+    "tcgpGroupId": 0
+  }
 ]

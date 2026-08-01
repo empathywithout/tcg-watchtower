@@ -37,7 +37,7 @@ const RB_SERIES_ORDER = [
   { setId: 'ogn', url: '/riftbound/sets/origins/cards', name: 'Origins', short: 'OGN' },
   { setId: 'spf', url: '/riftbound/sets/spiritforged/cards', name: 'Spiritforged', short: 'SPF' },
   { setId: 'unl', url: '/riftbound/sets/unleashed/cards', name: 'Unleashed', short: 'UNL' },
-  { setId: 'vnd', url: '/riftbound/sets/vendetta/cards', name: 'Vendetta', short: 'VND' },
+  { setId: 'vnd', url: '/riftbound/sets/vendetta/cards', name: 'Vendetta', short: 'VEN' },
   { setId: 'rad', url: '/riftbound/sets/radiance/cards', name: 'Radiance', short: 'RAD' },
 ];
 
@@ -100,6 +100,19 @@ const SEO_DATA = {
       { q: 'What is new in Riftbound Unleashed?', a: 'Unleashed introduces three new keywords: Ambush (deploy directly to battlefields), Level (spend XP to upgrade cards), and Hunt (gather XP resources). It also introduces the Ultimate rarity, rarer than Signature, with Baron Nashor as the first Ultimate card appearing in fewer than 1 in 1,000 packs.' },
       { q: 'How many cards are in Riftbound Unleashed?', a: 'Unleashed contains 219 total cards, making it the smallest of the first three Riftbound sets.' },
       { q: 'When did Riftbound Unleashed release?', a: 'Unleashed released on May 8, 2026 in English.' },
+    ],
+  },
+  'vnd': {
+    metaTitle: 'Riftbound Vendetta Card List & Prices | All VEN Cards | TCG Watchtower',
+    metaDesc: 'Complete Riftbound Vendetta card list with live market prices. All 233 VEN cards including Overnumbered chase cards, Crystal Rose Wild Rift variants, and Showdown Deck cards ranked by value.',
+    intro: 'Vendetta is the fourth Riftbound set, released July 31, 2026 — the first global simultaneous release across English, Italian, Japanese, and Chinese. The set features 9 champion Legends including Zed, Shen, Nasus, Renekton, Akali, Mel, Ambessa, Kennen, and Jayce, introducing three new mechanics: Flow (play from trash), Burn (mill your deck for value), and Empower (pay to unlock upgraded abilities). Vendetta also debuts Showdown Decks — the Shen vs. Zed rivalry box designed for immediate 1v1 play — alongside six Crystal Rose Wild Rift collaboration alt-art cards. The top Overnumbered chases include Heart of the Tempest at $306, Rogue Assassin at $284, and Irelia, Fervent at $175.',
+    faq: [
+      { q: 'What is the most expensive Riftbound Vendetta card?', a: 'Heart of the Tempest (#197, Overnumbered) is currently the highest-valued card in Vendetta at around $306. Other top Overnumbered chase cards include Rogue Assassin ($284), Irelia, Fervent ($175), Kayle, Justified ($137), and Rengar, Trophy Hunter ($166). Among the base set, Lightning Rush ($24.60) and Shuriken Flip ($18.04) are the highest-valued Epics.' },
+      { q: 'How many cards are in Riftbound Vendetta?', a: 'Vendetta contains 233 total cards: 166 in the main numbered set, plus Overnumbered cards (167-197), Crystal Rose Wild Rift SP variants (SP1-SP6), runes (R01-R06), and token cards. The set introduces 9 new champion Legends.' },
+      { q: 'What are the new mechanics in Riftbound Vendetta?', a: 'Vendetta introduces three new mechanics: Flow (lets you play spells from your trash for a reduced cost, then banishes them), Burn (mill the top cards of your deck into your trash for synergy effects), and Empower (pay an activation cost to unlock a powered-up state on units and gear). The set also adds two new card types: Unit-Gear (counts as both a unit and gear) and Decrees (rivalry spells).' },
+      { q: 'What is the Shen vs. Zed Showdown Deck?', a: 'The Shen vs. Zed Showdown Deck is a new Riftbound product launching with Vendetta. It contains two ready-to-play 40-card decks — one built around Shen and one around Zed — designed for immediate 1v1 play out of the box without needing to build a deck.' },
+      { q: 'When did Riftbound Vendetta release?', a: 'Vendetta released July 31, 2026 worldwide, making it the first Riftbound set with a truly simultaneous global release across English, Italian, Japanese, and Chinese editions.' },
+      { q: 'What are the Crystal Rose Wild Rift cards in Vendetta?', a: 'Six Crystal Rose alt-art collaboration cards (SP1-SP6) are pullable from all Vendetta booster packs, featuring Kai\'sa, Sona, Ahri, Sett, Ezreal, and Lux in Crystal Rose skins from Riot\'s Wild Rift mobile game. These sit between Overnumbered and Signature in rarity.' },
     ],
   },
 };

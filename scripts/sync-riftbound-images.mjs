@@ -40,7 +40,7 @@ const SCRYDEX_ID_MAP = {
   'ogn': 'OGN',
   'spf': 'SFD',
   'unl': 'UNL',
-  'vnd': 'VND',
+  'vnd': 'VEN',
   'rad': 'RAD',
 };
 
